@@ -1,0 +1,3 @@
+[submodule "hardware/common/keyswitches.pretty"]
+	path = hardware/common/keyswitches.pretty
+	url = https://github.com/daprice/keyswitches.pretty.git
