@@ -1,0 +1,580 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 3 9
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5E6D9949
+P 3100 2700
+AR Path="/5E697948/5E6D9949" Ref="SW?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D9949" Ref="SW1"  Part="1" 
+F 0 "SW1" V 3054 2848 50  0000 L CNN
+F 1 "ESC" V 3145 2848 50  0000 L CNN
+F 2 "Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB" H 3100 2900 50  0001 C CNN
+F 3 "~" H 3100 2900 50  0001 C CNN
+	1    3100 2700
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:1N4148W D?
+U 1 1 5E6D994F
+P 3100 3150
+AR Path="/5E697948/5E6D994F" Ref="D?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D994F" Ref="D1"  Part="1" 
+F 0 "D1" V 3146 3070 50  0000 R CNN
+F 1 "1N4148W" V 3055 3070 50  0000 R CNN
+F 2 "Diode_SMD:D_SOD-123" H 3100 2975 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/85748/1n4148w.pdf" H 3100 3150 50  0001 C CNN
+	1    3100 3150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3100 2900 3100 3000
+Text HLabel 2100 2400 0    50   Input ~ 0
+R0
+Wire Wire Line
+	2100 2400 3100 2400
+Wire Wire Line
+	3100 2400 3100 2500
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5E6D9959
+P 3850 2700
+AR Path="/5E697948/5E6D9959" Ref="SW?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D9959" Ref="SW3"  Part="1" 
+F 0 "SW3" V 3804 2848 50  0000 L CNN
+F 1 "F1" V 3895 2848 50  0000 L CNN
+F 2 "Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB" H 3850 2900 50  0001 C CNN
+F 3 "~" H 3850 2900 50  0001 C CNN
+	1    3850 2700
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:1N4148W D?
+U 1 1 5E6D995F
+P 3850 3150
+AR Path="/5E697948/5E6D995F" Ref="D?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D995F" Ref="D3"  Part="1" 
+F 0 "D3" V 3896 3070 50  0000 R CNN
+F 1 "1N4148W" V 3805 3070 50  0000 R CNN
+F 2 "Diode_SMD:D_SOD-123" H 3850 2975 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/85748/1n4148w.pdf" H 3850 3150 50  0001 C CNN
+	1    3850 3150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3850 2900 3850 3000
+Wire Wire Line
+	3850 2400 3850 2500
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5E6D9967
+P 4600 2700
+AR Path="/5E697948/5E6D9967" Ref="SW?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D9967" Ref="SW5"  Part="1" 
+F 0 "SW5" V 4554 2848 50  0000 L CNN
+F 1 "F2" V 4645 2848 50  0000 L CNN
+F 2 "Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB" H 4600 2900 50  0001 C CNN
+F 3 "~" H 4600 2900 50  0001 C CNN
+	1    4600 2700
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:1N4148W D?
+U 1 1 5E6D996D
+P 4600 3150
+AR Path="/5E697948/5E6D996D" Ref="D?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D996D" Ref="D5"  Part="1" 
+F 0 "D5" V 4646 3070 50  0000 R CNN
+F 1 "1N4148W" V 4555 3070 50  0000 R CNN
+F 2 "Diode_SMD:D_SOD-123" H 4600 2975 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/85748/1n4148w.pdf" H 4600 3150 50  0001 C CNN
+	1    4600 3150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4600 2900 4600 3000
+Wire Wire Line
+	4600 2400 4600 2500
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5E6D9975
+P 5350 2700
+AR Path="/5E697948/5E6D9975" Ref="SW?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D9975" Ref="SW7"  Part="1" 
+F 0 "SW7" V 5304 2848 50  0000 L CNN
+F 1 "F2" V 5395 2848 50  0000 L CNN
+F 2 "Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB" H 5350 2900 50  0001 C CNN
+F 3 "~" H 5350 2900 50  0001 C CNN
+	1    5350 2700
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:1N4148W D?
+U 1 1 5E6D997B
+P 5350 3150
+AR Path="/5E697948/5E6D997B" Ref="D?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D997B" Ref="D7"  Part="1" 
+F 0 "D7" V 5396 3070 50  0000 R CNN
+F 1 "1N4148W" V 5305 3070 50  0000 R CNN
+F 2 "Diode_SMD:D_SOD-123" H 5350 2975 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/85748/1n4148w.pdf" H 5350 3150 50  0001 C CNN
+	1    5350 3150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	5350 2900 5350 3000
+Wire Wire Line
+	5350 2400 5350 2500
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5E6D9983
+P 6100 2700
+AR Path="/5E697948/5E6D9983" Ref="SW?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D9983" Ref="SW9"  Part="1" 
+F 0 "SW9" V 6054 2848 50  0000 L CNN
+F 1 "F4" V 6145 2848 50  0000 L CNN
+F 2 "Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB" H 6100 2900 50  0001 C CNN
+F 3 "~" H 6100 2900 50  0001 C CNN
+	1    6100 2700
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:1N4148W D?
+U 1 1 5E6D9989
+P 6100 3150
+AR Path="/5E697948/5E6D9989" Ref="D?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D9989" Ref="D9"  Part="1" 
+F 0 "D9" V 6146 3070 50  0000 R CNN
+F 1 "1N4148W" V 6055 3070 50  0000 R CNN
+F 2 "Diode_SMD:D_SOD-123" H 6100 2975 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/85748/1n4148w.pdf" H 6100 3150 50  0001 C CNN
+	1    6100 3150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	6100 2900 6100 3000
+Wire Wire Line
+	6100 2400 6100 2500
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5E6D9991
+P 6850 2700
+AR Path="/5E697948/5E6D9991" Ref="SW?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D9991" Ref="SW11"  Part="1" 
+F 0 "SW11" V 6804 2848 50  0000 L CNN
+F 1 "F5" V 6895 2848 50  0000 L CNN
+F 2 "Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB" H 6850 2900 50  0001 C CNN
+F 3 "~" H 6850 2900 50  0001 C CNN
+	1    6850 2700
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:1N4148W D?
+U 1 1 5E6D9997
+P 6850 3150
+AR Path="/5E697948/5E6D9997" Ref="D?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D9997" Ref="D11"  Part="1" 
+F 0 "D11" V 6896 3070 50  0000 R CNN
+F 1 "1N4148W" V 6805 3070 50  0000 R CNN
+F 2 "Diode_SMD:D_SOD-123" H 6850 2975 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/85748/1n4148w.pdf" H 6850 3150 50  0001 C CNN
+	1    6850 3150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	6850 2900 6850 3000
+Wire Wire Line
+	6850 2400 6850 2500
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5E6D999F
+P 7600 2700
+AR Path="/5E697948/5E6D999F" Ref="SW?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D999F" Ref="SW13"  Part="1" 
+F 0 "SW13" V 7554 2848 50  0000 L CNN
+F 1 "F6" V 7645 2848 50  0000 L CNN
+F 2 "Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB" H 7600 2900 50  0001 C CNN
+F 3 "~" H 7600 2900 50  0001 C CNN
+	1    7600 2700
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:1N4148W D?
+U 1 1 5E6D99A5
+P 7600 3150
+AR Path="/5E697948/5E6D99A5" Ref="D?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D99A5" Ref="D13"  Part="1" 
+F 0 "D13" V 7646 3070 50  0000 R CNN
+F 1 "1N4148W" V 7555 3070 50  0000 R CNN
+F 2 "Diode_SMD:D_SOD-123" H 7600 2975 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/85748/1n4148w.pdf" H 7600 3150 50  0001 C CNN
+	1    7600 3150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	7600 2900 7600 3000
+Wire Wire Line
+	7600 2400 7600 2500
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5E6D99AD
+P 8350 2700
+AR Path="/5E697948/5E6D99AD" Ref="SW?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D99AD" Ref="SW14"  Part="1" 
+F 0 "SW14" V 8304 2848 50  0000 L CNN
+F 1 "F7" V 8395 2848 50  0000 L CNN
+F 2 "Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB" H 8350 2900 50  0001 C CNN
+F 3 "~" H 8350 2900 50  0001 C CNN
+	1    8350 2700
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:1N4148W D?
+U 1 1 5E6D99B3
+P 8350 3150
+AR Path="/5E697948/5E6D99B3" Ref="D?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D99B3" Ref="D14"  Part="1" 
+F 0 "D14" V 8396 3070 50  0000 R CNN
+F 1 "1N4148W" V 8305 3070 50  0000 R CNN
+F 2 "Diode_SMD:D_SOD-123" H 8350 2975 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/85748/1n4148w.pdf" H 8350 3150 50  0001 C CNN
+	1    8350 3150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	8350 2900 8350 3000
+Wire Wire Line
+	8350 2400 8350 2500
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5E6D99BB
+P 3100 4800
+AR Path="/5E697948/5E6D99BB" Ref="SW?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D99BB" Ref="SW2"  Part="1" 
+F 0 "SW2" V 3054 4948 50  0000 L CNN
+F 1 "F8" V 3145 4948 50  0000 L CNN
+F 2 "Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB" H 3100 5000 50  0001 C CNN
+F 3 "~" H 3100 5000 50  0001 C CNN
+	1    3100 4800
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:1N4148W D?
+U 1 1 5E6D99C1
+P 3100 5250
+AR Path="/5E697948/5E6D99C1" Ref="D?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D99C1" Ref="D2"  Part="1" 
+F 0 "D2" V 3146 5170 50  0000 R CNN
+F 1 "1N4148W" V 3055 5170 50  0000 R CNN
+F 2 "Diode_SMD:D_SOD-123" H 3100 5075 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/85748/1n4148w.pdf" H 3100 5250 50  0001 C CNN
+	1    3100 5250
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3100 5000 3100 5100
+Wire Wire Line
+	3100 4500 3100 4600
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5E6D99C9
+P 3850 4800
+AR Path="/5E697948/5E6D99C9" Ref="SW?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D99C9" Ref="SW4"  Part="1" 
+F 0 "SW4" V 3804 4948 50  0000 L CNN
+F 1 "F9" V 3895 4948 50  0000 L CNN
+F 2 "Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB" H 3850 5000 50  0001 C CNN
+F 3 "~" H 3850 5000 50  0001 C CNN
+	1    3850 4800
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:1N4148W D?
+U 1 1 5E6D99CF
+P 3850 5250
+AR Path="/5E697948/5E6D99CF" Ref="D?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D99CF" Ref="D4"  Part="1" 
+F 0 "D4" V 3896 5170 50  0000 R CNN
+F 1 "1N4148W" V 3805 5170 50  0000 R CNN
+F 2 "Diode_SMD:D_SOD-123" H 3850 5075 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/85748/1n4148w.pdf" H 3850 5250 50  0001 C CNN
+	1    3850 5250
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3850 5000 3850 5100
+Wire Wire Line
+	3850 4500 3850 4600
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5E6D99D7
+P 4600 4800
+AR Path="/5E697948/5E6D99D7" Ref="SW?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D99D7" Ref="SW6"  Part="1" 
+F 0 "SW6" V 4554 4948 50  0000 L CNN
+F 1 "F10" V 4645 4948 50  0000 L CNN
+F 2 "Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB" H 4600 5000 50  0001 C CNN
+F 3 "~" H 4600 5000 50  0001 C CNN
+	1    4600 4800
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:1N4148W D?
+U 1 1 5E6D99DD
+P 4600 5250
+AR Path="/5E697948/5E6D99DD" Ref="D?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D99DD" Ref="D6"  Part="1" 
+F 0 "D6" V 4646 5170 50  0000 R CNN
+F 1 "1N4148W" V 4555 5170 50  0000 R CNN
+F 2 "Diode_SMD:D_SOD-123" H 4600 5075 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/85748/1n4148w.pdf" H 4600 5250 50  0001 C CNN
+	1    4600 5250
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4600 5000 4600 5100
+Wire Wire Line
+	4600 4500 4600 4600
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5E6D99E5
+P 5350 4800
+AR Path="/5E697948/5E6D99E5" Ref="SW?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D99E5" Ref="SW8"  Part="1" 
+F 0 "SW8" V 5304 4948 50  0000 L CNN
+F 1 "F11" V 5395 4948 50  0000 L CNN
+F 2 "Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB" H 5350 5000 50  0001 C CNN
+F 3 "~" H 5350 5000 50  0001 C CNN
+	1    5350 4800
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:1N4148W D?
+U 1 1 5E6D99EB
+P 5350 5250
+AR Path="/5E697948/5E6D99EB" Ref="D?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D99EB" Ref="D8"  Part="1" 
+F 0 "D8" V 5396 5170 50  0000 R CNN
+F 1 "1N4148W" V 5305 5170 50  0000 R CNN
+F 2 "Diode_SMD:D_SOD-123" H 5350 5075 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/85748/1n4148w.pdf" H 5350 5250 50  0001 C CNN
+	1    5350 5250
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	5350 5000 5350 5100
+Wire Wire Line
+	5350 4500 5350 4600
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5E6D99F3
+P 6100 4800
+AR Path="/5E697948/5E6D99F3" Ref="SW?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D99F3" Ref="SW10"  Part="1" 
+F 0 "SW10" V 6054 4948 50  0000 L CNN
+F 1 "F12" V 6145 4948 50  0000 L CNN
+F 2 "Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB" H 6100 5000 50  0001 C CNN
+F 3 "~" H 6100 5000 50  0001 C CNN
+	1    6100 4800
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:1N4148W D?
+U 1 1 5E6D99F9
+P 6100 5250
+AR Path="/5E697948/5E6D99F9" Ref="D?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D99F9" Ref="D10"  Part="1" 
+F 0 "D10" V 6146 5170 50  0000 R CNN
+F 1 "1N4148W" V 6055 5170 50  0000 R CNN
+F 2 "Diode_SMD:D_SOD-123" H 6100 5075 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/85748/1n4148w.pdf" H 6100 5250 50  0001 C CNN
+	1    6100 5250
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	6100 5000 6100 5100
+Wire Wire Line
+	6100 4500 6100 4600
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5E6D9A01
+P 6850 4800
+AR Path="/5E697948/5E6D9A01" Ref="SW?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D9A01" Ref="SW12"  Part="1" 
+F 0 "SW12" V 6804 4948 50  0000 L CNN
+F 1 "Delete" V 6895 4948 50  0000 L CNN
+F 2 "Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB" H 6850 5000 50  0001 C CNN
+F 3 "~" H 6850 5000 50  0001 C CNN
+	1    6850 4800
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:1N4148W D?
+U 1 1 5E6D9A07
+P 6850 5250
+AR Path="/5E697948/5E6D9A07" Ref="D?"  Part="1" 
+AR Path="/5E697948/5E6CDE4B/5E6D9A07" Ref="D12"  Part="1" 
+F 0 "D12" V 6896 5170 50  0000 R CNN
+F 1 "1N4148W" V 6805 5170 50  0000 R CNN
+F 2 "Diode_SMD:D_SOD-123" H 6850 5075 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/85748/1n4148w.pdf" H 6850 5250 50  0001 C CNN
+	1    6850 5250
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	6850 5000 6850 5100
+Wire Wire Line
+	6850 4500 6850 4600
+Wire Wire Line
+	3100 2400 3850 2400
+Connection ~ 3100 2400
+Connection ~ 3850 2400
+Wire Wire Line
+	3850 2400 4600 2400
+Connection ~ 4600 2400
+Wire Wire Line
+	4600 2400 5350 2400
+Connection ~ 5350 2400
+Wire Wire Line
+	5350 2400 6100 2400
+Connection ~ 6100 2400
+Wire Wire Line
+	6100 2400 6850 2400
+Connection ~ 6850 2400
+Wire Wire Line
+	6850 2400 7600 2400
+Connection ~ 7600 2400
+Wire Wire Line
+	7600 2400 8350 2400
+Connection ~ 3850 4500
+Wire Wire Line
+	3850 4500 3100 4500
+Connection ~ 4600 4500
+Wire Wire Line
+	4600 4500 3850 4500
+Connection ~ 5350 4500
+Wire Wire Line
+	5350 4500 4600 4500
+Connection ~ 6100 4500
+Wire Wire Line
+	6100 4500 5350 4500
+Wire Wire Line
+	6850 4500 6100 4500
+Wire Wire Line
+	3850 3300 3850 3550
+Wire Wire Line
+	4600 3300 4600 3550
+Wire Wire Line
+	5350 3300 5350 3550
+Wire Wire Line
+	6100 3300 6100 3550
+Wire Wire Line
+	6850 3300 6850 3550
+Wire Wire Line
+	7600 3300 7600 3550
+Wire Wire Line
+	8350 3300 8350 3550
+Wire Wire Line
+	3100 5400 3100 5650
+Wire Wire Line
+	3850 5400 3850 5650
+Wire Wire Line
+	4600 5400 4600 5650
+Wire Wire Line
+	5350 5400 5350 5650
+Wire Wire Line
+	6100 5400 6100 5650
+Wire Wire Line
+	6850 5400 6850 5650
+Text Label 3850 3550 1    50   ~ 0
+C1
+Text Label 4600 3550 1    50   ~ 0
+C2
+Text Label 5350 3550 1    50   ~ 0
+C3
+Text Label 6100 3550 1    50   ~ 0
+C4
+Text Label 6850 3550 1    50   ~ 0
+C5
+Text Label 7600 3550 1    50   ~ 0
+C6
+Text Label 8350 3550 1    50   ~ 0
+C7
+Text Label 3100 5650 1    50   ~ 0
+C8
+Text Label 3850 5650 1    50   ~ 0
+C9
+Text Label 4600 5650 1    50   ~ 0
+C10
+Text Label 5350 5650 1    50   ~ 0
+C11
+Text Label 6100 5650 1    50   ~ 0
+C12
+Text Label 6850 5650 1    50   ~ 0
+C13
+Entry Wire Line
+	3100 3550 3200 3650
+Entry Wire Line
+	3850 3550 3950 3650
+Entry Wire Line
+	4600 3550 4700 3650
+Entry Wire Line
+	5350 3550 5450 3650
+Entry Wire Line
+	6100 3550 6200 3650
+Entry Wire Line
+	6850 3550 6950 3650
+Entry Wire Line
+	7600 3550 7700 3650
+Entry Wire Line
+	8350 3550 8450 3650
+Entry Wire Line
+	3100 5650 3200 5750
+Entry Wire Line
+	3850 5650 3950 5750
+Entry Wire Line
+	4600 5650 4700 5750
+Entry Wire Line
+	5350 5650 5450 5750
+Entry Wire Line
+	6100 5650 6200 5750
+Entry Wire Line
+	6850 5650 6950 5750
+Wire Bus Line
+	2800 3650 2800 5750
+Wire Bus Line
+	2100 3650 2800 3650
+Connection ~ 2800 3650
+Text HLabel 2100 3650 0    50   Output ~ 0
+C[0..15]
+Wire Wire Line
+	3100 3300 3100 3550
+Text Label 3100 3550 1    50   ~ 0
+C0
+Text Label 2800 3650 2    50   ~ 0
+C[0..15]
+Wire Bus Line
+	2800 5750 6950 5750
+Wire Bus Line
+	2800 3650 8450 3650
+Connection ~ 6850 4500
+Wire Wire Line
+	6850 4500 9350 4500
+Wire Wire Line
+	9350 2400 9350 4500
+Connection ~ 8350 2400
+Wire Wire Line
+	8350 2400 9350 2400
+$EndSCHEMATC

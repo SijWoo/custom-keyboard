@@ -1,3 +1,6 @@
 [submodule "hardware/common/keyswitches.pretty"]
 	path = hardware/common/keyswitches.pretty
 	url = https://github.com/daprice/keyswitches.pretty.git
+[submodule "hardware/common/MX_Alps_Hybrid"]
+	path = hardware/common/MX_Alps_Hybrid
+	url = https://github.com/ai03-2725/MX_Alps_Hybrid.git
