@@ -114,7 +114,7 @@ P 5350 2700
 AR Path="/5E697948/5E6D9975" Ref="SW?"  Part="1" 
 AR Path="/5E697948/5E6CDE4B/5E6D9975" Ref="SW7"  Part="1" 
 F 0 "SW7" V 5304 2848 50  0000 L CNN
-F 1 "F2" V 5395 2848 50  0000 L CNN
+F 1 "F3" V 5395 2848 50  0000 L CNN
 F 2 "Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB" H 5350 2900 50  0001 C CNN
 F 3 "~" H 5350 2900 50  0001 C CNN
 	1    5350 2700
@@ -565,10 +565,6 @@ Text Label 3100 3550 1    50   ~ 0
 C0
 Text Label 2800 3650 2    50   ~ 0
 C[0..15]
-Wire Bus Line
-	2800 5750 6950 5750
-Wire Bus Line
-	2800 3650 8450 3650
 Connection ~ 6850 4500
 Wire Wire Line
 	6850 4500 9350 4500
@@ -577,4 +573,8 @@ Wire Wire Line
 Connection ~ 8350 2400
 Wire Wire Line
 	8350 2400 9350 2400
+Wire Bus Line
+	2800 5750 6950 5750
+Wire Bus Line
+	2800 3650 8450 3650
 $EndSCHEMATC
