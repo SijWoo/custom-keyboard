@@ -4,3 +4,6 @@
 [submodule "hardware/common/MX_Alps_Hybrid"]
 	path = hardware/common/MX_Alps_Hybrid
 	url = https://github.com/ai03-2725/MX_Alps_Hybrid.git
+[submodule "firmware/bsp/STMicroelectronics/STM32F413/stm32f4xx_hal_driver"]
+	path = firmware/bsp/STMicroelectronics/STM32F413/stm32f4xx_hal_driver
+	url = https://github.com/STMicroelectronics/stm32f4xx_hal_driver.git
