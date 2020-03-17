@@ -310,13 +310,13 @@ C1
 Text Label 4650 3250 1    50   ~ 0
 C2
 Text Label 5400 3250 1    50   ~ 0
-C3
+C5
 Text Label 7650 3250 1    50   ~ 0
-C6
+C12
 Text Label 8400 3250 1    50   ~ 0
-C7
+C13
 Text Label 9150 3250 1    50   ~ 0
-C8
+C14
 Entry Wire Line
 	3150 3250 3250 3350
 Entry Wire Line
@@ -426,9 +426,9 @@ Wire Wire Line
 Wire Wire Line
 	6900 3000 6900 3250
 Text Label 6150 3250 1    50   ~ 0
-C4
+C9
 Text Label 6900 3250 1    50   ~ 0
-C5
+C10
 Entry Wire Line
 	6150 3250 6250 3350
 Entry Wire Line
@@ -440,5 +440,5 @@ Connection ~ 6150 2100
 Wire Wire Line
 	6150 2100 6900 2100
 Wire Bus Line
-	2150 3350 9200 3350
+	2150 3350 9250 3350
 $EndSCHEMATC
