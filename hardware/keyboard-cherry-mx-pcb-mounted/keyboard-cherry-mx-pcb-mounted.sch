@@ -628,7 +628,7 @@ Entry Wire Line
 Entry Wire Line
 	4400 5250 4500 5350
 $Sheet
-S 1000 2250 1000 800 
+S 1000 2250 1000 1000
 U 5E8711BD
 F0 "GestureSensor" 50
 F1 "GestureSensor.sch" 50
@@ -637,27 +637,29 @@ F3 "I2C_SDA" B R 2000 2500 50
 F4 "~RESET" I R 2000 2700 50 
 F5 "~INT0" O R 2000 2800 50 
 F6 "~INT1" O R 2000 2900 50 
+F7 "~INT2" O R 2000 3000 50 
+F8 "~INT3" O R 2000 3100 50 
 $EndSheet
-Text Label 2550 3700 2    50   ~ 0
+Text Label 2550 4150 2    50   ~ 0
 VBUS_SENSE
 Wire Wire Line
-	2000 3700 2550 3700
-Text Label 2550 3900 2    50   ~ 0
+	2000 4150 2550 4150
+Text Label 2550 4350 2    50   ~ 0
 D+
-Text Label 2550 3800 2    50   ~ 0
+Text Label 2550 4250 2    50   ~ 0
 D-
 Wire Wire Line
-	2000 3800 2550 3800
+	2000 4250 2550 4250
 Wire Wire Line
-	2000 3900 2550 3900
+	2000 4350 2550 4350
 $Sheet
-S 1000 3550 1000 500 
+S 1000 4000 1000 500 
 U 5E7D269A
 F0 "USB-C" 50
 F1 "USB-C.sch" 50
-F2 "D-" B R 2000 3800 50 
-F3 "D+" B R 2000 3900 50 
-F4 "VBUS" O R 2000 3700 50 
+F2 "D-" B R 2000 4250 50 
+F3 "D+" B R 2000 4350 50 
+F4 "VBUS" O R 2000 4150 50 
 $EndSheet
 Text Label 2550 2500 2    50   ~ 0
 I2C1_SDA
@@ -713,30 +715,18 @@ Wire Wire Line
 Connection ~ 10500 5000
 Wire Wire Line
 	10500 5000 10500 4900
-Text Label 2550 2700 2    50   ~ 0
-PB8
-Text Label 2550 2800 2    50   ~ 0
-PB4
-Text Label 2550 2900 2    50   ~ 0
-PB5
+Text Label 7000 5050 2    50   ~ 0
+PB10
+Text Label 7000 5150 2    50   ~ 0
+PB12
+Text Label 7000 5250 2    50   ~ 0
+PB13
 Wire Wire Line
-	2000 2900 2550 2900
+	6450 5250 7000 5250
 Wire Wire Line
-	2550 2800 2000 2800
+	7000 5150 6450 5150
 Wire Wire Line
-	2000 2700 2550 2700
-Text Label 7000 4850 2    50   ~ 0
-PB8
-Text Label 7000 4450 2    50   ~ 0
-PB4
-Text Label 7000 4550 2    50   ~ 0
-PB5
-Wire Wire Line
-	6450 4550 7000 4550
-Wire Wire Line
-	7000 4450 6450 4450
-Wire Wire Line
-	6450 4850 7000 4850
+	6450 5050 7000 5050
 Wire Wire Line
 	6450 4350 7000 4350
 Text Label 7000 4350 2    50   ~ 0
@@ -785,12 +775,6 @@ $EndComp
 Wire Wire Line
 	8150 1700 8250 1700
 Connection ~ 8250 1700
-NoConn ~ 6450 4950
-NoConn ~ 6450 5050
-NoConn ~ 6450 5150
-NoConn ~ 6450 5250
-NoConn ~ 6450 5350
-NoConn ~ 6450 5450
 NoConn ~ 6450 4250
 NoConn ~ 6450 4150
 NoConn ~ 6450 4050
@@ -845,6 +829,38 @@ F 3 "~" H 8150 1300 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	8150 1300 8250 1300
+Text Label 7000 5350 2    50   ~ 0
+PB14
+Text Label 7000 5450 2    50   ~ 0
+PB15
+Wire Wire Line
+	6450 5450 7000 5450
+Wire Wire Line
+	7000 5350 6450 5350
+NoConn ~ 6450 4850
+NoConn ~ 6450 4950
+NoConn ~ 6450 4450
+NoConn ~ 6450 4550
+Text Label 2550 2700 2    50   ~ 0
+PB10
+Text Label 2550 2800 2    50   ~ 0
+PB12
+Text Label 2550 2900 2    50   ~ 0
+PB13
+Wire Wire Line
+	2000 2900 2550 2900
+Wire Wire Line
+	2550 2800 2000 2800
+Wire Wire Line
+	2000 2700 2550 2700
+Text Label 2550 3000 2    50   ~ 0
+PB14
+Text Label 2550 3100 2    50   ~ 0
+PB15
+Wire Wire Line
+	2000 3100 2550 3100
+Wire Wire Line
+	2550 3000 2000 3000
 Wire Bus Line
 	7100 2150 7100 2750
 Wire Bus Line

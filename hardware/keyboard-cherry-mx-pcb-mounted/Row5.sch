@@ -433,12 +433,12 @@ Entry Wire Line
 	6150 3250 6250 3350
 Entry Wire Line
 	6900 3250 7000 3350
-Wire Bus Line
-	2150 3350 9200 3350
 Connection ~ 6900 2100
 Wire Wire Line
 	6900 2100 7650 2100
 Connection ~ 6150 2100
 Wire Wire Line
 	6150 2100 6900 2100
+Wire Bus Line
+	2150 3350 9200 3350
 $EndSCHEMATC
