@@ -2,7 +2,7 @@
 
   (general
     (thickness 1.6)
-    (drawings 0)
+    (drawings 8)
     (tracks 0)
     (zones 0)
     (modules 199)
@@ -60,7 +60,7 @@
     (pad_to_mask_clearance 0.051)
     (solder_mask_min_width 0.25)
     (aux_axis_origin -2.54 419.1)
-    (grid_origin 35.71875 384.81)
+    (grid_origin 25.4 47.625)
     (visible_elements 7FFFF7FF)
     (pcbplotparams
       (layerselection 0x010fc_ffffffff)
@@ -495,7 +495,7 @@
   )
 
   (module Crystal:Crystal_SMD_TXC_7A-2Pin_5x3.2mm (layer F.Cu) (tedit 5B7C2945) (tstamp 5E70BD15)
-    (at 283.66 602.45)
+    (at -176.715 201.13)
     (descr "SMD Crystal TXC 7A http://txccrystal.com/images/pdf/7a.pdf")
     (tags "SMD SMT crystal")
     (path /5E71E217)
@@ -531,7 +531,7 @@
   )
 
   (module Package_SO:SOIC-14_3.9x8.7mm_P1.27mm (layer F.Cu) (tedit 5D9F72B1) (tstamp 5E70BD04)
-    (at 315.83 578.06)
+    (at -144.545 176.74)
     (descr "SOIC, 14 Pin (JEDEC MS-012AB, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_14.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py")
     (tags "SOIC SO")
     (path /5E8711BD/5E82134D)
@@ -594,7 +594,7 @@
   )
 
   (module Package_QFP:LQFP-64_10x10mm_P0.5mm (layer F.Cu) (tedit 5D9F72AF) (tstamp 5E70BCE4)
-    (at 272.96 607.3)
+    (at -187.415 205.98)
     (descr "LQFP, 64 Pin (https://www.analog.com/media/en/technical-documentation/data-sheets/ad7606_7606-6_7606-4.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py")
     (tags "LQFP QFP")
     (path /5E895194)
@@ -782,7 +782,7 @@
   )
 
   (module Button_Switch_SMD:SW_SPST_B3U-1000P (layer F.Cu) (tedit 5A02FC95) (tstamp 5E70B465)
-    (at 283.11 607)
+    (at -177.265 205.68)
     (descr "Ultra-small-sized Tactile Switch with High Contact Reliability, Top-actuated Model, without Ground Terminal, without Boss")
     (tags "Tactile Switch")
     (path /5E77A2FE)
@@ -823,7 +823,7 @@
   )
 
   (module Resistor_SMD:R_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70B44F)
-    (at 308.38 601.55)
+    (at -151.995 200.23)
     (descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags resistor)
     (path /5E7D269A/5E80893D)
@@ -859,7 +859,7 @@
   )
 
   (module Resistor_SMD:R_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70B43E)
-    (at 303.97 601.55)
+    (at -156.405 200.23)
     (descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags resistor)
     (path /5E7D269A/5E80B2F7)
@@ -895,7 +895,7 @@
   )
 
   (module Resistor_SMD:R_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70B42D)
-    (at 326.67 580.33)
+    (at -133.705 179.01)
     (descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags resistor)
     (path /5E8711BD/5E84F8E1)
@@ -931,7 +931,7 @@
   )
 
   (module Resistor_SMD:R_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70B41C)
-    (at 322.26 583.28)
+    (at -138.115 181.96)
     (descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags resistor)
     (path /5E8711BD/5E839151)
@@ -967,7 +967,7 @@
   )
 
   (module Resistor_SMD:R_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70B40B)
-    (at 326.67 577.38)
+    (at -133.705 176.06)
     (descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags resistor)
     (path /5E8711BD/5E84F8D3)
@@ -1003,7 +1003,7 @@
   )
 
   (module Resistor_SMD:R_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70B3FA)
-    (at 322.26 580.33)
+    (at -138.115 179.01)
     (descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags resistor)
     (path /5E8711BD/5E832D68)
@@ -1039,7 +1039,7 @@
   )
 
   (module Resistor_SMD:R_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70B3E9)
-    (at 326.67 574.43)
+    (at -133.705 173.11)
     (descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags resistor)
     (path /5E8711BD/5E82D8BA)
@@ -1075,7 +1075,7 @@
   )
 
   (module Resistor_SMD:R_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70B3D8)
-    (at 322.26 577.38)
+    (at -138.115 176.06)
     (descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags resistor)
     (path /5E8711BD/5E82D111)
@@ -1111,7 +1111,7 @@
   )
 
   (module Resistor_SMD:R_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70B3C7)
-    (at 322.26 574.43)
+    (at -138.115 173.11)
     (descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags resistor)
     (path /5E8711BD/5E82BA93)
@@ -1147,7 +1147,7 @@
   )
 
   (module Jumper:SolderJumper-3_P1.3mm_Bridged12_Pad1.0x1.5mm (layer F.Cu) (tedit 5C756B4C) (tstamp 5E70B3B6)
-    (at 268.56 616.3)
+    (at -191.815 214.98)
     (descr "SMD Solder 3-pad Jumper, 1x1.5mm Pads, 0.3mm gap, pads 1-2 bridged with 1 copper strip")
     (tags "solder jumper open")
     (path /5E8F335C)
@@ -1179,7 +1179,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E70AF53)
-    (at 268.61 594.83)
+    (at -191.765 193.51)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78F98F/5EA3F338)
@@ -1223,7 +1223,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E70AF3A)
-    (at 274.36 594.83)
+    (at -186.015 193.51)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78F98F/5EA3F32A)
@@ -1267,7 +1267,7 @@
   )
 
   (module Capacitor_SMD:C_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70A939)
-    (at 273.59 616)
+    (at -186.785 214.68)
     (descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags capacitor)
     (path /5E75FD02)
@@ -1303,7 +1303,7 @@
   )
 
   (module Capacitor_SMD:C_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70A928)
-    (at 282.39 610.65)
+    (at -177.985 209.33)
     (descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags capacitor)
     (path /5E77AADC)
@@ -1339,7 +1339,7 @@
   )
 
   (module Capacitor_SMD:C_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70A917)
-    (at 282.41 616.55)
+    (at -177.965 215.23)
     (descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags capacitor)
     (path /5E7436DF)
@@ -1375,7 +1375,7 @@
   )
 
   (module Capacitor_SMD:C_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70A906)
-    (at 288.24 606.3)
+    (at -172.135 204.98)
     (descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags capacitor)
     (path /5E73FF6A)
@@ -1411,7 +1411,7 @@
   )
 
   (module Capacitor_SMD:C_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70A8F5)
-    (at 282.41 613.6)
+    (at -177.965 212.28)
     (descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags capacitor)
     (path /5E7214AF)
@@ -1447,7 +1447,7 @@
   )
 
   (module Capacitor_SMD:C_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70A8E4)
-    (at 292.65 604.5)
+    (at -167.725 203.18)
     (descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags capacitor)
     (path /5E73FD52)
@@ -1483,7 +1483,7 @@
   )
 
   (module Capacitor_SMD:C_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70A8D3)
-    (at 286.8 610.65)
+    (at -173.575 209.33)
     (descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags capacitor)
     (path /5E722098)
@@ -1519,7 +1519,7 @@
   )
 
   (module Capacitor_SMD:C_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70A8C2)
-    (at 293.75 601.55)
+    (at -166.625 200.23)
     (descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags capacitor)
     (path /5E73F523)
@@ -1555,7 +1555,7 @@
   )
 
   (module Capacitor_SMD:C_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70A8B1)
-    (at 289.34 601.55)
+    (at -171.035 200.23)
     (descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags capacitor)
     (path /5E8A3593)
@@ -1591,7 +1591,7 @@
   )
 
   (module Capacitor_SMD:C_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70A8A0)
-    (at 278 616)
+    (at -182.375 214.68)
     (descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags capacitor)
     (path /5E71757F)
@@ -1627,7 +1627,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB00F)
-    (at 302.005001 337.865001)
+    (at -162.814999 104.820001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E6CDE4B/5E6D994F)
@@ -1671,7 +1671,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB028)
-    (at 296.255001 341.215001)
+    (at -168.564999 108.170001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E6CDE4B/5E6D99C1)
@@ -1715,7 +1715,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB041)
-    (at 296.255001 337.865001)
+    (at -168.564999 104.820001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E6CDE4B/5E6D995F)
@@ -1759,7 +1759,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB05A)
-    (at 302.005001 334.515001)
+    (at -162.814999 101.470001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E6CDE4B/5E6D99CF)
@@ -1803,7 +1803,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB073)
-    (at 296.255001 334.515001)
+    (at -168.564999 101.470001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E6CDE4B/5E6D996D)
@@ -1847,7 +1847,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB08C)
-    (at 302.005001 331.165001)
+    (at -162.814999 98.120001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E6CDE4B/5E6D99DD)
@@ -1891,7 +1891,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB0A5)
-    (at 296.255001 331.165001)
+    (at -168.564999 98.120001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E6CDE4B/5E6D997B)
@@ -1935,7 +1935,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB0BE)
-    (at 285.580001 361.515001)
+    (at -179.239999 128.470001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E6CDE4B/5E6D99EB)
@@ -1979,7 +1979,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB0D7)
-    (at 302.005001 327.815001)
+    (at -162.814999 94.770001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E6CDE4B/5E6D9989)
@@ -2023,7 +2023,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB0F0)
-    (at 296.255001 327.815001)
+    (at -168.564999 94.770001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E6CDE4B/5E6D99F9)
@@ -2067,7 +2067,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB109)
-    (at 302.005001 324.465001)
+    (at -162.814999 91.420001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E6CDE4B/5E6D9997)
@@ -2111,7 +2111,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB122)
-    (at 296.255001 324.465001)
+    (at -168.564999 91.420001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E6CDE4B/5E6D9A07)
@@ -2155,7 +2155,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB13B)
-    (at 302.005001 321.115001)
+    (at -162.814999 88.070001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E6CDE4B/5E6D99A5)
@@ -2199,7 +2199,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB154)
-    (at 296.255001 321.115001)
+    (at -168.564999 88.070001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E6CDE4B/5E6D99B3)
@@ -2243,7 +2243,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB16D)
-    (at -18.124999 319.965001)
+    (at -72.734999 158.040001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E763FD4/5E775B39)
@@ -2287,7 +2287,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB186)
-    (at -12.224999 315.975001)
+    (at -66.834999 154.050001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E763FD4/5E775BAB)
@@ -2331,7 +2331,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB19F)
-    (at -41.124999 319.965001)
+    (at -95.734999 158.040001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E763FD4/5E775B49)
@@ -2375,7 +2375,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB1B8)
-    (at -52.624999 316.615001)
+    (at -107.234999 154.690001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E763FD4/5E775BB9)
@@ -2419,7 +2419,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB1D1)
-    (at -46.874999 316.615001)
+    (at -101.484999 154.690001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E763FD4/5E775B57)
@@ -2463,7 +2463,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB1EA)
-    (at -41.124999 316.615001)
+    (at -95.734999 154.690001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E763FD4/5E775BC7)
@@ -2507,7 +2507,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB203)
-    (at -35.374999 316.615001)
+    (at -89.984999 154.690001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E763FD4/5E775B65)
@@ -2551,7 +2551,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB21C)
-    (at -52.624999 319.965001)
+    (at -107.234999 158.040001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E763FD4/5E775BD5)
@@ -2595,7 +2595,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB235)
-    (at -46.874999 319.965001)
+    (at -101.484999 158.040001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E763FD4/5E775B73)
@@ -2639,7 +2639,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB24E)
-    (at -35.374999 319.965001)
+    (at -89.984999 158.040001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E763FD4/5E775BE3)
@@ -2683,7 +2683,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB267)
-    (at -29.624999 316.615001)
+    (at -84.234999 154.690001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E763FD4/5E775B81)
@@ -2727,7 +2727,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB280)
-    (at -23.874999 316.615001)
+    (at -78.484999 154.690001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E763FD4/5E775BF1)
@@ -2771,7 +2771,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB299)
-    (at -18.124999 316.615001)
+    (at -72.734999 154.690001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E763FD4/5E775B8F)
@@ -2815,7 +2815,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB2B2)
-    (at -29.624999 319.965001)
+    (at -84.234999 158.040001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E763FD4/5E775BFF)
@@ -2859,7 +2859,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB2CB)
-    (at -23.874999 319.965001)
+    (at -78.484999 158.040001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E763FD4/5E775B9D)
@@ -2947,7 +2947,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB2FD)
-    (at 67.585001 179.175001)
+    (at -73.025 163.83)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78F98F/5E818F11)
@@ -3211,7 +3211,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB393)
-    (at 418.075001 530.185001)
+    (at -42.299999 128.865001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78C3AE/5E790070)
@@ -3255,7 +3255,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB3AC)
-    (at 205.755001 586.425001)
+    (at -254.619999 185.105001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78C3AE/5E77EFF8)
@@ -3299,7 +3299,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB3C5)
-    (at 412.325001 530.185001)
+    (at -48.049999 128.865001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78C3AE/5E77EF96)
@@ -3343,7 +3343,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB3DE)
-    (at 223.005001 586.425001)
+    (at -237.369999 185.105001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78C3AE/5E790082)
@@ -3387,7 +3387,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB3F7)
-    (at 217.255001 586.425001)
+    (at -243.119999 185.105001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78C3AE/5E818F13)
@@ -3431,7 +3431,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB410)
-    (at 211.505001 586.425001)
+    (at -248.869999 185.105001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78C3AE/5E77F014)
@@ -3475,7 +3475,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB429)
-    (at 182.755001 586.425001)
+    (at -277.619999 185.105001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78C3AE/5E790076)
@@ -3519,7 +3519,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB442)
-    (at 200.005001 586.425001)
+    (at -260.369999 185.105001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78C3AE/5E790086)
@@ -3563,7 +3563,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB45B)
-    (at 194.255001 586.425001)
+    (at -266.119999 185.105001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78C3AE/5E790078)
@@ -3607,7 +3607,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB474)
-    (at 188.505001 586.425001)
+    (at -271.869999 185.105001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78C3AE/5E790088)
@@ -3651,7 +3651,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB48D)
-    (at 412.325001 533.535001)
+    (at -48.049999 132.215001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78C3AE/5E79007A)
@@ -3695,7 +3695,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB4A6)
-    (at 418.075001 533.535001)
+    (at -42.299999 132.215001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78C3AE/5E818F29)
@@ -3739,7 +3739,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB4BF)
-    (at 412.325001 536.885001)
+    (at -48.049999 135.565001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78C3AE/5E818F1B)
@@ -3783,7 +3783,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB4D8)
-    (at 412.325001 540.235001)
+    (at -48.049999 138.915001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E78C3AE/5E79007E)
@@ -3827,7 +3827,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB4F1)
-    (at -73.144999 413.725001)
+    (at -54.729999 206.715001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E785F4F/5E818F0F)
@@ -3871,7 +3871,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB50A)
-    (at -78.894999 413.725001)
+    (at -60.479999 206.715001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E785F4F/5E78CA74)
@@ -3915,7 +3915,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB523)
-    (at -73.144999 410.375001)
+    (at -67.429999 196.380001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E785F4F/5E790072)
@@ -3959,7 +3959,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB53C)
-    (at -78.894999 410.375001)
+    (at -73.179999 196.380001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E785F4F/5E78CA76)
@@ -4003,7 +4003,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB555)
-    (at -143.254999 471.615001)
+    (at -124.839999 264.605001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E785F4F/5E78CA68)
@@ -4047,7 +4047,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB56E)
-    (at -154.754999 471.615001)
+    (at -136.339999 264.605001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E785F4F/5E790084)
@@ -4091,7 +4091,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB587)
-    (at -160.504999 471.615001)
+    (at -142.089999 264.605001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E785F4F/5E78CA6A)
@@ -4135,7 +4135,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB5A0)
-    (at -166.254999 471.615001)
+    (at -147.839999 264.605001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E785F4F/5E78CA7A)
@@ -4179,7 +4179,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB5B9)
-    (at -172.004999 471.615001)
+    (at -153.589999 264.605001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E785F4F/5E77EFC0)
@@ -4223,7 +4223,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB5D2)
-    (at -149.004999 471.615001)
+    (at -130.589999 264.605001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E785F4F/5E78CA7C)
@@ -4267,7 +4267,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB5EB)
-    (at -78.894999 420.425001)
+    (at -60.479999 213.415001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E785F4F/5E77EFCE)
@@ -4311,7 +4311,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB604)
-    (at -78.894999 417.075001)
+    (at -60.479999 210.065001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E785F4F/5E78CA7E)
@@ -4355,7 +4355,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB61D)
-    (at -183.504999 471.615001)
+    (at -165.089999 264.605001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E785F4F/5E78CA70)
@@ -4399,7 +4399,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB636)
-    (at -177.754999 471.615001)
+    (at -159.339999 264.605001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E785F4F/5E78CA72)
@@ -4443,7 +4443,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB64F)
-    (at 103.515001 239.775001)
+    (at -103.494999 118.490001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E77913C/5E78CA64)
@@ -4487,7 +4487,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB668)
-    (at 97.765001 239.775001)
+    (at -109.244999 118.490001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E77913C/5E790080)
@@ -4531,7 +4531,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB681)
-    (at 92.015001 243.125001)
+    (at -114.994999 121.840001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E77913C/5E78CA66)
@@ -4575,7 +4575,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB69A)
-    (at 92.015001 239.775001)
+    (at -114.994999 118.490001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E77913C/5E818F21)
@@ -4619,7 +4619,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB6B3)
-    (at 86.265001 243.125001)
+    (at -120.744999 121.840001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E77913C/5E790074)
@@ -4663,7 +4663,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB6CC)
-    (at 80.515001 243.125001)
+    (at -126.494999 121.840001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E77913C/5E78CA78)
@@ -4707,7 +4707,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB6E5)
-    (at 86.265001 239.775001)
+    (at -120.744999 118.490001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E77913C/5E818F15)
@@ -4751,7 +4751,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB6FE)
-    (at 80.515001 239.775001)
+    (at -126.494999 118.490001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E77913C/5E818F25)
@@ -4795,7 +4795,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB717)
-    (at 97.765001 243.125001)
+    (at -109.244999 121.840001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E77913C/5E78CA6C)
@@ -4839,7 +4839,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB730)
-    (at 103.515001 243.125001)
+    (at -103.494999 121.840001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E77913C/5E77F030)
@@ -4883,7 +4883,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB749)
-    (at 115.015001 239.775001)
+    (at -91.994999 118.490001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E77913C/5E78CA6E)
@@ -4927,7 +4927,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB762)
-    (at 109.265001 239.775001)
+    (at -97.744999 118.490001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E77913C/5E79008A)
@@ -4971,7 +4971,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB77B)
-    (at 109.265001 243.125001)
+    (at -97.744999 121.840001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E77913C/5E79007C)
@@ -5015,7 +5015,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB794)
-    (at 115.015001 243.125001)
+    (at -91.994999 121.840001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E77913C/5E818F2B)
@@ -5059,7 +5059,7 @@
   )
 
   (module Diode_SMD:D_SOD-123 (layer F.Cu) (tedit 58645DC7) (tstamp 5E6AB7AD)
-    (at 120.765001 239.775001)
+    (at -86.244999 118.490001)
     (descr SOD-123)
     (tags SOD-123)
     (path /5E697948/5E77913C/5E77EFEA)
@@ -8595,7 +8595,7 @@
   )
 
   (module Capacitor_SMD:C_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70BEC4)
-    (at 190.555001 306.025001)
+    (at -208.859999 149.815001)
     (descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags capacitor)
     (path /5E8711BD/5E833684)
@@ -8631,7 +8631,7 @@
   )
 
   (module Capacitor_SMD:C_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70BED5)
-    (at 198.995001 300.225001)
+    (at -200.419999 144.015001)
     (descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags capacitor)
     (path /5E8711BD/5E874696)
@@ -8667,7 +8667,7 @@
   )
 
   (module Capacitor_SMD:C_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70BEE6)
-    (at 194.965001 306.025001)
+    (at -204.449999 149.815001)
     (descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags capacitor)
     (path /5E8711BD/5E8715BA)
@@ -8703,7 +8703,7 @@
   )
 
   (module Capacitor_SMD:C_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70BEF7)
-    (at 174.325001 308.475001)
+    (at -225.089999 152.265001)
     (descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags capacitor)
     (path /5E7D269A/5EA4B77C)
@@ -8739,7 +8739,7 @@
   )
 
   (module Capacitor_SMD:C_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70BF08)
-    (at 178.735001 308.475001)
+    (at -220.679999 152.265001)
     (descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags capacitor)
     (path /5E7D269A/5EA4AE93)
@@ -8775,7 +8775,7 @@
   )
 
   (module Sij_Connectors:USB_C_Receptacle_Wurth_632723100021 (layer F.Cu) (tedit 5E705674) (tstamp 5E70BF33)
-    (at 166.810001 304.82)
+    (at -232.604999 148.61)
     (descr "USB TYPE C, RA RCPT PCB, Hybrid, https://www.mouser.com/ProductDetail/Wurth-Elektronik/632723100021?qs=t3bE0qb%2FqEKAq83oSEHFcg%3D%3D")
     (tags "USB C Type-C Receptacle Hybrid")
     (path /5E7D269A/5E8055B4)
@@ -8854,8 +8854,8 @@
     )
   )
 
-  (module Connector:Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical (layer F.Cu) (tedit 5A29CED0) (tstamp 5E70BF59)
-    (at 166.775001 317.685001)
+  (module Connector:Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical (layer F.Cu) (tedit 5A29CED0) (tstamp 5E71AE81)
+    (at -232.639999 161.475001)
     (descr "Tag-Connect programming header; http://www.tag-connect.com/Materials/TC2050-IDC-NL%20Datasheet.pdf")
     (tags "tag connect programming header pogo pins")
     (path /5EA6CCCF)
@@ -8917,7 +8917,7 @@
   )
 
   (module Resistor_SMD:R_0805_2012Metric (layer F.Cu) (tedit 5B36C52B) (tstamp 5E70BF6A)
-    (at 183.145001 308.475001)
+    (at -216.269999 152.265001)
     (descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags resistor)
     (path /5E7D269A/5EA56F50)
@@ -8953,7 +8953,7 @@
   )
 
   (module Sij_Sensors:APDS-9930 (layer F.Cu) (tedit 0) (tstamp 5E70BFC3)
-    (at 190.462901 301.650301)
+    (at -208.952099 145.440301)
     (path /5E8711BD/5E817D7C)
     (fp_text reference U3 (at 0 0) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
@@ -9077,7 +9077,7 @@
   )
 
   (module Sij_Sensors:APDS-9930 (layer F.Cu) (tedit 0) (tstamp 5E70C01C)
-    (at 194.682901 301.650301)
+    (at -204.732099 145.440301)
     (path /5E8711BD/5E81B7BE)
     (fp_text reference U4 (at 0 0) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
@@ -9201,7 +9201,7 @@
   )
 
   (module Package_TO_SOT_SMD:SOT-223-3_TabPin2 (layer F.Cu) (tedit 5A02FF57) (tstamp 5E70C032)
-    (at 177.045001 302.875001)
+    (at -222.369999 146.665001)
     (descr "module CMS SOT223 4 pins")
     (tags "CMS SOT")
     (path /5E7D269A/5EA493A5)
@@ -9244,7 +9244,7 @@
   )
 
   (module Package_TO_SOT_SMD:Texas_DRT-3 (layer F.Cu) (tedit 5A02FF57) (tstamp 5E70C047)
-    (at 183.295001 299.975001)
+    (at -216.119999 143.765001)
     (descr "Texas Instrument DRT-3 1x0.8mm Pitch 0.7mm http://www.ti.com/lit/ds/symlink/tpd2eusb30.pdf")
     (tags "DRT-3 1x0.8mm Pitch 0.7mm")
     (path /5E7D269A/5EB6D136)
@@ -9285,7 +9285,7 @@
   )
 
   (module LED_SMD:LED_0805_2012Metric (layer F.Cu) (tedit 5B36C52C) (tstamp 5E70C2C1)
-    (at 307 315)
+    (at -157.82 81.955)
     (descr "LED SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags diode)
     (path /5E7D269A/5EA59D3F)
@@ -9321,5 +9321,14 @@
       (rotate (xyz 0 0 0))
     )
   )
+
+  (gr_arc (start 317.5 166.37) (end 317.5 167.005) (angle -90) (layer Edge.Cuts) (width 0.05))
+  (gr_arc (start 13.97 166.37) (end 13.335 166.37) (angle -90) (layer Edge.Cuts) (width 0.05))
+  (gr_arc (start 13.97 43.815) (end 13.97 43.18) (angle -90) (layer Edge.Cuts) (width 0.05))
+  (gr_arc (start 316.865 44.45) (end 318.135 44.45) (angle -90) (layer Edge.Cuts) (width 0.05))
+  (gr_line (start 13.335 166.37) (end 13.335 43.815) (layer Edge.Cuts) (width 0.05) (tstamp 5E71AF8B))
+  (gr_line (start 317.5 167.005) (end 13.97 167.005) (layer Edge.Cuts) (width 0.05))
+  (gr_line (start 318.135 44.45) (end 318.135 166.37) (layer Edge.Cuts) (width 0.05))
+  (gr_line (start 13.97 43.18) (end 316.865 43.18) (layer Edge.Cuts) (width 0.05))
 
 )
