@@ -1,4 +1,4 @@
-(kicad_pcb (version 20171130) (host pcbnew "(5.1.5)-3")
+(kicad_pcb (version 20171130) (host pcbnew 5.1.5-52549c5~84~ubuntu18.04.1)
 
   (general
     (thickness 1.6)
@@ -9,7 +9,7 @@
     (nets 153)
   )
 
-  (page A4)
+  (page A3)
   (layers
     (0 F.Cu signal)
     (31 B.Cu signal)
@@ -407,11 +407,11 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.50u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E70B7F3)
-    (at 233.3625 490.22)
+    (at 249.2375 152.4)
     (descr "Cherry MX keyswitch, 1.50u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.50u PCB")
     (path /5E697948/5E78F98F/5EA3F332)
-    (fp_text reference SW36 (at -2.54 -2.794) (layer F.SilkS)
+    (fp_text reference SW36 (at -2.54 -2.794) (layer F.SilkS) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value Ctrl (at -2.54 12.954) (layer F.Fab)
@@ -451,11 +451,11 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.50u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E70B7D9)
-    (at 204.7875 490.22)
+    (at 220.6625 152.4)
     (descr "Cherry MX keyswitch, 1.50u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.50u PCB")
     (path /5E697948/5E78F98F/5EA3F324)
-    (fp_text reference SW35 (at -2.54 -2.794) (layer F.SilkS)
+    (fp_text reference SW35 (at -2.54 -2.794) (layer F.SilkS) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value Alt (at -2.54 12.954) (layer F.Fab)
@@ -5102,8 +5102,8 @@
     )
   )
 
-  (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E713B6C)
-    (at 9.525 384.81)
+  (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E7170D3)
+    (at 25.4 47.625)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E6CDE4B/5E6D9949)
@@ -5147,7 +5147,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E713AD6)
-    (at 180.975 384.81)
+    (at 196.85 47.625)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E6CDE4B/5E6D99BB)
@@ -5191,7 +5191,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E713B21)
-    (at 38.1 384.81)
+    (at 53.975 47.625)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E6CDE4B/5E6D9959)
@@ -5235,7 +5235,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E713A8B)
-    (at 210.82 384.81)
+    (at 225.4377 47.625)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E6CDE4B/5E6D99C9)
@@ -5279,7 +5279,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E71379D)
-    (at 57.15 384.81)
+    (at 73.025 47.625)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E6CDE4B/5E6D9967)
@@ -5323,7 +5323,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E713A40)
-    (at 229.87 384.81)
+    (at 244.475 47.625)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E6CDE4B/5E6D99D7)
@@ -5367,7 +5367,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E7139F5)
-    (at 76.2 384.81)
+    (at 92.075 47.625)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E6CDE4B/5E6D9975)
@@ -5411,7 +5411,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E7139AA)
-    (at 248.92 384.81)
+    (at 263.525 47.625)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E6CDE4B/5E6D99E5)
@@ -5455,7 +5455,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E71387E)
-    (at 95.25 384.81)
+    (at 111.125 47.625)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E6CDE4B/5E6D9983)
@@ -5499,7 +5499,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E71395F)
-    (at 267.97 384.81)
+    (at 282.575 47.625)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E6CDE4B/5E6D99F3)
@@ -5543,7 +5543,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E713914)
-    (at 123.825 384.81)
+    (at 139.7 47.625)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E6CDE4B/5E6D9991)
@@ -5587,7 +5587,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E7138C9)
-    (at 295.275 384.81)
+    (at 311.15 47.625)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E6CDE4B/5E6D9A01)
@@ -5631,7 +5631,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E713833)
-    (at 142.875 384.81)
+    (at 158.75 47.625)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E6CDE4B/5E6D999F)
@@ -5675,7 +5675,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E7137E8)
-    (at 161.925 384.81)
+    (at 177.8 47.625)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E6CDE4B/5E6D99AD)
@@ -5718,8 +5718,8 @@
     )
   )
 
-  (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E7143BF)
-    (at 9.525 414.02)
+  (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E71718A)
+    (at 25.4 76.2)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E763FD4/5E775B33)
@@ -5763,7 +5763,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6AB94D)
-    (at 161.925 414.02)
+    (at 177.8 76.2)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E763FD4/5E775BA5)
@@ -5807,7 +5807,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E70E863)
-    (at 28.575 414.02)
+    (at 44.45 76.2)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E763FD4/5E775B43)
@@ -5851,7 +5851,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6AB981)
-    (at 180.975 414.02)
+    (at 196.85 76.2)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E763FD4/5E775BB3)
@@ -5895,7 +5895,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6AB99B)
-    (at 47.625 414.02)
+    (at 63.5 76.2)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E763FD4/5E775B51)
@@ -5939,7 +5939,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6AB9B5)
-    (at 200.025 414.02)
+    (at 215.9 76.2)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E763FD4/5E775BC1)
@@ -5983,7 +5983,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6AB9CF)
-    (at 66.675 414.02)
+    (at 82.55 76.2)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E763FD4/5E775B5F)
@@ -6027,7 +6027,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6B0823)
-    (at 219.075 414.02)
+    (at 234.95 76.2)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E763FD4/5E775BCF)
@@ -6071,7 +6071,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABA03)
-    (at 85.725 414.02)
+    (at 101.6 76.2)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E763FD4/5E775B6D)
@@ -6115,7 +6115,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABA1D)
-    (at 238.125 414.02)
+    (at 254 76.2)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E763FD4/5E775BDD)
@@ -6159,7 +6159,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABA37)
-    (at 104.775 414.02)
+    (at 120.65 76.2)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E763FD4/5E775B7B)
@@ -6203,7 +6203,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_2.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABA55)
-    (at 266.7 414.02)
+    (at 282.575 76.2)
     (descr "Cherry MX keyswitch, 2.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 2.00u PCB")
     (path /5E697948/5E763FD4/5E775BEB)
@@ -6251,7 +6251,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABA6F)
-    (at 123.825 414.02)
+    (at 139.7 76.2)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E763FD4/5E775B89)
@@ -6295,7 +6295,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABA89)
-    (at 295.275 414.02)
+    (at 311.15 76.2)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E763FD4/5E775BF9)
@@ -6339,7 +6339,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABAA3)
-    (at 142.875 414.02)
+    (at 158.75 76.2)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E763FD4/5E775B97)
@@ -6383,7 +6383,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.25u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABABD)
-    (at 11.90625 490.22)
+    (at 27.78125 152.4)
     (descr "Cherry MX keyswitch, 1.25u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.25u PCB")
     (path /5E697948/5E78F98F/5E77EF80)
@@ -6427,7 +6427,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.25u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABAD7)
-    (at 35.71875 490.22)
+    (at 51.59375 152.4)
     (descr "Cherry MX keyswitch, 1.25u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.25u PCB")
     (path /5E697948/5E78F98F/5E818F10)
@@ -6471,7 +6471,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.25u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABAF1)
-    (at 59.53125 490.22)
+    (at 75.40625 152.4)
     (descr "Cherry MX keyswitch, 1.25u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.25u PCB")
     (path /5E697948/5E78F98F/5E77EF9E)
@@ -6515,7 +6515,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_6.25u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABB0F)
-    (at 130.96875 490.22)
+    (at 146.84375 152.4)
     (descr "Cherry MX keyswitch, 6.25u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 6.25u PCB")
     (path /5E697948/5E78F98F/5E77EFAC)
@@ -6563,7 +6563,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E710630)
-    (at 257.175 490.22)
+    (at 273.05 152.4)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E78F98F/5E818F16)
@@ -6607,7 +6607,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABB43)
-    (at 276.225 490.22)
+    (at 292.1 152.4)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E78F98F/5E818F18)
@@ -6651,7 +6651,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABB5D)
-    (at 295.275 490.22)
+    (at 311.15 152.4)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E78F98F/5E77EFD6)
@@ -6695,7 +6695,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_2.25u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABB7B)
-    (at 21.43125 471.17)
+    (at 37.30625 133.35)
     (descr "Cherry MX keyswitch, 2.25u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 2.25u PCB")
     (path /5E697948/5E78C3AE/5E79006F)
@@ -6743,7 +6743,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABB95)
-    (at 185.7375 471.17)
+    (at 201.6125 133.35)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E78C3AE/5E77EFF2)
@@ -6787,7 +6787,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABBAF)
-    (at 52.3875 471.17)
+    (at 68.2625 133.35)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E78C3AE/5E77EF90)
@@ -6831,7 +6831,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABBC9)
-    (at 204.7875 471.17)
+    (at 220.6625 133.35)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E78C3AE/5E77F000)
@@ -6875,7 +6875,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABBE3)
-    (at 71.4375 471.17)
+    (at 87.3125 133.35)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E78C3AE/5E790073)
@@ -6919,7 +6919,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABBFD)
-    (at 223.8375 471.17)
+    (at 239.7125 133.35)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E78C3AE/5E790083)
@@ -6963,7 +6963,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABC17)
-    (at 90.4875 471.17)
+    (at 106.3625 133.35)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E78C3AE/5E790075)
@@ -7007,7 +7007,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.75u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABC31)
-    (at 250.03125 471.17)
+    (at 265.90625 133.35)
     (descr "Cherry MX keyswitch, 1.75u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.75u PCB")
     (path /5E697948/5E78C3AE/5E77F01C)
@@ -7051,7 +7051,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABC4B)
-    (at 109.5375 471.17)
+    (at 125.4125 133.35)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E78C3AE/5E77EFBA)
@@ -7095,7 +7095,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABC65)
-    (at 276.225 471.17)
+    (at 292.1 133.35)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E78C3AE/5E790087)
@@ -7139,7 +7139,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABC7F)
-    (at 128.5875 471.17)
+    (at 144.4625 133.35)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E78C3AE/5E77EFC8)
@@ -7183,7 +7183,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABC99)
-    (at 295.275 471.17)
+    (at 311.15 133.35)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E78C3AE/5E790089)
@@ -7227,7 +7227,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABCB3)
-    (at 147.6375 471.17)
+    (at 163.5125 133.35)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E78C3AE/5E818F1A)
@@ -7271,7 +7271,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABCCD)
-    (at 166.6875 471.17)
+    (at 182.5625 133.35)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E78C3AE/5E77EFE4)
@@ -7315,7 +7315,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.75u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E70CF65)
-    (at 16.66875 452.12)
+    (at 32.54375 114.3)
     (descr "Cherry MX keyswitch, 1.75u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.75u PCB")
     (path /5E697948/5E785F4F/5E78CA63)
@@ -7359,7 +7359,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6B1178)
-    (at 176.2125 452.12)
+    (at 192.0875 114.3)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E785F4F/5E78CA73)
@@ -7403,7 +7403,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6B2E5A)
-    (at 42.8625 452.12)
+    (at 58.7375 114.3)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E785F4F/5E78CA65)
@@ -7447,7 +7447,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6B1097)
-    (at 195.2625 452.12)
+    (at 211.1375 114.3)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E785F4F/5E78CA75)
@@ -7491,7 +7491,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6B11C3)
-    (at 61.9125 452.12)
+    (at 77.7875 114.3)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E785F4F/5E818F12)
@@ -7535,7 +7535,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6B112D)
-    (at 214.3125 452.12)
+    (at 230.1875 114.3)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E785F4F/5E78CA77)
@@ -7579,7 +7579,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6B12EF)
-    (at 80.9625 452.12)
+    (at 96.8375 114.3)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E785F4F/5E78CA69)
@@ -7623,7 +7623,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6B1385)
-    (at 233.3625 452.12)
+    (at 249.2375 114.3)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E785F4F/5E790085)
@@ -7667,7 +7667,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6B1259)
-    (at 100.0125 452.12)
+    (at 115.8875 114.3)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E785F4F/5E790077)
@@ -7711,7 +7711,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_2.25u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABDD5)
-    (at 264.31875 452.12)
+    (at 280.19375 114.3)
     (descr "Cherry MX keyswitch, 2.25u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 2.25u PCB")
     (path /5E697948/5E785F4F/5E78CA7B)
@@ -7759,7 +7759,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E70FD5C)
-    (at 119.0625 452.12)
+    (at 134.9375 114.3)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E785F4F/5E790079)
@@ -7803,7 +7803,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABE09)
-    (at 295.275 452.12)
+    (at 311.15 114.3)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E785F4F/5E78CA7D)
@@ -7847,7 +7847,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6B10E2)
-    (at 138.1125 452.12)
+    (at 153.9875 114.3)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E785F4F/5E78CA6F)
@@ -7891,7 +7891,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6B133A)
-    (at 157.1625 452.12)
+    (at 173.0375 114.3)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E785F4F/5E78CA71)
@@ -7935,7 +7935,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.50u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABE57)
-    (at 14.2875 433.07)
+    (at 30.1625 95.25)
     (descr "Cherry MX keyswitch, 1.50u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.50u PCB")
     (path /5E697948/5E77913C/5E818F0E)
@@ -7979,7 +7979,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABE71)
-    (at 171.45 433.07)
+    (at 187.325 95.25)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E77913C/5E79007F)
@@ -8023,7 +8023,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABE8B)
-    (at 38.1 433.07)
+    (at 53.975 95.25)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E77913C/5E790071)
@@ -8067,7 +8067,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABEA5)
-    (at 190.5 433.07)
+    (at 206.375 95.25)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E77913C/5E790081)
@@ -8111,7 +8111,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABEBF)
-    (at 57.15 433.07)
+    (at 73.025 95.25)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E77913C/5E78CA67)
@@ -8155,7 +8155,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6B1F5E)
-    (at 209.55 433.07)
+    (at 225.425 95.25)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E77913C/5E818F22)
@@ -8199,7 +8199,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABEF3)
-    (at 76.2 433.07)
+    (at 92.075 95.25)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E77913C/5E818F14)
@@ -8243,7 +8243,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABF0D)
-    (at 228.6 433.07)
+    (at 244.475 95.25)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E77913C/5E78CA79)
@@ -8287,7 +8287,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABF27)
-    (at 95.25 433.07)
+    (at 111.125 95.25)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E77913C/5E78CA6B)
@@ -8331,7 +8331,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6B2072)
-    (at 247.65 433.07)
+    (at 263.525 95.25)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E77913C/5E77F02A)
@@ -8375,7 +8375,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABF5B)
-    (at 114.3 433.07)
+    (at 130.175 95.25)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E77913C/5E78CA6D)
@@ -8419,7 +8419,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.50u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6B20BD)
-    (at 271.4625 433.07)
+    (at 287.3375 95.25)
     (descr "Cherry MX keyswitch, 1.50u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.50u PCB")
     (path /5E697948/5E77913C/5E818F28)
@@ -8463,7 +8463,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABF8F)
-    (at 133.35 433.07)
+    (at 149.225 95.25)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E77913C/5E79007B)
@@ -8507,7 +8507,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6B2108)
-    (at 295.275 433.07)
+    (at 311.15 95.25)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E77913C/5E818F2A)
@@ -8551,7 +8551,7 @@
   )
 
   (module Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB (layer F.Cu) (tedit 5A02FE24) (tstamp 5E6ABFC3)
-    (at 152.4 433.07)
+    (at 168.275 95.25)
     (descr "Cherry MX keyswitch, 1.00u, PCB mount, http://cherryamericas.com/wp-content/uploads/2014/12/mx_cat.pdf")
     (tags "Cherry MX keyswitch 1.00u PCB")
     (path /5E697948/5E77913C/5E79007D)

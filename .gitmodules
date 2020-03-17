@@ -7,3 +7,6 @@
 [submodule "firmware/bsp/STMicroelectronics/stm32f413/stm32f4xx_hal_driver"]
 	path = firmware/bsp/STMicroelectronics/stm32f413/stm32f4xx_hal_driver
 	url = https://github.com/STMicroelectronics/stm32f4xx_hal_driver.git
+[submodule "hardware/common/PCB-Library"]
+	path = hardware/common/PCB-Library
+	url = https://github.com/SijWoo/PCB-Library.git
