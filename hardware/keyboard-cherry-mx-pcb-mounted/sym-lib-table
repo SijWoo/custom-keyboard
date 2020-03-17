@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name keyboard-cherry-mx-pcb-mounted-rescue)(type Legacy)(uri ${KIPRJMOD}/keyboard-cherry-mx-pcb-mounted-rescue.lib)(options "")(descr ""))
+)
