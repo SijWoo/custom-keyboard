@@ -45,12 +45,12 @@ bsp/STMicroelectronics\stm32f413/startup_stm32f413xx.s
 
 # C sources
 C_SOURCES =  \
-apps/core/src/*.c \
-apps/cli/src/*.c \
-apps/fs/src/*.c \
-apps/gestures/src/*.c \
-apps/hid/src/*.c \
-apps/scan/src/*.c \
+-Iapps/core/src/*.c \
+-Iapps/cli/src/*.c \
+-Iapps/fs/src/*.c \
+-Iapps/gestures/src/*.c \
+-Iapps/hid/src/*.c \
+-Iapps/scan/src/*.c \
 cfg/src/*.c	\
 drivers/gesture/src/*.c	\
 drivers/keyboard/src/*.c	\
@@ -69,7 +69,7 @@ rtos/uC-LIB/*.c	\
 rtos/uC-Shell/Cmd/General/*.c	\
 rtos/uC-Shell/Source/*.c	\
 rtos/uC-USB-Device/Class/HID/*.c	\
-rtos/uC-USB-Device/Class/HID/OS/uCOS-III/*,c	\
+rtos/uC-USB-Device/Class/HID/OS/uCOS-III/*.c	\
 rtos/uC-USB-Device/Drivers/drv_lib/*.c	\
 rtos/uC-USB-Device/OS/uCOS-III/*.c	\
 rtos/uC-USB-Device/Source/*.c	\
@@ -138,7 +138,35 @@ AS_INCLUDES =
 
 # C includes
 C_INCLUDES =  \
--I \
+-Iapps/core/inc \
+-Iapps/cli/inc \
+-Iapps/fs/inc \
+-Iapps/gestures/inc \
+-Iapps/hid/inc \
+-Iapps/scan/inc \
+-Icfg/inc	\
+-Idrivers/gesture/inc	\
+-Idrivers/keyboard/inc	\
+-Irtos/uC-Clk/Source	\
+-Irtos/uC-Common	\
+-Irtos/uC-Common/Auth	\
+-Irtos/uC-Common/Collections	\
+-Irtos/uC-Common/KAL	\
+-Irtos/uC-CPU	\
+-Irtos/uC-CPU/ARM-Cortex-M/ARMv7-M/GNU	\
+-Irtos/uC-FS/Source	\
+-Irtos/uC-FS/Dev/SD	\
+-Irtos/uC-FS/Dev/SD/SPI	\
+-Irtos/uC-FS/FAT	\
+-Irtos/uC-FS/OS/uCOS-III	\
+-Irtos/uC-LIB	\
+-Irtos/uC-Shell/Cmd/General	\
+-Irtos/uC-Shell/Source	\
+-Irtos/uC-USB-Device/Class/HID	\
+-Irtos/uC-USB-Device/Drivers/drv_lib	\
+-Irtos/uC-USB-Device/Source	\
+-Irtos/uCOS-III/Ports/ARM-Cortex-M/ARMv7-M/GNU	\
+-Irtos/uCOS-III/Source	\
 -ISTM32F4xx_HAL_Driver/Inc \
 -ISTM32F4xx_HAL_Driver/Inc/Legacy \
 -Icmsis/Device/ST/STM32F4xx/Include \
