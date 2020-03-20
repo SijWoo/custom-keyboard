@@ -16,6 +16,12 @@
                 "${workspaceFolder}/apps/fs/inc",
                 "${workspaceFolder}/apps/scan/src",
                 "${workspaceFolder}/apps/scan/inc",
+                "${workspaceFolder}/bsp/inc",
+                "${workspaceFolder}/bsp/STMicroelectronics/rtos",
+                "${workspaceFolder}/bsp/STMicroelectronics/stm32f413",
+                "${workspaceFolder}/bsp/STMicroelectronics/stm32f413/stm32f4xx_hal_driver",
+                "${workspaceFolder}/bsp/STMicroelectronics/stm32f413/stm32f4xx_hal_driver/Src",
+                "${workspaceFolder}/bsp/STMicroelectronics/stm32f413/stm32f4xx_hal_driver/Inc",
                 "${workspaceFolder}/cfg/inc",
                 "${workspaceFolder}/cfg/src",
                 "${workspaceFolder}/drivers/gesture/inc",
@@ -57,9 +63,7 @@
                 "${workspaceFolder}/rtos/uCOS-III/Ports/ARM-Cortex-M/ARMv7-M/GNU",
                 "${workspaceFolder}/rtos/uCOS-III/Source",
                 "${workspaceFolder}/rtos/uCOS-III/TLS",
-                "${workspaceFolder}/rtos/uCOS-III/TLS/NewLib",
-                "${workspaceFolder}/STM32F4xx_PeriphLib/inc",
-                "${workspaceFolder}/STM32F4xx_PeriphLib/src"
+                "${workspaceFolder}/rtos/uCOS-III/TLS/NewLib"
             ],
             "defines": [
                 "USE_FULL_LL_DRIVER",
