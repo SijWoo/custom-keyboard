@@ -1,20 +1,16 @@
 /*
 *********************************************************************************************************
-*                                            uC/USB-Device
-*                                    The Embedded USB Device Stack
+*                                            EXAMPLE CODE
 *
-*                         (c) Copyright 2004-2019; Silicon Laboratories Inc.,
-*                                400 W. Cesar Chavez, Austin, TX 78701
+*               This file is provided as an example on how to use Micrium products.
 *
-*                   All rights reserved. Protected by international copyright laws.
+*               Please feel free to use any application code labeled as 'EXAMPLE CODE' in
+*               your application products.  Example code may be used as is, in whole or in
+*               part, or may be used as a reference only. This file can be modified as
+*               required to meet the end-product requirements.
 *
-*                  Your use of this software is subject to your acceptance of the terms
-*                  of a Silicon Labs Micrium software license, which can be obtained by
-*                  contacting info@micrium.com. If you do not agree to the terms of this
-*                  license, you may not use this software.
-*
-*                  Please help us continue to provide the Embedded community with the finest
-*                  software available. Your honesty is greatly appreciated.
+*               Please help us continue to provide the Embedded community with the finest
+*               software available.  Your honesty is greatly appreciated.
 *
 *                    You can find our product's documentation at: doc.micrium.com
 *
@@ -25,11 +21,11 @@
 /*
 *********************************************************************************************************
 *
-*                                    USB DEVICE CONFIGURATION FILE
+*                       USB DEVICE DRIVER BOARD SUPPORT PACKAGE (BSP) FUNCTIONS
 *
 *                                              TEMPLATE
 *
-* Filename : usbd_dev_cfg.h
+* Filename : bsp_usbd_template.h
 * Version  : V4.05.06
 *********************************************************************************************************
 */
@@ -38,32 +34,33 @@
 *********************************************************************************************************
 *                                               MODULE
 *
-* Note(s) : (1) This USB device configuration header file is protected from multiple pre-processor
-*               inclusion through use of the USB device configuration module present pre-processor
-*               macro definition.
+* Note(s) : (1) This USB device driver board-specific function header file is protected from multiple
+*               pre-processor inclusion through use of the USB device configuration module present pre-
+*               processor macro definition.
 *********************************************************************************************************
 */
 
-#ifndef  USBD_DEV_CFG_MODULE_PRESENT                            /* See Note #1.                                         */
-#define  USBD_DEV_CFG_MODULE_PRESENT
+#ifndef  BSP_USBD_PRESENT                                       /* See Note #1.                                         */
+#define  BSP_USBD_PRESENT
 
 
 /*
 *********************************************************************************************************
-*                                      USB DEVICE CONFIGURATION
+*                                            INCLUDE FILES
 *********************************************************************************************************
 */
 
-extern  const USBD_DEV_CFG  USBD_DevCfg_Template;
+#include  "usbd_drv_template.h"
 
 
 /*
 *********************************************************************************************************
-*                                   USB DEVICE DRIVER CONFIGURATION
+*                                          GLOBAL VARIABLES
 *********************************************************************************************************
 */
 
-extern  const USBD_DRV_CFG  USBD_DrvCfg_Template;
+extern  USBD_DRV_EP_INFO  USBD_DrvEP_InfoTbl_Template[];
+extern  USBD_DRV_BSP_API  USBD_DrvBSP_Template;
 
 
 /*

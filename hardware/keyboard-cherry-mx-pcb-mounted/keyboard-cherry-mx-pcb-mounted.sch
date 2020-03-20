@@ -950,10 +950,10 @@ F 3 "~" H 2000 7250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Mechanical:MountingHole H?
+L Mechanical:MountingHole H9
 U 1 1 5E7549C0
 P 2500 5500
-F 0 "H?" H 2600 5546 50  0000 L CNN
+F 0 "H9" H 2600 5546 50  0000 L CNN
 F 1 "M2" H 2600 5455 50  0000 L CNN
 F 2 "MountingHole:MountingHole_2.2mm_M2" H 2500 5500 50  0001 C CNN
 F 3 "~" H 2500 5500 50  0001 C CNN
@@ -961,10 +961,10 @@ F 3 "~" H 2500 5500 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Mechanical:MountingHole H?
+L Mechanical:MountingHole H10
 U 1 1 5E7549C6
 P 2500 5750
-F 0 "H?" H 2600 5796 50  0000 L CNN
+F 0 "H10" H 2600 5796 50  0000 L CNN
 F 1 "M2" H 2600 5705 50  0000 L CNN
 F 2 "MountingHole:MountingHole_2.2mm_M2" H 2500 5750 50  0001 C CNN
 F 3 "~" H 2500 5750 50  0001 C CNN

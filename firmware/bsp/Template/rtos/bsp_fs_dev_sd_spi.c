@@ -29,7 +29,7 @@
 *                                       SD/MMC CARD - SPI MODE
 *                                BOARD SUPPORT PACKAGE (BSP) FUNCTIONS
 *
-*                                           TEMPLATE (GPIO)
+*                                              TEMPLATE
 *
 * Filename : bsp_fs_dev_sd_spi.c
 * Version  : v4.07.06
@@ -112,17 +112,6 @@
 *********************************************************************************************************
 */
 
-#define  FS_DEV_BSP_SCK_CLR()               /* $$$$ Clr SCK.  */
-#define  FS_DEV_BSP_SCK_SET()               /* $$$$ Set SCK.  */
-
-#define  FS_DEV_BSP_SSEL_CLR()              /* $$$$ Clr SSEL. */
-#define  FS_DEV_BSP_SSEL_SET()              /* $$$$ Set SSEL. */
-
-#define  FS_DEV_BSP_MISO_RD()              0/* $$$$ Rd  MISO. */
-
-#define  FS_DEV_BSP_MOSI_CLR()              /* $$$$ Clr MOSI. */
-#define  FS_DEV_BSP_MOSI_SET()              /* $$$$ Set MOSI. */
-
 
 /*
 *********************************************************************************************************
@@ -130,32 +119,38 @@
 *********************************************************************************************************
 */
 
-                                                                               /* ----------- SPI API FNCTS ----------- */
-static  CPU_BOOLEAN  FSDev_BSP_SPI_Open             (FS_QTY         unit_nbr); /* Open (initialize) SPI.                */
+                                                                /* ------------------ SPI API FNCTS ------------------- */
+                                                                /* Open (initialize) SPI.                               */
+static  CPU_BOOLEAN  FSDev_BSP_SPI_Open              (FS_QTY         unit_nbr);
 
-static  void         FSDev_BSP_SPI_Close            (FS_QTY         unit_nbr); /* Close (uninitialize) SPI.             */
+                                                                /* Close (uninitialize) SPI.                            */
+static  void         FSDev_BSP_SPI_Close             (FS_QTY         unit_nbr);
 
-static  void         FSDev_BSP_SPI_Lock             (FS_QTY         unit_nbr); /* Acquire SPI lock.                     */
+                                                                /* Acquire SPI lock.                                    */
+static  void         FSDev_BSP_SPI_Lock              (FS_QTY         unit_nbr);
 
-static  void         FSDev_BSP_SPI_Unlock           (FS_QTY         unit_nbr); /* Release SPI lock.                     */
+                                                                /* Release SPI lock.                                    */
+static  void         FSDev_BSP_SPI_Unlock            (FS_QTY         unit_nbr);
 
-static  void         FSDev_BSP_SPI_Rd               (FS_QTY         unit_nbr,  /* Rd from SPI.                          */
-                                                     void          *p_dest,
-                                                     CPU_SIZE_T     cnt);
+                                                                /* Rd from SPI.                                         */
+static  void         FSDev_BSP_SPI_Rd                (FS_QTY         unit_nbr,
+                                                      void          *p_dest,
+                                                      CPU_SIZE_T     cnt);
 
-static  void         FSDev_BSP_SPI_Wr               (FS_QTY         unit_nbr,  /* Wr to SPI.                            */
-                                                     void          *p_src,
-                                                     CPU_SIZE_T     cnt);
+                                                                /* Wr to SPI.                                           */
+static  void         FSDev_BSP_SPI_Wr                (FS_QTY         unit_nbr,
+                                                      void          *p_src,
+                                                      CPU_SIZE_T     cnt);
 
-static  void         FSDev_BSP_SPI_ChipSelEn        (FS_QTY         unit_nbr); /* En flash chip sel.                    */
+                                                                /* En SD/MMC chip sel.                                  */
+static  void         FSDev_BSP_SPI_ChipSelEn         (FS_QTY         unit_nbr);
 
-static  void         FSDev_BSP_SPI_ChipSelDis       (FS_QTY         unit_nbr); /* Dis flash chip sel.                   */
+                                                                /* Dis SD/MMC chip sel.                                 */
+static  void         FSDev_BSP_SPI_ChipSelDis        (FS_QTY         unit_nbr);
 
-static  void         FSDev_BSP_SPI_SetClkFreq       (FS_QTY         unit_nbr,  /* Set SPI clk freq.                     */
-                                                     CPU_INT32U     freq);
-
-                                                                               /* ------------ LOCAL FNCTS ------------ */
-static  void         FSDev_BSP_Dly                  (FS_QTY       unit_nbr);
+                                                                /* Set SPI clk freq.                                    */
+static  void         FSDev_BSP_SPI_SetClkFreq        (FS_QTY         unit_nbr,
+                                                      CPU_INT32U     freq);
 
 
 /*
@@ -205,7 +200,36 @@ const  FS_DEV_SPI_API  FSDev_SD_SPI_BSP_SPI = {
 *
 * Note(s)     : (1) This function will be called every time the device is opened.
 *
-*               (2) A SD/MMC slot is connected to the following pins :
+*               (2) Several aspects of SPI communication may need to be configured :
+*
+*                   (a) CLOCK POLARITY & PHASE (CPOL & CPHA).  SPI communication takes place in any of
+*                       four modes, depending on the clock phase & clock polarity settings :
+*
+*                       (1) If CPOL = 0, the clock is low  when inactive.
+*
+*                           If CPOL = 1, the clock is high when inactive.
+*
+*                       (2) If CPHA = 0, data is 'read'    on the leading   edge of the clock &
+*                                                'changed' on the following edge of the clock.
+*
+*                           If CPHA = 1, data is 'changed' on the following edge of the clock &
+*                                                'read'    on the leading   edge of the clock.
+*
+*                       The driver should configure the SPI for CPOL = 0, CPHA = 0.  This means that
+*                       data (i.e., bits) are read when a low->high clock transition occurs & changed
+*                       when a high->low clock transition occurs.
+*
+*                   (b) TRANSFER UNIT LENGTH.  A transfer unit is always 8-bits.
+*
+*                   (c) SHIFT DIRECTION.  The most significant bit should always be transmitted first.
+*
+*                   (d) CLOCK FREQUENCY.  See 'FSDev_BSP_SPI_SetClkFreq()  Note #1'.
+*
+*               (3) The CS (Chip Select) MUST be configured as a GPIO output; it should not be controlled
+*                   by the CPU's SPI peripheral.  The functions 'FSDev_BSP_SPI_ChipSelEn()' and
+*                  'FSDev_BSP_SPI_ChipSelDis()' manually enable and disable the CS.
+*
+*               (4) A SD/MMC slot is connected to the following pins :
 *
 *                   ----------------------------------------------
 *                   |   #### NAME   |  #### PIO #  | SD/MMC NAME |
@@ -222,7 +246,7 @@ static  CPU_BOOLEAN  FSDev_BSP_SPI_Open (FS_QTY  unit_nbr)
 {
     (void)unit_nbr;
 
-    /* $$$$ Init GPIO. */
+    return (DEF_OK);
 }
 
 
@@ -236,7 +260,7 @@ static  CPU_BOOLEAN  FSDev_BSP_SPI_Open (FS_QTY  unit_nbr)
 *
 * Return(s)   : none.
 *
-* Note(s)     : (1) This function will be called every time the device is closed.
+* Note(s)     : (1) This function will be called EVERY time the device is closed.
 *********************************************************************************************************
 */
 
@@ -312,42 +336,9 @@ static  void  FSDev_BSP_SPI_Rd (FS_QTY       unit_nbr,
                                 void        *p_dest,
                                 CPU_SIZE_T   cnt)
 {
-    CPU_INT08U  *p_dest_08;
-    CPU_INT08U   datum;
-    CPU_INT08U   mask;
-    CPU_INT32U   miso_val;
-    CPU_INT08U   i;
-
-
-    p_dest_08 = (CPU_INT08U *)p_dest;
-
-    while (cnt > 0u) {
-        datum = 0x00u;
-        mask  = DEF_BIT_07;
-
-        for (i = 0u; i < DEF_OCTET_NBR_BITS; i++) {
-            FS_DEV_BSP_MOSI_SET();                              /* Wr bit.                                              */
-
-            FS_DEV_BSP_SCK_CLR();                               /* Clr clk.                                             */
-            FSDev_BSP_Dly(unit_nbr);
-
-            miso_val = FS_DEV_BSP_MISO_RD();                    /* Rd bit.                                              */
-            if (miso_val != 0u) {
-                datum |= mask;
-            }
-
-            FS_DEV_BSP_SCK_SET();                               /* Set clk.                                             */
-            FSDev_BSP_Dly(unit_nbr);
-
-            mask >>= 1;
-        }
-
-       *p_dest_08 = datum;
-        p_dest_08++;
-        cnt--;
-    }
-
-    FS_DEV_BSP_SCK_CLR();                                       /* Clr clk (idle state).                                */
+    (void)unit_nbr;
+    (void)p_dest;
+    (void)cnt;
 }
 
 
@@ -373,43 +364,9 @@ static  void  FSDev_BSP_SPI_Wr (FS_QTY       unit_nbr,
                                 void        *p_src,
                                 CPU_SIZE_T   cnt)
 {
-    CPU_INT08U  *p_src_08;
-    CPU_INT08U   datum;
-    CPU_INT08U   mask;
-    CPU_INT32U   miso_val;
-    CPU_INT08U   i;
-
-
-    p_src_08 = (CPU_INT08U *)p_src;
-
-    while (cnt > 0u) {
-        datum = *p_src_08;
-        mask  =  DEF_BIT_07;
-
-        for (i = 0u; i < DEF_OCTET_NBR_BITS; i++) {
-            if (DEF_BIT_IS_SET(datum, mask) == DEF_YES) {       /* Wr bit.                                              */
-                FS_DEV_BSP_MOSI_SET();
-            } else {
-                FS_DEV_BSP_MOSI_CLR();
-            }
-
-            FS_DEV_BSP_SCK_CLR();                               /* Clr clk.                                             */
-            FSDev_BSP_Dly(unit_nbr);
-
-            miso_val = FS_DEV_BSP_MISO_RD();                    /* Rd bit.                                              */
-            (void)miso_val;
-
-            FS_DEV_BSP_SCK_SET();                               /* Set clk.                                             */
-            FSDev_BSP_Dly(unit_nbr);
-
-            mask >>= 1;
-        }
-
-        p_src_08++;
-        cnt--;
-    }
-
-    FS_DEV_BSP_SCK_CLR();                                       /* Clr clk (idle state).                                */
+    (void)unit_nbr;
+    (void)p_src;
+    (void)cnt;
 }
 
 
@@ -431,9 +388,6 @@ static  void  FSDev_BSP_SPI_Wr (FS_QTY       unit_nbr,
 static  void  FSDev_BSP_SPI_ChipSelEn (FS_QTY  unit_nbr)
 {
     (void)unit_nbr;
-
-    FS_DEV_BSP_SCK_CLR();
-    FS_DEV_BSP_SSEL_CLR();
 }
 
 
@@ -455,9 +409,6 @@ static  void  FSDev_BSP_SPI_ChipSelEn (FS_QTY  unit_nbr)
 static  void  FSDev_BSP_SPI_ChipSelDis (FS_QTY  unit_nbr)
 {
     (void)unit_nbr;
-
-    FS_DEV_BSP_SSEL_SET();
-    FS_DEV_BSP_SCK_CLR();
 }
 
 
@@ -483,36 +434,4 @@ static  void  FSDev_BSP_SPI_SetClkFreq (FS_QTY      unit_nbr,
 {
     (void)unit_nbr;
     (void)freq;
-
-    /* $$$$ Calculate # clocks to delay in FSDev_BSP_Dly(). */
-}
-
-
-/*
-*********************************************************************************************************
-*********************************************************************************************************
-*                                           LOCAL FUNCTIONS
-*********************************************************************************************************
-*********************************************************************************************************
-*/
-
-/*
-*********************************************************************************************************
-*                                           FSDev_BSP_Dly()
-*
-* Description : Delay between SPI clock pulses.
-*
-* Argument(s) : unit_nbr  Unit number of NAND.
-*
-* Return(s)   : none.
-*
-* Note(s)     : none.
-*********************************************************************************************************
-*/
-
-static  void  FSDev_BSP_SPI_Dly (FS_QTY  unit_nbr)
-{
-    (void)unit_nbr;
-
-    /* $$$$ Delay for certain # clks. */
 }
