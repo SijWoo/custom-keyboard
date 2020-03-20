@@ -861,6 +861,116 @@ Wire Wire Line
 	2000 3100 2550 3100
 Wire Wire Line
 	2550 3000 2000 3000
+$Comp
+L Mechanical:MountingHole H1
+U 1 1 5E749BAA
+P 2000 5500
+F 0 "H1" H 2100 5546 50  0000 L CNN
+F 1 "M2" H 2100 5455 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.2mm_M2" H 2000 5500 50  0001 C CNN
+F 3 "~" H 2000 5500 50  0001 C CNN
+	1    2000 5500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H2
+U 1 1 5E74A79D
+P 2000 5750
+F 0 "H2" H 2100 5796 50  0000 L CNN
+F 1 "M2" H 2100 5705 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.2mm_M2" H 2000 5750 50  0001 C CNN
+F 3 "~" H 2000 5750 50  0001 C CNN
+	1    2000 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H3
+U 1 1 5E74AA5A
+P 2000 6000
+F 0 "H3" H 2100 6046 50  0000 L CNN
+F 1 "M2" H 2100 5955 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.2mm_M2" H 2000 6000 50  0001 C CNN
+F 3 "~" H 2000 6000 50  0001 C CNN
+	1    2000 6000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H4
+U 1 1 5E74AC29
+P 2000 6250
+F 0 "H4" H 2100 6296 50  0000 L CNN
+F 1 "M2" H 2100 6205 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.2mm_M2" H 2000 6250 50  0001 C CNN
+F 3 "~" H 2000 6250 50  0001 C CNN
+	1    2000 6250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H5
+U 1 1 5E74B1D4
+P 2000 6500
+F 0 "H5" H 2100 6546 50  0000 L CNN
+F 1 "M2" H 2100 6455 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.2mm_M2" H 2000 6500 50  0001 C CNN
+F 3 "~" H 2000 6500 50  0001 C CNN
+	1    2000 6500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H6
+U 1 1 5E74DA72
+P 2000 6750
+F 0 "H6" H 2100 6796 50  0000 L CNN
+F 1 "M2" H 2100 6705 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.2mm_M2" H 2000 6750 50  0001 C CNN
+F 3 "~" H 2000 6750 50  0001 C CNN
+	1    2000 6750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H7
+U 1 1 5E74DCCC
+P 2000 7000
+F 0 "H7" H 2100 7046 50  0000 L CNN
+F 1 "M2" H 2100 6955 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.2mm_M2" H 2000 7000 50  0001 C CNN
+F 3 "~" H 2000 7000 50  0001 C CNN
+	1    2000 7000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H8
+U 1 1 5E74E871
+P 2000 7250
+F 0 "H8" H 2100 7296 50  0000 L CNN
+F 1 "M2" H 2100 7205 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.2mm_M2" H 2000 7250 50  0001 C CNN
+F 3 "~" H 2000 7250 50  0001 C CNN
+	1    2000 7250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H?
+U 1 1 5E7549C0
+P 2500 5500
+F 0 "H?" H 2600 5546 50  0000 L CNN
+F 1 "M2" H 2600 5455 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.2mm_M2" H 2500 5500 50  0001 C CNN
+F 3 "~" H 2500 5500 50  0001 C CNN
+	1    2500 5500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H?
+U 1 1 5E7549C6
+P 2500 5750
+F 0 "H?" H 2600 5796 50  0000 L CNN
+F 1 "M2" H 2600 5705 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.2mm_M2" H 2500 5750 50  0001 C CNN
+F 3 "~" H 2500 5750 50  0001 C CNN
+	1    2500 5750
+	1    0    0    -1  
+$EndComp
 Wire Bus Line
 	7100 2150 7100 2750
 Wire Bus Line
