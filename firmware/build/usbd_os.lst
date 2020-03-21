@@ -1,0 +1,2208 @@
+ARM GAS  /tmp/ccGF6UzT.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"usbd_os.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.USBD_OS_CoreTask,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	USBD_OS_CoreTask:
+  26              	.LFB1:
+  27              		.file 1 "rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c"
+   1:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+   2:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+   3:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                            uC/USB-Device
+   4:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                    The Embedded USB Device Stack
+   5:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+   6:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                         (c) Copyright 2004-2019; Silicon Laboratories Inc.,
+   7:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                400 W. Cesar Chavez, Austin, TX 78701
+   8:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+   9:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                   All rights reserved. Protected by international copyright laws.
+  10:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+  11:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                  Your use of this software is subject to your acceptance of the terms
+  12:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                  of a Silicon Labs Micrium software license, which can be obtained by
+  13:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                  contacting info@micrium.com. If you do not agree to the terms of this
+  14:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                  license, you may not use this software.
+  15:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+  16:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                  Please help us continue to provide the Embedded community with the finest
+  17:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                  software available. Your honesty is greatly appreciated.
+  18:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+  19:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                    You can find our product's documentation at: doc.micrium.com
+  20:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+  21:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                          For more information visit us at: www.micrium.com
+  22:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+  23:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+  24:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  25:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+  26:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+  27:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+  28:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                   USB DEVICE OPERATING SYSTEM LAYER
+  29:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                          Micrium uC/OS-III
+  30:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+  31:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Filename : usbd_os.c
+ARM GAS  /tmp/ccGF6UzT.s 			page 2
+
+
+  32:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Version  : V4.05.06
+  33:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+  34:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+  35:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  36:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+  37:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+  38:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                            INCLUDE FILES
+  39:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+  40:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+  41:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  42:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #define    MICRIUM_SOURCE
+  43:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #include  <app_cfg.h>
+  44:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #include  "../../Source/usbd_core.h"
+  45:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #include  "../../Source/usbd_internal.h"
+  46:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #include  <os.h>
+  47:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  48:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  49:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+  50:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+  51:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                        CONFIGURATION ERRORS
+  52:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+  53:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+  54:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  55:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #ifndef  OS_CFG_TASK_Q_EN
+  56:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #error  "OS_CFG_TASK_Q_EN not #define'd in 'os_cfg.h' [MUST be > 0]"
+  57:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  58:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #elif   (OS_CFG_TASK_Q_EN < 1u)
+  59:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #error  "OS_CFG_TASK_Q_EN illegally #define'd in 'os_cfg.h' [MUST be > 0]"
+  60:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #endif
+  61:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  62:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  63:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #ifndef  OS_CFG_MUTEX_EN
+  64:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #error  "OS_CFG_MUTEX_EN not #define'd in 'os_cfg.h' [MUST be > 0]"
+  65:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  66:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #elif   (OS_CFG_MUTEX_EN < 1u)
+  67:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #error  "OS_CFG_MUTEX_EN illegally #define'd in 'os_cfg.h' [MUST be > 0]"
+  68:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #endif
+  69:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  70:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  71:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #ifndef  OS_CFG_MUTEX_DEL_EN
+  72:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #error  "OS_CFG_MUTEX_DEL_EN not #define'd in 'os_cfg.h' [MUST be > 0]"
+  73:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  74:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #elif   (OS_CFG_MUTEX_DEL_EN < 1u)
+  75:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #error  "OS_CFG_MUTEX_DEL_EN illegally #define'd in 'os_cfg.h' [MUST be > 0]"
+  76:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #endif
+  77:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  78:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  79:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #ifndef  USBD_OS_CFG_CORE_TASK_STK_SIZE
+  80:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #error  "USBD_OS_CFG_CORE_TASK_STK_SIZE not #define'd in 'app_cfg.h' [MUST be > 0]"
+  81:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #endif
+  82:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  83:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  84:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #ifndef  USBD_OS_CFG_CORE_TASK_PRIO
+  85:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #error  "USBD_OS_CFG_CORE_TASK_PRIO not #define'd in 'app_cfg.h' [MUST be > 0]"
+  86:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #endif
+  87:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  88:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #if     (USBD_CFG_DBG_TRACE_EN == DEF_ENABLED)
+ARM GAS  /tmp/ccGF6UzT.s 			page 3
+
+
+  89:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #ifndef  USBD_OS_CFG_TRACE_TASK_STK_SIZE
+  90:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #error  "USBD_OS_CFG_TRACE_TASK_STK_SIZE not #define'd in 'app_cfg.h' [MUST be > 0]"
+  91:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #endif
+  92:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  93:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  94:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #ifndef  USBD_OS_CFG_TRACE_TASK_PRIO
+  95:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #error  "USBD_OS_CFG_TRACE_TASK_PRIO not #define'd in 'app_cfg.h' [MUST be > 0]"
+  96:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #endif
+  97:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #endif
+  98:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  99:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 100:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 101:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 102:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                            LOCAL DEFINES
+ 103:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 104:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 105:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 106:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 107:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 108:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 109:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                           LOCAL CONSTANTS
+ 110:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 111:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 112:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 113:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 114:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 115:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 116:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                          LOCAL DATA TYPES
+ 117:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 118:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 119:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 120:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 121:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 122:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 123:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                            LOCAL TABLES
+ 124:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 125:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 126:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 127:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 128:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 129:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 130:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                       LOCAL GLOBAL VARIABLES
+ 131:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 132:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 133:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 134:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** static  OS_TCB    USBD_OS_CoreTaskTCB;
+ 135:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** static  CPU_STK   USBD_OS_CoreTaskStk[USBD_OS_CFG_CORE_TASK_STK_SIZE];
+ 136:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 137:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #if (USBD_CFG_DBG_TRACE_EN == DEF_ENABLED)
+ 138:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** static  OS_TCB    USBD_OS_TraceTaskTCB;
+ 139:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** static  CPU_STK   USBD_OS_TraceTaskStk[USBD_OS_CFG_TRACE_TASK_STK_SIZE];
+ 140:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 141:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #endif
+ 142:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 143:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** static  OS_SEM    USBD_OS_EP_SemTbl[USBD_CFG_MAX_NBR_DEV][USBD_CFG_MAX_NBR_EP_OPEN];
+ 144:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** static  OS_MUTEX  USBD_OS_EP_MutexTbl[USBD_CFG_MAX_NBR_DEV][USBD_CFG_MAX_NBR_EP_OPEN];
+ 145:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ARM GAS  /tmp/ccGF6UzT.s 			page 4
+
+
+ 146:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 147:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 148:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 149:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                            LOCAL MACRO'S
+ 150:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 151:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 152:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 153:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 154:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 155:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 156:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                      LOCAL FUNCTION PROTOTYPES
+ 157:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 158:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 159:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 160:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** static  void  USBD_OS_CoreTask (void  *p_arg);
+ 161:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 162:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #if (USBD_CFG_DBG_TRACE_EN == DEF_ENABLED)
+ 163:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** static  void  USBD_OS_TraceTask(void  *p_arg);
+ 164:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #endif
+ 165:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 166:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 167:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 168:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 169:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                           USBD_OS_Init()
+ 170:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 171:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Description : Initialize OS interface.
+ 172:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 173:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Argument(s) : p_err       Pointer to variable that will receive the return error code from this f
+ 174:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 175:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_NONE           OS initialization successful.
+ 176:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_OS_INIT_FAIL   OS objects NOT successfully initialized.
+ 177:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 178:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Return(s)   : none.
+ 179:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 180:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Note(s)     : none.
+ 181:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 182:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 183:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 184:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** void  USBD_OS_Init (USBD_ERR  *p_err)
+ 185:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** {
+ 186:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_ERR  err_os;
+ 187:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 188:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 189:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OSTaskCreate(        &USBD_OS_CoreTaskTCB,
+ 190:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                          "USB Core Task",
+ 191:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                           USBD_OS_CoreTask,
+ 192:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                   (void *)0,
+ 193:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                           USBD_OS_CFG_CORE_TASK_PRIO,
+ 194:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                          &USBD_OS_CoreTaskStk[0],
+ 195:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                           USBD_OS_CFG_CORE_TASK_STK_SIZE / 10u,
+ 196:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                           USBD_OS_CFG_CORE_TASK_STK_SIZE,
+ 197:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                           USBD_CORE_EVENT_NBR_TOTAL,
+ 198:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                           0u,
+ 199:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                   (void *)0,
+ 200:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                           OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR,
+ 201:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                          &err_os);
+ 202:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ARM GAS  /tmp/ccGF6UzT.s 			page 5
+
+
+ 203:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     if (err_os !=  OS_ERR_NONE) {
+ 204:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****        *p_err = USBD_ERR_OS_INIT_FAIL;
+ 205:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         return;
+ 206:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 207:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 208:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #if (USBD_CFG_DBG_TRACE_EN == DEF_ENABLED)
+ 209:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OSTaskCreate(        &USBD_OS_TraceTaskTCB,
+ 210:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                          "USB Trace Task",
+ 211:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                           USBD_OS_TraceTask,
+ 212:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                   (void *)0,
+ 213:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                           USBD_OS_CFG_TRACE_TASK_PRIO,
+ 214:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                          &USBD_OS_TraceTaskStk[0],
+ 215:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                           USBD_OS_CFG_TRACE_TASK_STK_SIZE / 10u,
+ 216:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                           USBD_OS_CFG_TRACE_TASK_STK_SIZE,
+ 217:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                           0u,
+ 218:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                           0u,
+ 219:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                   (void *)0,
+ 220:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                           OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR,
+ 221:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                          &err_os);
+ 222:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 223:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     if (err_os !=  OS_ERR_NONE) {
+ 224:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****        *p_err = USBD_ERR_OS_INIT_FAIL;
+ 225:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         return;
+ 226:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 227:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #endif
+ 228:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 229:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****    *p_err = USBD_ERR_NONE;
+ 230:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 231:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 232:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 233:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 234:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 235:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                         USBD_OS_CoreTask()
+ 236:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 237:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Description : OS-dependent shell task to process USB core events.
+ 238:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 239:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Argument(s) : p_arg       Pointer to task initialization argument (required by uC/OS-II).
+ 240:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 241:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Return(s)   : none.
+ 242:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 243:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Note(s)     : none.
+ 244:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 245:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 246:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 247:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** static  void  USBD_OS_CoreTask (void  *p_arg)
+ 248:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** {
+  28              		.loc 1 248 1 view -0
+  29              		.cfi_startproc
+  30              		@ Volatile: function does not return.
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              	.LVL0:
+  34              		.loc 1 248 1 is_stmt 0 view .LVU1
+  35 0000 08B5     		push	{r3, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 3, -8
+ARM GAS  /tmp/ccGF6UzT.s 			page 6
+
+
+  39              		.cfi_offset 14, -4
+  40              	.LVL1:
+  41              	.L2:
+ 249:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     (void)p_arg;
+  42              		.loc 1 249 5 is_stmt 1 discriminator 1 view .LVU2
+ 250:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 251:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     while (DEF_ON) {
+  43              		.loc 1 251 5 discriminator 1 view .LVU3
+ 252:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         USBD_CoreTaskHandler();
+  44              		.loc 1 252 9 discriminator 1 view .LVU4
+  45 0002 FFF7FEFF 		bl	USBD_CoreTaskHandler
+  46              	.LVL2:
+ 251:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         USBD_CoreTaskHandler();
+  47              		.loc 1 251 11 discriminator 1 view .LVU5
+  48 0006 FCE7     		b	.L2
+  49              		.cfi_endproc
+  50              	.LFE1:
+  52              		.section	.rodata.USBD_OS_Init.str1.4,"aMS",%progbits,1
+  53              		.align	2
+  54              	.LC0:
+  55 0000 55534220 		.ascii	"USB Core Task\000"
+  55      436F7265 
+  55      20546173 
+  55      6B00
+  56              		.section	.text.USBD_OS_Init,"ax",%progbits
+  57              		.align	1
+  58              		.global	USBD_OS_Init
+  59              		.syntax unified
+  60              		.thumb
+  61              		.thumb_func
+  62              		.fpu fpv4-sp-d16
+  64              	USBD_OS_Init:
+  65              	.LVL3:
+  66              	.LFB0:
+ 185:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_ERR  err_os;
+  67              		.loc 1 185 1 view -0
+  68              		.cfi_startproc
+  69              		@ args = 0, pretend = 0, frame = 8
+  70              		@ frame_needed = 0, uses_anonymous_args = 0
+ 185:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_ERR  err_os;
+  71              		.loc 1 185 1 is_stmt 0 view .LVU7
+  72 0000 10B5     		push	{r4, lr}
+  73              	.LCFI1:
+  74              		.cfi_def_cfa_offset 8
+  75              		.cfi_offset 4, -8
+  76              		.cfi_offset 14, -4
+  77 0002 8CB0     		sub	sp, sp, #48
+  78              	.LCFI2:
+  79              		.cfi_def_cfa_offset 56
+  80 0004 0446     		mov	r4, r0
+ 186:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+  81              		.loc 1 186 5 is_stmt 1 view .LVU8
+ 189:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                          "USB Core Task",
+  82              		.loc 1 189 5 view .LVU9
+  83 0006 0DF12E03 		add	r3, sp, #46
+  84 000a 0893     		str	r3, [sp, #32]
+  85 000c 0323     		movs	r3, #3
+ARM GAS  /tmp/ccGF6UzT.s 			page 7
+
+
+  86 000e 0793     		str	r3, [sp, #28]
+  87 0010 0023     		movs	r3, #0
+  88 0012 0693     		str	r3, [sp, #24]
+  89 0014 0593     		str	r3, [sp, #20]
+  90 0016 0B22     		movs	r2, #11
+  91 0018 0492     		str	r2, [sp, #16]
+  92 001a 4FF40072 		mov	r2, #512
+  93 001e 0392     		str	r2, [sp, #12]
+  94 0020 3322     		movs	r2, #51
+  95 0022 0292     		str	r2, [sp, #8]
+  96 0024 094A     		ldr	r2, .L9
+  97 0026 0192     		str	r2, [sp, #4]
+  98 0028 0422     		movs	r2, #4
+  99 002a 0092     		str	r2, [sp]
+ 100 002c 084A     		ldr	r2, .L9+4
+ 101 002e 0949     		ldr	r1, .L9+8
+ 102 0030 0948     		ldr	r0, .L9+12
+ 103              	.LVL4:
+ 189:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                          "USB Core Task",
+ 104              		.loc 1 189 5 is_stmt 0 view .LVU10
+ 105 0032 FFF7FEFF 		bl	OSTaskCreate
+ 106              	.LVL5:
+ 203:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****        *p_err = USBD_ERR_OS_INIT_FAIL;
+ 107              		.loc 1 203 5 is_stmt 1 view .LVU11
+ 203:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****        *p_err = USBD_ERR_OS_INIT_FAIL;
+ 108              		.loc 1 203 16 is_stmt 0 view .LVU12
+ 109 0036 BDF82E30 		ldrh	r3, [sp, #46]
+ 203:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****        *p_err = USBD_ERR_OS_INIT_FAIL;
+ 110              		.loc 1 203 8 view .LVU13
+ 111 003a 1BB9     		cbnz	r3, .L8
+ 229:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 112              		.loc 1 229 4 is_stmt 1 view .LVU14
+ 229:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 113              		.loc 1 229 11 is_stmt 0 view .LVU15
+ 114 003c 0023     		movs	r3, #0
+ 115 003e 2380     		strh	r3, [r4]	@ movhi
+ 116              	.L4:
+ 230:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 117              		.loc 1 230 1 view .LVU16
+ 118 0040 0CB0     		add	sp, sp, #48
+ 119              	.LCFI3:
+ 120              		.cfi_remember_state
+ 121              		.cfi_def_cfa_offset 8
+ 122              		@ sp needed
+ 123 0042 10BD     		pop	{r4, pc}
+ 124              	.LVL6:
+ 125              	.L8:
+ 126              	.LCFI4:
+ 127              		.cfi_restore_state
+ 204:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         return;
+ 128              		.loc 1 204 8 is_stmt 1 view .LVU17
+ 204:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         return;
+ 129              		.loc 1 204 15 is_stmt 0 view .LVU18
+ 130 0044 4FF4FA73 		mov	r3, #500
+ 131 0048 2380     		strh	r3, [r4]	@ movhi
+ 205:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 132              		.loc 1 205 9 is_stmt 1 view .LVU19
+ARM GAS  /tmp/ccGF6UzT.s 			page 8
+
+
+ 133 004a F9E7     		b	.L4
+ 134              	.L10:
+ 135              		.align	2
+ 136              	.L9:
+ 137 004c 00000000 		.word	.LANCHOR1
+ 138 0050 00000000 		.word	USBD_OS_CoreTask
+ 139 0054 00000000 		.word	.LC0
+ 140 0058 00000000 		.word	.LANCHOR0
+ 141              		.cfi_endproc
+ 142              	.LFE0:
+ 144              		.section	.rodata.USBD_OS_EP_SignalCreate.str1.4,"aMS",%progbits,1
+ 145              		.align	2
+ 146              	.LC1:
+ 147 0000 5553422D 		.ascii	"USB-Device EP Signal\000"
+ 147      44657669 
+ 147      63652045 
+ 147      50205369 
+ 147      676E616C 
+ 148              		.section	.text.USBD_OS_EP_SignalCreate,"ax",%progbits
+ 149              		.align	1
+ 150              		.global	USBD_OS_EP_SignalCreate
+ 151              		.syntax unified
+ 152              		.thumb
+ 153              		.thumb_func
+ 154              		.fpu fpv4-sp-d16
+ 156              	USBD_OS_EP_SignalCreate:
+ 157              	.LVL7:
+ 158              	.LFB2:
+ 253:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 254:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 255:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 256:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 257:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 258:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 259:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                         USBD_OS_TraceTask)
+ 260:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 261:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Description : OS-dependent shell task to process debug events.
+ 262:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 263:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Argument(s) : p_arg       Pointer to task initialization argument (required by uC/OS-II).
+ 264:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 265:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Return(s)   : none.
+ 266:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 267:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Note(s)     : none.
+ 268:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 269:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 270:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 271:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #if (USBD_CFG_DBG_TRACE_EN == DEF_ENABLED)
+ 272:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** static  void  USBD_OS_TraceTask (void  *p_arg)
+ 273:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** {
+ 274:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     (void)p_arg;
+ 275:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 276:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     while (DEF_ON) {
+ 277:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         USBD_DbgTaskHandler();
+ 278:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 279:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 280:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** #endif
+ 281:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ARM GAS  /tmp/ccGF6UzT.s 			page 9
+
+
+ 282:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 283:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 284:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 285:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                       USBD_OS_SignalCreate()
+ 286:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 287:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Description : Create an OS signal.
+ 288:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 289:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Argument(s) : dev_nbr     Device number.
+ 290:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -------     Argument validated by the caller(s).
+ 291:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 292:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               ep_ix       Endpoint index.
+ 293:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -----       Argument validated by the caller(s).
+ 294:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 295:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 296:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 297:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_NONE               OS signal     successfully created.
+ 298:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_OS_SIGNAL_CREATE   OS signal NOT successfully created.
+ 299:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 300:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Return(s)   : none.
+ 301:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 302:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Note(s)     : none.
+ 303:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 304:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 305:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 306:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** void  USBD_OS_EP_SignalCreate (CPU_INT08U   dev_nbr,
+ 307:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                                CPU_INT08U   ep_ix,
+ 308:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                                USBD_ERR    *p_err)
+ 309:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** {
+ 159              		.loc 1 309 1 view -0
+ 160              		.cfi_startproc
+ 161              		@ args = 0, pretend = 0, frame = 8
+ 162              		@ frame_needed = 0, uses_anonymous_args = 0
+ 163              		.loc 1 309 1 is_stmt 0 view .LVU21
+ 164 0000 30B5     		push	{r4, r5, lr}
+ 165              	.LCFI5:
+ 166              		.cfi_def_cfa_offset 12
+ 167              		.cfi_offset 4, -12
+ 168              		.cfi_offset 5, -8
+ 169              		.cfi_offset 14, -4
+ 170 0002 83B0     		sub	sp, sp, #12
+ 171              	.LCFI6:
+ 172              		.cfi_def_cfa_offset 24
+ 173 0004 1446     		mov	r4, r2
+ 310:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_SEM  *p_sem;
+ 174              		.loc 1 310 5 is_stmt 1 view .LVU22
+ 311:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_ERR   err;
+ 175              		.loc 1 311 5 view .LVU23
+ 312:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 313:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 314:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     p_sem = &USBD_OS_EP_SemTbl[dev_nbr][ep_ix];
+ 176              		.loc 1 314 5 view .LVU24
+ 177              		.loc 1 314 11 is_stmt 0 view .LVU25
+ 178 0006 01EB8000 		add	r0, r1, r0, lsl #2
+ 179              	.LVL8:
+ 315:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 316:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OSSemCreate(p_sem,
+ 180              		.loc 1 316 5 is_stmt 1 view .LVU26
+ARM GAS  /tmp/ccGF6UzT.s 			page 10
+
+
+ 181 000a 0DF10603 		add	r3, sp, #6
+ 182 000e 0022     		movs	r2, #0
+ 183              	.LVL9:
+ 184              		.loc 1 316 5 is_stmt 0 view .LVU27
+ 185 0010 0849     		ldr	r1, .L15
+ 186              	.LVL10:
+ 187              		.loc 1 316 5 view .LVU28
+ 188 0012 094D     		ldr	r5, .L15+4
+ 189 0014 05EB0010 		add	r0, r5, r0, lsl #4
+ 190              	.LVL11:
+ 191              		.loc 1 316 5 view .LVU29
+ 192 0018 FFF7FEFF 		bl	OSSemCreate
+ 193              	.LVL12:
+ 317:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                "USB-Device EP Signal",
+ 318:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                 0u,
+ 319:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                &err);
+ 320:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     if (err != OS_ERR_NONE) {
+ 194              		.loc 1 320 5 is_stmt 1 view .LVU30
+ 195              		.loc 1 320 13 is_stmt 0 view .LVU31
+ 196 001c BDF80630 		ldrh	r3, [sp, #6]
+ 197              		.loc 1 320 8 view .LVU32
+ 198 0020 23B1     		cbz	r3, .L12
+ 321:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****        *p_err = USBD_ERR_OS_SIGNAL_CREATE;
+ 199              		.loc 1 321 8 is_stmt 1 view .LVU33
+ 200              		.loc 1 321 15 is_stmt 0 view .LVU34
+ 201 0022 40F2F513 		movw	r3, #501
+ 202 0026 2380     		strh	r3, [r4]	@ movhi
+ 203              	.L11:
+ 322:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     } else {
+ 323:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****        *p_err = USBD_ERR_NONE;
+ 324:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 325:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 204              		.loc 1 325 1 view .LVU35
+ 205 0028 03B0     		add	sp, sp, #12
+ 206              	.LCFI7:
+ 207              		.cfi_remember_state
+ 208              		.cfi_def_cfa_offset 12
+ 209              		@ sp needed
+ 210 002a 30BD     		pop	{r4, r5, pc}
+ 211              	.LVL13:
+ 212              	.L12:
+ 213              	.LCFI8:
+ 214              		.cfi_restore_state
+ 323:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 215              		.loc 1 323 8 is_stmt 1 view .LVU36
+ 323:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 216              		.loc 1 323 15 is_stmt 0 view .LVU37
+ 217 002c 0023     		movs	r3, #0
+ 218 002e 2380     		strh	r3, [r4]	@ movhi
+ 219              		.loc 1 325 1 view .LVU38
+ 220 0030 FAE7     		b	.L11
+ 221              	.L16:
+ 222 0032 00BF     		.align	2
+ 223              	.L15:
+ 224 0034 00000000 		.word	.LC1
+ 225 0038 00000000 		.word	.LANCHOR2
+ 226              		.cfi_endproc
+ARM GAS  /tmp/ccGF6UzT.s 			page 11
+
+
+ 227              	.LFE2:
+ 229              		.section	.text.USBD_OS_EP_SignalDel,"ax",%progbits
+ 230              		.align	1
+ 231              		.global	USBD_OS_EP_SignalDel
+ 232              		.syntax unified
+ 233              		.thumb
+ 234              		.thumb_func
+ 235              		.fpu fpv4-sp-d16
+ 237              	USBD_OS_EP_SignalDel:
+ 238              	.LVL14:
+ 239              	.LFB3:
+ 326:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 327:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 328:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 329:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 330:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                         USBD_OS_SignalDel()
+ 331:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 332:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Description : Delete an OS signal.
+ 333:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 334:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Argument(s) : dev_nbr     Device number.
+ 335:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -------     Argument validated by the caller(s).
+ 336:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 337:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               ep_ix       Endpoint index.
+ 338:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -----       Argument validated by the caller(s).
+ 339:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 340:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Return(s)   : none.
+ 341:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 342:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Note(s)     : none.
+ 343:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 344:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 345:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 346:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** void  USBD_OS_EP_SignalDel (CPU_INT08U  dev_nbr,
+ 347:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                             CPU_INT08U  ep_ix)
+ 348:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** {
+ 240              		.loc 1 348 1 is_stmt 1 view -0
+ 241              		.cfi_startproc
+ 242              		@ args = 0, pretend = 0, frame = 8
+ 243              		@ frame_needed = 0, uses_anonymous_args = 0
+ 244              		.loc 1 348 1 is_stmt 0 view .LVU40
+ 245 0000 00B5     		push	{lr}
+ 246              	.LCFI9:
+ 247              		.cfi_def_cfa_offset 4
+ 248              		.cfi_offset 14, -4
+ 249 0002 83B0     		sub	sp, sp, #12
+ 250              	.LCFI10:
+ 251              		.cfi_def_cfa_offset 16
+ 349:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_SEM  *p_sem;
+ 252              		.loc 1 349 5 is_stmt 1 view .LVU41
+ 350:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_ERR   err_os;
+ 253              		.loc 1 350 5 view .LVU42
+ 351:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 352:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 353:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     p_sem = &USBD_OS_EP_SemTbl[dev_nbr][ep_ix];
+ 254              		.loc 1 353 5 view .LVU43
+ 255              		.loc 1 353 11 is_stmt 0 view .LVU44
+ 256 0004 01EB8000 		add	r0, r1, r0, lsl #2
+ 257              	.LVL15:
+ARM GAS  /tmp/ccGF6UzT.s 			page 12
+
+
+ 354:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 355:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OSSemDel(p_sem,
+ 258              		.loc 1 355 5 is_stmt 1 view .LVU45
+ 259 0008 0DF10602 		add	r2, sp, #6
+ 260 000c 0121     		movs	r1, #1
+ 261              	.LVL16:
+ 262              		.loc 1 355 5 is_stmt 0 view .LVU46
+ 263 000e 044B     		ldr	r3, .L19
+ 264 0010 03EB0010 		add	r0, r3, r0, lsl #4
+ 265              	.LVL17:
+ 266              		.loc 1 355 5 view .LVU47
+ 267 0014 FFF7FEFF 		bl	OSSemDel
+ 268              	.LVL18:
+ 356:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              OS_OPT_DEL_ALWAYS,
+ 357:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****             &err_os);
+ 358:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 269              		.loc 1 358 1 view .LVU48
+ 270 0018 03B0     		add	sp, sp, #12
+ 271              	.LCFI11:
+ 272              		.cfi_def_cfa_offset 4
+ 273              		@ sp needed
+ 274 001a 5DF804FB 		ldr	pc, [sp], #4
+ 275              	.L20:
+ 276 001e 00BF     		.align	2
+ 277              	.L19:
+ 278 0020 00000000 		.word	.LANCHOR2
+ 279              		.cfi_endproc
+ 280              	.LFE3:
+ 282              		.section	.text.USBD_OS_EP_SignalPend,"ax",%progbits
+ 283              		.align	1
+ 284              		.global	USBD_OS_EP_SignalPend
+ 285              		.syntax unified
+ 286              		.thumb
+ 287              		.thumb_func
+ 288              		.fpu fpv4-sp-d16
+ 290              	USBD_OS_EP_SignalPend:
+ 291              	.LVL19:
+ 292              	.LFB4:
+ 359:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 360:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 361:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 362:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 363:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                        USBD_OS_SignalPend()
+ 364:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 365:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Description : Wait for a signal to become available.
+ 366:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 367:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Argument(s) : dev_nbr     Device number.
+ 368:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -------     Argument validated by the caller(s).
+ 369:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 370:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               ep_ix       Endpoint index.
+ 371:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -----       Argument validated by the caller(s).
+ 372:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 373:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               timeout_ms  Signal wait timeout in milliseconds.
+ 374:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 375:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 376:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 377:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_NONE           OS signal     successfully acquired.
+ARM GAS  /tmp/ccGF6UzT.s 			page 13
+
+
+ 378:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_OS_TIMEOUT     OS signal NOT successfully acquired in the 
+ 379:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                                           specified by 'timeout_ms'.
+ 380:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_OS_ABORT       OS signal aborted.
+ 381:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_OS_FAIL        OS signal not acquired because another erro
+ 382:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 383:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Return(s)   : none.
+ 384:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 385:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Note(s)     : none.
+ 386:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 387:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 388:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 389:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** void  USBD_OS_EP_SignalPend (CPU_INT08U   dev_nbr,
+ 390:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                              CPU_INT08U   ep_ix,
+ 391:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                              CPU_INT16U   timeout_ms,
+ 392:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                              USBD_ERR    *p_err)
+ 393:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** {
+ 293              		.loc 1 393 1 is_stmt 1 view -0
+ 294              		.cfi_startproc
+ 295              		@ args = 0, pretend = 0, frame = 8
+ 296              		@ frame_needed = 0, uses_anonymous_args = 0
+ 297              		.loc 1 393 1 is_stmt 0 view .LVU50
+ 298 0000 30B5     		push	{r4, r5, lr}
+ 299              	.LCFI12:
+ 300              		.cfi_def_cfa_offset 12
+ 301              		.cfi_offset 4, -12
+ 302              		.cfi_offset 5, -8
+ 303              		.cfi_offset 14, -4
+ 304 0002 85B0     		sub	sp, sp, #20
+ 305              	.LCFI13:
+ 306              		.cfi_def_cfa_offset 32
+ 307 0004 1D46     		mov	r5, r3
+ 394:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_SEM   *p_sem;
+ 308              		.loc 1 394 5 is_stmt 1 view .LVU51
+ 395:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_ERR    err;
+ 309              		.loc 1 395 5 view .LVU52
+ 396:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_TICK   timeout_ticks;
+ 310              		.loc 1 396 5 view .LVU53
+ 397:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 398:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 399:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     p_sem         = &USBD_OS_EP_SemTbl[dev_nbr][ep_ix];
+ 311              		.loc 1 399 5 view .LVU54
+ 312              		.loc 1 399 19 is_stmt 0 view .LVU55
+ 313 0006 01EB8000 		add	r0, r1, r0, lsl #2
+ 314              	.LVL20:
+ 400:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     timeout_ticks = ((((OS_TICK)timeout_ms * OSCfg_TickRate_Hz)  + 1000u - 1u) / 1000u);
+ 315              		.loc 1 400 5 is_stmt 1 view .LVU56
+ 316              		.loc 1 400 44 is_stmt 0 view .LVU57
+ 317 000a 174B     		ldr	r3, .L28
+ 318              	.LVL21:
+ 319              		.loc 1 400 44 view .LVU58
+ 320 000c 1968     		ldr	r1, [r3]
+ 321              	.LVL22:
+ 322              		.loc 1 400 44 view .LVU59
+ 323 000e 01FB02F1 		mul	r1, r1, r2
+ 324              		.loc 1 400 74 view .LVU60
+ 325 0012 01F2E731 		addw	r1, r1, #999
+ 326              		.loc 1 400 19 view .LVU61
+ARM GAS  /tmp/ccGF6UzT.s 			page 14
+
+
+ 327 0016 154A     		ldr	r2, .L28+4
+ 328              	.LVL23:
+ 329              		.loc 1 400 19 view .LVU62
+ 330 0018 A2FB0131 		umull	r3, r1, r2, r1
+ 331              	.LVL24:
+ 401:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 402:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     (void)OSSemPend(          p_sem,
+ 332              		.loc 1 402 5 is_stmt 1 view .LVU63
+ 333              		.loc 1 402 11 is_stmt 0 view .LVU64
+ 334 001c 0DF10E03 		add	r3, sp, #14
+ 335 0020 0093     		str	r3, [sp]
+ 336 0022 0023     		movs	r3, #0
+ 337 0024 1A46     		mov	r2, r3
+ 338 0026 8909     		lsrs	r1, r1, #6
+ 339              	.LVL25:
+ 340              		.loc 1 402 11 view .LVU65
+ 341 0028 114C     		ldr	r4, .L28+8
+ 342 002a 04EB0010 		add	r0, r4, r0, lsl #4
+ 343              	.LVL26:
+ 344              		.loc 1 402 11 view .LVU66
+ 345 002e FFF7FEFF 		bl	OSSemPend
+ 346              	.LVL27:
+ 403:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                               timeout_ticks,
+ 404:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                               OS_OPT_PEND_BLOCKING,
+ 405:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                     (CPU_TS *)0,
+ 406:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                              &err);
+ 407:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     switch (err) {
+ 347              		.loc 1 407 5 is_stmt 1 view .LVU67
+ 348 0032 BDF80E30 		ldrh	r3, [sp, #14]
+ 349 0036 46F2A912 		movw	r2, #25001
+ 350 003a 9342     		cmp	r3, r2
+ 351 003c 0FD0     		beq	.L22
+ 352 003e 47F2D922 		movw	r2, #29401
+ 353 0042 9342     		cmp	r3, r2
+ 354 0044 07D0     		beq	.L23
+ 355 0046 1BB1     		cbz	r3, .L27
+ 408:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_NONE:
+ 409:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****             *p_err = USBD_ERR_NONE;
+ 410:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 411:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 412:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 413:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_TIMEOUT:
+ 414:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****             *p_err = USBD_ERR_OS_TIMEOUT;
+ 415:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 416:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 417:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 418:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_PEND_ABORT:
+ 419:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****             *p_err = USBD_ERR_OS_ABORT;
+ 420:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 421:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 422:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 423:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_OBJ_DEL:
+ 424:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_OBJ_PTR_NULL:
+ 425:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_OBJ_TYPE:
+ 426:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_OPT_INVALID:
+ 427:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_PEND_ISR:
+ 428:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_PEND_WOULD_BLOCK:
+ARM GAS  /tmp/ccGF6UzT.s 			page 15
+
+
+ 429:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_SCHED_LOCKED:
+ 430:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_STATUS_INVALID:
+ 431:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         default:
+ 432:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****             *p_err = USBD_ERR_OS_FAIL;
+ 356              		.loc 1 432 13 view .LVU68
+ 357              		.loc 1 432 20 is_stmt 0 view .LVU69
+ 358 0048 4FF4FB73 		mov	r3, #502
+ 359 004c 2B80     		strh	r3, [r5]	@ movhi
+ 433:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 360              		.loc 1 433 14 is_stmt 1 view .LVU70
+ 434:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 435:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 436:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 437:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 361              		.loc 1 437 1 is_stmt 0 view .LVU71
+ 362 004e 00E0     		b	.L21
+ 363              	.L27:
+ 409:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 364              		.loc 1 409 13 is_stmt 1 view .LVU72
+ 409:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 365              		.loc 1 409 20 is_stmt 0 view .LVU73
+ 366 0050 2B80     		strh	r3, [r5]	@ movhi
+ 410:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 367              		.loc 1 410 14 is_stmt 1 view .LVU74
+ 368              	.L21:
+ 369              		.loc 1 437 1 is_stmt 0 view .LVU75
+ 370 0052 05B0     		add	sp, sp, #20
+ 371              	.LCFI14:
+ 372              		.cfi_remember_state
+ 373              		.cfi_def_cfa_offset 12
+ 374              		@ sp needed
+ 375 0054 30BD     		pop	{r4, r5, pc}
+ 376              	.LVL28:
+ 377              	.L23:
+ 378              	.LCFI15:
+ 379              		.cfi_restore_state
+ 414:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 380              		.loc 1 414 13 is_stmt 1 view .LVU76
+ 414:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 381              		.loc 1 414 20 is_stmt 0 view .LVU77
+ 382 0056 40F2F713 		movw	r3, #503
+ 383 005a 2B80     		strh	r3, [r5]	@ movhi
+ 415:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 384              		.loc 1 415 14 is_stmt 1 view .LVU78
+ 385 005c F9E7     		b	.L21
+ 386              	.L22:
+ 419:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 387              		.loc 1 419 13 view .LVU79
+ 419:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 388              		.loc 1 419 20 is_stmt 0 view .LVU80
+ 389 005e 4FF4FC73 		mov	r3, #504
+ 390 0062 2B80     		strh	r3, [r5]	@ movhi
+ 420:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 391              		.loc 1 420 14 is_stmt 1 view .LVU81
+ 392 0064 F5E7     		b	.L21
+ 393              	.L29:
+ 394 0066 00BF     		.align	2
+ARM GAS  /tmp/ccGF6UzT.s 			page 16
+
+
+ 395              	.L28:
+ 396 0068 00000000 		.word	OSCfg_TickRate_Hz
+ 397 006c D34D6210 		.word	274877907
+ 398 0070 00000000 		.word	.LANCHOR2
+ 399              		.cfi_endproc
+ 400              	.LFE4:
+ 402              		.section	.text.USBD_OS_EP_SignalAbort,"ax",%progbits
+ 403              		.align	1
+ 404              		.global	USBD_OS_EP_SignalAbort
+ 405              		.syntax unified
+ 406              		.thumb
+ 407              		.thumb_func
+ 408              		.fpu fpv4-sp-d16
+ 410              	USBD_OS_EP_SignalAbort:
+ 411              	.LVL29:
+ 412              	.LFB5:
+ 438:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 439:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 440:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 441:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 442:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                        USBD_OS_SignalAbort()
+ 443:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 444:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Description : Abort any wait operation on signal.
+ 445:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 446:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Argument(s) : dev_nbr     Device number.
+ 447:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -------     Argument validated by the caller(s).
+ 448:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 449:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               ep_ix       Endpoint index.
+ 450:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -----       Argument validated by the caller(s).
+ 451:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 452:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 453:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 454:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_NONE       OS signal     successfully aborted.
+ 455:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_OS_FAIL    OS signal NOT successfully aborted.
+ 456:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 457:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Return(s)   : none.
+ 458:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 459:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Note(s)     : none.
+ 460:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 461:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 462:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 463:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** void  USBD_OS_EP_SignalAbort (CPU_INT08U   dev_nbr,
+ 464:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                               CPU_INT08U   ep_ix,
+ 465:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                               USBD_ERR    *p_err)
+ 466:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** {
+ 413              		.loc 1 466 1 view -0
+ 414              		.cfi_startproc
+ 415              		@ args = 0, pretend = 0, frame = 8
+ 416              		@ frame_needed = 0, uses_anonymous_args = 0
+ 417              		.loc 1 466 1 is_stmt 0 view .LVU83
+ 418 0000 10B5     		push	{r4, lr}
+ 419              	.LCFI16:
+ 420              		.cfi_def_cfa_offset 8
+ 421              		.cfi_offset 4, -8
+ 422              		.cfi_offset 14, -4
+ 423 0002 82B0     		sub	sp, sp, #8
+ 424              	.LCFI17:
+ARM GAS  /tmp/ccGF6UzT.s 			page 17
+
+
+ 425              		.cfi_def_cfa_offset 16
+ 426 0004 1446     		mov	r4, r2
+ 467:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_SEM  *p_sem;
+ 427              		.loc 1 467 5 is_stmt 1 view .LVU84
+ 468:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_ERR   err;
+ 428              		.loc 1 468 5 view .LVU85
+ 469:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 470:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 471:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     p_sem = &USBD_OS_EP_SemTbl[dev_nbr][ep_ix];
+ 429              		.loc 1 471 5 view .LVU86
+ 430              		.loc 1 471 11 is_stmt 0 view .LVU87
+ 431 0006 01EB8000 		add	r0, r1, r0, lsl #2
+ 432              	.LVL30:
+ 472:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 473:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OSSemPendAbort(p_sem,
+ 433              		.loc 1 473 5 is_stmt 1 view .LVU88
+ 434 000a 0DF10602 		add	r2, sp, #6
+ 435              	.LVL31:
+ 436              		.loc 1 473 5 is_stmt 0 view .LVU89
+ 437 000e 4FF48071 		mov	r1, #256
+ 438              	.LVL32:
+ 439              		.loc 1 473 5 view .LVU90
+ 440 0012 084B     		ldr	r3, .L34
+ 441 0014 03EB0010 		add	r0, r3, r0, lsl #4
+ 442              	.LVL33:
+ 443              		.loc 1 473 5 view .LVU91
+ 444 0018 FFF7FEFF 		bl	OSSemPendAbort
+ 445              	.LVL34:
+ 474:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                    OS_OPT_PEND_ABORT_ALL,
+ 475:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                   &err);
+ 476:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     if (err != OS_ERR_NONE) {
+ 446              		.loc 1 476 5 is_stmt 1 view .LVU92
+ 447              		.loc 1 476 13 is_stmt 0 view .LVU93
+ 448 001c BDF80630 		ldrh	r3, [sp, #6]
+ 449              		.loc 1 476 8 view .LVU94
+ 450 0020 23B1     		cbz	r3, .L31
+ 477:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****        *p_err = USBD_ERR_OS_FAIL;
+ 451              		.loc 1 477 8 is_stmt 1 view .LVU95
+ 452              		.loc 1 477 15 is_stmt 0 view .LVU96
+ 453 0022 4FF4FB73 		mov	r3, #502
+ 454 0026 2380     		strh	r3, [r4]	@ movhi
+ 455              	.L30:
+ 478:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     } else {
+ 479:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****        *p_err = USBD_ERR_NONE;
+ 480:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 481:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 456              		.loc 1 481 1 view .LVU97
+ 457 0028 02B0     		add	sp, sp, #8
+ 458              	.LCFI18:
+ 459              		.cfi_remember_state
+ 460              		.cfi_def_cfa_offset 8
+ 461              		@ sp needed
+ 462 002a 10BD     		pop	{r4, pc}
+ 463              	.LVL35:
+ 464              	.L31:
+ 465              	.LCFI19:
+ 466              		.cfi_restore_state
+ARM GAS  /tmp/ccGF6UzT.s 			page 18
+
+
+ 479:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 467              		.loc 1 479 8 is_stmt 1 view .LVU98
+ 479:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 468              		.loc 1 479 15 is_stmt 0 view .LVU99
+ 469 002c 0023     		movs	r3, #0
+ 470 002e 2380     		strh	r3, [r4]	@ movhi
+ 471              		.loc 1 481 1 view .LVU100
+ 472 0030 FAE7     		b	.L30
+ 473              	.L35:
+ 474 0032 00BF     		.align	2
+ 475              	.L34:
+ 476 0034 00000000 		.word	.LANCHOR2
+ 477              		.cfi_endproc
+ 478              	.LFE5:
+ 480              		.section	.text.USBD_OS_EP_SignalPost,"ax",%progbits
+ 481              		.align	1
+ 482              		.global	USBD_OS_EP_SignalPost
+ 483              		.syntax unified
+ 484              		.thumb
+ 485              		.thumb_func
+ 486              		.fpu fpv4-sp-d16
+ 488              	USBD_OS_EP_SignalPost:
+ 489              	.LVL36:
+ 490              	.LFB6:
+ 482:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 483:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 484:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 485:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 486:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                        USBD_OS_SignalPost()
+ 487:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 488:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Description : Make a signal available.
+ 489:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 490:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Argument(s) : dev_nbr     Device number.
+ 491:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -------     Argument validated by the caller(s).
+ 492:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 493:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               ep_ix       Endpoint index.
+ 494:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -----       Argument validated by the caller(s).
+ 495:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 496:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 497:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 498:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_NONE       OS signal     successfully readied.
+ 499:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_OS_FAIL    OS signal NOT successfully readied.
+ 500:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 501:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Return(s)   : none.
+ 502:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 503:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Note(s)     : none.
+ 504:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 505:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 506:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 507:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** void  USBD_OS_EP_SignalPost (CPU_INT08U   dev_nbr,
+ 508:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                              CPU_INT08U   ep_ix,
+ 509:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                              USBD_ERR    *p_err)
+ 510:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** {
+ 491              		.loc 1 510 1 is_stmt 1 view -0
+ 492              		.cfi_startproc
+ 493              		@ args = 0, pretend = 0, frame = 8
+ 494              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /tmp/ccGF6UzT.s 			page 19
+
+
+ 495              		.loc 1 510 1 is_stmt 0 view .LVU102
+ 496 0000 10B5     		push	{r4, lr}
+ 497              	.LCFI20:
+ 498              		.cfi_def_cfa_offset 8
+ 499              		.cfi_offset 4, -8
+ 500              		.cfi_offset 14, -4
+ 501 0002 82B0     		sub	sp, sp, #8
+ 502              	.LCFI21:
+ 503              		.cfi_def_cfa_offset 16
+ 504 0004 1446     		mov	r4, r2
+ 511:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_SEM  *p_sem;
+ 505              		.loc 1 511 5 is_stmt 1 view .LVU103
+ 512:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_ERR   err;
+ 506              		.loc 1 512 5 view .LVU104
+ 513:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 514:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 515:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     p_sem = &USBD_OS_EP_SemTbl[dev_nbr][ep_ix];
+ 507              		.loc 1 515 5 view .LVU105
+ 508              		.loc 1 515 11 is_stmt 0 view .LVU106
+ 509 0006 01EB8000 		add	r0, r1, r0, lsl #2
+ 510              	.LVL37:
+ 516:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 517:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OSSemPost(p_sem,
+ 511              		.loc 1 517 5 is_stmt 1 view .LVU107
+ 512 000a 0DF10602 		add	r2, sp, #6
+ 513              	.LVL38:
+ 514              		.loc 1 517 5 is_stmt 0 view .LVU108
+ 515 000e 4FF40071 		mov	r1, #512
+ 516              	.LVL39:
+ 517              		.loc 1 517 5 view .LVU109
+ 518 0012 084B     		ldr	r3, .L40
+ 519 0014 03EB0010 		add	r0, r3, r0, lsl #4
+ 520              	.LVL40:
+ 521              		.loc 1 517 5 view .LVU110
+ 522 0018 FFF7FEFF 		bl	OSSemPost
+ 523              	.LVL41:
+ 518:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****               OS_OPT_POST_ALL,
+ 519:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              &err);
+ 520:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     if (err != OS_ERR_NONE) {
+ 524              		.loc 1 520 5 is_stmt 1 view .LVU111
+ 525              		.loc 1 520 13 is_stmt 0 view .LVU112
+ 526 001c BDF80630 		ldrh	r3, [sp, #6]
+ 527              		.loc 1 520 8 view .LVU113
+ 528 0020 23B1     		cbz	r3, .L37
+ 521:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****        *p_err = USBD_ERR_OS_FAIL;
+ 529              		.loc 1 521 8 is_stmt 1 view .LVU114
+ 530              		.loc 1 521 15 is_stmt 0 view .LVU115
+ 531 0022 4FF4FB73 		mov	r3, #502
+ 532 0026 2380     		strh	r3, [r4]	@ movhi
+ 533              	.L36:
+ 522:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     } else {
+ 523:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****        *p_err = USBD_ERR_NONE;
+ 524:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 525:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 534              		.loc 1 525 1 view .LVU116
+ 535 0028 02B0     		add	sp, sp, #8
+ 536              	.LCFI22:
+ARM GAS  /tmp/ccGF6UzT.s 			page 20
+
+
+ 537              		.cfi_remember_state
+ 538              		.cfi_def_cfa_offset 8
+ 539              		@ sp needed
+ 540 002a 10BD     		pop	{r4, pc}
+ 541              	.LVL42:
+ 542              	.L37:
+ 543              	.LCFI23:
+ 544              		.cfi_restore_state
+ 523:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 545              		.loc 1 523 8 is_stmt 1 view .LVU117
+ 523:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 546              		.loc 1 523 15 is_stmt 0 view .LVU118
+ 547 002c 0023     		movs	r3, #0
+ 548 002e 2380     		strh	r3, [r4]	@ movhi
+ 549              		.loc 1 525 1 view .LVU119
+ 550 0030 FAE7     		b	.L36
+ 551              	.L41:
+ 552 0032 00BF     		.align	2
+ 553              	.L40:
+ 554 0034 00000000 		.word	.LANCHOR2
+ 555              		.cfi_endproc
+ 556              	.LFE6:
+ 558              		.section	.rodata.USBD_OS_EP_LockCreate.str1.4,"aMS",%progbits,1
+ 559              		.align	2
+ 560              	.LC2:
+ 561 0000 5553422D 		.ascii	"USB-Device EP Mutex\000"
+ 561      44657669 
+ 561      63652045 
+ 561      50204D75 
+ 561      74657800 
+ 562              		.section	.text.USBD_OS_EP_LockCreate,"ax",%progbits
+ 563              		.align	1
+ 564              		.global	USBD_OS_EP_LockCreate
+ 565              		.syntax unified
+ 566              		.thumb
+ 567              		.thumb_func
+ 568              		.fpu fpv4-sp-d16
+ 570              	USBD_OS_EP_LockCreate:
+ 571              	.LVL43:
+ 572              	.LFB7:
+ 526:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 527:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 528:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 529:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 530:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                       USBD_OS_EP_LockCreate()
+ 531:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 532:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Description : Create an OS resource to use as an endpoint lock.
+ 533:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 534:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Argument(s) : dev_nbr     Device number.
+ 535:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -------     Argument validated by the caller(s).
+ 536:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 537:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               ep_ix       Endpoint index.
+ 538:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -----       Argument validated by the caller(s).
+ 539:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 540:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 541:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 542:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_NONE               OS lock     successfully created.
+ARM GAS  /tmp/ccGF6UzT.s 			page 21
+
+
+ 543:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_OS_SIGNAL_CREATE   OS lock NOT successfully created.
+ 544:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 545:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Return(s)   : none.
+ 546:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 547:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Note(s)     : none.
+ 548:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 549:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 550:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 551:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** void   USBD_OS_EP_LockCreate (CPU_INT08U   dev_nbr,
+ 552:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                               CPU_INT08U   ep_ix,
+ 553:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                               USBD_ERR    *p_err)
+ 554:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** {
+ 573              		.loc 1 554 1 is_stmt 1 view -0
+ 574              		.cfi_startproc
+ 575              		@ args = 0, pretend = 0, frame = 8
+ 576              		@ frame_needed = 0, uses_anonymous_args = 0
+ 577              		.loc 1 554 1 is_stmt 0 view .LVU121
+ 578 0000 10B5     		push	{r4, lr}
+ 579              	.LCFI24:
+ 580              		.cfi_def_cfa_offset 8
+ 581              		.cfi_offset 4, -8
+ 582              		.cfi_offset 14, -4
+ 583 0002 82B0     		sub	sp, sp, #8
+ 584              	.LCFI25:
+ 585              		.cfi_def_cfa_offset 16
+ 586 0004 1446     		mov	r4, r2
+ 555:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_MUTEX  *p_mutex;
+ 587              		.loc 1 555 5 is_stmt 1 view .LVU122
+ 556:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_ERR     err_os;
+ 588              		.loc 1 556 5 view .LVU123
+ 557:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 558:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 559:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     p_mutex = &USBD_OS_EP_MutexTbl[dev_nbr][ep_ix];
+ 589              		.loc 1 559 5 view .LVU124
+ 590              		.loc 1 559 13 is_stmt 0 view .LVU125
+ 591 0006 01EB4101 		add	r1, r1, r1, lsl #1
+ 592              	.LVL44:
+ 593              		.loc 1 559 13 view .LVU126
+ 594 000a 00EB4000 		add	r0, r0, r0, lsl #1
+ 595              	.LVL45:
+ 596              		.loc 1 559 13 view .LVU127
+ 597 000e 4001     		lsls	r0, r0, #5
+ 598 0010 00EBC100 		add	r0, r0, r1, lsl #3
+ 599              	.LVL46:
+ 560:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 561:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OSMutexCreate(p_mutex,
+ 600              		.loc 1 561 5 is_stmt 1 view .LVU128
+ 601 0014 0DF10602 		add	r2, sp, #6
+ 602              	.LVL47:
+ 603              		.loc 1 561 5 is_stmt 0 view .LVU129
+ 604 0018 0749     		ldr	r1, .L46
+ 605 001a 084B     		ldr	r3, .L46+4
+ 606 001c 1844     		add	r0, r0, r3
+ 607              	.LVL48:
+ 608              		.loc 1 561 5 view .LVU130
+ 609 001e FFF7FEFF 		bl	OSMutexCreate
+ 610              	.LVL49:
+ARM GAS  /tmp/ccGF6UzT.s 			page 22
+
+
+ 562:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                  "USB-Device EP Mutex",
+ 563:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                  &err_os);
+ 564:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     if (err_os != OS_ERR_NONE) {
+ 611              		.loc 1 564 5 is_stmt 1 view .LVU131
+ 612              		.loc 1 564 16 is_stmt 0 view .LVU132
+ 613 0022 BDF80630 		ldrh	r3, [sp, #6]
+ 614              		.loc 1 564 8 view .LVU133
+ 615 0026 23B1     		cbz	r3, .L43
+ 565:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****        *p_err = USBD_ERR_OS_SIGNAL_CREATE;
+ 616              		.loc 1 565 8 is_stmt 1 view .LVU134
+ 617              		.loc 1 565 15 is_stmt 0 view .LVU135
+ 618 0028 40F2F513 		movw	r3, #501
+ 619 002c 2380     		strh	r3, [r4]	@ movhi
+ 620              	.L42:
+ 566:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     } else {
+ 567:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****        *p_err = USBD_ERR_NONE;
+ 568:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 569:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 621              		.loc 1 569 1 view .LVU136
+ 622 002e 02B0     		add	sp, sp, #8
+ 623              	.LCFI26:
+ 624              		.cfi_remember_state
+ 625              		.cfi_def_cfa_offset 8
+ 626              		@ sp needed
+ 627 0030 10BD     		pop	{r4, pc}
+ 628              	.LVL50:
+ 629              	.L43:
+ 630              	.LCFI27:
+ 631              		.cfi_restore_state
+ 567:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 632              		.loc 1 567 8 is_stmt 1 view .LVU137
+ 567:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 633              		.loc 1 567 15 is_stmt 0 view .LVU138
+ 634 0032 0023     		movs	r3, #0
+ 635 0034 2380     		strh	r3, [r4]	@ movhi
+ 636              		.loc 1 569 1 view .LVU139
+ 637 0036 FAE7     		b	.L42
+ 638              	.L47:
+ 639              		.align	2
+ 640              	.L46:
+ 641 0038 00000000 		.word	.LC2
+ 642 003c 00000000 		.word	.LANCHOR3
+ 643              		.cfi_endproc
+ 644              	.LFE7:
+ 646              		.section	.text.USBD_OS_EP_LockDel,"ax",%progbits
+ 647              		.align	1
+ 648              		.global	USBD_OS_EP_LockDel
+ 649              		.syntax unified
+ 650              		.thumb
+ 651              		.thumb_func
+ 652              		.fpu fpv4-sp-d16
+ 654              	USBD_OS_EP_LockDel:
+ 655              	.LVL51:
+ 656              	.LFB8:
+ 570:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 571:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 572:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ARM GAS  /tmp/ccGF6UzT.s 			page 23
+
+
+ 573:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 574:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                         USBD_OS_EP_LockDel()
+ 575:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 576:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Description : Delete the OS resource used as an endpoint lock.
+ 577:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 578:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Argument(s) : dev_nbr     Device number.
+ 579:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -------     Argument validated by the caller(s).
+ 580:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 581:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               ep_ix       Endpoint index.
+ 582:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -----       Argument validated by the caller(s).
+ 583:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 584:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Return(s)   : none.
+ 585:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 586:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Note(s)     : none.
+ 587:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 588:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 589:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 590:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** void   USBD_OS_EP_LockDel (CPU_INT08U  dev_nbr,
+ 591:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                            CPU_INT08U  ep_ix)
+ 592:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** {
+ 657              		.loc 1 592 1 is_stmt 1 view -0
+ 658              		.cfi_startproc
+ 659              		@ args = 0, pretend = 0, frame = 8
+ 660              		@ frame_needed = 0, uses_anonymous_args = 0
+ 661              		.loc 1 592 1 is_stmt 0 view .LVU141
+ 662 0000 00B5     		push	{lr}
+ 663              	.LCFI28:
+ 664              		.cfi_def_cfa_offset 4
+ 665              		.cfi_offset 14, -4
+ 666 0002 83B0     		sub	sp, sp, #12
+ 667              	.LCFI29:
+ 668              		.cfi_def_cfa_offset 16
+ 593:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_MUTEX  *p_mutex;
+ 669              		.loc 1 593 5 is_stmt 1 view .LVU142
+ 594:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_ERR     err_os;
+ 670              		.loc 1 594 5 view .LVU143
+ 595:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 596:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 597:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     p_mutex = &USBD_OS_EP_MutexTbl[dev_nbr][ep_ix];
+ 671              		.loc 1 597 5 view .LVU144
+ 672              		.loc 1 597 13 is_stmt 0 view .LVU145
+ 673 0004 01EB4101 		add	r1, r1, r1, lsl #1
+ 674              	.LVL52:
+ 675              		.loc 1 597 13 view .LVU146
+ 676 0008 00EB4000 		add	r0, r0, r0, lsl #1
+ 677              	.LVL53:
+ 678              		.loc 1 597 13 view .LVU147
+ 679 000c 4001     		lsls	r0, r0, #5
+ 680 000e 00EBC100 		add	r0, r0, r1, lsl #3
+ 681              	.LVL54:
+ 598:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 599:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OSMutexDel(p_mutex,
+ 682              		.loc 1 599 5 is_stmt 1 view .LVU148
+ 683 0012 0DF10602 		add	r2, sp, #6
+ 684 0016 0121     		movs	r1, #1
+ 685 0018 034B     		ldr	r3, .L50
+ 686 001a 1844     		add	r0, r0, r3
+ARM GAS  /tmp/ccGF6UzT.s 			page 24
+
+
+ 687              	.LVL55:
+ 688              		.loc 1 599 5 is_stmt 0 view .LVU149
+ 689 001c FFF7FEFF 		bl	OSMutexDel
+ 690              	.LVL56:
+ 600:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                OS_OPT_DEL_ALWAYS,
+ 601:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****               &err_os);
+ 602:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 691              		.loc 1 602 1 view .LVU150
+ 692 0020 03B0     		add	sp, sp, #12
+ 693              	.LCFI30:
+ 694              		.cfi_def_cfa_offset 4
+ 695              		@ sp needed
+ 696 0022 5DF804FB 		ldr	pc, [sp], #4
+ 697              	.L51:
+ 698 0026 00BF     		.align	2
+ 699              	.L50:
+ 700 0028 00000000 		.word	.LANCHOR3
+ 701              		.cfi_endproc
+ 702              	.LFE8:
+ 704              		.section	.text.USBD_OS_EP_LockAcquire,"ax",%progbits
+ 705              		.align	1
+ 706              		.global	USBD_OS_EP_LockAcquire
+ 707              		.syntax unified
+ 708              		.thumb
+ 709              		.thumb_func
+ 710              		.fpu fpv4-sp-d16
+ 712              	USBD_OS_EP_LockAcquire:
+ 713              	.LVL57:
+ 714              	.LFB9:
+ 603:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 604:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 605:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 606:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 607:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                       USBD_OS_EP_LockAcquire()
+ 608:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 609:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Description : Wait for an endpoint to become available and acquire its lock.
+ 610:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 611:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Argument(s) : dev_nbr     Device number.
+ 612:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -------     Argument validated by the caller(s).
+ 613:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 614:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               ep_ix       Endpoint index.
+ 615:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -----       Argument validated by the caller(s).
+ 616:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 617:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               timeout_ms  Lock wait timeout in milliseconds.
+ 618:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 619:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 620:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 621:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_NONE           OS lock     successfully acquired.
+ 622:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_OS_TIMEOUT     OS lock NOT successfully acquired in the ti
+ 623:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                                           specified by 'timeout_ms'.
+ 624:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_OS_ABORT       OS lock aborted.
+ 625:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_OS_FAIL        OS lock not acquired because another error.
+ 626:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 627:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Return(s)   : none.
+ 628:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 629:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Note(s)     : none.
+ 630:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ARM GAS  /tmp/ccGF6UzT.s 			page 25
+
+
+ 631:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 632:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 633:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** void   USBD_OS_EP_LockAcquire (CPU_INT08U   dev_nbr,
+ 634:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                                CPU_INT08U   ep_ix,
+ 635:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                                CPU_INT16U   timeout_ms,
+ 636:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                                USBD_ERR    *p_err)
+ 637:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** {
+ 715              		.loc 1 637 1 is_stmt 1 view -0
+ 716              		.cfi_startproc
+ 717              		@ args = 0, pretend = 0, frame = 8
+ 718              		@ frame_needed = 0, uses_anonymous_args = 0
+ 719              		.loc 1 637 1 is_stmt 0 view .LVU152
+ 720 0000 30B5     		push	{r4, r5, lr}
+ 721              	.LCFI31:
+ 722              		.cfi_def_cfa_offset 12
+ 723              		.cfi_offset 4, -12
+ 724              		.cfi_offset 5, -8
+ 725              		.cfi_offset 14, -4
+ 726 0002 85B0     		sub	sp, sp, #20
+ 727              	.LCFI32:
+ 728              		.cfi_def_cfa_offset 32
+ 729 0004 1C46     		mov	r4, r3
+ 638:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_MUTEX   *p_mutex;
+ 730              		.loc 1 638 5 is_stmt 1 view .LVU153
+ 639:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_ERR      err_os;
+ 731              		.loc 1 639 5 view .LVU154
+ 640:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_TICK     timeout_ticks;
+ 732              		.loc 1 640 5 view .LVU155
+ 641:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 642:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 643:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     p_mutex       = &USBD_OS_EP_MutexTbl[dev_nbr][ep_ix];
+ 733              		.loc 1 643 5 view .LVU156
+ 734              		.loc 1 643 19 is_stmt 0 view .LVU157
+ 735 0006 01EB4101 		add	r1, r1, r1, lsl #1
+ 736              	.LVL58:
+ 737              		.loc 1 643 19 view .LVU158
+ 738 000a 00EB4000 		add	r0, r0, r0, lsl #1
+ 739              	.LVL59:
+ 740              		.loc 1 643 19 view .LVU159
+ 741 000e 4001     		lsls	r0, r0, #5
+ 742 0010 00EBC100 		add	r0, r0, r1, lsl #3
+ 743              	.LVL60:
+ 644:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     timeout_ticks = ((((OS_TICK)timeout_ms * OSCfg_TickRate_Hz)  + 1000u - 1u) / 1000u);
+ 744              		.loc 1 644 5 is_stmt 1 view .LVU160
+ 745              		.loc 1 644 44 is_stmt 0 view .LVU161
+ 746 0014 164B     		ldr	r3, .L59
+ 747              	.LVL61:
+ 748              		.loc 1 644 44 view .LVU162
+ 749 0016 1968     		ldr	r1, [r3]
+ 750 0018 01FB02F1 		mul	r1, r1, r2
+ 751              		.loc 1 644 74 view .LVU163
+ 752 001c 01F2E731 		addw	r1, r1, #999
+ 753              		.loc 1 644 19 view .LVU164
+ 754 0020 144A     		ldr	r2, .L59+4
+ 755              	.LVL62:
+ 756              		.loc 1 644 19 view .LVU165
+ 757 0022 A2FB0131 		umull	r3, r1, r2, r1
+ARM GAS  /tmp/ccGF6UzT.s 			page 26
+
+
+ 758              	.LVL63:
+ 645:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 646:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     (void)OSMutexPend(          p_mutex,
+ 759              		.loc 1 646 5 is_stmt 1 view .LVU166
+ 760 0026 0DF10E03 		add	r3, sp, #14
+ 761 002a 0093     		str	r3, [sp]
+ 762 002c 0023     		movs	r3, #0
+ 763 002e 1A46     		mov	r2, r3
+ 764 0030 8909     		lsrs	r1, r1, #6
+ 765              	.LVL64:
+ 766              		.loc 1 646 5 is_stmt 0 view .LVU167
+ 767 0032 114D     		ldr	r5, .L59+8
+ 768 0034 2844     		add	r0, r0, r5
+ 769              	.LVL65:
+ 770              		.loc 1 646 5 view .LVU168
+ 771 0036 FFF7FEFF 		bl	OSMutexPend
+ 772              	.LVL66:
+ 647:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                                 timeout_ticks,
+ 648:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                                 OS_OPT_PEND_BLOCKING,
+ 649:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                       (CPU_TS *)0,
+ 650:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                                &err_os);
+ 651:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     switch (err_os) {
+ 773              		.loc 1 651 5 is_stmt 1 view .LVU169
+ 774 003a BDF80E30 		ldrh	r3, [sp, #14]
+ 775 003e 46F2A912 		movw	r2, #25001
+ 776 0042 9342     		cmp	r3, r2
+ 777 0044 0FD0     		beq	.L53
+ 778 0046 47F2D922 		movw	r2, #29401
+ 779 004a 9342     		cmp	r3, r2
+ 780 004c 07D0     		beq	.L54
+ 781 004e 1BB1     		cbz	r3, .L58
+ 652:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_NONE:
+ 653:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****             *p_err = USBD_ERR_NONE;
+ 654:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 655:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 656:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 657:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_TIMEOUT:
+ 658:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****             *p_err = USBD_ERR_OS_TIMEOUT;
+ 659:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 660:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 661:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 662:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_PEND_ABORT:
+ 663:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****             *p_err = USBD_ERR_OS_ABORT;
+ 664:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 665:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 666:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 667:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_MUTEX_OWNER:
+ 668:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_OBJ_DEL:
+ 669:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_OBJ_PTR_NULL:
+ 670:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_OBJ_TYPE:
+ 671:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_OPT_INVALID:
+ 672:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_PEND_ISR:
+ 673:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_PEND_WOULD_BLOCK:
+ 674:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_SCHED_LOCKED:
+ 675:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_STATE_INVALID:
+ 676:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_STATUS_INVALID:
+ 677:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         default:
+ARM GAS  /tmp/ccGF6UzT.s 			page 27
+
+
+ 678:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****             *p_err = USBD_ERR_OS_FAIL;
+ 782              		.loc 1 678 13 view .LVU170
+ 783              		.loc 1 678 20 is_stmt 0 view .LVU171
+ 784 0050 4FF4FB73 		mov	r3, #502
+ 785 0054 2380     		strh	r3, [r4]	@ movhi
+ 679:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 786              		.loc 1 679 14 is_stmt 1 view .LVU172
+ 680:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 681:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 682:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 683:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 787              		.loc 1 683 1 is_stmt 0 view .LVU173
+ 788 0056 00E0     		b	.L52
+ 789              	.L58:
+ 653:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 790              		.loc 1 653 13 is_stmt 1 view .LVU174
+ 653:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 791              		.loc 1 653 20 is_stmt 0 view .LVU175
+ 792 0058 2380     		strh	r3, [r4]	@ movhi
+ 654:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 793              		.loc 1 654 14 is_stmt 1 view .LVU176
+ 794              	.L52:
+ 795              		.loc 1 683 1 is_stmt 0 view .LVU177
+ 796 005a 05B0     		add	sp, sp, #20
+ 797              	.LCFI33:
+ 798              		.cfi_remember_state
+ 799              		.cfi_def_cfa_offset 12
+ 800              		@ sp needed
+ 801 005c 30BD     		pop	{r4, r5, pc}
+ 802              	.LVL67:
+ 803              	.L54:
+ 804              	.LCFI34:
+ 805              		.cfi_restore_state
+ 658:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 806              		.loc 1 658 13 is_stmt 1 view .LVU178
+ 658:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 807              		.loc 1 658 20 is_stmt 0 view .LVU179
+ 808 005e 40F2F713 		movw	r3, #503
+ 809 0062 2380     		strh	r3, [r4]	@ movhi
+ 659:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 810              		.loc 1 659 14 is_stmt 1 view .LVU180
+ 811 0064 F9E7     		b	.L52
+ 812              	.L53:
+ 663:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 813              		.loc 1 663 13 view .LVU181
+ 663:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 814              		.loc 1 663 20 is_stmt 0 view .LVU182
+ 815 0066 4FF4FC73 		mov	r3, #504
+ 816 006a 2380     		strh	r3, [r4]	@ movhi
+ 664:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 817              		.loc 1 664 14 is_stmt 1 view .LVU183
+ 818 006c F5E7     		b	.L52
+ 819              	.L60:
+ 820 006e 00BF     		.align	2
+ 821              	.L59:
+ 822 0070 00000000 		.word	OSCfg_TickRate_Hz
+ 823 0074 D34D6210 		.word	274877907
+ARM GAS  /tmp/ccGF6UzT.s 			page 28
+
+
+ 824 0078 00000000 		.word	.LANCHOR3
+ 825              		.cfi_endproc
+ 826              	.LFE9:
+ 828              		.section	.text.USBD_OS_EP_LockRelease,"ax",%progbits
+ 829              		.align	1
+ 830              		.global	USBD_OS_EP_LockRelease
+ 831              		.syntax unified
+ 832              		.thumb
+ 833              		.thumb_func
+ 834              		.fpu fpv4-sp-d16
+ 836              	USBD_OS_EP_LockRelease:
+ 837              	.LVL68:
+ 838              	.LFB10:
+ 684:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 685:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 686:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 687:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 688:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                      USBD_OS_EP_LockRelease()
+ 689:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 690:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Description : Release an endpoint lock.
+ 691:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 692:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Argument(s) : dev_nbr     Device number.
+ 693:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -------     Argument validated by the caller(s).
+ 694:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 695:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               ep_ix       Endpoint index.
+ 696:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               -----       Argument validated by the caller(s).
+ 697:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 698:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Return(s)   : none.
+ 699:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 700:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Note(s)     : none.
+ 701:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 702:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 703:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 704:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** void   USBD_OS_EP_LockRelease (CPU_INT08U  dev_nbr,
+ 705:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                                CPU_INT08U  ep_ix)
+ 706:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** {
+ 839              		.loc 1 706 1 view -0
+ 840              		.cfi_startproc
+ 841              		@ args = 0, pretend = 0, frame = 8
+ 842              		@ frame_needed = 0, uses_anonymous_args = 0
+ 843              		.loc 1 706 1 is_stmt 0 view .LVU185
+ 844 0000 00B5     		push	{lr}
+ 845              	.LCFI35:
+ 846              		.cfi_def_cfa_offset 4
+ 847              		.cfi_offset 14, -4
+ 848 0002 83B0     		sub	sp, sp, #12
+ 849              	.LCFI36:
+ 850              		.cfi_def_cfa_offset 16
+ 707:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_MUTEX  *p_mutex;
+ 851              		.loc 1 707 5 is_stmt 1 view .LVU186
+ 708:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_ERR     err_os;
+ 852              		.loc 1 708 5 view .LVU187
+ 709:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 710:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 711:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     p_mutex = &USBD_OS_EP_MutexTbl[dev_nbr][ep_ix];
+ 853              		.loc 1 711 5 view .LVU188
+ 854              		.loc 1 711 13 is_stmt 0 view .LVU189
+ARM GAS  /tmp/ccGF6UzT.s 			page 29
+
+
+ 855 0004 01EB4101 		add	r1, r1, r1, lsl #1
+ 856              	.LVL69:
+ 857              		.loc 1 711 13 view .LVU190
+ 858 0008 00EB4000 		add	r0, r0, r0, lsl #1
+ 859              	.LVL70:
+ 860              		.loc 1 711 13 view .LVU191
+ 861 000c 4001     		lsls	r0, r0, #5
+ 862 000e 00EBC100 		add	r0, r0, r1, lsl #3
+ 863              	.LVL71:
+ 712:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 713:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OSMutexPost(p_mutex,
+ 864              		.loc 1 713 5 is_stmt 1 view .LVU192
+ 865 0012 0DF10602 		add	r2, sp, #6
+ 866 0016 0021     		movs	r1, #0
+ 867 0018 034B     		ldr	r3, .L63
+ 868 001a 1844     		add	r0, r0, r3
+ 869              	.LVL72:
+ 870              		.loc 1 713 5 is_stmt 0 view .LVU193
+ 871 001c FFF7FEFF 		bl	OSMutexPost
+ 872              	.LVL73:
+ 714:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                 OS_OPT_POST_NONE,
+ 715:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                &err_os);
+ 716:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     (void)err_os;
+ 873              		.loc 1 716 5 is_stmt 1 view .LVU194
+ 717:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 874              		.loc 1 717 1 is_stmt 0 view .LVU195
+ 875 0020 03B0     		add	sp, sp, #12
+ 876              	.LCFI37:
+ 877              		.cfi_def_cfa_offset 4
+ 878              		@ sp needed
+ 879 0022 5DF804FB 		ldr	pc, [sp], #4
+ 880              	.L64:
+ 881 0026 00BF     		.align	2
+ 882              	.L63:
+ 883 0028 00000000 		.word	.LANCHOR3
+ 884              		.cfi_endproc
+ 885              	.LFE10:
+ 887              		.section	.text.USBD_OS_DlyMs,"ax",%progbits
+ 888              		.align	1
+ 889              		.global	USBD_OS_DlyMs
+ 890              		.syntax unified
+ 891              		.thumb
+ 892              		.thumb_func
+ 893              		.fpu fpv4-sp-d16
+ 895              	USBD_OS_DlyMs:
+ 896              	.LVL74:
+ 897              	.LFB11:
+ 718:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 719:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 720:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 721:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 722:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                        USBD_OS_DlyMs()
+ 723:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 724:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Description : Delay a task for a certain time.
+ 725:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 726:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Argument(s) : ms          Delay in milliseconds.
+ 727:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ARM GAS  /tmp/ccGF6UzT.s 			page 30
+
+
+ 728:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Return(s)   : None.
+ 729:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 730:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Note(s)     : None.
+ 731:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 732:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 733:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 734:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** void  USBD_OS_DlyMs (CPU_INT32U  ms)
+ 735:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** {
+ 898              		.loc 1 735 1 is_stmt 1 view -0
+ 899              		.cfi_startproc
+ 900              		@ args = 0, pretend = 0, frame = 8
+ 901              		@ frame_needed = 0, uses_anonymous_args = 0
+ 902              		.loc 1 735 1 is_stmt 0 view .LVU197
+ 903 0000 00B5     		push	{lr}
+ 904              	.LCFI38:
+ 905              		.cfi_def_cfa_offset 4
+ 906              		.cfi_offset 14, -4
+ 907 0002 85B0     		sub	sp, sp, #20
+ 908              	.LCFI39:
+ 909              		.cfi_def_cfa_offset 24
+ 910 0004 0346     		mov	r3, r0
+ 736:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_ERR  err_os;
+ 911              		.loc 1 736 5 is_stmt 1 view .LVU198
+ 737:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 738:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 739:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OSTimeDlyHMSM(0u, 0u, 0u, ms,
+ 912              		.loc 1 739 5 view .LVU199
+ 913 0006 0DF10E02 		add	r2, sp, #14
+ 914 000a 0192     		str	r2, [sp, #4]
+ 915 000c 1022     		movs	r2, #16
+ 916 000e 0092     		str	r2, [sp]
+ 917 0010 0022     		movs	r2, #0
+ 918 0012 1146     		mov	r1, r2
+ 919 0014 1046     		mov	r0, r2
+ 920              	.LVL75:
+ 921              		.loc 1 739 5 is_stmt 0 view .LVU200
+ 922 0016 FFF7FEFF 		bl	OSTimeDlyHMSM
+ 923              	.LVL76:
+ 740:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                   OS_OPT_TIME_HMSM_NON_STRICT,
+ 741:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                  &err_os);
+ 742:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     (void)err_os;
+ 924              		.loc 1 742 5 is_stmt 1 view .LVU201
+ 743:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 925              		.loc 1 743 1 is_stmt 0 view .LVU202
+ 926 001a 05B0     		add	sp, sp, #20
+ 927              	.LCFI40:
+ 928              		.cfi_def_cfa_offset 4
+ 929              		@ sp needed
+ 930 001c 5DF804FB 		ldr	pc, [sp], #4
+ 931              		.cfi_endproc
+ 932              	.LFE11:
+ 934              		.section	.text.USBD_OS_CoreEventGet,"ax",%progbits
+ 935              		.align	1
+ 936              		.global	USBD_OS_CoreEventGet
+ 937              		.syntax unified
+ 938              		.thumb
+ 939              		.thumb_func
+ARM GAS  /tmp/ccGF6UzT.s 			page 31
+
+
+ 940              		.fpu fpv4-sp-d16
+ 942              	USBD_OS_CoreEventGet:
+ 943              	.LVL77:
+ 944              	.LFB12:
+ 744:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 745:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 746:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 747:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 748:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                       USBD_OS_CoreEventGet()
+ 749:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 750:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Description : Wait until a core event is ready.
+ 751:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 752:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Argument(s) : timeout_ms  Timeout in milliseconds.
+ 753:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 754:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 755:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 756:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_NONE           Core event successfully obtained.
+ 757:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_OS_TIMEOUT     Core event NOT ready and a timeout occurred
+ 758:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_OS_ABORT       Core event was aborted.
+ 759:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                               USBD_ERR_OS_FAIL        Core event NOT ready because of another err
+ 760:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 761:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Return(s)   : none.
+ 762:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 763:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Note(s)     : none.
+ 764:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 765:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 766:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 767:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** void  *USBD_OS_CoreEventGet (CPU_INT32U   timeout_ms,
+ 768:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                              USBD_ERR    *p_err)
+ 769:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** {
+ 945              		.loc 1 769 1 is_stmt 1 view -0
+ 946              		.cfi_startproc
+ 947              		@ args = 0, pretend = 0, frame = 8
+ 948              		@ frame_needed = 0, uses_anonymous_args = 0
+ 949              		.loc 1 769 1 is_stmt 0 view .LVU204
+ 950 0000 10B5     		push	{r4, lr}
+ 951              	.LCFI41:
+ 952              		.cfi_def_cfa_offset 8
+ 953              		.cfi_offset 4, -8
+ 954              		.cfi_offset 14, -4
+ 955 0002 84B0     		sub	sp, sp, #16
+ 956              	.LCFI42:
+ 957              		.cfi_def_cfa_offset 24
+ 958 0004 0C46     		mov	r4, r1
+ 770:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     void         *p_msg;
+ 959              		.loc 1 770 5 is_stmt 1 view .LVU205
+ 771:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_TICK       timeout_ticks;
+ 960              		.loc 1 771 5 view .LVU206
+ 772:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_MSG_SIZE   msg_size;
+ 961              		.loc 1 772 5 view .LVU207
+ 773:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_ERR        err;
+ 962              		.loc 1 773 5 view .LVU208
+ 774:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 775:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 776:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     timeout_ticks = (((timeout_ms * OSCfg_TickRate_Hz)  + 1000u - 1u) / 1000u);
+ 963              		.loc 1 776 5 view .LVU209
+ 964              		.loc 1 776 35 is_stmt 0 view .LVU210
+ARM GAS  /tmp/ccGF6UzT.s 			page 32
+
+
+ 965 0006 164B     		ldr	r3, .L74
+ 966 0008 1B68     		ldr	r3, [r3]
+ 967 000a 03FB00F0 		mul	r0, r3, r0
+ 968              	.LVL78:
+ 969              		.loc 1 776 65 view .LVU211
+ 970 000e 00F2E730 		addw	r0, r0, #999
+ 971              		.loc 1 776 19 view .LVU212
+ 972 0012 144B     		ldr	r3, .L74+4
+ 973 0014 A3FB0030 		umull	r3, r0, r3, r0
+ 974              	.LVL79:
+ 777:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 778:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     p_msg         = OSTaskQPend(          timeout_ticks,
+ 975              		.loc 1 778 5 is_stmt 1 view .LVU213
+ 976              		.loc 1 778 21 is_stmt 0 view .LVU214
+ 977 0018 03AB     		add	r3, sp, #12
+ 978 001a 0093     		str	r3, [sp]
+ 979 001c 0023     		movs	r3, #0
+ 980 001e 0DF10E02 		add	r2, sp, #14
+ 981 0022 1946     		mov	r1, r3
+ 982              	.LVL80:
+ 983              		.loc 1 778 21 view .LVU215
+ 984 0024 8009     		lsrs	r0, r0, #6
+ 985              	.LVL81:
+ 986              		.loc 1 778 21 view .LVU216
+ 987 0026 FFF7FEFF 		bl	OSTaskQPend
+ 988              	.LVL82:
+ 779:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                                           OS_OPT_PEND_BLOCKING,
+ 780:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                                          &msg_size,
+ 781:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                                 (CPU_TS *)0,
+ 782:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                                          &err);
+ 783:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     switch (err) {
+ 989              		.loc 1 783 5 is_stmt 1 view .LVU217
+ 990 002a BDF80C30 		ldrh	r3, [sp, #12]
+ 991 002e 46F2A912 		movw	r2, #25001
+ 992 0032 9342     		cmp	r3, r2
+ 993 0034 0FD0     		beq	.L68
+ 994 0036 47F2D922 		movw	r2, #29401
+ 995 003a 9342     		cmp	r3, r2
+ 996 003c 07D0     		beq	.L69
+ 997 003e 1BB1     		cbz	r3, .L73
+ 784:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_NONE:
+ 785:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****             *p_err = USBD_ERR_NONE;
+ 786:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 787:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 788:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 789:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_TIMEOUT:
+ 790:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****             *p_err = USBD_ERR_OS_TIMEOUT;
+ 791:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 792:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 793:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 794:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_PEND_ABORT:
+ 795:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****             *p_err = USBD_ERR_OS_ABORT;
+ 796:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 797:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 798:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 799:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_PEND_WOULD_BLOCK:
+ 800:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_Q_EMPTY:
+ARM GAS  /tmp/ccGF6UzT.s 			page 33
+
+
+ 801:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         case OS_ERR_SCHED_LOCKED:
+ 802:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****         default:
+ 803:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****             *p_err = USBD_ERR_OS_FAIL;
+ 998              		.loc 1 803 13 view .LVU218
+ 999              		.loc 1 803 20 is_stmt 0 view .LVU219
+ 1000 0040 4FF4FB73 		mov	r3, #502
+ 1001 0044 2380     		strh	r3, [r4]	@ movhi
+ 804:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 1002              		.loc 1 804 14 is_stmt 1 view .LVU220
+ 805:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 806:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 807:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     }
+ 808:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 809:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     return (p_msg);
+ 1003              		.loc 1 809 5 view .LVU221
+ 1004              		.loc 1 809 12 is_stmt 0 view .LVU222
+ 1005 0046 00E0     		b	.L67
+ 1006              	.L73:
+ 785:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 1007              		.loc 1 785 13 is_stmt 1 view .LVU223
+ 785:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 1008              		.loc 1 785 20 is_stmt 0 view .LVU224
+ 1009 0048 2380     		strh	r3, [r4]	@ movhi
+ 786:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 1010              		.loc 1 786 14 is_stmt 1 view .LVU225
+ 1011              	.L67:
+ 810:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 1012              		.loc 1 810 1 is_stmt 0 view .LVU226
+ 1013 004a 04B0     		add	sp, sp, #16
+ 1014              	.LCFI43:
+ 1015              		.cfi_remember_state
+ 1016              		.cfi_def_cfa_offset 8
+ 1017              		@ sp needed
+ 1018 004c 10BD     		pop	{r4, pc}
+ 1019              	.LVL83:
+ 1020              	.L69:
+ 1021              	.LCFI44:
+ 1022              		.cfi_restore_state
+ 790:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 1023              		.loc 1 790 13 is_stmt 1 view .LVU227
+ 790:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 1024              		.loc 1 790 20 is_stmt 0 view .LVU228
+ 1025 004e 40F2F713 		movw	r3, #503
+ 1026 0052 2380     		strh	r3, [r4]	@ movhi
+ 791:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 1027              		.loc 1 791 14 is_stmt 1 view .LVU229
+ 1028 0054 F9E7     		b	.L67
+ 1029              	.L68:
+ 795:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 1030              		.loc 1 795 13 view .LVU230
+ 795:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****              break;
+ 1031              		.loc 1 795 20 is_stmt 0 view .LVU231
+ 1032 0056 4FF4FC73 		mov	r3, #504
+ 1033 005a 2380     		strh	r3, [r4]	@ movhi
+ 796:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 1034              		.loc 1 796 14 is_stmt 1 view .LVU232
+ 1035 005c F5E7     		b	.L67
+ARM GAS  /tmp/ccGF6UzT.s 			page 34
+
+
+ 1036              	.L75:
+ 1037 005e 00BF     		.align	2
+ 1038              	.L74:
+ 1039 0060 00000000 		.word	OSCfg_TickRate_Hz
+ 1040 0064 D34D6210 		.word	274877907
+ 1041              		.cfi_endproc
+ 1042              	.LFE12:
+ 1044              		.section	.text.USBD_OS_CoreEventPut,"ax",%progbits
+ 1045              		.align	1
+ 1046              		.global	USBD_OS_CoreEventPut
+ 1047              		.syntax unified
+ 1048              		.thumb
+ 1049              		.thumb_func
+ 1050              		.fpu fpv4-sp-d16
+ 1052              	USBD_OS_CoreEventPut:
+ 1053              	.LVL84:
+ 1054              	.LFB13:
+ 811:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 812:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 813:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** /*
+ 814:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 815:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *                                       USBD_OS_CoreEventPut()
+ 816:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 817:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Description : Queues core event.
+ 818:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 819:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Argument(s) : p_event     Pointer to core event.
+ 820:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 821:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Return(s)   : none.
+ 822:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** *
+ 823:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** * Note(s)     : none.
+ 824:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** ***************************************************************************************************
+ 825:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** */
+ 826:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 827:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** void  USBD_OS_CoreEventPut (void  *p_event)
+ 828:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** {
+ 1055              		.loc 1 828 1 view -0
+ 1056              		.cfi_startproc
+ 1057              		@ args = 0, pretend = 0, frame = 8
+ 1058              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1059              		.loc 1 828 1 is_stmt 0 view .LVU234
+ 1060 0000 00B5     		push	{lr}
+ 1061              	.LCFI45:
+ 1062              		.cfi_def_cfa_offset 4
+ 1063              		.cfi_offset 14, -4
+ 1064 0002 85B0     		sub	sp, sp, #20
+ 1065              	.LCFI46:
+ 1066              		.cfi_def_cfa_offset 24
+ 1067 0004 0146     		mov	r1, r0
+ 829:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OS_ERR  err;
+ 1068              		.loc 1 829 5 is_stmt 1 view .LVU235
+ 830:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 831:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** 
+ 832:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****     OSTaskQPost(&USBD_OS_CoreTaskTCB,
+ 1069              		.loc 1 832 5 view .LVU236
+ 1070 0006 0DF10E03 		add	r3, sp, #14
+ 1071 000a 0093     		str	r3, [sp]
+ 1072 000c 0023     		movs	r3, #0
+ARM GAS  /tmp/ccGF6UzT.s 			page 35
+
+
+ 1073 000e 0422     		movs	r2, #4
+ 1074 0010 0248     		ldr	r0, .L78
+ 1075              	.LVL85:
+ 1076              		.loc 1 832 5 is_stmt 0 view .LVU237
+ 1077 0012 FFF7FEFF 		bl	OSTaskQPost
+ 1078              	.LVL86:
+ 833:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                  p_event,
+ 834:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                  sizeof(void *),
+ 835:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                  OS_OPT_POST_FIFO,
+ 836:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c ****                 &err);
+ 837:rtos/uC-USB-Device/OS/uCOS-III/usbd_os.c **** }
+ 1079              		.loc 1 837 1 view .LVU238
+ 1080 0016 05B0     		add	sp, sp, #20
+ 1081              	.LCFI47:
+ 1082              		.cfi_def_cfa_offset 4
+ 1083              		@ sp needed
+ 1084 0018 5DF804FB 		ldr	pc, [sp], #4
+ 1085              	.L79:
+ 1086              		.align	2
+ 1087              	.L78:
+ 1088 001c 00000000 		.word	.LANCHOR0
+ 1089              		.cfi_endproc
+ 1090              	.LFE13:
+ 1092              		.section	.bss.USBD_OS_CoreTaskStk,"aw",%nobits
+ 1093              		.align	2
+ 1094              		.set	.LANCHOR1,. + 0
+ 1097              	USBD_OS_CoreTaskStk:
+ 1098 0000 00000000 		.space	2048
+ 1098      00000000 
+ 1098      00000000 
+ 1098      00000000 
+ 1098      00000000 
+ 1099              		.section	.bss.USBD_OS_CoreTaskTCB,"aw",%nobits
+ 1100              		.align	2
+ 1101              		.set	.LANCHOR0,. + 0
+ 1104              	USBD_OS_CoreTaskTCB:
+ 1105 0000 00000000 		.space	168
+ 1105      00000000 
+ 1105      00000000 
+ 1105      00000000 
+ 1105      00000000 
+ 1106              		.section	.bss.USBD_OS_EP_MutexTbl,"aw",%nobits
+ 1107              		.align	2
+ 1108              		.set	.LANCHOR3,. + 0
+ 1111              	USBD_OS_EP_MutexTbl:
+ 1112 0000 00000000 		.space	96
+ 1112      00000000 
+ 1112      00000000 
+ 1112      00000000 
+ 1112      00000000 
+ 1113              		.section	.bss.USBD_OS_EP_SemTbl,"aw",%nobits
+ 1114              		.align	2
+ 1115              		.set	.LANCHOR2,. + 0
+ 1118              	USBD_OS_EP_SemTbl:
+ 1119 0000 00000000 		.space	64
+ 1119      00000000 
+ 1119      00000000 
+ARM GAS  /tmp/ccGF6UzT.s 			page 36
+
+
+ 1119      00000000 
+ 1119      00000000 
+ 1120              		.text
+ 1121              	.Letext0:
+ 1122              		.file 2 "rtos/uC-CPU/ARM-Cortex-M/ARMv7-M/GNU/cpu.h"
+ 1123              		.file 3 "rtos/uC-CPU/cpu_core.h"
+ 1124              		.file 4 "rtos/uC-USB-Device/OS/uCOS-III/../../Source/usbd_core.h"
+ 1125              		.file 5 "rtos/uCOS-III/Source/os_type.h"
+ 1126              		.file 6 "rtos/uCOS-III/Source/os.h"
+ 1127              		.file 7 "rtos/uCOS-III/Ports/ARM-Cortex-M/ARMv7-M/GNU/os_cpu.h"
+ 1128              		.file 8 "rtos/uC-USB-Device/OS/uCOS-III/../../Source/usbd_internal.h"
+ARM GAS  /tmp/ccGF6UzT.s 			page 37
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usbd_os.c
+     /tmp/ccGF6UzT.s:18     .text.USBD_OS_CoreTask:0000000000000000 $t
+     /tmp/ccGF6UzT.s:25     .text.USBD_OS_CoreTask:0000000000000000 USBD_OS_CoreTask
+     /tmp/ccGF6UzT.s:53     .rodata.USBD_OS_Init.str1.4:0000000000000000 $d
+     /tmp/ccGF6UzT.s:57     .text.USBD_OS_Init:0000000000000000 $t
+     /tmp/ccGF6UzT.s:64     .text.USBD_OS_Init:0000000000000000 USBD_OS_Init
+     /tmp/ccGF6UzT.s:137    .text.USBD_OS_Init:000000000000004c $d
+     /tmp/ccGF6UzT.s:145    .rodata.USBD_OS_EP_SignalCreate.str1.4:0000000000000000 $d
+     /tmp/ccGF6UzT.s:149    .text.USBD_OS_EP_SignalCreate:0000000000000000 $t
+     /tmp/ccGF6UzT.s:156    .text.USBD_OS_EP_SignalCreate:0000000000000000 USBD_OS_EP_SignalCreate
+     /tmp/ccGF6UzT.s:224    .text.USBD_OS_EP_SignalCreate:0000000000000034 $d
+     /tmp/ccGF6UzT.s:230    .text.USBD_OS_EP_SignalDel:0000000000000000 $t
+     /tmp/ccGF6UzT.s:237    .text.USBD_OS_EP_SignalDel:0000000000000000 USBD_OS_EP_SignalDel
+     /tmp/ccGF6UzT.s:278    .text.USBD_OS_EP_SignalDel:0000000000000020 $d
+     /tmp/ccGF6UzT.s:283    .text.USBD_OS_EP_SignalPend:0000000000000000 $t
+     /tmp/ccGF6UzT.s:290    .text.USBD_OS_EP_SignalPend:0000000000000000 USBD_OS_EP_SignalPend
+     /tmp/ccGF6UzT.s:396    .text.USBD_OS_EP_SignalPend:0000000000000068 $d
+     /tmp/ccGF6UzT.s:403    .text.USBD_OS_EP_SignalAbort:0000000000000000 $t
+     /tmp/ccGF6UzT.s:410    .text.USBD_OS_EP_SignalAbort:0000000000000000 USBD_OS_EP_SignalAbort
+     /tmp/ccGF6UzT.s:476    .text.USBD_OS_EP_SignalAbort:0000000000000034 $d
+     /tmp/ccGF6UzT.s:481    .text.USBD_OS_EP_SignalPost:0000000000000000 $t
+     /tmp/ccGF6UzT.s:488    .text.USBD_OS_EP_SignalPost:0000000000000000 USBD_OS_EP_SignalPost
+     /tmp/ccGF6UzT.s:554    .text.USBD_OS_EP_SignalPost:0000000000000034 $d
+     /tmp/ccGF6UzT.s:559    .rodata.USBD_OS_EP_LockCreate.str1.4:0000000000000000 $d
+     /tmp/ccGF6UzT.s:563    .text.USBD_OS_EP_LockCreate:0000000000000000 $t
+     /tmp/ccGF6UzT.s:570    .text.USBD_OS_EP_LockCreate:0000000000000000 USBD_OS_EP_LockCreate
+     /tmp/ccGF6UzT.s:641    .text.USBD_OS_EP_LockCreate:0000000000000038 $d
+     /tmp/ccGF6UzT.s:647    .text.USBD_OS_EP_LockDel:0000000000000000 $t
+     /tmp/ccGF6UzT.s:654    .text.USBD_OS_EP_LockDel:0000000000000000 USBD_OS_EP_LockDel
+     /tmp/ccGF6UzT.s:700    .text.USBD_OS_EP_LockDel:0000000000000028 $d
+     /tmp/ccGF6UzT.s:705    .text.USBD_OS_EP_LockAcquire:0000000000000000 $t
+     /tmp/ccGF6UzT.s:712    .text.USBD_OS_EP_LockAcquire:0000000000000000 USBD_OS_EP_LockAcquire
+     /tmp/ccGF6UzT.s:822    .text.USBD_OS_EP_LockAcquire:0000000000000070 $d
+     /tmp/ccGF6UzT.s:829    .text.USBD_OS_EP_LockRelease:0000000000000000 $t
+     /tmp/ccGF6UzT.s:836    .text.USBD_OS_EP_LockRelease:0000000000000000 USBD_OS_EP_LockRelease
+     /tmp/ccGF6UzT.s:883    .text.USBD_OS_EP_LockRelease:0000000000000028 $d
+     /tmp/ccGF6UzT.s:888    .text.USBD_OS_DlyMs:0000000000000000 $t
+     /tmp/ccGF6UzT.s:895    .text.USBD_OS_DlyMs:0000000000000000 USBD_OS_DlyMs
+     /tmp/ccGF6UzT.s:935    .text.USBD_OS_CoreEventGet:0000000000000000 $t
+     /tmp/ccGF6UzT.s:942    .text.USBD_OS_CoreEventGet:0000000000000000 USBD_OS_CoreEventGet
+     /tmp/ccGF6UzT.s:1039   .text.USBD_OS_CoreEventGet:0000000000000060 $d
+     /tmp/ccGF6UzT.s:1045   .text.USBD_OS_CoreEventPut:0000000000000000 $t
+     /tmp/ccGF6UzT.s:1052   .text.USBD_OS_CoreEventPut:0000000000000000 USBD_OS_CoreEventPut
+     /tmp/ccGF6UzT.s:1088   .text.USBD_OS_CoreEventPut:000000000000001c $d
+     /tmp/ccGF6UzT.s:1093   .bss.USBD_OS_CoreTaskStk:0000000000000000 $d
+     /tmp/ccGF6UzT.s:1097   .bss.USBD_OS_CoreTaskStk:0000000000000000 USBD_OS_CoreTaskStk
+     /tmp/ccGF6UzT.s:1100   .bss.USBD_OS_CoreTaskTCB:0000000000000000 $d
+     /tmp/ccGF6UzT.s:1104   .bss.USBD_OS_CoreTaskTCB:0000000000000000 USBD_OS_CoreTaskTCB
+     /tmp/ccGF6UzT.s:1107   .bss.USBD_OS_EP_MutexTbl:0000000000000000 $d
+     /tmp/ccGF6UzT.s:1111   .bss.USBD_OS_EP_MutexTbl:0000000000000000 USBD_OS_EP_MutexTbl
+     /tmp/ccGF6UzT.s:1114   .bss.USBD_OS_EP_SemTbl:0000000000000000 $d
+     /tmp/ccGF6UzT.s:1118   .bss.USBD_OS_EP_SemTbl:0000000000000000 USBD_OS_EP_SemTbl
+                           .group:0000000000000000 wm4.0.0f5aa60db9403f389c005f20ecce4286
+                           .group:0000000000000000 wm4.app_cfg.h.2.3789fd7c8d66f929dd6bfa573df583d0
+                           .group:0000000000000000 wm4.usbd_core.h.42.d0f6b126d3befd3546f8a4cae986d0a5
+                           .group:0000000000000000 wm4.cpu_def.h.46.baa122a2898bdc40bb50d1f21ead1515
+ARM GAS  /tmp/ccGF6UzT.s 			page 38
+
+
+                           .group:0000000000000000 wm4.cpu_cfg.h.45.38a6a562da8b04490c382a226238c57e
+                           .group:0000000000000000 wm4.cpu.h.171.3cb15ee3ccb812cbfdf76d1fbfb9eda0
+                           .group:0000000000000000 wm4.lib_def.h.66.6ab2a012067a8e1f4289db5765835062
+                           .group:0000000000000000 wm4.cpu_core.h.51.bda0b8f45c33e87ce41267758624493c
+                           .group:0000000000000000 wm4.lib_cfg.h.40.b2958733f73e73af70f675ca0f89303e
+                           .group:0000000000000000 wm4.lib_mem.h.121.89b942a057fb20091baad8bf6b28b1e6
+                           .group:0000000000000000 wm4.usbd_cfg.h.48.0c6a80b26779ed3e26907144d5186f9c
+                           .group:0000000000000000 wm4.usbd_core.h.97.cd0da30c6a7cd4f210b1364f9143aa0a
+                           .group:0000000000000000 wm4.os.h.38.05c7a360e844508f9424830362f7eef3
+                           .group:0000000000000000 wm4.os_cfg.h.36.1682609214807c39119743015cd1b75b
+                           .group:0000000000000000 wm4.os_cfg_app.h.36.9d01bed009cfc3a5184d9a87250e45bf
+                           .group:0000000000000000 wm4.os_cpu.h.45.281d793567585e56a091270c28fc7efc
+                           .group:0000000000000000 wm4.os_trace.h.37.a6badbf6e748c370e142a9584653748e
+                           .group:0000000000000000 wm4.os.h.95.7b45e7e080367d299efd03f7510809bc
+
+UNDEFINED SYMBOLS
+USBD_CoreTaskHandler
+OSTaskCreate
+OSSemCreate
+OSSemDel
+OSSemPend
+OSCfg_TickRate_Hz
+OSSemPendAbort
+OSSemPost
+OSMutexCreate
+OSMutexDel
+OSMutexPend
+OSMutexPost
+OSTimeDlyHMSM
+OSTaskQPend
+OSTaskQPost

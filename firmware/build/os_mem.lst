@@ -1,0 +1,1212 @@
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"os_mem.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.OSMemCreate,"ax",%progbits
+  18              		.align	1
+  19              		.global	OSMemCreate
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	OSMemCreate:
+  27              	.LVL0:
+  28              	.LFB0:
+  29              		.file 1 "rtos/uCOS-III/Source/os_mem.c"
+   1:rtos/uCOS-III/Source/os_mem.c **** /*
+   2:rtos/uCOS-III/Source/os_mem.c **** ***************************************************************************************************
+   3:rtos/uCOS-III/Source/os_mem.c **** *                                                uC/OS-III
+   4:rtos/uCOS-III/Source/os_mem.c **** *                                          The Real-Time Kernel
+   5:rtos/uCOS-III/Source/os_mem.c **** *
+   6:rtos/uCOS-III/Source/os_mem.c **** *                         (c) Copyright 2009-2019; Silicon Laboratories Inc.,
+   7:rtos/uCOS-III/Source/os_mem.c **** *                                400 W. Cesar Chavez, Austin, TX 78701
+   8:rtos/uCOS-III/Source/os_mem.c **** *
+   9:rtos/uCOS-III/Source/os_mem.c **** *                   All rights reserved. Protected by international copyright laws.
+  10:rtos/uCOS-III/Source/os_mem.c **** *
+  11:rtos/uCOS-III/Source/os_mem.c **** *                  Your use of this software is subject to your acceptance of the terms
+  12:rtos/uCOS-III/Source/os_mem.c **** *                  of a Silicon Labs Micrium software license, which can be obtained by
+  13:rtos/uCOS-III/Source/os_mem.c **** *                  contacting info@micrium.com. If you do not agree to the terms of this
+  14:rtos/uCOS-III/Source/os_mem.c **** *                  license, you may not use this software.
+  15:rtos/uCOS-III/Source/os_mem.c **** *
+  16:rtos/uCOS-III/Source/os_mem.c **** *                  Please help us continue to provide the Embedded community with the finest
+  17:rtos/uCOS-III/Source/os_mem.c **** *                  software available. Your honesty is greatly appreciated.
+  18:rtos/uCOS-III/Source/os_mem.c **** *
+  19:rtos/uCOS-III/Source/os_mem.c **** *                    You can find our product's documentation at: doc.micrium.com
+  20:rtos/uCOS-III/Source/os_mem.c **** *
+  21:rtos/uCOS-III/Source/os_mem.c **** *                          For more information visit us at: www.micrium.com
+  22:rtos/uCOS-III/Source/os_mem.c **** ***************************************************************************************************
+  23:rtos/uCOS-III/Source/os_mem.c **** */
+  24:rtos/uCOS-III/Source/os_mem.c **** 
+  25:rtos/uCOS-III/Source/os_mem.c **** /*
+  26:rtos/uCOS-III/Source/os_mem.c **** ***************************************************************************************************
+  27:rtos/uCOS-III/Source/os_mem.c **** *                                      MEMORY PARTITION MANAGEMENT
+  28:rtos/uCOS-III/Source/os_mem.c **** *
+  29:rtos/uCOS-III/Source/os_mem.c **** * File    : os_mem.c
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 2
+
+
+  30:rtos/uCOS-III/Source/os_mem.c **** * Version : V3.07.04
+  31:rtos/uCOS-III/Source/os_mem.c **** ***************************************************************************************************
+  32:rtos/uCOS-III/Source/os_mem.c **** */
+  33:rtos/uCOS-III/Source/os_mem.c **** 
+  34:rtos/uCOS-III/Source/os_mem.c **** #define   MICRIUM_SOURCE
+  35:rtos/uCOS-III/Source/os_mem.c **** #include "os.h"
+  36:rtos/uCOS-III/Source/os_mem.c **** 
+  37:rtos/uCOS-III/Source/os_mem.c **** #ifdef VSC_INCLUDE_SOURCE_FILE_NAMES
+  38:rtos/uCOS-III/Source/os_mem.c **** const  CPU_CHAR  *os_mem__c = "$Id: $";
+  39:rtos/uCOS-III/Source/os_mem.c **** #endif
+  40:rtos/uCOS-III/Source/os_mem.c **** 
+  41:rtos/uCOS-III/Source/os_mem.c **** 
+  42:rtos/uCOS-III/Source/os_mem.c **** #if (OS_CFG_MEM_EN > 0u)
+  43:rtos/uCOS-III/Source/os_mem.c **** /*
+  44:rtos/uCOS-III/Source/os_mem.c **** ***************************************************************************************************
+  45:rtos/uCOS-III/Source/os_mem.c **** *                                               CREATE A MEMORY PARTITION
+  46:rtos/uCOS-III/Source/os_mem.c **** *
+  47:rtos/uCOS-III/Source/os_mem.c **** * Description : Create a fixed-sized memory partition that will be managed by uC/OS-III.
+  48:rtos/uCOS-III/Source/os_mem.c **** *
+  49:rtos/uCOS-III/Source/os_mem.c **** * Arguments   : p_mem    is a pointer to a memory partition control block which is allocated in use
+  50:rtos/uCOS-III/Source/os_mem.c **** *
+  51:rtos/uCOS-III/Source/os_mem.c **** *               p_name   is a pointer to an ASCII string to provide a name to the memory partition.
+  52:rtos/uCOS-III/Source/os_mem.c **** *
+  53:rtos/uCOS-III/Source/os_mem.c **** *               p_addr   is the starting address of the memory partition
+  54:rtos/uCOS-III/Source/os_mem.c **** *
+  55:rtos/uCOS-III/Source/os_mem.c **** *               n_blks   is the number of memory blocks to create from the partition.
+  56:rtos/uCOS-III/Source/os_mem.c **** *
+  57:rtos/uCOS-III/Source/os_mem.c **** *               blk_size is the size (in bytes) of each block in the memory partition.
+  58:rtos/uCOS-III/Source/os_mem.c **** *
+  59:rtos/uCOS-III/Source/os_mem.c **** *               p_err    is a pointer to a variable containing an error message which will be set b
+  60:rtos/uCOS-III/Source/os_mem.c **** *                        either:
+  61:rtos/uCOS-III/Source/os_mem.c **** *
+  62:rtos/uCOS-III/Source/os_mem.c **** *                            OS_ERR_NONE                    If the memory partition has been create
+  63:rtos/uCOS-III/Source/os_mem.c **** *                            OS_ERR_ILLEGAL_CREATE_RUN_TIME If you are trying to create the memory 
+  64:rtos/uCOS-III/Source/os_mem.c **** *                                                             called OSSafetyCriticalStart()
+  65:rtos/uCOS-III/Source/os_mem.c **** *                            OS_ERR_MEM_CREATE_ISR          If you called this function from an ISR
+  66:rtos/uCOS-III/Source/os_mem.c **** *                            OS_ERR_MEM_INVALID_BLKS        User specified an invalid number of blo
+  67:rtos/uCOS-III/Source/os_mem.c **** *                            OS_ERR_MEM_INVALID_P_ADDR      If you are specifying an invalid addres
+  68:rtos/uCOS-III/Source/os_mem.c **** *                                                           storage of the partition or, the block 
+  69:rtos/uCOS-III/Source/os_mem.c **** *                                                           pointer boundary
+  70:rtos/uCOS-III/Source/os_mem.c **** *                            OS_ERR_MEM_INVALID_SIZE        User specified an invalid block size
+  71:rtos/uCOS-III/Source/os_mem.c **** *                                                             - must be greater than the size of a 
+  72:rtos/uCOS-III/Source/os_mem.c **** *                                                             - must be able to hold an integral nu
+  73:rtos/uCOS-III/Source/os_mem.c **** *                            OS_ERR_OBJ_CREATED             If the memory partition was already cre
+  74:rtos/uCOS-III/Source/os_mem.c **** * Returns    : none
+  75:rtos/uCOS-III/Source/os_mem.c **** *
+  76:rtos/uCOS-III/Source/os_mem.c **** * Note(s)    : none
+  77:rtos/uCOS-III/Source/os_mem.c **** ***************************************************************************************************
+  78:rtos/uCOS-III/Source/os_mem.c **** */
+  79:rtos/uCOS-III/Source/os_mem.c **** 
+  80:rtos/uCOS-III/Source/os_mem.c **** void  OSMemCreate (OS_MEM       *p_mem,
+  81:rtos/uCOS-III/Source/os_mem.c ****                    CPU_CHAR     *p_name,
+  82:rtos/uCOS-III/Source/os_mem.c ****                    void         *p_addr,
+  83:rtos/uCOS-III/Source/os_mem.c ****                    OS_MEM_QTY    n_blks,
+  84:rtos/uCOS-III/Source/os_mem.c ****                    OS_MEM_SIZE   blk_size,
+  85:rtos/uCOS-III/Source/os_mem.c ****                    OS_ERR       *p_err)
+  86:rtos/uCOS-III/Source/os_mem.c **** {
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 3
+
+
+  30              		.loc 1 86 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 8, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 86 1 is_stmt 0 view .LVU1
+  35 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 24
+  38              		.cfi_offset 3, -24
+  39              		.cfi_offset 4, -20
+  40              		.cfi_offset 5, -16
+  41              		.cfi_offset 6, -12
+  42              		.cfi_offset 7, -8
+  43              		.cfi_offset 14, -4
+  44 0002 1D46     		mov	r5, r3
+  45 0004 BDF81870 		ldrh	r7, [sp, #24]
+  87:rtos/uCOS-III/Source/os_mem.c **** #if (OS_CFG_ARG_CHK_EN > 0u)
+  88:rtos/uCOS-III/Source/os_mem.c ****     CPU_DATA       align_msk;
+  46              		.loc 1 88 5 is_stmt 1 view .LVU2
+  89:rtos/uCOS-III/Source/os_mem.c **** #endif
+  90:rtos/uCOS-III/Source/os_mem.c ****     OS_MEM_QTY     i;
+  47              		.loc 1 90 5 view .LVU3
+  91:rtos/uCOS-III/Source/os_mem.c ****     OS_MEM_QTY     loops;
+  48              		.loc 1 91 5 view .LVU4
+  92:rtos/uCOS-III/Source/os_mem.c ****     CPU_INT08U    *p_blk;
+  49              		.loc 1 92 5 view .LVU5
+  93:rtos/uCOS-III/Source/os_mem.c ****     void         **p_link;
+  50              		.loc 1 93 5 view .LVU6
+  94:rtos/uCOS-III/Source/os_mem.c ****     CPU_SR_ALLOC();
+  51              		.loc 1 94 5 view .LVU7
+  52              	.LVL1:
+  95:rtos/uCOS-III/Source/os_mem.c **** 
+  96:rtos/uCOS-III/Source/os_mem.c **** 
+  97:rtos/uCOS-III/Source/os_mem.c **** 
+  98:rtos/uCOS-III/Source/os_mem.c **** #ifdef OS_SAFETY_CRITICAL
+  99:rtos/uCOS-III/Source/os_mem.c ****     if (p_err == (OS_ERR *)0) {
+ 100:rtos/uCOS-III/Source/os_mem.c ****         OS_SAFETY_CRITICAL_EXCEPTION();
+ 101:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 102:rtos/uCOS-III/Source/os_mem.c ****     }
+ 103:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 104:rtos/uCOS-III/Source/os_mem.c **** 
+ 105:rtos/uCOS-III/Source/os_mem.c **** #ifdef OS_SAFETY_CRITICAL_IEC61508
+ 106:rtos/uCOS-III/Source/os_mem.c ****     if (OSSafetyCriticalStartFlag == OS_TRUE) {
+ 107:rtos/uCOS-III/Source/os_mem.c ****        *p_err = OS_ERR_ILLEGAL_CREATE_RUN_TIME;
+ 108:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 109:rtos/uCOS-III/Source/os_mem.c ****     }
+ 110:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 111:rtos/uCOS-III/Source/os_mem.c **** 
+ 112:rtos/uCOS-III/Source/os_mem.c **** #if (OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u)
+ 113:rtos/uCOS-III/Source/os_mem.c ****     if (OSIntNestingCtr > 0u) {                                 /* Not allowed to call from an ISR 
+  53              		.loc 1 113 5 view .LVU8
+  54              		.loc 1 113 25 is_stmt 0 view .LVU9
+  55 0008 2B4B     		ldr	r3, .L21
+  56              	.LVL2:
+  57              		.loc 1 113 25 view .LVU10
+  58 000a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  59              		.loc 1 113 8 view .LVU11
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 4
+
+
+  60 000c CBB9     		cbnz	r3, .L13
+  61 000e 0646     		mov	r6, r0
+  62 0010 1446     		mov	r4, r2
+ 114:rtos/uCOS-III/Source/os_mem.c ****        *p_err = OS_ERR_MEM_CREATE_ISR;
+ 115:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 116:rtos/uCOS-III/Source/os_mem.c ****     }
+ 117:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 118:rtos/uCOS-III/Source/os_mem.c **** 
+ 119:rtos/uCOS-III/Source/os_mem.c **** #if (OS_CFG_ARG_CHK_EN > 0u)
+ 120:rtos/uCOS-III/Source/os_mem.c ****     if (p_addr == (void *)0) {                                  /* Must pass a valid address for th
+  63              		.loc 1 120 5 is_stmt 1 view .LVU12
+  64              		.loc 1 120 8 is_stmt 0 view .LVU13
+  65 0012 DAB1     		cbz	r2, .L14
+ 121:rtos/uCOS-III/Source/os_mem.c ****        *p_err   = OS_ERR_MEM_INVALID_P_ADDR;
+ 122:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 123:rtos/uCOS-III/Source/os_mem.c ****     }
+ 124:rtos/uCOS-III/Source/os_mem.c ****     if (n_blks < 2u) {                                          /* Must have at least 2 blocks per 
+  66              		.loc 1 124 5 is_stmt 1 view .LVU14
+  67              		.loc 1 124 8 is_stmt 0 view .LVU15
+  68 0014 012D     		cmp	r5, #1
+  69 0016 1ED9     		bls	.L15
+ 125:rtos/uCOS-III/Source/os_mem.c ****        *p_err = OS_ERR_MEM_INVALID_BLKS;
+ 126:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 127:rtos/uCOS-III/Source/os_mem.c ****     }
+ 128:rtos/uCOS-III/Source/os_mem.c ****     if (blk_size < sizeof(void *)) {                            /* Must contain space for at least 
+  70              		.loc 1 128 5 is_stmt 1 view .LVU16
+  71              		.loc 1 128 8 is_stmt 0 view .LVU17
+  72 0018 032F     		cmp	r7, #3
+  73 001a 21D9     		bls	.L16
+ 129:rtos/uCOS-III/Source/os_mem.c ****        *p_err = OS_ERR_MEM_INVALID_SIZE;
+ 130:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 131:rtos/uCOS-III/Source/os_mem.c ****     }
+ 132:rtos/uCOS-III/Source/os_mem.c ****     align_msk = sizeof(void *) - 1u;
+  74              		.loc 1 132 5 is_stmt 1 view .LVU18
+  75              	.LVL3:
+ 133:rtos/uCOS-III/Source/os_mem.c ****     if (align_msk > 0u) {
+  76              		.loc 1 133 5 view .LVU19
+ 134:rtos/uCOS-III/Source/os_mem.c ****         if (((CPU_ADDR)p_addr & align_msk) != 0u){              /* Must be pointer size aligned    
+  77              		.loc 1 134 9 view .LVU20
+  78              		.loc 1 134 12 is_stmt 0 view .LVU21
+  79 001c 12F0030F 		tst	r2, #3
+  80 0020 23D1     		bne	.L17
+ 135:rtos/uCOS-III/Source/os_mem.c ****            *p_err = OS_ERR_MEM_INVALID_P_ADDR;
+ 136:rtos/uCOS-III/Source/os_mem.c ****             return;
+ 137:rtos/uCOS-III/Source/os_mem.c ****         }
+ 138:rtos/uCOS-III/Source/os_mem.c ****         if ((blk_size & align_msk) != 0u) {                     /* Block size must be a multiple ad
+  81              		.loc 1 138 9 is_stmt 1 view .LVU22
+  82              		.loc 1 138 23 is_stmt 0 view .LVU23
+  83 0022 BC46     		mov	ip, r7
+  84              		.loc 1 138 12 view .LVU24
+  85 0024 17F00301 		ands	r1, r7, #3
+  86              	.LVL4:
+  87              		.loc 1 138 12 view .LVU25
+  88 0028 24D1     		bne	.L18
+ 139:rtos/uCOS-III/Source/os_mem.c ****            *p_err = OS_ERR_MEM_INVALID_SIZE;
+ 140:rtos/uCOS-III/Source/os_mem.c ****             return;
+ 141:rtos/uCOS-III/Source/os_mem.c ****         }
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 5
+
+
+ 142:rtos/uCOS-III/Source/os_mem.c ****     }
+ 143:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 144:rtos/uCOS-III/Source/os_mem.c **** 
+ 145:rtos/uCOS-III/Source/os_mem.c ****     p_link = (void **)p_addr;                                   /* Create linked list of free memor
+  89              		.loc 1 145 5 is_stmt 1 view .LVU26
+  90              	.LVL5:
+ 146:rtos/uCOS-III/Source/os_mem.c ****     p_blk  = (CPU_INT08U *)p_addr;
+  91              		.loc 1 146 5 view .LVU27
+ 147:rtos/uCOS-III/Source/os_mem.c ****     loops  = n_blks - 1u;
+  92              		.loc 1 147 5 view .LVU28
+  93              		.loc 1 147 12 is_stmt 0 view .LVU29
+  94 002a 681E     		subs	r0, r5, #1
+  95              	.LVL6:
+  96              		.loc 1 147 12 view .LVU30
+  97 002c 80B2     		uxth	r0, r0
+  98              	.LVL7:
+ 148:rtos/uCOS-III/Source/os_mem.c ****     for (i = 0u; i < loops; i++) {
+  99              		.loc 1 148 5 is_stmt 1 view .LVU31
+ 146:rtos/uCOS-III/Source/os_mem.c ****     p_blk  = (CPU_INT08U *)p_addr;
+ 100              		.loc 1 146 12 is_stmt 0 view .LVU32
+ 101 002e 1346     		mov	r3, r2
+ 102              	.LVL8:
+ 103              	.L9:
+ 104              		.loc 1 148 18 is_stmt 1 discriminator 1 view .LVU33
+ 105              		.loc 1 148 5 is_stmt 0 discriminator 1 view .LVU34
+ 106 0030 8142     		cmp	r1, r0
+ 107 0032 24D2     		bcs	.L19
+ 149:rtos/uCOS-III/Source/os_mem.c ****         p_blk +=  blk_size;
+ 108              		.loc 1 149 9 is_stmt 1 discriminator 3 view .LVU35
+ 109              		.loc 1 149 15 is_stmt 0 discriminator 3 view .LVU36
+ 110 0034 03EB0C02 		add	r2, r3, ip
+ 111              	.LVL9:
+ 150:rtos/uCOS-III/Source/os_mem.c ****        *p_link = (void  *)p_blk;                                /* Save pointer to NEXT block in CU
+ 112              		.loc 1 150 8 is_stmt 1 discriminator 3 view .LVU37
+ 113              		.loc 1 150 16 is_stmt 0 discriminator 3 view .LVU38
+ 114 0038 1A60     		str	r2, [r3]
+ 151:rtos/uCOS-III/Source/os_mem.c ****         p_link = (void **)(void *)p_blk;                        /* Position     to NEXT block      
+ 115              		.loc 1 151 9 is_stmt 1 discriminator 3 view .LVU39
+ 116              	.LVL10:
+ 148:rtos/uCOS-III/Source/os_mem.c ****         p_blk +=  blk_size;
+ 117              		.loc 1 148 29 discriminator 3 view .LVU40
+ 148:rtos/uCOS-III/Source/os_mem.c ****         p_blk +=  blk_size;
+ 118              		.loc 1 148 30 is_stmt 0 discriminator 3 view .LVU41
+ 119 003a 0131     		adds	r1, r1, #1
+ 120              	.LVL11:
+ 148:rtos/uCOS-III/Source/os_mem.c ****         p_blk +=  blk_size;
+ 121              		.loc 1 148 30 discriminator 3 view .LVU42
+ 122 003c 89B2     		uxth	r1, r1
+ 123              	.LVL12:
+ 149:rtos/uCOS-III/Source/os_mem.c ****        *p_link = (void  *)p_blk;                                /* Save pointer to NEXT block in CU
+ 124              		.loc 1 149 15 discriminator 3 view .LVU43
+ 125 003e 1346     		mov	r3, r2
+ 126 0040 F6E7     		b	.L9
+ 127              	.LVL13:
+ 128              	.L13:
+ 114:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 129              		.loc 1 114 8 is_stmt 1 view .LVU44
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 6
+
+
+ 114:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 130              		.loc 1 114 15 is_stmt 0 view .LVU45
+ 131 0042 45F2B963 		movw	r3, #22201
+ 132 0046 079A     		ldr	r2, [sp, #28]
+ 133              	.LVL14:
+ 114:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 134              		.loc 1 114 15 view .LVU46
+ 135 0048 1380     		strh	r3, [r2]	@ movhi
+ 115:rtos/uCOS-III/Source/os_mem.c ****     }
+ 136              		.loc 1 115 9 is_stmt 1 view .LVU47
+ 137              	.LVL15:
+ 138              	.L1:
+ 152:rtos/uCOS-III/Source/os_mem.c ****     }
+ 153:rtos/uCOS-III/Source/os_mem.c ****    *p_link             = (void *)0;                             /* Last memory block points to NULL
+ 154:rtos/uCOS-III/Source/os_mem.c **** 
+ 155:rtos/uCOS-III/Source/os_mem.c ****     CPU_CRITICAL_ENTER();
+ 156:rtos/uCOS-III/Source/os_mem.c **** #if (OS_OBJ_TYPE_REQ > 0u)
+ 157:rtos/uCOS-III/Source/os_mem.c ****     if (p_mem->Type == OS_OBJ_TYPE_MEM) {
+ 158:rtos/uCOS-III/Source/os_mem.c ****         CPU_CRITICAL_EXIT();
+ 159:rtos/uCOS-III/Source/os_mem.c ****         *p_err = OS_ERR_OBJ_CREATED;
+ 160:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 161:rtos/uCOS-III/Source/os_mem.c ****     }
+ 162:rtos/uCOS-III/Source/os_mem.c ****     p_mem->Type        = OS_OBJ_TYPE_MEM;                       /* Set the type of object          
+ 163:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 164:rtos/uCOS-III/Source/os_mem.c **** #if (OS_CFG_DBG_EN > 0u)
+ 165:rtos/uCOS-III/Source/os_mem.c ****     p_mem->NamePtr     = p_name;                                /* Save name of memory partition   
+ 166:rtos/uCOS-III/Source/os_mem.c **** #else
+ 167:rtos/uCOS-III/Source/os_mem.c ****     (void)p_name;
+ 168:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 169:rtos/uCOS-III/Source/os_mem.c ****     p_mem->AddrPtr     = p_addr;                                /* Store start address of memory pa
+ 170:rtos/uCOS-III/Source/os_mem.c ****     p_mem->FreeListPtr = p_addr;                                /* Initialize pointer to pool of fr
+ 171:rtos/uCOS-III/Source/os_mem.c ****     p_mem->NbrFree     = n_blks;                                /* Store number of free blocks in M
+ 172:rtos/uCOS-III/Source/os_mem.c ****     p_mem->NbrMax      = n_blks;
+ 173:rtos/uCOS-III/Source/os_mem.c ****     p_mem->BlkSize     = blk_size;                              /* Store block size of each memory 
+ 174:rtos/uCOS-III/Source/os_mem.c **** 
+ 175:rtos/uCOS-III/Source/os_mem.c **** #if (OS_CFG_DBG_EN > 0u)
+ 176:rtos/uCOS-III/Source/os_mem.c ****     OS_MemDbgListAdd(p_mem);
+ 177:rtos/uCOS-III/Source/os_mem.c ****     OSMemQty++;
+ 178:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 179:rtos/uCOS-III/Source/os_mem.c **** 
+ 180:rtos/uCOS-III/Source/os_mem.c ****     OS_TRACE_MEM_CREATE(p_mem, p_name);
+ 181:rtos/uCOS-III/Source/os_mem.c ****     CPU_CRITICAL_EXIT();
+ 182:rtos/uCOS-III/Source/os_mem.c ****    *p_err = OS_ERR_NONE;
+ 183:rtos/uCOS-III/Source/os_mem.c **** }
+ 139              		.loc 1 183 1 is_stmt 0 view .LVU48
+ 140 004a F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 141              	.LVL16:
+ 142              	.L14:
+ 121:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 143              		.loc 1 121 8 is_stmt 1 view .LVU49
+ 121:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 144              		.loc 1 121 17 is_stmt 0 view .LVU50
+ 145 004c 45F2BB63 		movw	r3, #22203
+ 146 0050 079A     		ldr	r2, [sp, #28]
+ 147              	.LVL17:
+ 121:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 148              		.loc 1 121 17 view .LVU51
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 7
+
+
+ 149 0052 1380     		strh	r3, [r2]	@ movhi
+ 122:rtos/uCOS-III/Source/os_mem.c ****     }
+ 150              		.loc 1 122 9 is_stmt 1 view .LVU52
+ 151 0054 F9E7     		b	.L1
+ 152              	.LVL18:
+ 153              	.L15:
+ 125:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 154              		.loc 1 125 8 view .LVU53
+ 125:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 155              		.loc 1 125 15 is_stmt 0 view .LVU54
+ 156 0056 45F2BC63 		movw	r3, #22204
+ 157 005a 079A     		ldr	r2, [sp, #28]
+ 158              	.LVL19:
+ 125:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 159              		.loc 1 125 15 view .LVU55
+ 160 005c 1380     		strh	r3, [r2]	@ movhi
+ 126:rtos/uCOS-III/Source/os_mem.c ****     }
+ 161              		.loc 1 126 9 is_stmt 1 view .LVU56
+ 162 005e F4E7     		b	.L1
+ 163              	.LVL20:
+ 164              	.L16:
+ 129:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 165              		.loc 1 129 8 view .LVU57
+ 129:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 166              		.loc 1 129 15 is_stmt 0 view .LVU58
+ 167 0060 45F2C163 		movw	r3, #22209
+ 168 0064 079A     		ldr	r2, [sp, #28]
+ 169              	.LVL21:
+ 129:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 170              		.loc 1 129 15 view .LVU59
+ 171 0066 1380     		strh	r3, [r2]	@ movhi
+ 130:rtos/uCOS-III/Source/os_mem.c ****     }
+ 172              		.loc 1 130 9 is_stmt 1 view .LVU60
+ 173 0068 EFE7     		b	.L1
+ 174              	.LVL22:
+ 175              	.L17:
+ 135:rtos/uCOS-III/Source/os_mem.c ****             return;
+ 176              		.loc 1 135 12 view .LVU61
+ 135:rtos/uCOS-III/Source/os_mem.c ****             return;
+ 177              		.loc 1 135 19 is_stmt 0 view .LVU62
+ 178 006a 45F2BB63 		movw	r3, #22203
+ 179 006e 079A     		ldr	r2, [sp, #28]
+ 180              	.LVL23:
+ 135:rtos/uCOS-III/Source/os_mem.c ****             return;
+ 181              		.loc 1 135 19 view .LVU63
+ 182 0070 1380     		strh	r3, [r2]	@ movhi
+ 136:rtos/uCOS-III/Source/os_mem.c ****         }
+ 183              		.loc 1 136 13 is_stmt 1 view .LVU64
+ 184 0072 EAE7     		b	.L1
+ 185              	.LVL24:
+ 186              	.L18:
+ 139:rtos/uCOS-III/Source/os_mem.c ****             return;
+ 187              		.loc 1 139 12 view .LVU65
+ 139:rtos/uCOS-III/Source/os_mem.c ****             return;
+ 188              		.loc 1 139 19 is_stmt 0 view .LVU66
+ 189 0074 45F2C163 		movw	r3, #22209
+ 190 0078 079A     		ldr	r2, [sp, #28]
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 8
+
+
+ 191              	.LVL25:
+ 139:rtos/uCOS-III/Source/os_mem.c ****             return;
+ 192              		.loc 1 139 19 view .LVU67
+ 193 007a 1380     		strh	r3, [r2]	@ movhi
+ 140:rtos/uCOS-III/Source/os_mem.c ****         }
+ 194              		.loc 1 140 13 is_stmt 1 view .LVU68
+ 195 007c E5E7     		b	.L1
+ 196              	.LVL26:
+ 197              	.L19:
+ 153:rtos/uCOS-III/Source/os_mem.c **** 
+ 198              		.loc 1 153 4 view .LVU69
+ 153:rtos/uCOS-III/Source/os_mem.c **** 
+ 199              		.loc 1 153 24 is_stmt 0 view .LVU70
+ 200 007e 0022     		movs	r2, #0
+ 201              	.LVL27:
+ 153:rtos/uCOS-III/Source/os_mem.c **** 
+ 202              		.loc 1 153 24 view .LVU71
+ 203 0080 1A60     		str	r2, [r3]
+ 155:rtos/uCOS-III/Source/os_mem.c **** #if (OS_OBJ_TYPE_REQ > 0u)
+ 204              		.loc 1 155 5 is_stmt 1 view .LVU72
+ 155:rtos/uCOS-III/Source/os_mem.c **** #if (OS_OBJ_TYPE_REQ > 0u)
+ 205              		.loc 1 155 5 view .LVU73
+ 155:rtos/uCOS-III/Source/os_mem.c **** #if (OS_OBJ_TYPE_REQ > 0u)
+ 206              		.loc 1 155 5 view .LVU74
+ 207 0082 4020     		movs	r0, #64
+ 208              	.LVL28:
+ 155:rtos/uCOS-III/Source/os_mem.c **** #if (OS_OBJ_TYPE_REQ > 0u)
+ 209              		.loc 1 155 5 is_stmt 0 view .LVU75
+ 210 0084 FFF7FEFF 		bl	CPU_SR_Save
+ 211              	.LVL29:
+ 155:rtos/uCOS-III/Source/os_mem.c **** #if (OS_OBJ_TYPE_REQ > 0u)
+ 212              		.loc 1 155 5 is_stmt 1 view .LVU76
+ 155:rtos/uCOS-III/Source/os_mem.c **** #if (OS_OBJ_TYPE_REQ > 0u)
+ 213              		.loc 1 155 5 view .LVU77
+ 157:rtos/uCOS-III/Source/os_mem.c ****         CPU_CRITICAL_EXIT();
+ 214              		.loc 1 157 5 view .LVU78
+ 157:rtos/uCOS-III/Source/os_mem.c ****         CPU_CRITICAL_EXIT();
+ 215              		.loc 1 157 14 is_stmt 0 view .LVU79
+ 216 0088 3268     		ldr	r2, [r6]
+ 157:rtos/uCOS-III/Source/os_mem.c ****         CPU_CRITICAL_EXIT();
+ 217              		.loc 1 157 8 view .LVU80
+ 218 008a 0C4B     		ldr	r3, .L21+4
+ 219 008c 9A42     		cmp	r2, r3
+ 220 008e 0CD0     		beq	.L20
+ 162:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 221              		.loc 1 162 5 is_stmt 1 view .LVU81
+ 162:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 222              		.loc 1 162 24 is_stmt 0 view .LVU82
+ 223 0090 0A4B     		ldr	r3, .L21+4
+ 224 0092 3360     		str	r3, [r6]
+ 167:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 225              		.loc 1 167 5 is_stmt 1 view .LVU83
+ 169:rtos/uCOS-III/Source/os_mem.c ****     p_mem->FreeListPtr = p_addr;                                /* Initialize pointer to pool of fr
+ 226              		.loc 1 169 5 view .LVU84
+ 169:rtos/uCOS-III/Source/os_mem.c ****     p_mem->FreeListPtr = p_addr;                                /* Initialize pointer to pool of fr
+ 227              		.loc 1 169 24 is_stmt 0 view .LVU85
+ 228 0094 7460     		str	r4, [r6, #4]
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 9
+
+
+ 170:rtos/uCOS-III/Source/os_mem.c ****     p_mem->NbrFree     = n_blks;                                /* Store number of free blocks in M
+ 229              		.loc 1 170 5 is_stmt 1 view .LVU86
+ 170:rtos/uCOS-III/Source/os_mem.c ****     p_mem->NbrFree     = n_blks;                                /* Store number of free blocks in M
+ 230              		.loc 1 170 24 is_stmt 0 view .LVU87
+ 231 0096 B460     		str	r4, [r6, #8]
+ 171:rtos/uCOS-III/Source/os_mem.c ****     p_mem->NbrMax      = n_blks;
+ 232              		.loc 1 171 5 is_stmt 1 view .LVU88
+ 171:rtos/uCOS-III/Source/os_mem.c ****     p_mem->NbrMax      = n_blks;
+ 233              		.loc 1 171 24 is_stmt 0 view .LVU89
+ 234 0098 3582     		strh	r5, [r6, #16]	@ movhi
+ 172:rtos/uCOS-III/Source/os_mem.c ****     p_mem->BlkSize     = blk_size;                              /* Store block size of each memory 
+ 235              		.loc 1 172 5 is_stmt 1 view .LVU90
+ 172:rtos/uCOS-III/Source/os_mem.c ****     p_mem->BlkSize     = blk_size;                              /* Store block size of each memory 
+ 236              		.loc 1 172 24 is_stmt 0 view .LVU91
+ 237 009a F581     		strh	r5, [r6, #14]	@ movhi
+ 173:rtos/uCOS-III/Source/os_mem.c **** 
+ 238              		.loc 1 173 5 is_stmt 1 view .LVU92
+ 173:rtos/uCOS-III/Source/os_mem.c **** 
+ 239              		.loc 1 173 24 is_stmt 0 view .LVU93
+ 240 009c B781     		strh	r7, [r6, #12]	@ movhi
+ 180:rtos/uCOS-III/Source/os_mem.c ****     CPU_CRITICAL_EXIT();
+ 241              		.loc 1 180 39 is_stmt 1 view .LVU94
+ 181:rtos/uCOS-III/Source/os_mem.c ****    *p_err = OS_ERR_NONE;
+ 242              		.loc 1 181 5 view .LVU95
+ 181:rtos/uCOS-III/Source/os_mem.c ****    *p_err = OS_ERR_NONE;
+ 243              		.loc 1 181 5 view .LVU96
+ 181:rtos/uCOS-III/Source/os_mem.c ****    *p_err = OS_ERR_NONE;
+ 244              		.loc 1 181 5 view .LVU97
+ 245 009e FFF7FEFF 		bl	CPU_SR_Restore
+ 246              	.LVL30:
+ 181:rtos/uCOS-III/Source/os_mem.c ****    *p_err = OS_ERR_NONE;
+ 247              		.loc 1 181 5 view .LVU98
+ 181:rtos/uCOS-III/Source/os_mem.c ****    *p_err = OS_ERR_NONE;
+ 248              		.loc 1 181 5 view .LVU99
+ 182:rtos/uCOS-III/Source/os_mem.c **** }
+ 249              		.loc 1 182 4 view .LVU100
+ 182:rtos/uCOS-III/Source/os_mem.c **** }
+ 250              		.loc 1 182 11 is_stmt 0 view .LVU101
+ 251 00a2 0023     		movs	r3, #0
+ 252 00a4 079A     		ldr	r2, [sp, #28]
+ 253 00a6 1380     		strh	r3, [r2]	@ movhi
+ 254 00a8 CFE7     		b	.L1
+ 255              	.LVL31:
+ 256              	.L20:
+ 158:rtos/uCOS-III/Source/os_mem.c ****         *p_err = OS_ERR_OBJ_CREATED;
+ 257              		.loc 1 158 9 is_stmt 1 view .LVU102
+ 158:rtos/uCOS-III/Source/os_mem.c ****         *p_err = OS_ERR_OBJ_CREATED;
+ 258              		.loc 1 158 9 view .LVU103
+ 158:rtos/uCOS-III/Source/os_mem.c ****         *p_err = OS_ERR_OBJ_CREATED;
+ 259              		.loc 1 158 9 view .LVU104
+ 260 00aa FFF7FEFF 		bl	CPU_SR_Restore
+ 261              	.LVL32:
+ 158:rtos/uCOS-III/Source/os_mem.c ****         *p_err = OS_ERR_OBJ_CREATED;
+ 262              		.loc 1 158 9 view .LVU105
+ 158:rtos/uCOS-III/Source/os_mem.c ****         *p_err = OS_ERR_OBJ_CREATED;
+ 263              		.loc 1 158 9 view .LVU106
+ 159:rtos/uCOS-III/Source/os_mem.c ****         return;
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 10
+
+
+ 264              		.loc 1 159 9 view .LVU107
+ 159:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 265              		.loc 1 159 16 is_stmt 0 view .LVU108
+ 266 00ae 45F6C153 		movw	r3, #24001
+ 267 00b2 079A     		ldr	r2, [sp, #28]
+ 268 00b4 1380     		strh	r3, [r2]	@ movhi
+ 160:rtos/uCOS-III/Source/os_mem.c ****     }
+ 269              		.loc 1 160 9 is_stmt 1 view .LVU109
+ 270 00b6 C8E7     		b	.L1
+ 271              	.L22:
+ 272              		.align	2
+ 273              	.L21:
+ 274 00b8 00000000 		.word	OSIntNestingCtr
+ 275 00bc 4D454D20 		.word	541934925
+ 276              		.cfi_endproc
+ 277              	.LFE0:
+ 279              		.section	.text.OSMemGet,"ax",%progbits
+ 280              		.align	1
+ 281              		.global	OSMemGet
+ 282              		.syntax unified
+ 283              		.thumb
+ 284              		.thumb_func
+ 285              		.fpu fpv4-sp-d16
+ 287              	OSMemGet:
+ 288              	.LVL33:
+ 289              	.LFB1:
+ 184:rtos/uCOS-III/Source/os_mem.c **** 
+ 185:rtos/uCOS-III/Source/os_mem.c **** 
+ 186:rtos/uCOS-III/Source/os_mem.c **** /*
+ 187:rtos/uCOS-III/Source/os_mem.c **** ***************************************************************************************************
+ 188:rtos/uCOS-III/Source/os_mem.c **** *                                                  GET A MEMORY BLOCK
+ 189:rtos/uCOS-III/Source/os_mem.c **** *
+ 190:rtos/uCOS-III/Source/os_mem.c **** * Description : Get a memory block from a partition.
+ 191:rtos/uCOS-III/Source/os_mem.c **** *
+ 192:rtos/uCOS-III/Source/os_mem.c **** * Arguments   : p_mem   is a pointer to the memory partition control block
+ 193:rtos/uCOS-III/Source/os_mem.c **** *
+ 194:rtos/uCOS-III/Source/os_mem.c **** *               p_err   is a pointer to a variable containing an error message which will be set by
+ 195:rtos/uCOS-III/Source/os_mem.c **** *                       either:
+ 196:rtos/uCOS-III/Source/os_mem.c **** *
+ 197:rtos/uCOS-III/Source/os_mem.c **** *                           OS_ERR_NONE               If the memory partition has been created corr
+ 198:rtos/uCOS-III/Source/os_mem.c **** *                           OS_ERR_MEM_INVALID_P_MEM  If you passed a NULL pointer for 'p_mem'
+ 199:rtos/uCOS-III/Source/os_mem.c **** *                           OS_ERR_MEM_NO_FREE_BLKS   If there are no more free memory blocks to al
+ 200:rtos/uCOS-III/Source/os_mem.c **** *                           OS_ERR_OBJ_TYPE           If 'p_mem' is not pointing at a memory partit
+ 201:rtos/uCOS-III/Source/os_mem.c **** *
+ 202:rtos/uCOS-III/Source/os_mem.c **** * Returns    : A pointer to a memory block if no error is detected
+ 203:rtos/uCOS-III/Source/os_mem.c **** *              A pointer to NULL if an error is detected
+ 204:rtos/uCOS-III/Source/os_mem.c **** *
+ 205:rtos/uCOS-III/Source/os_mem.c **** * Note(s)    : none
+ 206:rtos/uCOS-III/Source/os_mem.c **** ***************************************************************************************************
+ 207:rtos/uCOS-III/Source/os_mem.c **** */
+ 208:rtos/uCOS-III/Source/os_mem.c **** 
+ 209:rtos/uCOS-III/Source/os_mem.c **** void  *OSMemGet (OS_MEM  *p_mem,
+ 210:rtos/uCOS-III/Source/os_mem.c ****                  OS_ERR  *p_err)
+ 211:rtos/uCOS-III/Source/os_mem.c **** {
+ 290              		.loc 1 211 1 view -0
+ 291              		.cfi_startproc
+ 292              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 11
+
+
+ 293              		@ frame_needed = 0, uses_anonymous_args = 0
+ 294              		.loc 1 211 1 is_stmt 0 view .LVU111
+ 295 0000 70B5     		push	{r4, r5, r6, lr}
+ 296              	.LCFI1:
+ 297              		.cfi_def_cfa_offset 16
+ 298              		.cfi_offset 4, -16
+ 299              		.cfi_offset 5, -12
+ 300              		.cfi_offset 6, -8
+ 301              		.cfi_offset 14, -4
+ 302 0002 0D46     		mov	r5, r1
+ 212:rtos/uCOS-III/Source/os_mem.c ****     void    *p_blk;
+ 303              		.loc 1 212 5 is_stmt 1 view .LVU112
+ 213:rtos/uCOS-III/Source/os_mem.c ****     CPU_SR_ALLOC();
+ 304              		.loc 1 213 5 view .LVU113
+ 305              	.LVL34:
+ 214:rtos/uCOS-III/Source/os_mem.c **** 
+ 215:rtos/uCOS-III/Source/os_mem.c **** 
+ 216:rtos/uCOS-III/Source/os_mem.c **** 
+ 217:rtos/uCOS-III/Source/os_mem.c **** #ifdef OS_SAFETY_CRITICAL
+ 218:rtos/uCOS-III/Source/os_mem.c ****     if (p_err == (OS_ERR *)0) {
+ 219:rtos/uCOS-III/Source/os_mem.c ****         OS_SAFETY_CRITICAL_EXCEPTION();
+ 220:rtos/uCOS-III/Source/os_mem.c ****         return ((void *)0);
+ 221:rtos/uCOS-III/Source/os_mem.c ****     }
+ 222:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 223:rtos/uCOS-III/Source/os_mem.c **** 
+ 224:rtos/uCOS-III/Source/os_mem.c ****     OS_TRACE_MEM_GET_ENTER(p_mem);
+ 306              		.loc 1 224 34 view .LVU114
+ 225:rtos/uCOS-III/Source/os_mem.c **** 
+ 226:rtos/uCOS-III/Source/os_mem.c **** #if (OS_CFG_ARG_CHK_EN > 0u)
+ 227:rtos/uCOS-III/Source/os_mem.c ****     if (p_mem == (OS_MEM *)0) {                                 /* Must point to a valid memory par
+ 307              		.loc 1 227 5 view .LVU115
+ 308              		.loc 1 227 8 is_stmt 0 view .LVU116
+ 309 0004 0646     		mov	r6, r0
+ 310 0006 90B1     		cbz	r0, .L29
+ 228:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_GET_FAILED(p_mem);
+ 229:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_GET_EXIT(OS_ERR_MEM_INVALID_P_MEM);
+ 230:rtos/uCOS-III/Source/os_mem.c ****        *p_err  = OS_ERR_MEM_INVALID_P_MEM;
+ 231:rtos/uCOS-III/Source/os_mem.c ****         return ((void *)0);
+ 232:rtos/uCOS-III/Source/os_mem.c ****     }
+ 233:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 234:rtos/uCOS-III/Source/os_mem.c **** 
+ 235:rtos/uCOS-III/Source/os_mem.c **** #if (OS_CFG_OBJ_TYPE_CHK_EN > 0u)
+ 236:rtos/uCOS-III/Source/os_mem.c ****     if (p_mem->Type != OS_OBJ_TYPE_MEM) {                       /* Make sure the memory block was c
+ 311              		.loc 1 236 5 is_stmt 1 view .LVU117
+ 312              		.loc 1 236 14 is_stmt 0 view .LVU118
+ 313 0008 0268     		ldr	r2, [r0]
+ 314              		.loc 1 236 8 view .LVU119
+ 315 000a 124B     		ldr	r3, .L32
+ 316 000c 9A42     		cmp	r2, r3
+ 317 000e 13D1     		bne	.L30
+ 237:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_GET_EXIT(OS_ERR_OBJ_TYPE);
+ 238:rtos/uCOS-III/Source/os_mem.c ****        *p_err = OS_ERR_OBJ_TYPE;
+ 239:rtos/uCOS-III/Source/os_mem.c ****         return ((void *)0);
+ 240:rtos/uCOS-III/Source/os_mem.c ****     }
+ 241:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 242:rtos/uCOS-III/Source/os_mem.c **** 
+ 243:rtos/uCOS-III/Source/os_mem.c **** 
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 12
+
+
+ 244:rtos/uCOS-III/Source/os_mem.c ****     CPU_CRITICAL_ENTER();
+ 318              		.loc 1 244 5 is_stmt 1 view .LVU120
+ 319              		.loc 1 244 5 view .LVU121
+ 320              		.loc 1 244 5 view .LVU122
+ 321 0010 4020     		movs	r0, #64
+ 322              	.LVL35:
+ 323              		.loc 1 244 5 is_stmt 0 view .LVU123
+ 324 0012 FFF7FEFF 		bl	CPU_SR_Save
+ 325              	.LVL36:
+ 326              		.loc 1 244 5 is_stmt 1 view .LVU124
+ 327              		.loc 1 244 5 view .LVU125
+ 245:rtos/uCOS-III/Source/os_mem.c ****     if (p_mem->NbrFree == 0u) {                                 /* See if there are any free memory
+ 328              		.loc 1 245 5 view .LVU126
+ 329              		.loc 1 245 14 is_stmt 0 view .LVU127
+ 330 0016 338A     		ldrh	r3, [r6, #16]
+ 331              		.loc 1 245 8 view .LVU128
+ 332 0018 A3B1     		cbz	r3, .L31
+ 246:rtos/uCOS-III/Source/os_mem.c ****         CPU_CRITICAL_EXIT();
+ 247:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_GET_FAILED(p_mem);
+ 248:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_GET_EXIT(OS_ERR_MEM_NO_FREE_BLKS);
+ 249:rtos/uCOS-III/Source/os_mem.c ****        *p_err = OS_ERR_MEM_NO_FREE_BLKS;                        /* No,  Notify caller of empty memo
+ 250:rtos/uCOS-III/Source/os_mem.c ****         return ((void *)0);                                     /* Return NULL pointer to caller   
+ 251:rtos/uCOS-III/Source/os_mem.c ****     }
+ 252:rtos/uCOS-III/Source/os_mem.c ****     p_blk              = p_mem->FreeListPtr;                    /* Yes, point to next free memory b
+ 333              		.loc 1 252 5 is_stmt 1 view .LVU129
+ 334              		.loc 1 252 24 is_stmt 0 view .LVU130
+ 335 001a B468     		ldr	r4, [r6, #8]
+ 336              	.LVL37:
+ 253:rtos/uCOS-III/Source/os_mem.c ****     p_mem->FreeListPtr = *(void **)p_blk;                       /* Adjust pointer to new free list 
+ 337              		.loc 1 253 5 is_stmt 1 view .LVU131
+ 338              		.loc 1 253 26 is_stmt 0 view .LVU132
+ 339 001c 2268     		ldr	r2, [r4]
+ 340              		.loc 1 253 24 view .LVU133
+ 341 001e B260     		str	r2, [r6, #8]
+ 254:rtos/uCOS-III/Source/os_mem.c ****     p_mem->NbrFree--;                                           /* One less memory block in this pa
+ 342              		.loc 1 254 5 is_stmt 1 view .LVU134
+ 343              		.loc 1 254 19 is_stmt 0 view .LVU135
+ 344 0020 013B     		subs	r3, r3, #1
+ 345 0022 3382     		strh	r3, [r6, #16]	@ movhi
+ 255:rtos/uCOS-III/Source/os_mem.c ****     CPU_CRITICAL_EXIT();
+ 346              		.loc 1 255 5 is_stmt 1 view .LVU136
+ 347              		.loc 1 255 5 view .LVU137
+ 348              		.loc 1 255 5 view .LVU138
+ 349 0024 FFF7FEFF 		bl	CPU_SR_Restore
+ 350              	.LVL38:
+ 351              		.loc 1 255 5 view .LVU139
+ 352              		.loc 1 255 5 view .LVU140
+ 256:rtos/uCOS-III/Source/os_mem.c ****     OS_TRACE_MEM_GET(p_mem);
+ 353              		.loc 1 256 28 view .LVU141
+ 257:rtos/uCOS-III/Source/os_mem.c ****     OS_TRACE_MEM_GET_EXIT(OS_ERR_NONE);
+ 354              		.loc 1 257 39 view .LVU142
+ 258:rtos/uCOS-III/Source/os_mem.c ****    *p_err = OS_ERR_NONE;                                        /* No error                        
+ 355              		.loc 1 258 4 view .LVU143
+ 356              		.loc 1 258 11 is_stmt 0 view .LVU144
+ 357 0028 0023     		movs	r3, #0
+ 358 002a 2B80     		strh	r3, [r5]	@ movhi
+ 259:rtos/uCOS-III/Source/os_mem.c ****     return (p_blk);                                             /* Return memory block to caller   
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 13
+
+
+ 359              		.loc 1 259 5 is_stmt 1 view .LVU145
+ 360              		.loc 1 259 12 is_stmt 0 view .LVU146
+ 361 002c 08E0     		b	.L23
+ 362              	.LVL39:
+ 363              	.L29:
+ 228:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_GET_EXIT(OS_ERR_MEM_INVALID_P_MEM);
+ 364              		.loc 1 228 39 is_stmt 1 view .LVU147
+ 229:rtos/uCOS-III/Source/os_mem.c ****        *p_err  = OS_ERR_MEM_INVALID_P_MEM;
+ 365              		.loc 1 229 56 view .LVU148
+ 230:rtos/uCOS-III/Source/os_mem.c ****         return ((void *)0);
+ 366              		.loc 1 230 8 view .LVU149
+ 230:rtos/uCOS-III/Source/os_mem.c ****         return ((void *)0);
+ 367              		.loc 1 230 16 is_stmt 0 view .LVU150
+ 368 002e 45F2BF63 		movw	r3, #22207
+ 369 0032 0B80     		strh	r3, [r1]	@ movhi
+ 231:rtos/uCOS-III/Source/os_mem.c ****     }
+ 370              		.loc 1 231 9 is_stmt 1 view .LVU151
+ 231:rtos/uCOS-III/Source/os_mem.c ****     }
+ 371              		.loc 1 231 16 is_stmt 0 view .LVU152
+ 372 0034 0446     		mov	r4, r0
+ 373 0036 03E0     		b	.L23
+ 374              	.L30:
+ 237:rtos/uCOS-III/Source/os_mem.c ****        *p_err = OS_ERR_OBJ_TYPE;
+ 375              		.loc 1 237 47 is_stmt 1 view .LVU153
+ 238:rtos/uCOS-III/Source/os_mem.c ****         return ((void *)0);
+ 376              		.loc 1 238 8 view .LVU154
+ 238:rtos/uCOS-III/Source/os_mem.c ****         return ((void *)0);
+ 377              		.loc 1 238 15 is_stmt 0 view .LVU155
+ 378 0038 45F6C453 		movw	r3, #24004
+ 379 003c 0B80     		strh	r3, [r1]	@ movhi
+ 239:rtos/uCOS-III/Source/os_mem.c ****     }
+ 380              		.loc 1 239 9 is_stmt 1 view .LVU156
+ 239:rtos/uCOS-III/Source/os_mem.c ****     }
+ 381              		.loc 1 239 16 is_stmt 0 view .LVU157
+ 382 003e 0024     		movs	r4, #0
+ 383              	.LVL40:
+ 384              	.L23:
+ 260:rtos/uCOS-III/Source/os_mem.c **** }
+ 385              		.loc 1 260 1 view .LVU158
+ 386 0040 2046     		mov	r0, r4
+ 387 0042 70BD     		pop	{r4, r5, r6, pc}
+ 388              	.LVL41:
+ 389              	.L31:
+ 246:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_GET_FAILED(p_mem);
+ 390              		.loc 1 246 9 is_stmt 1 view .LVU159
+ 246:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_GET_FAILED(p_mem);
+ 391              		.loc 1 246 9 view .LVU160
+ 246:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_GET_FAILED(p_mem);
+ 392              		.loc 1 246 9 view .LVU161
+ 393 0044 FFF7FEFF 		bl	CPU_SR_Restore
+ 394              	.LVL42:
+ 246:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_GET_FAILED(p_mem);
+ 395              		.loc 1 246 9 view .LVU162
+ 246:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_GET_FAILED(p_mem);
+ 396              		.loc 1 246 9 view .LVU163
+ 247:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_GET_EXIT(OS_ERR_MEM_NO_FREE_BLKS);
+ 397              		.loc 1 247 39 view .LVU164
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 14
+
+
+ 248:rtos/uCOS-III/Source/os_mem.c ****        *p_err = OS_ERR_MEM_NO_FREE_BLKS;                        /* No,  Notify caller of empty memo
+ 398              		.loc 1 248 55 view .LVU165
+ 249:rtos/uCOS-III/Source/os_mem.c ****         return ((void *)0);                                     /* Return NULL pointer to caller   
+ 399              		.loc 1 249 8 view .LVU166
+ 249:rtos/uCOS-III/Source/os_mem.c ****         return ((void *)0);                                     /* Return NULL pointer to caller   
+ 400              		.loc 1 249 15 is_stmt 0 view .LVU167
+ 401 0048 45F2C263 		movw	r3, #22210
+ 402 004c 2B80     		strh	r3, [r5]	@ movhi
+ 250:rtos/uCOS-III/Source/os_mem.c ****     }
+ 403              		.loc 1 250 9 is_stmt 1 view .LVU168
+ 250:rtos/uCOS-III/Source/os_mem.c ****     }
+ 404              		.loc 1 250 16 is_stmt 0 view .LVU169
+ 405 004e 0024     		movs	r4, #0
+ 406 0050 F6E7     		b	.L23
+ 407              	.L33:
+ 408 0052 00BF     		.align	2
+ 409              	.L32:
+ 410 0054 4D454D20 		.word	541934925
+ 411              		.cfi_endproc
+ 412              	.LFE1:
+ 414              		.section	.text.OSMemPut,"ax",%progbits
+ 415              		.align	1
+ 416              		.global	OSMemPut
+ 417              		.syntax unified
+ 418              		.thumb
+ 419              		.thumb_func
+ 420              		.fpu fpv4-sp-d16
+ 422              	OSMemPut:
+ 423              	.LVL43:
+ 424              	.LFB2:
+ 261:rtos/uCOS-III/Source/os_mem.c **** 
+ 262:rtos/uCOS-III/Source/os_mem.c **** 
+ 263:rtos/uCOS-III/Source/os_mem.c **** /*
+ 264:rtos/uCOS-III/Source/os_mem.c **** ***************************************************************************************************
+ 265:rtos/uCOS-III/Source/os_mem.c **** *                                                 RELEASE A MEMORY BLOCK
+ 266:rtos/uCOS-III/Source/os_mem.c **** *
+ 267:rtos/uCOS-III/Source/os_mem.c **** * Description : Returns a memory block to a partition.
+ 268:rtos/uCOS-III/Source/os_mem.c **** *
+ 269:rtos/uCOS-III/Source/os_mem.c **** * Arguments   : p_mem    is a pointer to the memory partition control block
+ 270:rtos/uCOS-III/Source/os_mem.c **** *
+ 271:rtos/uCOS-III/Source/os_mem.c **** *               p_blk    is a pointer to the memory block being released.
+ 272:rtos/uCOS-III/Source/os_mem.c **** *
+ 273:rtos/uCOS-III/Source/os_mem.c **** *               p_err    is a pointer to a variable that will contain an error code returned by thi
+ 274:rtos/uCOS-III/Source/os_mem.c **** *
+ 275:rtos/uCOS-III/Source/os_mem.c **** *                            OS_ERR_NONE               If the memory block was inserted into the pa
+ 276:rtos/uCOS-III/Source/os_mem.c **** *                            OS_ERR_MEM_FULL           If you are returning a memory block to an al
+ 277:rtos/uCOS-III/Source/os_mem.c **** *                                                      partition (You freed more blocks than you al
+ 278:rtos/uCOS-III/Source/os_mem.c **** *                            OS_ERR_MEM_INVALID_P_BLK  If you passed a NULL pointer for the block t
+ 279:rtos/uCOS-III/Source/os_mem.c **** *                            OS_ERR_MEM_INVALID_P_MEM  If you passed a NULL pointer for 'p_mem'
+ 280:rtos/uCOS-III/Source/os_mem.c **** *                            OS_ERR_OBJ_TYPE           If 'p_mem' is not pointing at a memory parti
+ 281:rtos/uCOS-III/Source/os_mem.c **** *
+ 282:rtos/uCOS-III/Source/os_mem.c **** * Returns    : none
+ 283:rtos/uCOS-III/Source/os_mem.c **** *
+ 284:rtos/uCOS-III/Source/os_mem.c **** * Note(s)    : none
+ 285:rtos/uCOS-III/Source/os_mem.c **** ***************************************************************************************************
+ 286:rtos/uCOS-III/Source/os_mem.c **** */
+ 287:rtos/uCOS-III/Source/os_mem.c **** 
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 15
+
+
+ 288:rtos/uCOS-III/Source/os_mem.c **** void  OSMemPut (OS_MEM  *p_mem,
+ 289:rtos/uCOS-III/Source/os_mem.c ****                 void    *p_blk,
+ 290:rtos/uCOS-III/Source/os_mem.c ****                 OS_ERR  *p_err)
+ 291:rtos/uCOS-III/Source/os_mem.c **** {
+ 425              		.loc 1 291 1 is_stmt 1 view -0
+ 426              		.cfi_startproc
+ 427              		@ args = 0, pretend = 0, frame = 0
+ 428              		@ frame_needed = 0, uses_anonymous_args = 0
+ 429              		.loc 1 291 1 is_stmt 0 view .LVU171
+ 430 0000 70B5     		push	{r4, r5, r6, lr}
+ 431              	.LCFI2:
+ 432              		.cfi_def_cfa_offset 16
+ 433              		.cfi_offset 4, -16
+ 434              		.cfi_offset 5, -12
+ 435              		.cfi_offset 6, -8
+ 436              		.cfi_offset 14, -4
+ 437 0002 1646     		mov	r6, r2
+ 292:rtos/uCOS-III/Source/os_mem.c ****     CPU_SR_ALLOC();
+ 438              		.loc 1 292 5 is_stmt 1 view .LVU172
+ 439              	.LVL44:
+ 293:rtos/uCOS-III/Source/os_mem.c **** 
+ 294:rtos/uCOS-III/Source/os_mem.c **** 
+ 295:rtos/uCOS-III/Source/os_mem.c **** 
+ 296:rtos/uCOS-III/Source/os_mem.c **** #ifdef OS_SAFETY_CRITICAL
+ 297:rtos/uCOS-III/Source/os_mem.c ****     if (p_err == (OS_ERR *)0) {
+ 298:rtos/uCOS-III/Source/os_mem.c ****         OS_SAFETY_CRITICAL_EXCEPTION();
+ 299:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 300:rtos/uCOS-III/Source/os_mem.c ****     }
+ 301:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 302:rtos/uCOS-III/Source/os_mem.c **** 
+ 303:rtos/uCOS-III/Source/os_mem.c ****     OS_TRACE_MEM_PUT_ENTER(p_mem, p_blk);
+ 440              		.loc 1 303 41 view .LVU173
+ 304:rtos/uCOS-III/Source/os_mem.c **** 
+ 305:rtos/uCOS-III/Source/os_mem.c **** #if (OS_CFG_ARG_CHK_EN > 0u)
+ 306:rtos/uCOS-III/Source/os_mem.c ****     if (p_mem == (OS_MEM *)0) {                                 /* Must point to a valid memory par
+ 441              		.loc 1 306 5 view .LVU174
+ 442              		.loc 1 306 8 is_stmt 0 view .LVU175
+ 443 0004 50B1     		cbz	r0, .L41
+ 444 0006 0C46     		mov	r4, r1
+ 445 0008 0546     		mov	r5, r0
+ 307:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_PUT_FAILED(p_mem);
+ 308:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_PUT_EXIT(OS_ERR_MEM_INVALID_P_MEM);
+ 309:rtos/uCOS-III/Source/os_mem.c ****        *p_err  = OS_ERR_MEM_INVALID_P_MEM;
+ 310:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 311:rtos/uCOS-III/Source/os_mem.c ****     }
+ 312:rtos/uCOS-III/Source/os_mem.c ****     if (p_blk == (void *)0) {                                   /* Must release a valid block      
+ 446              		.loc 1 312 5 is_stmt 1 view .LVU176
+ 447              		.loc 1 312 8 is_stmt 0 view .LVU177
+ 448 000a 59B1     		cbz	r1, .L42
+ 313:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_PUT_FAILED(p_mem);
+ 314:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_PUT_EXIT(OS_ERR_MEM_INVALID_P_BLK);
+ 315:rtos/uCOS-III/Source/os_mem.c ****        *p_err  = OS_ERR_MEM_INVALID_P_BLK;
+ 316:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 317:rtos/uCOS-III/Source/os_mem.c ****     }
+ 318:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 319:rtos/uCOS-III/Source/os_mem.c **** 
+ 320:rtos/uCOS-III/Source/os_mem.c **** #if (OS_CFG_OBJ_TYPE_CHK_EN > 0u)
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 16
+
+
+ 321:rtos/uCOS-III/Source/os_mem.c ****     if (p_mem->Type != OS_OBJ_TYPE_MEM) {                       /* Make sure the memory block was c
+ 449              		.loc 1 321 5 is_stmt 1 view .LVU178
+ 450              		.loc 1 321 14 is_stmt 0 view .LVU179
+ 451 000c 0268     		ldr	r2, [r0]
+ 452              	.LVL45:
+ 453              		.loc 1 321 8 view .LVU180
+ 454 000e 134B     		ldr	r3, .L44
+ 455 0010 9A42     		cmp	r2, r3
+ 456 0012 0BD0     		beq	.L38
+ 322:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_PUT_EXIT(OS_ERR_OBJ_TYPE);
+ 457              		.loc 1 322 47 is_stmt 1 view .LVU181
+ 323:rtos/uCOS-III/Source/os_mem.c ****        *p_err = OS_ERR_OBJ_TYPE;
+ 458              		.loc 1 323 8 view .LVU182
+ 459              		.loc 1 323 15 is_stmt 0 view .LVU183
+ 460 0014 45F6C453 		movw	r3, #24004
+ 461 0018 3380     		strh	r3, [r6]	@ movhi
+ 324:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 462              		.loc 1 324 9 is_stmt 1 view .LVU184
+ 463              	.LVL46:
+ 464              	.L34:
+ 325:rtos/uCOS-III/Source/os_mem.c ****     }
+ 326:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 327:rtos/uCOS-III/Source/os_mem.c **** 
+ 328:rtos/uCOS-III/Source/os_mem.c **** 
+ 329:rtos/uCOS-III/Source/os_mem.c ****     CPU_CRITICAL_ENTER();
+ 330:rtos/uCOS-III/Source/os_mem.c ****     if (p_mem->NbrFree >= p_mem->NbrMax) {                      /* Make sure all blocks not already
+ 331:rtos/uCOS-III/Source/os_mem.c ****         CPU_CRITICAL_EXIT();
+ 332:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_PUT_FAILED(p_mem);
+ 333:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_PUT_EXIT(OS_ERR_MEM_FULL);
+ 334:rtos/uCOS-III/Source/os_mem.c ****        *p_err = OS_ERR_MEM_FULL;
+ 335:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 336:rtos/uCOS-III/Source/os_mem.c ****     }
+ 337:rtos/uCOS-III/Source/os_mem.c ****     *(void **)p_blk    = p_mem->FreeListPtr;                    /* Insert released block into free 
+ 338:rtos/uCOS-III/Source/os_mem.c ****     p_mem->FreeListPtr = p_blk;
+ 339:rtos/uCOS-III/Source/os_mem.c ****     p_mem->NbrFree++;                                           /* One more memory block in this pa
+ 340:rtos/uCOS-III/Source/os_mem.c ****     CPU_CRITICAL_EXIT();
+ 341:rtos/uCOS-III/Source/os_mem.c ****     OS_TRACE_MEM_PUT(p_mem);
+ 342:rtos/uCOS-III/Source/os_mem.c ****     OS_TRACE_MEM_PUT_EXIT(OS_ERR_NONE);
+ 343:rtos/uCOS-III/Source/os_mem.c ****    *p_err              = OS_ERR_NONE;                           /* Notify caller that memory block 
+ 344:rtos/uCOS-III/Source/os_mem.c **** }
+ 465              		.loc 1 344 1 is_stmt 0 view .LVU185
+ 466 001a 70BD     		pop	{r4, r5, r6, pc}
+ 467              	.LVL47:
+ 468              	.L41:
+ 307:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_PUT_EXIT(OS_ERR_MEM_INVALID_P_MEM);
+ 469              		.loc 1 307 39 is_stmt 1 view .LVU186
+ 308:rtos/uCOS-III/Source/os_mem.c ****        *p_err  = OS_ERR_MEM_INVALID_P_MEM;
+ 470              		.loc 1 308 56 view .LVU187
+ 309:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 471              		.loc 1 309 8 view .LVU188
+ 309:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 472              		.loc 1 309 16 is_stmt 0 view .LVU189
+ 473 001c 45F2BF63 		movw	r3, #22207
+ 474 0020 1380     		strh	r3, [r2]	@ movhi
+ 310:rtos/uCOS-III/Source/os_mem.c ****     }
+ 475              		.loc 1 310 9 is_stmt 1 view .LVU190
+ 476 0022 FAE7     		b	.L34
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 17
+
+
+ 477              	.L42:
+ 313:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_PUT_EXIT(OS_ERR_MEM_INVALID_P_BLK);
+ 478              		.loc 1 313 39 view .LVU191
+ 314:rtos/uCOS-III/Source/os_mem.c ****        *p_err  = OS_ERR_MEM_INVALID_P_BLK;
+ 479              		.loc 1 314 56 view .LVU192
+ 315:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 480              		.loc 1 315 8 view .LVU193
+ 315:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 481              		.loc 1 315 16 is_stmt 0 view .LVU194
+ 482 0024 45F2BE63 		movw	r3, #22206
+ 483 0028 1380     		strh	r3, [r2]	@ movhi
+ 316:rtos/uCOS-III/Source/os_mem.c ****     }
+ 484              		.loc 1 316 9 is_stmt 1 view .LVU195
+ 485 002a F6E7     		b	.L34
+ 486              	.LVL48:
+ 487              	.L38:
+ 329:rtos/uCOS-III/Source/os_mem.c ****     if (p_mem->NbrFree >= p_mem->NbrMax) {                      /* Make sure all blocks not already
+ 488              		.loc 1 329 5 view .LVU196
+ 329:rtos/uCOS-III/Source/os_mem.c ****     if (p_mem->NbrFree >= p_mem->NbrMax) {                      /* Make sure all blocks not already
+ 489              		.loc 1 329 5 view .LVU197
+ 329:rtos/uCOS-III/Source/os_mem.c ****     if (p_mem->NbrFree >= p_mem->NbrMax) {                      /* Make sure all blocks not already
+ 490              		.loc 1 329 5 view .LVU198
+ 491 002c 4020     		movs	r0, #64
+ 492              	.LVL49:
+ 329:rtos/uCOS-III/Source/os_mem.c ****     if (p_mem->NbrFree >= p_mem->NbrMax) {                      /* Make sure all blocks not already
+ 493              		.loc 1 329 5 is_stmt 0 view .LVU199
+ 494 002e FFF7FEFF 		bl	CPU_SR_Save
+ 495              	.LVL50:
+ 329:rtos/uCOS-III/Source/os_mem.c ****     if (p_mem->NbrFree >= p_mem->NbrMax) {                      /* Make sure all blocks not already
+ 496              		.loc 1 329 5 is_stmt 1 view .LVU200
+ 329:rtos/uCOS-III/Source/os_mem.c ****     if (p_mem->NbrFree >= p_mem->NbrMax) {                      /* Make sure all blocks not already
+ 497              		.loc 1 329 5 view .LVU201
+ 330:rtos/uCOS-III/Source/os_mem.c ****         CPU_CRITICAL_EXIT();
+ 498              		.loc 1 330 5 view .LVU202
+ 330:rtos/uCOS-III/Source/os_mem.c ****         CPU_CRITICAL_EXIT();
+ 499              		.loc 1 330 14 is_stmt 0 view .LVU203
+ 500 0032 2A8A     		ldrh	r2, [r5, #16]
+ 330:rtos/uCOS-III/Source/os_mem.c ****         CPU_CRITICAL_EXIT();
+ 501              		.loc 1 330 32 view .LVU204
+ 502 0034 EB89     		ldrh	r3, [r5, #14]
+ 330:rtos/uCOS-III/Source/os_mem.c ****         CPU_CRITICAL_EXIT();
+ 503              		.loc 1 330 8 view .LVU205
+ 504 0036 9A42     		cmp	r2, r3
+ 505 0038 0AD2     		bcs	.L43
+ 337:rtos/uCOS-III/Source/os_mem.c ****     p_mem->FreeListPtr = p_blk;
+ 506              		.loc 1 337 5 is_stmt 1 view .LVU206
+ 337:rtos/uCOS-III/Source/os_mem.c ****     p_mem->FreeListPtr = p_blk;
+ 507              		.loc 1 337 31 is_stmt 0 view .LVU207
+ 508 003a AB68     		ldr	r3, [r5, #8]
+ 337:rtos/uCOS-III/Source/os_mem.c ****     p_mem->FreeListPtr = p_blk;
+ 509              		.loc 1 337 24 view .LVU208
+ 510 003c 2360     		str	r3, [r4]
+ 338:rtos/uCOS-III/Source/os_mem.c ****     p_mem->NbrFree++;                                           /* One more memory block in this pa
+ 511              		.loc 1 338 5 is_stmt 1 view .LVU209
+ 338:rtos/uCOS-III/Source/os_mem.c ****     p_mem->NbrFree++;                                           /* One more memory block in this pa
+ 512              		.loc 1 338 24 is_stmt 0 view .LVU210
+ 513 003e AC60     		str	r4, [r5, #8]
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 18
+
+
+ 339:rtos/uCOS-III/Source/os_mem.c ****     CPU_CRITICAL_EXIT();
+ 514              		.loc 1 339 5 is_stmt 1 view .LVU211
+ 339:rtos/uCOS-III/Source/os_mem.c ****     CPU_CRITICAL_EXIT();
+ 515              		.loc 1 339 10 is_stmt 0 view .LVU212
+ 516 0040 2B8A     		ldrh	r3, [r5, #16]
+ 339:rtos/uCOS-III/Source/os_mem.c ****     CPU_CRITICAL_EXIT();
+ 517              		.loc 1 339 19 view .LVU213
+ 518 0042 0133     		adds	r3, r3, #1
+ 519 0044 2B82     		strh	r3, [r5, #16]	@ movhi
+ 340:rtos/uCOS-III/Source/os_mem.c ****     OS_TRACE_MEM_PUT(p_mem);
+ 520              		.loc 1 340 5 is_stmt 1 view .LVU214
+ 340:rtos/uCOS-III/Source/os_mem.c ****     OS_TRACE_MEM_PUT(p_mem);
+ 521              		.loc 1 340 5 view .LVU215
+ 340:rtos/uCOS-III/Source/os_mem.c ****     OS_TRACE_MEM_PUT(p_mem);
+ 522              		.loc 1 340 5 view .LVU216
+ 523 0046 FFF7FEFF 		bl	CPU_SR_Restore
+ 524              	.LVL51:
+ 340:rtos/uCOS-III/Source/os_mem.c ****     OS_TRACE_MEM_PUT(p_mem);
+ 525              		.loc 1 340 5 view .LVU217
+ 340:rtos/uCOS-III/Source/os_mem.c ****     OS_TRACE_MEM_PUT(p_mem);
+ 526              		.loc 1 340 5 view .LVU218
+ 341:rtos/uCOS-III/Source/os_mem.c ****     OS_TRACE_MEM_PUT_EXIT(OS_ERR_NONE);
+ 527              		.loc 1 341 28 view .LVU219
+ 342:rtos/uCOS-III/Source/os_mem.c ****    *p_err              = OS_ERR_NONE;                           /* Notify caller that memory block 
+ 528              		.loc 1 342 39 view .LVU220
+ 343:rtos/uCOS-III/Source/os_mem.c **** }
+ 529              		.loc 1 343 4 view .LVU221
+ 343:rtos/uCOS-III/Source/os_mem.c **** }
+ 530              		.loc 1 343 24 is_stmt 0 view .LVU222
+ 531 004a 0023     		movs	r3, #0
+ 532 004c 3380     		strh	r3, [r6]	@ movhi
+ 533 004e E4E7     		b	.L34
+ 534              	.LVL52:
+ 535              	.L43:
+ 331:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_PUT_FAILED(p_mem);
+ 536              		.loc 1 331 9 is_stmt 1 view .LVU223
+ 331:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_PUT_FAILED(p_mem);
+ 537              		.loc 1 331 9 view .LVU224
+ 331:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_PUT_FAILED(p_mem);
+ 538              		.loc 1 331 9 view .LVU225
+ 539 0050 FFF7FEFF 		bl	CPU_SR_Restore
+ 540              	.LVL53:
+ 331:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_PUT_FAILED(p_mem);
+ 541              		.loc 1 331 9 view .LVU226
+ 331:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_PUT_FAILED(p_mem);
+ 542              		.loc 1 331 9 view .LVU227
+ 332:rtos/uCOS-III/Source/os_mem.c ****         OS_TRACE_MEM_PUT_EXIT(OS_ERR_MEM_FULL);
+ 543              		.loc 1 332 39 view .LVU228
+ 333:rtos/uCOS-III/Source/os_mem.c ****        *p_err = OS_ERR_MEM_FULL;
+ 544              		.loc 1 333 47 view .LVU229
+ 334:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 545              		.loc 1 334 8 view .LVU230
+ 334:rtos/uCOS-III/Source/os_mem.c ****         return;
+ 546              		.loc 1 334 15 is_stmt 0 view .LVU231
+ 547 0054 45F2BA63 		movw	r3, #22202
+ 548 0058 3380     		strh	r3, [r6]	@ movhi
+ 335:rtos/uCOS-III/Source/os_mem.c ****     }
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 19
+
+
+ 549              		.loc 1 335 9 is_stmt 1 view .LVU232
+ 550 005a DEE7     		b	.L34
+ 551              	.L45:
+ 552              		.align	2
+ 553              	.L44:
+ 554 005c 4D454D20 		.word	541934925
+ 555              		.cfi_endproc
+ 556              	.LFE2:
+ 558              		.section	.text.OS_MemInit,"ax",%progbits
+ 559              		.align	1
+ 560              		.global	OS_MemInit
+ 561              		.syntax unified
+ 562              		.thumb
+ 563              		.thumb_func
+ 564              		.fpu fpv4-sp-d16
+ 566              	OS_MemInit:
+ 567              	.LVL54:
+ 568              	.LFB3:
+ 345:rtos/uCOS-III/Source/os_mem.c **** 
+ 346:rtos/uCOS-III/Source/os_mem.c **** 
+ 347:rtos/uCOS-III/Source/os_mem.c **** /*
+ 348:rtos/uCOS-III/Source/os_mem.c **** ***************************************************************************************************
+ 349:rtos/uCOS-III/Source/os_mem.c **** *                                           ADD MEMORY PARTITION TO DEBUG LIST
+ 350:rtos/uCOS-III/Source/os_mem.c **** *
+ 351:rtos/uCOS-III/Source/os_mem.c **** * Description : This function is called by OSMemCreate() to add the memory partition to the debug t
+ 352:rtos/uCOS-III/Source/os_mem.c **** *
+ 353:rtos/uCOS-III/Source/os_mem.c **** * Arguments   : p_mem    Is a pointer to the memory partition
+ 354:rtos/uCOS-III/Source/os_mem.c **** *
+ 355:rtos/uCOS-III/Source/os_mem.c **** * Returns     : none
+ 356:rtos/uCOS-III/Source/os_mem.c **** *
+ 357:rtos/uCOS-III/Source/os_mem.c **** * Note(s)    : This function is INTERNAL to uC/OS-III and your application should not call it.
+ 358:rtos/uCOS-III/Source/os_mem.c **** ***************************************************************************************************
+ 359:rtos/uCOS-III/Source/os_mem.c **** */
+ 360:rtos/uCOS-III/Source/os_mem.c **** 
+ 361:rtos/uCOS-III/Source/os_mem.c **** #if (OS_CFG_DBG_EN > 0u)
+ 362:rtos/uCOS-III/Source/os_mem.c **** void  OS_MemDbgListAdd (OS_MEM  *p_mem)
+ 363:rtos/uCOS-III/Source/os_mem.c **** {
+ 364:rtos/uCOS-III/Source/os_mem.c ****     p_mem->DbgPrevPtr               = (OS_MEM *)0;
+ 365:rtos/uCOS-III/Source/os_mem.c ****     if (OSMemDbgListPtr == (OS_MEM *)0) {
+ 366:rtos/uCOS-III/Source/os_mem.c ****         p_mem->DbgNextPtr           = (OS_MEM *)0;
+ 367:rtos/uCOS-III/Source/os_mem.c ****     } else {
+ 368:rtos/uCOS-III/Source/os_mem.c ****         p_mem->DbgNextPtr           =  OSMemDbgListPtr;
+ 369:rtos/uCOS-III/Source/os_mem.c ****         OSMemDbgListPtr->DbgPrevPtr =  p_mem;
+ 370:rtos/uCOS-III/Source/os_mem.c ****     }
+ 371:rtos/uCOS-III/Source/os_mem.c ****     OSMemDbgListPtr                 =  p_mem;
+ 372:rtos/uCOS-III/Source/os_mem.c **** }
+ 373:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 374:rtos/uCOS-III/Source/os_mem.c **** 
+ 375:rtos/uCOS-III/Source/os_mem.c **** 
+ 376:rtos/uCOS-III/Source/os_mem.c **** /*
+ 377:rtos/uCOS-III/Source/os_mem.c **** ***************************************************************************************************
+ 378:rtos/uCOS-III/Source/os_mem.c **** *                                           INITIALIZE MEMORY PARTITION MANAGER
+ 379:rtos/uCOS-III/Source/os_mem.c **** *
+ 380:rtos/uCOS-III/Source/os_mem.c **** * Description : This function is called by uC/OS-III to initialize the memory partition manager.  Y
+ 381:rtos/uCOS-III/Source/os_mem.c **** *               application MUST NOT call this function.
+ 382:rtos/uCOS-III/Source/os_mem.c **** *
+ 383:rtos/uCOS-III/Source/os_mem.c **** * Arguments   : none
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 20
+
+
+ 384:rtos/uCOS-III/Source/os_mem.c **** *
+ 385:rtos/uCOS-III/Source/os_mem.c **** * Returns     : none
+ 386:rtos/uCOS-III/Source/os_mem.c **** *
+ 387:rtos/uCOS-III/Source/os_mem.c **** * Note(s)    : This function is INTERNAL to uC/OS-III and your application should not call it.
+ 388:rtos/uCOS-III/Source/os_mem.c **** ***************************************************************************************************
+ 389:rtos/uCOS-III/Source/os_mem.c **** */
+ 390:rtos/uCOS-III/Source/os_mem.c **** 
+ 391:rtos/uCOS-III/Source/os_mem.c **** void  OS_MemInit (OS_ERR  *p_err)
+ 392:rtos/uCOS-III/Source/os_mem.c **** {
+ 569              		.loc 1 392 1 view -0
+ 570              		.cfi_startproc
+ 571              		@ args = 0, pretend = 0, frame = 0
+ 572              		@ frame_needed = 0, uses_anonymous_args = 0
+ 573              		@ link register save eliminated.
+ 393:rtos/uCOS-III/Source/os_mem.c **** #if (OS_CFG_DBG_EN > 0u)
+ 394:rtos/uCOS-III/Source/os_mem.c ****     OSMemDbgListPtr = (OS_MEM *)0;
+ 395:rtos/uCOS-III/Source/os_mem.c ****     OSMemQty        = 0u;
+ 396:rtos/uCOS-III/Source/os_mem.c **** #endif
+ 397:rtos/uCOS-III/Source/os_mem.c ****    *p_err           = OS_ERR_NONE;
+ 574              		.loc 1 397 4 view .LVU234
+ 575              		.loc 1 397 21 is_stmt 0 view .LVU235
+ 576 0000 0023     		movs	r3, #0
+ 577 0002 0380     		strh	r3, [r0]	@ movhi
+ 398:rtos/uCOS-III/Source/os_mem.c **** }
+ 578              		.loc 1 398 1 view .LVU236
+ 579 0004 7047     		bx	lr
+ 580              		.cfi_endproc
+ 581              	.LFE3:
+ 583              		.text
+ 584              	.Letext0:
+ 585              		.file 2 "rtos/uC-CPU/ARM-Cortex-M/ARMv7-M/GNU/cpu.h"
+ 586              		.file 3 "rtos/uC-CPU/cpu_core.h"
+ 587              		.file 4 "rtos/uCOS-III/Source/os_type.h"
+ 588              		.file 5 "rtos/uCOS-III/Source/os.h"
+ 589              		.file 6 "rtos/uCOS-III/Ports/ARM-Cortex-M/ARMv7-M/GNU/os_cpu.h"
+ARM GAS  /tmp/ccSQ1ZvZ.s 			page 21
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 os_mem.c
+     /tmp/ccSQ1ZvZ.s:18     .text.OSMemCreate:0000000000000000 $t
+     /tmp/ccSQ1ZvZ.s:26     .text.OSMemCreate:0000000000000000 OSMemCreate
+     /tmp/ccSQ1ZvZ.s:274    .text.OSMemCreate:00000000000000b8 $d
+     /tmp/ccSQ1ZvZ.s:280    .text.OSMemGet:0000000000000000 $t
+     /tmp/ccSQ1ZvZ.s:287    .text.OSMemGet:0000000000000000 OSMemGet
+     /tmp/ccSQ1ZvZ.s:410    .text.OSMemGet:0000000000000054 $d
+     /tmp/ccSQ1ZvZ.s:415    .text.OSMemPut:0000000000000000 $t
+     /tmp/ccSQ1ZvZ.s:422    .text.OSMemPut:0000000000000000 OSMemPut
+     /tmp/ccSQ1ZvZ.s:554    .text.OSMemPut:000000000000005c $d
+     /tmp/ccSQ1ZvZ.s:559    .text.OS_MemInit:0000000000000000 $t
+     /tmp/ccSQ1ZvZ.s:566    .text.OS_MemInit:0000000000000000 OS_MemInit
+                           .group:0000000000000000 wm4.0.0f5aa60db9403f389c005f20ecce4286
+                           .group:0000000000000000 wm4.os.h.38.05c7a360e844508f9424830362f7eef3
+                           .group:0000000000000000 wm4.os_cfg.h.36.1682609214807c39119743015cd1b75b
+                           .group:0000000000000000 wm4.os_cfg_app.h.36.9d01bed009cfc3a5184d9a87250e45bf
+                           .group:0000000000000000 wm4.cpu_core.h.51.7b35a59c319673f88ae4a256248776ec
+                           .group:0000000000000000 wm4.cpu_def.h.46.baa122a2898bdc40bb50d1f21ead1515
+                           .group:0000000000000000 wm4.cpu_cfg.h.45.38a6a562da8b04490c382a226238c57e
+                           .group:0000000000000000 wm4.cpu.h.171.3cb15ee3ccb812cbfdf76d1fbfb9eda0
+                           .group:0000000000000000 wm4.lib_def.h.66.6ab2a012067a8e1f4289db5765835062
+                           .group:0000000000000000 wm4.cpu_core.h.143.d3b700e12b3a14ed3bee14c822b49a7d
+                           .group:0000000000000000 wm4.os_cpu.h.45.281d793567585e56a091270c28fc7efc
+                           .group:0000000000000000 wm4.os_trace.h.37.a6badbf6e748c370e142a9584653748e
+                           .group:0000000000000000 wm4.os.h.95.7b45e7e080367d299efd03f7510809bc
+
+UNDEFINED SYMBOLS
+CPU_SR_Save
+CPU_SR_Restore
+OSIntNestingCtr

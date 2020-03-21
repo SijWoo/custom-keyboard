@@ -1,0 +1,34 @@
+ARM GAS  /tmp/cc7tfoJN.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"bsp_cpu.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              	.Letext0:
+ARM GAS  /tmp/cc7tfoJN.s 			page 2
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 bsp_cpu.c
+                           .group:0000000000000000 wm4.0.0f5aa60db9403f389c005f20ecce4286
+                           .group:0000000000000000 wm4.cpu_core.h.51.7b35a59c319673f88ae4a256248776ec
+                           .group:0000000000000000 wm4.cpu_def.h.46.baa122a2898bdc40bb50d1f21ead1515
+                           .group:0000000000000000 wm4.cpu_cfg.h.45.38a6a562da8b04490c382a226238c57e
+                           .group:0000000000000000 wm4.cpu.h.171.3cb15ee3ccb812cbfdf76d1fbfb9eda0
+                           .group:0000000000000000 wm4.lib_def.h.66.6ab2a012067a8e1f4289db5765835062
+                           .group:0000000000000000 wm4.cpu_core.h.143.d3b700e12b3a14ed3bee14c822b49a7d
+
+NO UNDEFINED SYMBOLS

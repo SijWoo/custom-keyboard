@@ -52,7 +52,7 @@
 
 #include  <lib_ascii.h>
 #include  <lib_mem.h>
-#include  <Source/clk.h>
+#include  <clk.h>
 #include  "../Source/fs.h"
 #include  "../Source/fs_buf.h"
 #include  "../Source/fs_vol.h"

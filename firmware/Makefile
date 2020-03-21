@@ -22,7 +22,7 @@ TARGET = custom-keyboard
 # debug build?
 DEBUG = 1
 # optimization
-OPT = -Og3
+OPT = -Og
 
 
 #######################################
@@ -36,56 +36,56 @@ BUILD_DIR = build
 ######################################
 # BSP sources
 BSP_C_SOURCES = \
-bsp/STMicroelectronics/rtos/*.c	\
-bsp/STMicroelectronics/stm32f413/src/*.c	\
-bsp/STMicroelectronics/stm32f413/stm32f4xx_hal_driver/Src/*.c
+$(wildcard bsp/STMicroelectronics/rtos/*.c)	\
+$(wildcard bsp/STMicroelectronics/stm32f413/src/*.c)	\
+$(wildcard bsp/STMicroelectronics/stm32f413/stm32f4xx_hal_driver/Src/*.c)
 
 BSP_ASM_SOURCES = \
-bsp/STMicroelectronics\stm32f413/startup_stm32f413xx.s
+$(wildcard bsp/STMicroelectronics\stm32f413/startup_stm32f413xx.s)
 
 # C sources
 C_SOURCES =  \
--Iapps/core/src/*.c \
--Iapps/cli/src/*.c \
--Iapps/fs/src/*.c \
--Iapps/gestures/src/*.c \
--Iapps/hid/src/*.c \
--Iapps/scan/src/*.c \
-cfg/src/*.c	\
-drivers/gesture/src/*.c	\
-drivers/keyboard/src/*.c	\
-rtos/uC-Clk/OS/uCOS-III/*.c	\
-rtos/uC-Clk/Source/*.c	\
-rtos/uC-Common/Auth/*.c	\
-rtos/uC-Common/Collections/*.c	\
-rtos/uC-Common/KAL/uCOS-III/*.c	\
-rtos/uC-CPU/*.c	\
-rtos/uC-FS/Source/*.c	\
-rtos/uC-FS/Dev/SD/*.c	\
-rtos/uC-FS/Dev/SD/SPI/*.c	\
-rtos/uC-FS/FAT/*.c	\
-rtos/uC-FS/OS/uCOS-III/*.c	\
-rtos/uC-LIB/*.c	\
-rtos/uC-Shell/Cmd/General/*.c	\
-rtos/uC-Shell/Source/*.c	\
-rtos/uC-USB-Device/Class/HID/*.c	\
-rtos/uC-USB-Device/Class/HID/OS/uCOS-III/*.c	\
-rtos/uC-USB-Device/Drivers/drv_lib/*.c	\
-rtos/uC-USB-Device/OS/uCOS-III/*.c	\
-rtos/uC-USB-Device/Source/*.c	\
-rtos/uCOS-III/Ports/ARM-Cortex-M/ARMv7-M/*.c	\
-rtos/uCOS-III/Source/*.c	\
-rtos/uCOS-III/TLS/NewLib/*.c
+$(wildcard apps/core/src/*.c) \
+$(wildcard apps/cli/src/*.c) \
+$(wildcard apps/fs/src/*.c) \
+$(wildcard apps/gestures/src/*.c) \
+$(wildcard apps/hid/src/*.c) \
+$(wildcard apps/scan/src/*.c) \
+$(wildcard cfg/src/*.c)	\
+$(wildcard drivers/gesture/src/*.c)	\
+$(wildcard drivers/keyboard/src/*.c)	\
+$(wildcard rtos/uC-Clk/OS/uCOS-III/*.c)	\
+$(wildcard rtos/uC-Clk/Source/*.c)	\
+$(wildcard rtos/uC-Common/Auth/*.c)	\
+$(wildcard rtos/uC-Common/Collections/*.c)	\
+$(wildcard rtos/uC-Common/KAL/uCOS-III/*.c)	\
+$(wildcard rtos/uC-CPU/*.c)	\
+$(wildcard rtos/uC-FS/Source/*.c)	\
+$(wildcard rtos/uC-FS/Dev/SD/*.c)	\
+$(wildcard rtos/uC-FS/Dev/SD/SPI/*.c)	\
+$(wildcard rtos/uC-FS/FAT/*.c)	\
+$(wildcard rtos/uC-FS/OS/uCOS-III/*.c)	\
+$(wildcard rtos/uC-LIB/*.c)	\
+$(wildcard rtos/uC-Shell/Cmd/General/*.c)	\
+$(wildcard rtos/uC-Shell/Source/*.c)	\
+$(wildcard rtos/uC-USB-Device/Class/HID/*.c)	\
+$(wildcard rtos/uC-USB-Device/Class/HID/OS/uCOS-III/*.c)	\
+$(wildcard rtos/uC-USB-Device/Drivers/drv_lib/*.c)	\
+$(wildcard rtos/uC-USB-Device/OS/uCOS-III/*.c)	\
+$(wildcard rtos/uC-USB-Device/Source/*.c)	\
+$(wildcard rtos/uCOS-III/Ports/ARM-Cortex-M/ARMv7-M/*.c)	\
+$(wildcard rtos/uCOS-III/Source/*.c)	\
+$(wildcard rtos/uCOS-III/TLS/NewLib/*.c)
 
-C_SOURCES += BSP_C_SOURCES
+C_SOURCES += $(BSP_C_SOURCES)
 
 # ASM sources
 ASM_SOURCES =  \
-rtos/uCOS-III/Ports/ARM-Cortex-M/ARMv7-M/GNU/*.s	\
-rtos/uC-CPU/ARM-Cortex-M/ARMv7-M/GNU/*.s	\
-rots/uC-LIB/Ports/ARM/GNU/*.s
+$(wildcard rtos/uCOS-III/Ports/ARM-Cortex-M/ARMv7-M/GNU/*.s)	\
+$(wildcard rtos/uC-CPU/ARM-Cortex-M/ARMv7-M/GNU/*.s)	\
+$(wildcard rots/uC-LIB/Ports/ARM/GNU/*.s)
 
-ASM_SOURCES += BSP_ASM_SOURCES
+ASM_SOURCES += $(BSP_ASM_SOURCES)
 
 
 #######################################
@@ -167,12 +167,15 @@ C_INCLUDES =  \
 -Irtos/uC-USB-Device/Source	\
 -Irtos/uCOS-III/Ports/ARM-Cortex-M/ARMv7-M/GNU	\
 -Irtos/uCOS-III/Source	\
--ISTM32F4xx_HAL_Driver/Inc \
--ISTM32F4xx_HAL_Driver/Inc/Legacy \
--Icmsis/Device/ST/STM32F4xx/Include \
--Icmsis/Include \
+-Icmsis/Device/ST/Include \
 -Icmsis/Include
 
+# BSP C includes
+C_INCLUDES += \
+-Ibsp/inc	\
+-Ibsp/STMicroelectronics/stm32f413/stm32f4xx_hal_driver/Inc	\
+-Ibsp/STMicroelectronics/stm32f413/inc	\
+-Ibsp/STMicroelectronics/rtos
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
@@ -180,7 +183,7 @@ ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffuncti
 CFLAGS = $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 
 ifeq ($(DEBUG), 1)
-CFLAGS += -g -gdwarf-2
+CFLAGS += -g3 -gdwarf-2
 endif
 
 

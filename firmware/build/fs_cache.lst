@@ -1,0 +1,52 @@
+ARM GAS  /tmp/cctUtfxl.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fs_cache.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              	.Letext0:
+ARM GAS  /tmp/cctUtfxl.s 			page 2
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 fs_cache.c
+                           .group:0000000000000000 wm4.0.0f5aa60db9403f389c005f20ecce4286
+                           .group:0000000000000000 wm4.cpu_def.h.46.baa122a2898bdc40bb50d1f21ead1515
+                           .group:0000000000000000 wm4.cpu_cfg.h.45.38a6a562da8b04490c382a226238c57e
+                           .group:0000000000000000 wm4.cpu.h.171.3cb15ee3ccb812cbfdf76d1fbfb9eda0
+                           .group:0000000000000000 wm4.cpu_core.h.51.7b35a59c319673f88ae4a256248776ec
+                           .group:0000000000000000 wm4.lib_def.h.66.6ab2a012067a8e1f4289db5765835062
+                           .group:0000000000000000 wm4.cpu_core.h.143.d3b700e12b3a14ed3bee14c822b49a7d
+                           .group:0000000000000000 wm4.lib_cfg.h.40.b2958733f73e73af70f675ca0f89303e
+                           .group:0000000000000000 wm4.lib_mem.h.121.89b942a057fb20091baad8bf6b28b1e6
+                           .group:0000000000000000 wm4.fs.h.42.4f6311a594ee5619f1ee7a9392eb7faa
+                           .group:0000000000000000 wm4.lib_ascii.h.84.da234f9d4d202bba866fb26067887eec
+                           .group:0000000000000000 wm4.fs_def.h.42.653ad677c23ef93c522ec84af681385d
+                           .group:0000000000000000 wm4.fs_cfg.h.116.da4f8e9d0b9040a97ef3bf26c61e90fd
+                           .group:0000000000000000 wm4.clk.h.99.39403db6a27321e53b261bbe20b56e1d
+                           .group:0000000000000000 wm4.lib_str.h.60.d6fb3a1336db17c586ed26be94929677
+                           .group:0000000000000000 wm4.clk_cfg.h.45.428f260ed0fbcfa16fc822c67c85dade
+                           .group:0000000000000000 wm4.clk.h.219.c24c7347fcc7691d3157fe73514cb366
+                           .group:0000000000000000 wm4.fs_cfg_fs.h.176.c85074fbe881bfa594608376a65f4dc2
+                           .group:0000000000000000 wm4.fs_type.h.42.3e681b291920189044ba1da24ae0f22a
+                           .group:0000000000000000 wm4.fs_err.h.42.d52bfed31dff3d1419c5cf09952dee67
+                           .group:0000000000000000 wm4.fs.h.97.1d629f0ba32b5622ab4e01a254bd98e8
+                           .group:0000000000000000 wm4.fs_buf.h.42.0c8ba10968f085926266a27b71b3972d
+                           .group:0000000000000000 wm4.fs_ctr.h.42.9d1398cac157503ac8af114819f7782b
+                           .group:0000000000000000 wm4.fs_dev.h.42.010e15055e38efd3492ae3a9a504ffd0
+                           .group:0000000000000000 wm4.fs_vol.h.42.b307128eec61fcaf68a96ce7f965d41e
+
+NO UNDEFINED SYMBOLS

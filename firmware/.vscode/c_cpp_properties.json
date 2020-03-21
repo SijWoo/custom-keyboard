@@ -69,7 +69,6 @@
                 "USE_FULL_LL_DRIVER",
                 "STM32F413xx"
             ],
-            "compilerPath": "/opt/gnuarmemb/bin/",
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "clang-x64"

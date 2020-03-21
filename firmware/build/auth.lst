@@ -1,0 +1,2485 @@
+ARM GAS  /tmp/ccfJcmjl.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"auth.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.Auth_GetUserHandler,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	Auth_GetUserHandler:
+  26              	.LVL0:
+  27              	.LFB6:
+  28              		.file 1 "rtos/uC-Common/Auth/auth.c"
+   1:rtos/uC-Common/Auth/auth.c **** /*
+   2:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+   3:rtos/uC-Common/Auth/auth.c **** *                                              uC/Common
+   4:rtos/uC-Common/Auth/auth.c **** *                                 Common Features for Micrium Stacks
+   5:rtos/uC-Common/Auth/auth.c **** *
+   6:rtos/uC-Common/Auth/auth.c **** *                         (c) Copyright 2013-2019; Silicon Laboratories Inc.,
+   7:rtos/uC-Common/Auth/auth.c **** *                                400 W. Cesar Chavez, Austin, TX 78701
+   8:rtos/uC-Common/Auth/auth.c **** *
+   9:rtos/uC-Common/Auth/auth.c **** *                   All rights reserved. Protected by international copyright laws.
+  10:rtos/uC-Common/Auth/auth.c **** *
+  11:rtos/uC-Common/Auth/auth.c **** *                  Your use of this software is subject to your acceptance of the terms
+  12:rtos/uC-Common/Auth/auth.c **** *                  of a Silicon Labs Micrium software license, which can be obtained by
+  13:rtos/uC-Common/Auth/auth.c **** *                  contacting info@micrium.com. If you do not agree to the terms of this
+  14:rtos/uC-Common/Auth/auth.c **** *                  license, you may not use this software.
+  15:rtos/uC-Common/Auth/auth.c **** *
+  16:rtos/uC-Common/Auth/auth.c **** *                  Please help us continue to provide the Embedded community with the finest
+  17:rtos/uC-Common/Auth/auth.c **** *                  software available. Your honesty is greatly appreciated.
+  18:rtos/uC-Common/Auth/auth.c **** *
+  19:rtos/uC-Common/Auth/auth.c **** *                    You can find our product's documentation at: doc.micrium.com
+  20:rtos/uC-Common/Auth/auth.c **** *
+  21:rtos/uC-Common/Auth/auth.c **** *                          For more information visit us at: www.micrium.com
+  22:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  23:rtos/uC-Common/Auth/auth.c **** */
+  24:rtos/uC-Common/Auth/auth.c **** 
+  25:rtos/uC-Common/Auth/auth.c **** /*
+  26:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  27:rtos/uC-Common/Auth/auth.c **** *
+  28:rtos/uC-Common/Auth/auth.c **** *                              uC/Common - Authentication Module (Auth)
+  29:rtos/uC-Common/Auth/auth.c **** *
+  30:rtos/uC-Common/Auth/auth.c **** * Filename : auth.c
+ARM GAS  /tmp/ccfJcmjl.s 			page 2
+
+
+  31:rtos/uC-Common/Auth/auth.c **** * Version  : V1.01.02
+  32:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  33:rtos/uC-Common/Auth/auth.c **** * Note(s)  : (1) 'goto' statements were used in this software module. Their usage
+  34:rtos/uC-Common/Auth/auth.c **** *                is restricted to cleanup purposes in exceptional program flow (e.g.
+  35:rtos/uC-Common/Auth/auth.c **** *                error handling), in compliance with CERT MEM12-C and MISRA C:2012
+  36:rtos/uC-Common/Auth/auth.c **** *                rules 15.2, 15.3 and 15.4.
+  37:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  38:rtos/uC-Common/Auth/auth.c **** */
+  39:rtos/uC-Common/Auth/auth.c **** 
+  40:rtos/uC-Common/Auth/auth.c **** /*
+  41:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  42:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  43:rtos/uC-Common/Auth/auth.c **** *                                            INCLUDE FILES
+  44:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  45:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  46:rtos/uC-Common/Auth/auth.c **** */
+  47:rtos/uC-Common/Auth/auth.c **** 
+  48:rtos/uC-Common/Auth/auth.c **** #include  <lib_str.h>
+  49:rtos/uC-Common/Auth/auth.c **** #include  <KAL/kal.h>
+  50:rtos/uC-Common/Auth/auth.c **** #include  "auth.h"
+  51:rtos/uC-Common/Auth/auth.c **** 
+  52:rtos/uC-Common/Auth/auth.c **** 
+  53:rtos/uC-Common/Auth/auth.c **** /*
+  54:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  55:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  56:rtos/uC-Common/Auth/auth.c **** *                                           LOCAL DATA TYPES
+  57:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  58:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  59:rtos/uC-Common/Auth/auth.c **** */
+  60:rtos/uC-Common/Auth/auth.c **** 
+  61:rtos/uC-Common/Auth/auth.c **** typedef  struct  auth_user_credentials {                        /* --------------- AUTH USER CREDEN
+  62:rtos/uC-Common/Auth/auth.c ****     AUTH_USER  User;                                            /* User structure.                 
+  63:rtos/uC-Common/Auth/auth.c ****     CPU_CHAR   Pwd[AUTH_PWD_MAX_LENGTH];                        /* Password for this user.         
+  64:rtos/uC-Common/Auth/auth.c **** } AUTH_USER_CREDENTIALS;
+  65:rtos/uC-Common/Auth/auth.c **** 
+  66:rtos/uC-Common/Auth/auth.c **** 
+  67:rtos/uC-Common/Auth/auth.c **** /*
+  68:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  69:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  70:rtos/uC-Common/Auth/auth.c **** *                                           GLOBAL VARIABLES
+  71:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  72:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  73:rtos/uC-Common/Auth/auth.c **** */
+  74:rtos/uC-Common/Auth/auth.c **** 
+  75:rtos/uC-Common/Auth/auth.c **** AUTH_USER  Auth_RootUser = {
+  76:rtos/uC-Common/Auth/auth.c ****         { 'r', 'o', 'o', 't', '\0' },
+  77:rtos/uC-Common/Auth/auth.c ****         AUTH_RIGHT_ROOT
+  78:rtos/uC-Common/Auth/auth.c **** };
+  79:rtos/uC-Common/Auth/auth.c **** 
+  80:rtos/uC-Common/Auth/auth.c **** 
+  81:rtos/uC-Common/Auth/auth.c **** /*
+  82:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  83:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  84:rtos/uC-Common/Auth/auth.c **** *                                        LOCAL GLOBAL VARIABLES
+  85:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  86:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+  87:rtos/uC-Common/Auth/auth.c **** */
+ARM GAS  /tmp/ccfJcmjl.s 			page 3
+
+
+  88:rtos/uC-Common/Auth/auth.c **** 
+  89:rtos/uC-Common/Auth/auth.c **** static  KAL_LOCK_HANDLE        Auth_LockHandle;
+  90:rtos/uC-Common/Auth/auth.c **** 
+  91:rtos/uC-Common/Auth/auth.c **** static  CPU_SIZE_T             Auth_UserNbr = 1;
+  92:rtos/uC-Common/Auth/auth.c **** 
+  93:rtos/uC-Common/Auth/auth.c **** static  AUTH_USER_CREDENTIALS  Auth_UsersCredentials[AUTH_NB_USERS_MAX] = {
+  94:rtos/uC-Common/Auth/auth.c ****         {
+  95:rtos/uC-Common/Auth/auth.c ****             {
+  96:rtos/uC-Common/Auth/auth.c ****                     { 'r', 'o', 'o', 't', '\0' },
+  97:rtos/uC-Common/Auth/auth.c ****                     AUTH_RIGHT_ROOT
+  98:rtos/uC-Common/Auth/auth.c ****             },
+  99:rtos/uC-Common/Auth/auth.c ****             { 'a', 'd', 'm', 'i', 'n', '\0' }
+ 100:rtos/uC-Common/Auth/auth.c ****         }
+ 101:rtos/uC-Common/Auth/auth.c **** };
+ 102:rtos/uC-Common/Auth/auth.c **** 
+ 103:rtos/uC-Common/Auth/auth.c **** 
+ 104:rtos/uC-Common/Auth/auth.c **** /*
+ 105:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 106:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 107:rtos/uC-Common/Auth/auth.c **** *                                       LOCAL FUNCTION PROTOTYPES
+ 108:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 109:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 110:rtos/uC-Common/Auth/auth.c **** */
+ 111:rtos/uC-Common/Auth/auth.c **** 
+ 112:rtos/uC-Common/Auth/auth.c **** static  CPU_BOOLEAN  Auth_GetUserHandler (const  CPU_CHAR   *p_name,
+ 113:rtos/uC-Common/Auth/auth.c ****                                                  AUTH_USER  *p_user,
+ 114:rtos/uC-Common/Auth/auth.c ****                                                  RTOS_ERR   *p_err);
+ 115:rtos/uC-Common/Auth/auth.c **** 
+ 116:rtos/uC-Common/Auth/auth.c **** 
+ 117:rtos/uC-Common/Auth/auth.c **** /*
+ 118:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 119:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 120:rtos/uC-Common/Auth/auth.c **** *                                            GLOBAL FUNCTIONS
+ 121:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 122:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 123:rtos/uC-Common/Auth/auth.c **** */
+ 124:rtos/uC-Common/Auth/auth.c **** 
+ 125:rtos/uC-Common/Auth/auth.c **** /*
+ 126:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 127:rtos/uC-Common/Auth/auth.c **** *                                              Auth_Init()
+ 128:rtos/uC-Common/Auth/auth.c **** *
+ 129:rtos/uC-Common/Auth/auth.c **** * Description : (1) Initialize Authentication module:
+ 130:rtos/uC-Common/Auth/auth.c **** *
+ 131:rtos/uC-Common/Auth/auth.c **** *                   (a) Create Lock.
+ 132:rtos/uC-Common/Auth/auth.c **** *
+ 133:rtos/uC-Common/Auth/auth.c **** * Argument(s) : p_err       Pointer to variable that will receive the return error code from this f
+ 134:rtos/uC-Common/Auth/auth.c **** *
+ 135:rtos/uC-Common/Auth/auth.c **** *                               --------------- RETURNED BY KAL_LockCreate() --------------
+ 136:rtos/uC-Common/Auth/auth.c **** *                               See KAL_LockCreate() for additional return error codes.
+ 137:rtos/uC-Common/Auth/auth.c **** *
+ 138:rtos/uC-Common/Auth/auth.c **** * Return(s)   : DEF_OK,   if initialization was successful.
+ 139:rtos/uC-Common/Auth/auth.c **** *               DEF_FAIL, otherwise.
+ 140:rtos/uC-Common/Auth/auth.c **** *
+ 141:rtos/uC-Common/Auth/auth.c **** * Note(s)     : none.
+ 142:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 143:rtos/uC-Common/Auth/auth.c **** */
+ 144:rtos/uC-Common/Auth/auth.c **** 
+ARM GAS  /tmp/ccfJcmjl.s 			page 4
+
+
+ 145:rtos/uC-Common/Auth/auth.c **** CPU_BOOLEAN  Auth_Init (RTOS_ERR  *p_err)
+ 146:rtos/uC-Common/Auth/auth.c **** {
+ 147:rtos/uC-Common/Auth/auth.c ****     CPU_BOOLEAN  res = DEF_OK;
+ 148:rtos/uC-Common/Auth/auth.c **** 
+ 149:rtos/uC-Common/Auth/auth.c **** 
+ 150:rtos/uC-Common/Auth/auth.c ****     Auth_LockHandle = KAL_LockCreate("Auth Lock",
+ 151:rtos/uC-Common/Auth/auth.c ****                                       KAL_OPT_CREATE_NONE,
+ 152:rtos/uC-Common/Auth/auth.c ****                                       p_err);
+ 153:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 154:rtos/uC-Common/Auth/auth.c ****         res = DEF_FAIL;
+ 155:rtos/uC-Common/Auth/auth.c ****     }
+ 156:rtos/uC-Common/Auth/auth.c **** 
+ 157:rtos/uC-Common/Auth/auth.c ****     return (res);
+ 158:rtos/uC-Common/Auth/auth.c **** }
+ 159:rtos/uC-Common/Auth/auth.c **** 
+ 160:rtos/uC-Common/Auth/auth.c **** 
+ 161:rtos/uC-Common/Auth/auth.c **** /*
+ 162:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 163:rtos/uC-Common/Auth/auth.c **** *                                         Auth_CreateUser()
+ 164:rtos/uC-Common/Auth/auth.c **** *
+ 165:rtos/uC-Common/Auth/auth.c **** * Description : Create a user and fill the user structure provided.
+ 166:rtos/uC-Common/Auth/auth.c **** *
+ 167:rtos/uC-Common/Auth/auth.c **** * Argument(s) : p_name  Pointer to user name string.
+ 168:rtos/uC-Common/Auth/auth.c **** *
+ 169:rtos/uC-Common/Auth/auth.c **** *               p_pwd   Pointer to password string.
+ 170:rtos/uC-Common/Auth/auth.c **** *
+ 171:rtos/uC-Common/Auth/auth.c **** *               p_user  Pointer to user object to fill.
+ 172:rtos/uC-Common/Auth/auth.c **** *
+ 173:rtos/uC-Common/Auth/auth.c **** *               p_err   Pointer to variable that will receive the return error code from this funct
+ 174:rtos/uC-Common/Auth/auth.c **** *
+ 175:rtos/uC-Common/Auth/auth.c **** *                           RTOS_ERR_NONE
+ 176:rtos/uC-Common/Auth/auth.c **** *                           RTOS_ERR_INVALID_STR_LEN
+ 177:rtos/uC-Common/Auth/auth.c **** *                           RTOS_ERR_NO_MORE_RSRC
+ 178:rtos/uC-Common/Auth/auth.c **** *                           RTOS_ERR_ALREADY_EXISTS
+ 179:rtos/uC-Common/Auth/auth.c **** *
+ 180:rtos/uC-Common/Auth/auth.c **** *                               ----------- RETURNED BY KAL_LockAcquire/Release() ---------
+ 181:rtos/uC-Common/Auth/auth.c **** *                               See KAL_LockAcquire/Release() for additional return error codes.
+ 182:rtos/uC-Common/Auth/auth.c **** *
+ 183:rtos/uC-Common/Auth/auth.c **** * Return(s)   : DEF_OK,   if user created successfully.
+ 184:rtos/uC-Common/Auth/auth.c **** *               DEF_FAIL, otherwise.
+ 185:rtos/uC-Common/Auth/auth.c **** *
+ 186:rtos/uC-Common/Auth/auth.c **** * Note(s)     : None.
+ 187:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 188:rtos/uC-Common/Auth/auth.c **** */
+ 189:rtos/uC-Common/Auth/auth.c **** 
+ 190:rtos/uC-Common/Auth/auth.c **** CPU_BOOLEAN  Auth_CreateUser (const  CPU_CHAR   *p_name,
+ 191:rtos/uC-Common/Auth/auth.c ****                               const  CPU_CHAR   *p_pwd,
+ 192:rtos/uC-Common/Auth/auth.c ****                                      AUTH_USER  *p_user,
+ 193:rtos/uC-Common/Auth/auth.c ****                                      RTOS_ERR   *p_err)
+ 194:rtos/uC-Common/Auth/auth.c **** {
+ 195:rtos/uC-Common/Auth/auth.c ****     AUTH_USER_CREDENTIALS  *p_user_cred;
+ 196:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T              name_len;
+ 197:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T              pwd_len;
+ 198:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T              i;
+ 199:rtos/uC-Common/Auth/auth.c ****     CPU_INT16S              cmp_result;
+ 200:rtos/uC-Common/Auth/auth.c ****     CPU_BOOLEAN             result     = DEF_FAIL;
+ 201:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR                local_err;
+ARM GAS  /tmp/ccfJcmjl.s 			page 5
+
+
+ 202:rtos/uC-Common/Auth/auth.c **** 
+ 203:rtos/uC-Common/Auth/auth.c **** 
+ 204:rtos/uC-Common/Auth/auth.c ****     KAL_LockAcquire(Auth_LockHandle, KAL_OPT_PEND_NONE, KAL_TIMEOUT_INFINITE, p_err);
+ 205:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 206:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 207:rtos/uC-Common/Auth/auth.c ****     }
+ 208:rtos/uC-Common/Auth/auth.c **** 
+ 209:rtos/uC-Common/Auth/auth.c ****     name_len = Str_Len_N(p_name, AUTH_NAME_MAX_LENGTH + 1);
+ 210:rtos/uC-Common/Auth/auth.c ****     pwd_len  = Str_Len_N(p_pwd,  AUTH_PWD_MAX_LENGTH  + 1);
+ 211:rtos/uC-Common/Auth/auth.c **** 
+ 212:rtos/uC-Common/Auth/auth.c ****     if (name_len > AUTH_NAME_MAX_LENGTH) {
+ 213:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_INVALID_STR_LEN;
+ 214:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 215:rtos/uC-Common/Auth/auth.c ****     }
+ 216:rtos/uC-Common/Auth/auth.c **** 
+ 217:rtos/uC-Common/Auth/auth.c ****     if (pwd_len > AUTH_PWD_MAX_LENGTH) {
+ 218:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_INVALID_STR_LEN;
+ 219:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 220:rtos/uC-Common/Auth/auth.c ****     }
+ 221:rtos/uC-Common/Auth/auth.c **** 
+ 222:rtos/uC-Common/Auth/auth.c **** 
+ 223:rtos/uC-Common/Auth/auth.c ****     if (Auth_UserNbr >= AUTH_NB_USERS_MAX) {
+ 224:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_NO_MORE_RSRC;
+ 225:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 226:rtos/uC-Common/Auth/auth.c ****     }
+ 227:rtos/uC-Common/Auth/auth.c **** 
+ 228:rtos/uC-Common/Auth/auth.c ****     for (i = 0; i < Auth_UserNbr; ++i) {
+ 229:rtos/uC-Common/Auth/auth.c **** 
+ 230:rtos/uC-Common/Auth/auth.c ****         cmp_result = Str_Cmp_N(Auth_UsersCredentials[i].User.Name, p_name, name_len);
+ 231:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 232:rtos/uC-Common/Auth/auth.c ****            *p_err = RTOS_ERR_ALREADY_EXISTS;
+ 233:rtos/uC-Common/Auth/auth.c ****             goto exit_release;
+ 234:rtos/uC-Common/Auth/auth.c ****         }
+ 235:rtos/uC-Common/Auth/auth.c ****     }
+ 236:rtos/uC-Common/Auth/auth.c **** 
+ 237:rtos/uC-Common/Auth/auth.c ****     p_user_cred = &Auth_UsersCredentials[Auth_UserNbr];
+ 238:rtos/uC-Common/Auth/auth.c ****     ++Auth_UserNbr;
+ 239:rtos/uC-Common/Auth/auth.c **** 
+ 240:rtos/uC-Common/Auth/auth.c ****     name_len = DEF_MIN(name_len + 1, AUTH_NAME_MAX_LENGTH);
+ 241:rtos/uC-Common/Auth/auth.c ****     pwd_len  = DEF_MIN(pwd_len + 1, AUTH_PWD_MAX_LENGTH);
+ 242:rtos/uC-Common/Auth/auth.c **** 
+ 243:rtos/uC-Common/Auth/auth.c ****     (void)Str_Copy_N(p_user_cred->User.Name,
+ 244:rtos/uC-Common/Auth/auth.c ****                      p_name,
+ 245:rtos/uC-Common/Auth/auth.c ****                      name_len);
+ 246:rtos/uC-Common/Auth/auth.c **** 
+ 247:rtos/uC-Common/Auth/auth.c ****     (void)Str_Copy_N(p_user_cred->Pwd,
+ 248:rtos/uC-Common/Auth/auth.c ****                      p_pwd,
+ 249:rtos/uC-Common/Auth/auth.c ****                      pwd_len);
+ 250:rtos/uC-Common/Auth/auth.c **** 
+ 251:rtos/uC-Common/Auth/auth.c ****     p_user_cred->User.Rights = AUTH_RIGHT_NONE;
+ 252:rtos/uC-Common/Auth/auth.c **** 
+ 253:rtos/uC-Common/Auth/auth.c ****     (void)Str_Copy_N(p_user->Name,
+ 254:rtos/uC-Common/Auth/auth.c ****                      p_name,
+ 255:rtos/uC-Common/Auth/auth.c ****                      name_len);
+ 256:rtos/uC-Common/Auth/auth.c **** 
+ 257:rtos/uC-Common/Auth/auth.c ****     p_user->Rights = AUTH_RIGHT_NONE;
+ 258:rtos/uC-Common/Auth/auth.c **** 
+ARM GAS  /tmp/ccfJcmjl.s 			page 6
+
+
+ 259:rtos/uC-Common/Auth/auth.c **** 
+ 260:rtos/uC-Common/Auth/auth.c ****     result = DEF_OK;
+ 261:rtos/uC-Common/Auth/auth.c ****    *p_err  = RTOS_ERR_NONE;
+ 262:rtos/uC-Common/Auth/auth.c **** 
+ 263:rtos/uC-Common/Auth/auth.c **** 
+ 264:rtos/uC-Common/Auth/auth.c **** exit_release:
+ 265:rtos/uC-Common/Auth/auth.c ****     KAL_LockRelease(Auth_LockHandle, &local_err);
+ 266:rtos/uC-Common/Auth/auth.c ****     (void)local_err;
+ 267:rtos/uC-Common/Auth/auth.c **** 
+ 268:rtos/uC-Common/Auth/auth.c **** exit:
+ 269:rtos/uC-Common/Auth/auth.c ****     return (result);
+ 270:rtos/uC-Common/Auth/auth.c **** }
+ 271:rtos/uC-Common/Auth/auth.c **** 
+ 272:rtos/uC-Common/Auth/auth.c **** 
+ 273:rtos/uC-Common/Auth/auth.c **** /*
+ 274:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 275:rtos/uC-Common/Auth/auth.c **** *                                        Auth_ChangePassword()
+ 276:rtos/uC-Common/Auth/auth.c **** *
+ 277:rtos/uC-Common/Auth/auth.c **** * Description : Change the user's password.
+ 278:rtos/uC-Common/Auth/auth.c **** *
+ 279:rtos/uC-Common/Auth/auth.c **** * Argument(s) : p_user      Pointer to user object.
+ 280:rtos/uC-Common/Auth/auth.c **** *
+ 281:rtos/uC-Common/Auth/auth.c **** *               p_pwd       Pointer to the new password.
+ 282:rtos/uC-Common/Auth/auth.c **** *
+ 283:rtos/uC-Common/Auth/auth.c **** *               p_as_user   Pointer to user that have the permission level to do the action.
+ 284:rtos/uC-Common/Auth/auth.c **** *                               Must be the same as p_user or the ROOT user.
+ 285:rtos/uC-Common/Auth/auth.c **** *
+ 286:rtos/uC-Common/Auth/auth.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 287:rtos/uC-Common/Auth/auth.c **** *
+ 288:rtos/uC-Common/Auth/auth.c **** *                               RTOS_ERR_NONE
+ 289:rtos/uC-Common/Auth/auth.c **** *                               RTOS_ERR_INVALID_STR_LEN
+ 290:rtos/uC-Common/Auth/auth.c **** *                               RTOS_ERR_PERMISSION
+ 291:rtos/uC-Common/Auth/auth.c **** *                               RTOS_ERR_NOT_FOUND
+ 292:rtos/uC-Common/Auth/auth.c **** *
+ 293:rtos/uC-Common/Auth/auth.c **** *                               ----------- RETURNED BY KAL_LockAcquire/Release() ---------
+ 294:rtos/uC-Common/Auth/auth.c **** *                               See KAL_LockAcquire/Release() for additional return error codes.
+ 295:rtos/uC-Common/Auth/auth.c **** *
+ 296:rtos/uC-Common/Auth/auth.c **** * Return(s)   : DEF_OK,   if password changed successfully.
+ 297:rtos/uC-Common/Auth/auth.c **** *               DEF_FAIL, otherwise.
+ 298:rtos/uC-Common/Auth/auth.c **** *
+ 299:rtos/uC-Common/Auth/auth.c **** * Note(s)     : none.
+ 300:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 301:rtos/uC-Common/Auth/auth.c **** */
+ 302:rtos/uC-Common/Auth/auth.c **** 
+ 303:rtos/uC-Common/Auth/auth.c **** #if 0
+ 304:rtos/uC-Common/Auth/auth.c **** CPU_BOOLEAN  Auth_ChangePassword (       AUTH_USER  *p_user,
+ 305:rtos/uC-Common/Auth/auth.c ****                                   const  CPU_CHAR   *p_pwd,
+ 306:rtos/uC-Common/Auth/auth.c ****                                   const  AUTH_USER  *p_as_user,
+ 307:rtos/uC-Common/Auth/auth.c ****                                          RTOS_ERR   *p_err)
+ 308:rtos/uC-Common/Auth/auth.c **** {
+ 309:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T    name_len;
+ 310:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T    pwd_len;
+ 311:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T    i;
+ 312:rtos/uC-Common/Auth/auth.c ****     CPU_INT16S    cmp_result;
+ 313:rtos/uC-Common/Auth/auth.c ****     CPU_BOOLEAN   result     = DEF_FAIL;
+ 314:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR      local_err;
+ 315:rtos/uC-Common/Auth/auth.c **** 
+ARM GAS  /tmp/ccfJcmjl.s 			page 7
+
+
+ 316:rtos/uC-Common/Auth/auth.c **** 
+ 317:rtos/uC-Common/Auth/auth.c ****     KAL_LockAcquire(Auth_LockHandle, KAL_OPT_PEND_NONE, KAL_TIMEOUT_INFINITE, p_err);
+ 318:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 319:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 320:rtos/uC-Common/Auth/auth.c ****     }
+ 321:rtos/uC-Common/Auth/auth.c **** 
+ 322:rtos/uC-Common/Auth/auth.c ****     name_len = Str_Len_N(p_user->Name, AUTH_NAME_MAX_LENGTH + 1);
+ 323:rtos/uC-Common/Auth/auth.c ****     pwd_len  = Str_Len_N(p_pwd,  AUTH_PWD_MAX_LENGTH  + 1);
+ 324:rtos/uC-Common/Auth/auth.c **** 
+ 325:rtos/uC-Common/Auth/auth.c ****     if (pwd_len > AUTH_PWD_MAX_LENGTH) {
+ 326:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_INVALID_STR_LEN;
+ 327:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 328:rtos/uC-Common/Auth/auth.c ****     }
+ 329:rtos/uC-Common/Auth/auth.c **** 
+ 330:rtos/uC-Common/Auth/auth.c ****     if ((Str_Cmp(p_as_user->Name, p_user->Name)             != 0)      &&
+ 331:rtos/uC-Common/Auth/auth.c ****         (DEF_BIT_IS_CLR(p_as_user->Rights, AUTH_RIGHT_ROOT) == DEF_YES)) {
+ 332:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_PERMISSION;
+ 333:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 334:rtos/uC-Common/Auth/auth.c ****     }
+ 335:rtos/uC-Common/Auth/auth.c **** 
+ 336:rtos/uC-Common/Auth/auth.c ****     for (i = 0; i < Auth_UserNbr; ++i) {
+ 337:rtos/uC-Common/Auth/auth.c **** 
+ 338:rtos/uC-Common/Auth/auth.c ****         cmp_result = Str_Cmp_N(Auth_UsersCredentials[i].User.Name, p_user->Name, name_len);
+ 339:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 340:rtos/uC-Common/Auth/auth.c **** 
+ 341:rtos/uC-Common/Auth/auth.c ****             (void)Str_Copy_N(Auth_UsersCredentials[i].Pwd,
+ 342:rtos/uC-Common/Auth/auth.c ****                              p_pwd,
+ 343:rtos/uC-Common/Auth/auth.c ****                              pwd_len);
+ 344:rtos/uC-Common/Auth/auth.c **** 
+ 345:rtos/uC-Common/Auth/auth.c ****             result = DEF_OK;
+ 346:rtos/uC-Common/Auth/auth.c ****            *p_err  = RTOS_ERR_NONE;
+ 347:rtos/uC-Common/Auth/auth.c ****             goto exit_release;
+ 348:rtos/uC-Common/Auth/auth.c ****         }
+ 349:rtos/uC-Common/Auth/auth.c ****     }
+ 350:rtos/uC-Common/Auth/auth.c **** 
+ 351:rtos/uC-Common/Auth/auth.c ****    *p_err = RTOS_ERR_NOT_FOUND;
+ 352:rtos/uC-Common/Auth/auth.c **** 
+ 353:rtos/uC-Common/Auth/auth.c **** 
+ 354:rtos/uC-Common/Auth/auth.c **** exit_release:
+ 355:rtos/uC-Common/Auth/auth.c ****     KAL_LockRelease(Auth_LockHandle, &local_err);
+ 356:rtos/uC-Common/Auth/auth.c ****     (void)local_err;
+ 357:rtos/uC-Common/Auth/auth.c **** 
+ 358:rtos/uC-Common/Auth/auth.c **** exit:
+ 359:rtos/uC-Common/Auth/auth.c ****     return (result);
+ 360:rtos/uC-Common/Auth/auth.c **** }
+ 361:rtos/uC-Common/Auth/auth.c **** #endif
+ 362:rtos/uC-Common/Auth/auth.c **** 
+ 363:rtos/uC-Common/Auth/auth.c **** 
+ 364:rtos/uC-Common/Auth/auth.c **** /*
+ 365:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 366:rtos/uC-Common/Auth/auth.c **** *                                           Auth_GetUser()
+ 367:rtos/uC-Common/Auth/auth.c **** *
+ 368:rtos/uC-Common/Auth/auth.c **** * Description : Get the user structure with the given name.
+ 369:rtos/uC-Common/Auth/auth.c **** *
+ 370:rtos/uC-Common/Auth/auth.c **** * Argument(s) : p_name      Pointer to user name string to retrieve.
+ 371:rtos/uC-Common/Auth/auth.c **** *
+ 372:rtos/uC-Common/Auth/auth.c **** *               p_user      Pointer to user object that will be filled with the data retrieved.
+ARM GAS  /tmp/ccfJcmjl.s 			page 8
+
+
+ 373:rtos/uC-Common/Auth/auth.c **** *
+ 374:rtos/uC-Common/Auth/auth.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 375:rtos/uC-Common/Auth/auth.c **** *
+ 376:rtos/uC-Common/Auth/auth.c **** *                               RTOS_ERR_NONE
+ 377:rtos/uC-Common/Auth/auth.c **** *
+ 378:rtos/uC-Common/Auth/auth.c **** *                               ----------- RETURNED BY KAL_LockAcquire/Release() ---------
+ 379:rtos/uC-Common/Auth/auth.c **** *                               See KAL_LockAcquire/Release() for additional return error codes.
+ 380:rtos/uC-Common/Auth/auth.c **** *
+ 381:rtos/uC-Common/Auth/auth.c **** *                               ------------ RETURNED BY Auth_GetUserHandler() ------------
+ 382:rtos/uC-Common/Auth/auth.c **** *                               See Auth_GetUserHandler() for additional return error codes.
+ 383:rtos/uC-Common/Auth/auth.c **** *
+ 384:rtos/uC-Common/Auth/auth.c **** * Return(s)   : DEF_OK,   if user was successfully found.
+ 385:rtos/uC-Common/Auth/auth.c **** *               DEF_FAIL, otherwise.
+ 386:rtos/uC-Common/Auth/auth.c **** *
+ 387:rtos/uC-Common/Auth/auth.c **** * Note(s)     : none.
+ 388:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 389:rtos/uC-Common/Auth/auth.c **** */
+ 390:rtos/uC-Common/Auth/auth.c **** 
+ 391:rtos/uC-Common/Auth/auth.c **** CPU_BOOLEAN  Auth_GetUser (const  CPU_CHAR   *p_name,
+ 392:rtos/uC-Common/Auth/auth.c ****                                   AUTH_USER  *p_user,
+ 393:rtos/uC-Common/Auth/auth.c ****                                   RTOS_ERR   *p_err)
+ 394:rtos/uC-Common/Auth/auth.c **** {
+ 395:rtos/uC-Common/Auth/auth.c ****     CPU_BOOLEAN  result;
+ 396:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR     local_err;
+ 397:rtos/uC-Common/Auth/auth.c **** 
+ 398:rtos/uC-Common/Auth/auth.c **** 
+ 399:rtos/uC-Common/Auth/auth.c ****     KAL_LockAcquire(Auth_LockHandle, KAL_OPT_PEND_NONE, KAL_TIMEOUT_INFINITE, p_err);
+ 400:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 401:rtos/uC-Common/Auth/auth.c ****         result = DEF_FAIL;
+ 402:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 403:rtos/uC-Common/Auth/auth.c ****     }
+ 404:rtos/uC-Common/Auth/auth.c **** 
+ 405:rtos/uC-Common/Auth/auth.c ****     result = Auth_GetUserHandler(p_name, p_user, p_err);
+ 406:rtos/uC-Common/Auth/auth.c **** 
+ 407:rtos/uC-Common/Auth/auth.c ****     KAL_LockRelease(Auth_LockHandle, &local_err);
+ 408:rtos/uC-Common/Auth/auth.c ****     (void)local_err;
+ 409:rtos/uC-Common/Auth/auth.c **** 
+ 410:rtos/uC-Common/Auth/auth.c **** exit:
+ 411:rtos/uC-Common/Auth/auth.c ****     return (result);
+ 412:rtos/uC-Common/Auth/auth.c **** }
+ 413:rtos/uC-Common/Auth/auth.c **** 
+ 414:rtos/uC-Common/Auth/auth.c **** 
+ 415:rtos/uC-Common/Auth/auth.c **** /*
+ 416:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 417:rtos/uC-Common/Auth/auth.c **** *                                     Auth_ValidateCredentials()
+ 418:rtos/uC-Common/Auth/auth.c **** *
+ 419:rtos/uC-Common/Auth/auth.c **** * Description : Validates the user and password tuple with known users.
+ 420:rtos/uC-Common/Auth/auth.c **** *
+ 421:rtos/uC-Common/Auth/auth.c **** * Argument(s) : p_name      Pointer to user name string.
+ 422:rtos/uC-Common/Auth/auth.c **** *
+ 423:rtos/uC-Common/Auth/auth.c **** *               p_pwd       Pointer to password string.
+ 424:rtos/uC-Common/Auth/auth.c **** *
+ 425:rtos/uC-Common/Auth/auth.c **** *               p_user      Pointer to user object that will be filled with the data retrieved.
+ 426:rtos/uC-Common/Auth/auth.c **** *
+ 427:rtos/uC-Common/Auth/auth.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 428:rtos/uC-Common/Auth/auth.c **** *
+ 429:rtos/uC-Common/Auth/auth.c **** *                               RTOS_ERR_NONE
+ARM GAS  /tmp/ccfJcmjl.s 			page 9
+
+
+ 430:rtos/uC-Common/Auth/auth.c **** *                               RTOS_ERR_INVALID_STR_LEN
+ 431:rtos/uC-Common/Auth/auth.c **** *                               RTOS_ERR_INVALID_CREDENTIALS
+ 432:rtos/uC-Common/Auth/auth.c **** *
+ 433:rtos/uC-Common/Auth/auth.c **** *                               ----------- RETURNED BY KAL_LockAcquire/Release() ---------
+ 434:rtos/uC-Common/Auth/auth.c **** *                               See KAL_LockAcquire/Release() for additional return error codes.
+ 435:rtos/uC-Common/Auth/auth.c **** *
+ 436:rtos/uC-Common/Auth/auth.c **** * Return(s)   : DEF_OK,   if credentials are valid.
+ 437:rtos/uC-Common/Auth/auth.c **** *               DEF_FAIL, otherwise.
+ 438:rtos/uC-Common/Auth/auth.c **** *
+ 439:rtos/uC-Common/Auth/auth.c **** * Note(s)     : none.
+ 440:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 441:rtos/uC-Common/Auth/auth.c **** */
+ 442:rtos/uC-Common/Auth/auth.c **** 
+ 443:rtos/uC-Common/Auth/auth.c **** CPU_BOOLEAN  Auth_ValidateCredentials (const  CPU_CHAR   *p_name,
+ 444:rtos/uC-Common/Auth/auth.c ****                                        const  CPU_CHAR   *p_pwd,
+ 445:rtos/uC-Common/Auth/auth.c ****                                               AUTH_USER  *p_user,
+ 446:rtos/uC-Common/Auth/auth.c ****                                               RTOS_ERR   *p_err)
+ 447:rtos/uC-Common/Auth/auth.c **** {
+ 448:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   name_len;
+ 449:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   pwd_len;
+ 450:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   i;
+ 451:rtos/uC-Common/Auth/auth.c ****     CPU_INT16S   cmp_result;
+ 452:rtos/uC-Common/Auth/auth.c ****     CPU_BOOLEAN  result     = DEF_FAIL;
+ 453:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR     local_err;
+ 454:rtos/uC-Common/Auth/auth.c **** 
+ 455:rtos/uC-Common/Auth/auth.c **** 
+ 456:rtos/uC-Common/Auth/auth.c ****     KAL_LockAcquire(Auth_LockHandle, KAL_OPT_PEND_NONE, KAL_TIMEOUT_INFINITE, p_err);
+ 457:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 458:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 459:rtos/uC-Common/Auth/auth.c ****     }
+ 460:rtos/uC-Common/Auth/auth.c **** 
+ 461:rtos/uC-Common/Auth/auth.c ****     name_len = Str_Len_N(p_name, AUTH_NAME_MAX_LENGTH + 1);
+ 462:rtos/uC-Common/Auth/auth.c ****     pwd_len  = Str_Len_N(p_pwd,  AUTH_PWD_MAX_LENGTH  + 1);
+ 463:rtos/uC-Common/Auth/auth.c **** 
+ 464:rtos/uC-Common/Auth/auth.c ****     if (name_len > AUTH_NAME_MAX_LENGTH) {
+ 465:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_INVALID_STR_LEN;
+ 466:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 467:rtos/uC-Common/Auth/auth.c ****     }
+ 468:rtos/uC-Common/Auth/auth.c **** 
+ 469:rtos/uC-Common/Auth/auth.c ****     if (pwd_len > AUTH_PWD_MAX_LENGTH) {
+ 470:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_INVALID_STR_LEN;
+ 471:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 472:rtos/uC-Common/Auth/auth.c ****     }
+ 473:rtos/uC-Common/Auth/auth.c **** 
+ 474:rtos/uC-Common/Auth/auth.c ****     for (i = 0; i < Auth_UserNbr; ++i) {
+ 475:rtos/uC-Common/Auth/auth.c **** 
+ 476:rtos/uC-Common/Auth/auth.c ****         cmp_result = Str_Cmp_N(Auth_UsersCredentials[i].User.Name, p_name, name_len);
+ 477:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 478:rtos/uC-Common/Auth/auth.c **** 
+ 479:rtos/uC-Common/Auth/auth.c ****             cmp_result = Str_Cmp_N(Auth_UsersCredentials[i].Pwd, p_pwd, pwd_len);
+ 480:rtos/uC-Common/Auth/auth.c ****             if (cmp_result == 0) {
+ 481:rtos/uC-Common/Auth/auth.c **** 
+ 482:rtos/uC-Common/Auth/auth.c ****                 (void)Str_Copy_N(p_user->Name, p_name, name_len);
+ 483:rtos/uC-Common/Auth/auth.c ****                 p_user->Rights = Auth_UsersCredentials[i].User.Rights;
+ 484:rtos/uC-Common/Auth/auth.c **** 
+ 485:rtos/uC-Common/Auth/auth.c ****                 result = DEF_OK;
+ 486:rtos/uC-Common/Auth/auth.c ****                *p_err  = RTOS_ERR_NONE;
+ARM GAS  /tmp/ccfJcmjl.s 			page 10
+
+
+ 487:rtos/uC-Common/Auth/auth.c ****                 goto exit_release;
+ 488:rtos/uC-Common/Auth/auth.c ****             }
+ 489:rtos/uC-Common/Auth/auth.c ****             break;
+ 490:rtos/uC-Common/Auth/auth.c ****         }
+ 491:rtos/uC-Common/Auth/auth.c ****     }
+ 492:rtos/uC-Common/Auth/auth.c **** 
+ 493:rtos/uC-Common/Auth/auth.c ****    *p_err = RTOS_ERR_INVALID_CREDENTIALS;
+ 494:rtos/uC-Common/Auth/auth.c **** 
+ 495:rtos/uC-Common/Auth/auth.c **** 
+ 496:rtos/uC-Common/Auth/auth.c **** exit_release:
+ 497:rtos/uC-Common/Auth/auth.c ****     KAL_LockRelease(Auth_LockHandle, &local_err);
+ 498:rtos/uC-Common/Auth/auth.c ****     (void)local_err;
+ 499:rtos/uC-Common/Auth/auth.c **** 
+ 500:rtos/uC-Common/Auth/auth.c **** exit:
+ 501:rtos/uC-Common/Auth/auth.c ****     return (result);
+ 502:rtos/uC-Common/Auth/auth.c **** }
+ 503:rtos/uC-Common/Auth/auth.c **** 
+ 504:rtos/uC-Common/Auth/auth.c **** 
+ 505:rtos/uC-Common/Auth/auth.c **** /*
+ 506:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 507:rtos/uC-Common/Auth/auth.c **** *                                         Auth_GrantRight()
+ 508:rtos/uC-Common/Auth/auth.c **** *
+ 509:rtos/uC-Common/Auth/auth.c **** * Description : Grants a right to a user as another user (limits the rights granted).
+ 510:rtos/uC-Common/Auth/auth.c **** *
+ 511:rtos/uC-Common/Auth/auth.c **** * Argument(s) : right       New right to grant.
+ 512:rtos/uC-Common/Auth/auth.c **** *
+ 513:rtos/uC-Common/Auth/auth.c **** *               p_user      Pointer to user object that will received the new right.
+ 514:rtos/uC-Common/Auth/auth.c **** *
+ 515:rtos/uC-Common/Auth/auth.c **** *               p_as_user   Pointer to user that has the permission level to do the action.
+ 516:rtos/uC-Common/Auth/auth.c **** *
+ 517:rtos/uC-Common/Auth/auth.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 518:rtos/uC-Common/Auth/auth.c **** *
+ 519:rtos/uC-Common/Auth/auth.c **** *                               RTOS_ERR_NONE
+ 520:rtos/uC-Common/Auth/auth.c **** *                               RTOS_ERR_PERMISSION
+ 521:rtos/uC-Common/Auth/auth.c **** *                               RTOS_ERR_NOT_FOUND
+ 522:rtos/uC-Common/Auth/auth.c **** *
+ 523:rtos/uC-Common/Auth/auth.c **** *                               ----------- RETURNED BY KAL_LockAcquire/Release() ---------
+ 524:rtos/uC-Common/Auth/auth.c **** *                               See KAL_LockAcquire/Release() for additional return error codes.
+ 525:rtos/uC-Common/Auth/auth.c **** *
+ 526:rtos/uC-Common/Auth/auth.c **** *                               ------------ RETURNED BY Auth_GetUserHandler() ------------
+ 527:rtos/uC-Common/Auth/auth.c **** *                               See Auth_GetUserHandler() for additional return error codes.
+ 528:rtos/uC-Common/Auth/auth.c **** *
+ 529:rtos/uC-Common/Auth/auth.c **** * Return(s)   : DEF_OK,   if right was granted successfully.
+ 530:rtos/uC-Common/Auth/auth.c **** *               DEF_FAIL, otherwise.
+ 531:rtos/uC-Common/Auth/auth.c **** *
+ 532:rtos/uC-Common/Auth/auth.c **** * Note(s)     : none.
+ 533:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 534:rtos/uC-Common/Auth/auth.c **** */
+ 535:rtos/uC-Common/Auth/auth.c **** 
+ 536:rtos/uC-Common/Auth/auth.c **** CPU_BOOLEAN  Auth_GrantRight (AUTH_RIGHT   right,
+ 537:rtos/uC-Common/Auth/auth.c ****                               AUTH_USER   *p_user,
+ 538:rtos/uC-Common/Auth/auth.c ****                               AUTH_USER   *p_as_user,
+ 539:rtos/uC-Common/Auth/auth.c ****                               RTOS_ERR    *p_err)
+ 540:rtos/uC-Common/Auth/auth.c **** {
+ 541:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   name_len;
+ 542:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   i;
+ 543:rtos/uC-Common/Auth/auth.c ****     CPU_INT16S   cmp_result;
+ARM GAS  /tmp/ccfJcmjl.s 			page 11
+
+
+ 544:rtos/uC-Common/Auth/auth.c ****     CPU_BOOLEAN  result     = DEF_FAIL;
+ 545:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR     local_err;
+ 546:rtos/uC-Common/Auth/auth.c **** 
+ 547:rtos/uC-Common/Auth/auth.c **** 
+ 548:rtos/uC-Common/Auth/auth.c ****     KAL_LockAcquire(Auth_LockHandle, KAL_OPT_PEND_NONE, KAL_TIMEOUT_INFINITE, p_err);
+ 549:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 550:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 551:rtos/uC-Common/Auth/auth.c ****     }
+ 552:rtos/uC-Common/Auth/auth.c **** 
+ 553:rtos/uC-Common/Auth/auth.c ****     (void)Auth_GetUserHandler(p_as_user->Name, p_as_user, p_err);
+ 554:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 555:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 556:rtos/uC-Common/Auth/auth.c ****     }
+ 557:rtos/uC-Common/Auth/auth.c **** 
+ 558:rtos/uC-Common/Auth/auth.c ****     if (((DEF_BIT_IS_SET(p_as_user->Rights, AUTH_RIGHT_MNG)  == DEF_NO)  ||
+ 559:rtos/uC-Common/Auth/auth.c ****          (DEF_BIT_IS_SET(p_as_user->Rights, right)           == DEF_NO)) &&
+ 560:rtos/uC-Common/Auth/auth.c ****         (DEF_BIT_IS_SET(p_as_user->Rights, AUTH_RIGHT_ROOT)  == DEF_NO))  {
+ 561:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_PERMISSION;
+ 562:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 563:rtos/uC-Common/Auth/auth.c ****     }
+ 564:rtos/uC-Common/Auth/auth.c **** 
+ 565:rtos/uC-Common/Auth/auth.c ****     name_len = Str_Len_N(p_user->Name, AUTH_NAME_MAX_LENGTH + 1);
+ 566:rtos/uC-Common/Auth/auth.c **** 
+ 567:rtos/uC-Common/Auth/auth.c ****     for (i = 0; i < Auth_UserNbr; ++i) {
+ 568:rtos/uC-Common/Auth/auth.c **** 
+ 569:rtos/uC-Common/Auth/auth.c ****         cmp_result = Str_Cmp_N(Auth_UsersCredentials[i].User.Name, p_user->Name, name_len);
+ 570:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 571:rtos/uC-Common/Auth/auth.c **** 
+ 572:rtos/uC-Common/Auth/auth.c ****             DEF_BIT_SET(Auth_UsersCredentials[i].User.Rights, right);
+ 573:rtos/uC-Common/Auth/auth.c **** 
+ 574:rtos/uC-Common/Auth/auth.c ****             p_user->Rights = Auth_UsersCredentials[i].User.Rights;
+ 575:rtos/uC-Common/Auth/auth.c **** 
+ 576:rtos/uC-Common/Auth/auth.c ****             result = DEF_OK;
+ 577:rtos/uC-Common/Auth/auth.c ****            *p_err  = RTOS_ERR_NONE;
+ 578:rtos/uC-Common/Auth/auth.c ****             goto exit_release;
+ 579:rtos/uC-Common/Auth/auth.c ****         }
+ 580:rtos/uC-Common/Auth/auth.c ****     }
+ 581:rtos/uC-Common/Auth/auth.c **** 
+ 582:rtos/uC-Common/Auth/auth.c ****    *p_err = RTOS_ERR_NOT_FOUND;
+ 583:rtos/uC-Common/Auth/auth.c **** 
+ 584:rtos/uC-Common/Auth/auth.c **** 
+ 585:rtos/uC-Common/Auth/auth.c **** exit_release:
+ 586:rtos/uC-Common/Auth/auth.c ****     KAL_LockRelease(Auth_LockHandle, &local_err);
+ 587:rtos/uC-Common/Auth/auth.c ****     (void)local_err;
+ 588:rtos/uC-Common/Auth/auth.c **** 
+ 589:rtos/uC-Common/Auth/auth.c **** exit:
+ 590:rtos/uC-Common/Auth/auth.c ****     return (result);
+ 591:rtos/uC-Common/Auth/auth.c **** }
+ 592:rtos/uC-Common/Auth/auth.c **** 
+ 593:rtos/uC-Common/Auth/auth.c **** 
+ 594:rtos/uC-Common/Auth/auth.c **** /*
+ 595:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 596:rtos/uC-Common/Auth/auth.c **** *                                          Auth_RevokeRight()
+ 597:rtos/uC-Common/Auth/auth.c **** *
+ 598:rtos/uC-Common/Auth/auth.c **** * Description : Revokes the right of a specified user.
+ 599:rtos/uC-Common/Auth/auth.c **** *
+ 600:rtos/uC-Common/Auth/auth.c **** * Argument(s) : right       Right to revoke.
+ARM GAS  /tmp/ccfJcmjl.s 			page 12
+
+
+ 601:rtos/uC-Common/Auth/auth.c **** *
+ 602:rtos/uC-Common/Auth/auth.c **** *               p_user      Pointer to user object which right will be revoked.
+ 603:rtos/uC-Common/Auth/auth.c **** *
+ 604:rtos/uC-Common/Auth/auth.c **** *               p_as_user   Pointer to user that has the permission level to do the action.
+ 605:rtos/uC-Common/Auth/auth.c **** *
+ 606:rtos/uC-Common/Auth/auth.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 607:rtos/uC-Common/Auth/auth.c **** *
+ 608:rtos/uC-Common/Auth/auth.c **** *                               RTOS_ERR_NONE
+ 609:rtos/uC-Common/Auth/auth.c **** *                               RTOS_ERR_PERMISSION
+ 610:rtos/uC-Common/Auth/auth.c **** *                               RTOS_ERR_NOT_FOUND
+ 611:rtos/uC-Common/Auth/auth.c **** *
+ 612:rtos/uC-Common/Auth/auth.c **** *                               ----------- RETURNED BY KAL_LockAcquire/Release() ---------
+ 613:rtos/uC-Common/Auth/auth.c **** *                               See KAL_LockAcquire/Release() for additional return error codes.
+ 614:rtos/uC-Common/Auth/auth.c **** *
+ 615:rtos/uC-Common/Auth/auth.c **** *                               ------------ RETURNED BY Auth_GetUserHandler() ------------
+ 616:rtos/uC-Common/Auth/auth.c **** *                               See Auth_GetUserHandler() for additional return error codes.
+ 617:rtos/uC-Common/Auth/auth.c **** *
+ 618:rtos/uC-Common/Auth/auth.c **** * Return(s)   : DEF_OK,   if right was revoked successfully.
+ 619:rtos/uC-Common/Auth/auth.c **** *               DEF_FAIL, otherwise.
+ 620:rtos/uC-Common/Auth/auth.c **** *
+ 621:rtos/uC-Common/Auth/auth.c **** * Note(s)     : none.
+ 622:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 623:rtos/uC-Common/Auth/auth.c **** */
+ 624:rtos/uC-Common/Auth/auth.c **** 
+ 625:rtos/uC-Common/Auth/auth.c **** CPU_BOOLEAN  Auth_RevokeRight (AUTH_RIGHT   right,
+ 626:rtos/uC-Common/Auth/auth.c ****                                AUTH_USER   *p_user,
+ 627:rtos/uC-Common/Auth/auth.c ****                                AUTH_USER   *p_as_user,
+ 628:rtos/uC-Common/Auth/auth.c ****                                RTOS_ERR    *p_err)
+ 629:rtos/uC-Common/Auth/auth.c **** {
+ 630:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   name_len;
+ 631:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   i;
+ 632:rtos/uC-Common/Auth/auth.c ****     CPU_INT16S   cmp_result;
+ 633:rtos/uC-Common/Auth/auth.c ****     CPU_BOOLEAN  result     = DEF_FAIL;
+ 634:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR     local_err;
+ 635:rtos/uC-Common/Auth/auth.c **** 
+ 636:rtos/uC-Common/Auth/auth.c **** 
+ 637:rtos/uC-Common/Auth/auth.c ****     KAL_LockAcquire(Auth_LockHandle, KAL_OPT_PEND_NONE, KAL_TIMEOUT_INFINITE, p_err);
+ 638:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 639:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 640:rtos/uC-Common/Auth/auth.c ****     }
+ 641:rtos/uC-Common/Auth/auth.c **** 
+ 642:rtos/uC-Common/Auth/auth.c ****     (void)Auth_GetUserHandler(p_as_user->Name, p_as_user, p_err);
+ 643:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 644:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 645:rtos/uC-Common/Auth/auth.c ****     }
+ 646:rtos/uC-Common/Auth/auth.c **** 
+ 647:rtos/uC-Common/Auth/auth.c ****                                                                 /* This implementation allows the R
+ 648:rtos/uC-Common/Auth/auth.c ****                                                                 /* ... to revoke it's own ROOT righ
+ 649:rtos/uC-Common/Auth/auth.c ****     if (((DEF_BIT_IS_SET(p_as_user->Rights, AUTH_RIGHT_MNG)  == DEF_NO) ||
+ 650:rtos/uC-Common/Auth/auth.c ****          (DEF_BIT_IS_SET(p_as_user->Rights, right)           == DEF_NO)   ) &&
+ 651:rtos/uC-Common/Auth/auth.c ****         (DEF_BIT_IS_SET(p_as_user->Rights, AUTH_RIGHT_ROOT)  == DEF_NO    )    ) {
+ 652:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_PERMISSION;
+ 653:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 654:rtos/uC-Common/Auth/auth.c ****     }
+ 655:rtos/uC-Common/Auth/auth.c **** 
+ 656:rtos/uC-Common/Auth/auth.c ****     name_len = Str_Len_N(p_user->Name, AUTH_NAME_MAX_LENGTH + 1);
+ 657:rtos/uC-Common/Auth/auth.c **** 
+ARM GAS  /tmp/ccfJcmjl.s 			page 13
+
+
+ 658:rtos/uC-Common/Auth/auth.c ****     for (i = 0; i < Auth_UserNbr; ++i) {
+ 659:rtos/uC-Common/Auth/auth.c **** 
+ 660:rtos/uC-Common/Auth/auth.c ****         cmp_result = Str_Cmp_N(Auth_UsersCredentials[i].User.Name, p_user->Name, name_len);
+ 661:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 662:rtos/uC-Common/Auth/auth.c **** 
+ 663:rtos/uC-Common/Auth/auth.c ****             DEF_BIT_CLR(Auth_UsersCredentials[i].User.Rights, right);
+ 664:rtos/uC-Common/Auth/auth.c **** 
+ 665:rtos/uC-Common/Auth/auth.c ****             p_user->Rights = Auth_UsersCredentials[i].User.Rights;
+ 666:rtos/uC-Common/Auth/auth.c **** 
+ 667:rtos/uC-Common/Auth/auth.c ****             result = DEF_OK;
+ 668:rtos/uC-Common/Auth/auth.c ****            *p_err  = RTOS_ERR_NONE;
+ 669:rtos/uC-Common/Auth/auth.c ****             goto exit_release;
+ 670:rtos/uC-Common/Auth/auth.c ****         }
+ 671:rtos/uC-Common/Auth/auth.c ****     }
+ 672:rtos/uC-Common/Auth/auth.c **** 
+ 673:rtos/uC-Common/Auth/auth.c ****    *p_err = RTOS_ERR_NOT_FOUND;
+ 674:rtos/uC-Common/Auth/auth.c **** 
+ 675:rtos/uC-Common/Auth/auth.c **** 
+ 676:rtos/uC-Common/Auth/auth.c **** exit_release:
+ 677:rtos/uC-Common/Auth/auth.c ****     KAL_LockRelease(Auth_LockHandle, &local_err);
+ 678:rtos/uC-Common/Auth/auth.c ****     (void)local_err;
+ 679:rtos/uC-Common/Auth/auth.c **** 
+ 680:rtos/uC-Common/Auth/auth.c **** exit:
+ 681:rtos/uC-Common/Auth/auth.c ****     return (result);
+ 682:rtos/uC-Common/Auth/auth.c **** }
+ 683:rtos/uC-Common/Auth/auth.c **** 
+ 684:rtos/uC-Common/Auth/auth.c **** 
+ 685:rtos/uC-Common/Auth/auth.c **** /*
+ 686:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 687:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 688:rtos/uC-Common/Auth/auth.c **** *                                          LOCAL FUNCTIONS
+ 689:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 690:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 691:rtos/uC-Common/Auth/auth.c **** */
+ 692:rtos/uC-Common/Auth/auth.c **** 
+ 693:rtos/uC-Common/Auth/auth.c **** /*
+ 694:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 695:rtos/uC-Common/Auth/auth.c **** *                                         Auth_GetUserHandler()
+ 696:rtos/uC-Common/Auth/auth.c **** *
+ 697:rtos/uC-Common/Auth/auth.c **** * Description : Get the user structure with the given name.
+ 698:rtos/uC-Common/Auth/auth.c **** *
+ 699:rtos/uC-Common/Auth/auth.c **** * Argument(s) : p_name      Pointer to user name string to retrieve.
+ 700:rtos/uC-Common/Auth/auth.c **** *
+ 701:rtos/uC-Common/Auth/auth.c **** *               p_user      Pointer to user object that will be filled with the data retrieved.
+ 702:rtos/uC-Common/Auth/auth.c **** *
+ 703:rtos/uC-Common/Auth/auth.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 704:rtos/uC-Common/Auth/auth.c **** *
+ 705:rtos/uC-Common/Auth/auth.c **** *                               RTOS_ERR_NONE
+ 706:rtos/uC-Common/Auth/auth.c **** *                               RTOS_ERR_NOT_FOUND
+ 707:rtos/uC-Common/Auth/auth.c **** *
+ 708:rtos/uC-Common/Auth/auth.c **** * Return(s)   : DEF_OK,   if user was successfully found.
+ 709:rtos/uC-Common/Auth/auth.c **** *               DEF_FAIL, otherwise.
+ 710:rtos/uC-Common/Auth/auth.c **** *
+ 711:rtos/uC-Common/Auth/auth.c **** * Note(s)     : None.
+ 712:rtos/uC-Common/Auth/auth.c **** ***************************************************************************************************
+ 713:rtos/uC-Common/Auth/auth.c **** */
+ 714:rtos/uC-Common/Auth/auth.c **** 
+ARM GAS  /tmp/ccfJcmjl.s 			page 14
+
+
+ 715:rtos/uC-Common/Auth/auth.c **** static  CPU_BOOLEAN  Auth_GetUserHandler (const  CPU_CHAR   *p_name,
+ 716:rtos/uC-Common/Auth/auth.c ****                                                  AUTH_USER  *p_user,
+ 717:rtos/uC-Common/Auth/auth.c ****                                                  RTOS_ERR   *p_err)
+ 718:rtos/uC-Common/Auth/auth.c **** {
+  29              		.loc 1 718 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		.loc 1 718 1 is_stmt 0 view .LVU1
+  34 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 32
+  37              		.cfi_offset 3, -32
+  38              		.cfi_offset 4, -28
+  39              		.cfi_offset 5, -24
+  40              		.cfi_offset 6, -20
+  41              		.cfi_offset 7, -16
+  42              		.cfi_offset 8, -12
+  43              		.cfi_offset 9, -8
+  44              		.cfi_offset 14, -4
+  45 0004 0E46     		mov	r6, r1
+  46 0006 1746     		mov	r7, r2
+ 719:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   name_len;
+  47              		.loc 1 719 5 is_stmt 1 view .LVU2
+ 720:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   i;
+  48              		.loc 1 720 5 view .LVU3
+ 721:rtos/uC-Common/Auth/auth.c ****     CPU_INT16S   cmp_result;
+  49              		.loc 1 721 5 view .LVU4
+ 722:rtos/uC-Common/Auth/auth.c ****     CPU_BOOLEAN  result;
+  50              		.loc 1 722 5 view .LVU5
+ 723:rtos/uC-Common/Auth/auth.c **** 
+ 724:rtos/uC-Common/Auth/auth.c **** 
+ 725:rtos/uC-Common/Auth/auth.c ****     name_len = Str_Len_N(p_name, AUTH_NAME_MAX_LENGTH + 1);
+  51              		.loc 1 725 5 view .LVU6
+  52              		.loc 1 725 16 is_stmt 0 view .LVU7
+  53 0008 2121     		movs	r1, #33
+  54              	.LVL1:
+  55              		.loc 1 725 16 view .LVU8
+  56 000a FFF7FEFF 		bl	Str_Len_N
+  57              	.LVL2:
+  58              		.loc 1 725 16 view .LVU9
+  59 000e 8046     		mov	r8, r0
+  60              	.LVL3:
+ 726:rtos/uC-Common/Auth/auth.c **** 
+ 727:rtos/uC-Common/Auth/auth.c ****     for (i = 0; i < Auth_UserNbr; ++i) {
+  61              		.loc 1 727 5 is_stmt 1 view .LVU10
+  62              		.loc 1 727 12 is_stmt 0 view .LVU11
+  63 0010 0024     		movs	r4, #0
+  64              	.LVL4:
+  65              	.L2:
+  66              		.loc 1 727 17 is_stmt 1 discriminator 1 view .LVU12
+  67              		.loc 1 727 19 is_stmt 0 discriminator 1 view .LVU13
+  68 0012 104B     		ldr	r3, .L9
+  69 0014 1B68     		ldr	r3, [r3]
+  70              		.loc 1 727 5 discriminator 1 view .LVU14
+  71 0016 A342     		cmp	r3, r4
+  72 0018 17D9     		bls	.L7
+ARM GAS  /tmp/ccfJcmjl.s 			page 15
+
+
+ 728:rtos/uC-Common/Auth/auth.c **** 
+ 729:rtos/uC-Common/Auth/auth.c ****         cmp_result = Str_Cmp_N(Auth_UsersCredentials[i].User.Name, p_user->Name, name_len);
+  73              		.loc 1 729 9 is_stmt 1 view .LVU15
+  74              		.loc 1 729 61 is_stmt 0 view .LVU16
+  75 001a 04EB0415 		add	r5, r4, r4, lsl #4
+  76 001e 0E4B     		ldr	r3, .L9+4
+  77 0020 03EB8505 		add	r5, r3, r5, lsl #2
+  78              		.loc 1 729 22 view .LVU17
+  79 0024 4246     		mov	r2, r8
+  80 0026 3146     		mov	r1, r6
+  81 0028 2846     		mov	r0, r5
+  82 002a FFF7FEFF 		bl	Str_Cmp_N
+  83              	.LVL5:
+ 730:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+  84              		.loc 1 730 9 is_stmt 1 view .LVU18
+  85              		.loc 1 730 12 is_stmt 0 view .LVU19
+  86 002e 08B1     		cbz	r0, .L8
+ 727:rtos/uC-Common/Auth/auth.c **** 
+  87              		.loc 1 727 35 is_stmt 1 discriminator 2 view .LVU20
+  88 0030 0134     		adds	r4, r4, #1
+  89              	.LVL6:
+ 727:rtos/uC-Common/Auth/auth.c **** 
+  90              		.loc 1 727 35 is_stmt 0 discriminator 2 view .LVU21
+  91 0032 EEE7     		b	.L2
+  92              	.L8:
+ 731:rtos/uC-Common/Auth/auth.c **** 
+ 732:rtos/uC-Common/Auth/auth.c ****             (void)Str_Copy_N(p_user->Name,
+  93              		.loc 1 732 13 is_stmt 1 view .LVU22
+  94              		.loc 1 732 19 is_stmt 0 view .LVU23
+  95 0034 4246     		mov	r2, r8
+  96 0036 2946     		mov	r1, r5
+  97 0038 3046     		mov	r0, r6
+  98              	.LVL7:
+  99              		.loc 1 732 19 view .LVU24
+ 100 003a FFF7FEFF 		bl	Str_Copy_N
+ 101              	.LVL8:
+ 733:rtos/uC-Common/Auth/auth.c ****                              Auth_UsersCredentials[i].User.Name,
+ 734:rtos/uC-Common/Auth/auth.c ****                              name_len);
+ 735:rtos/uC-Common/Auth/auth.c **** 
+ 736:rtos/uC-Common/Auth/auth.c ****             p_user->Rights = Auth_UsersCredentials[i].User.Rights;
+ 102              		.loc 1 736 13 is_stmt 1 view .LVU25
+ 103              		.loc 1 736 59 is_stmt 0 view .LVU26
+ 104 003e 2B6A     		ldr	r3, [r5, #32]
+ 105              		.loc 1 736 28 view .LVU27
+ 106 0040 3362     		str	r3, [r6, #32]
+ 737:rtos/uC-Common/Auth/auth.c **** 
+ 738:rtos/uC-Common/Auth/auth.c ****             result = DEF_OK;
+ 107              		.loc 1 738 13 is_stmt 1 view .LVU28
+ 108              	.LVL9:
+ 739:rtos/uC-Common/Auth/auth.c ****            *p_err  = RTOS_ERR_NONE;
+ 109              		.loc 1 739 12 view .LVU29
+ 110              		.loc 1 739 20 is_stmt 0 view .LVU30
+ 111 0042 0023     		movs	r3, #0
+ 112 0044 3B70     		strb	r3, [r7]
+ 740:rtos/uC-Common/Auth/auth.c ****             goto exit;
+ 113              		.loc 1 740 13 is_stmt 1 view .LVU31
+ 738:rtos/uC-Common/Auth/auth.c ****            *p_err  = RTOS_ERR_NONE;
+ARM GAS  /tmp/ccfJcmjl.s 			page 16
+
+
+ 114              		.loc 1 738 20 is_stmt 0 view .LVU32
+ 115 0046 0120     		movs	r0, #1
+ 116              		.loc 1 740 13 view .LVU33
+ 117 0048 02E0     		b	.L4
+ 118              	.LVL10:
+ 119              	.L7:
+ 741:rtos/uC-Common/Auth/auth.c ****         }
+ 742:rtos/uC-Common/Auth/auth.c ****     }
+ 743:rtos/uC-Common/Auth/auth.c **** 
+ 744:rtos/uC-Common/Auth/auth.c ****     result = DEF_FAIL;
+ 120              		.loc 1 744 5 is_stmt 1 view .LVU34
+ 745:rtos/uC-Common/Auth/auth.c ****    *p_err  = RTOS_ERR_NOT_FOUND;
+ 121              		.loc 1 745 4 view .LVU35
+ 122              		.loc 1 745 12 is_stmt 0 view .LVU36
+ 123 004a 0723     		movs	r3, #7
+ 124 004c 3B70     		strb	r3, [r7]
+ 744:rtos/uC-Common/Auth/auth.c ****    *p_err  = RTOS_ERR_NOT_FOUND;
+ 125              		.loc 1 744 12 view .LVU37
+ 126 004e 0020     		movs	r0, #0
+ 127              	.LVL11:
+ 128              	.L4:
+ 746:rtos/uC-Common/Auth/auth.c **** 
+ 747:rtos/uC-Common/Auth/auth.c **** 
+ 748:rtos/uC-Common/Auth/auth.c **** exit:
+ 749:rtos/uC-Common/Auth/auth.c ****    return (result);
+ 129              		.loc 1 749 4 is_stmt 1 view .LVU38
+ 750:rtos/uC-Common/Auth/auth.c **** }
+ 130              		.loc 1 750 1 is_stmt 0 view .LVU39
+ 131 0050 BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 132              	.LVL12:
+ 133              	.L10:
+ 134              		.loc 1 750 1 view .LVU40
+ 135              		.align	2
+ 136              	.L9:
+ 137 0054 00000000 		.word	.LANCHOR1
+ 138 0058 00000000 		.word	.LANCHOR0
+ 139              		.cfi_endproc
+ 140              	.LFE6:
+ 142              		.section	.rodata.Auth_Init.str1.4,"aMS",%progbits,1
+ 143              		.align	2
+ 144              	.LC0:
+ 145 0000 41757468 		.ascii	"Auth Lock\000"
+ 145      204C6F63 
+ 145      6B00
+ 146              		.section	.text.Auth_Init,"ax",%progbits
+ 147              		.align	1
+ 148              		.global	Auth_Init
+ 149              		.syntax unified
+ 150              		.thumb
+ 151              		.thumb_func
+ 152              		.fpu fpv4-sp-d16
+ 154              	Auth_Init:
+ 155              	.LVL13:
+ 156              	.LFB0:
+ 146:rtos/uC-Common/Auth/auth.c ****     CPU_BOOLEAN  res = DEF_OK;
+ 157              		.loc 1 146 1 is_stmt 1 view -0
+ 158              		.cfi_startproc
+ARM GAS  /tmp/ccfJcmjl.s 			page 17
+
+
+ 159              		@ args = 0, pretend = 0, frame = 0
+ 160              		@ frame_needed = 0, uses_anonymous_args = 0
+ 146:rtos/uC-Common/Auth/auth.c ****     CPU_BOOLEAN  res = DEF_OK;
+ 161              		.loc 1 146 1 is_stmt 0 view .LVU42
+ 162 0000 10B5     		push	{r4, lr}
+ 163              	.LCFI1:
+ 164              		.cfi_def_cfa_offset 8
+ 165              		.cfi_offset 4, -8
+ 166              		.cfi_offset 14, -4
+ 167 0002 0446     		mov	r4, r0
+ 147:rtos/uC-Common/Auth/auth.c **** 
+ 168              		.loc 1 147 5 is_stmt 1 view .LVU43
+ 169              	.LVL14:
+ 150:rtos/uC-Common/Auth/auth.c ****                                       KAL_OPT_CREATE_NONE,
+ 170              		.loc 1 150 5 view .LVU44
+ 150:rtos/uC-Common/Auth/auth.c ****                                       KAL_OPT_CREATE_NONE,
+ 171              		.loc 1 150 23 is_stmt 0 view .LVU45
+ 172 0004 0246     		mov	r2, r0
+ 173 0006 0021     		movs	r1, #0
+ 174 0008 0548     		ldr	r0, .L15
+ 175              	.LVL15:
+ 150:rtos/uC-Common/Auth/auth.c ****                                       KAL_OPT_CREATE_NONE,
+ 176              		.loc 1 150 23 view .LVU46
+ 177 000a FFF7FEFF 		bl	KAL_LockCreate
+ 178              	.LVL16:
+ 150:rtos/uC-Common/Auth/auth.c ****                                       KAL_OPT_CREATE_NONE,
+ 179              		.loc 1 150 23 view .LVU47
+ 180 000e 054B     		ldr	r3, .L15+4
+ 181 0010 1860     		str	r0, [r3]
+ 153:rtos/uC-Common/Auth/auth.c ****         res = DEF_FAIL;
+ 182              		.loc 1 153 5 is_stmt 1 view .LVU48
+ 153:rtos/uC-Common/Auth/auth.c ****         res = DEF_FAIL;
+ 183              		.loc 1 153 9 is_stmt 0 view .LVU49
+ 184 0012 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 153:rtos/uC-Common/Auth/auth.c ****         res = DEF_FAIL;
+ 185              		.loc 1 153 8 view .LVU50
+ 186 0014 0BB9     		cbnz	r3, .L13
+ 147:rtos/uC-Common/Auth/auth.c **** 
+ 187              		.loc 1 147 18 view .LVU51
+ 188 0016 0120     		movs	r0, #1
+ 189              	.L12:
+ 190              	.LVL17:
+ 157:rtos/uC-Common/Auth/auth.c **** }
+ 191              		.loc 1 157 5 is_stmt 1 view .LVU52
+ 158:rtos/uC-Common/Auth/auth.c **** 
+ 192              		.loc 1 158 1 is_stmt 0 view .LVU53
+ 193 0018 10BD     		pop	{r4, pc}
+ 194              	.LVL18:
+ 195              	.L13:
+ 154:rtos/uC-Common/Auth/auth.c ****     }
+ 196              		.loc 1 154 13 view .LVU54
+ 197 001a 0020     		movs	r0, #0
+ 198 001c FCE7     		b	.L12
+ 199              	.L16:
+ 200 001e 00BF     		.align	2
+ 201              	.L15:
+ 202 0020 00000000 		.word	.LC0
+ARM GAS  /tmp/ccfJcmjl.s 			page 18
+
+
+ 203 0024 00000000 		.word	.LANCHOR2
+ 204              		.cfi_endproc
+ 205              	.LFE0:
+ 207              		.section	.text.Auth_CreateUser,"ax",%progbits
+ 208              		.align	1
+ 209              		.global	Auth_CreateUser
+ 210              		.syntax unified
+ 211              		.thumb
+ 212              		.thumb_func
+ 213              		.fpu fpv4-sp-d16
+ 215              	Auth_CreateUser:
+ 216              	.LVL19:
+ 217              	.LFB1:
+ 194:rtos/uC-Common/Auth/auth.c ****     AUTH_USER_CREDENTIALS  *p_user_cred;
+ 218              		.loc 1 194 1 is_stmt 1 view -0
+ 219              		.cfi_startproc
+ 220              		@ args = 0, pretend = 0, frame = 16
+ 221              		@ frame_needed = 0, uses_anonymous_args = 0
+ 194:rtos/uC-Common/Auth/auth.c ****     AUTH_USER_CREDENTIALS  *p_user_cred;
+ 222              		.loc 1 194 1 is_stmt 0 view .LVU56
+ 223 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 224              	.LCFI2:
+ 225              		.cfi_def_cfa_offset 36
+ 226              		.cfi_offset 4, -36
+ 227              		.cfi_offset 5, -32
+ 228              		.cfi_offset 6, -28
+ 229              		.cfi_offset 7, -24
+ 230              		.cfi_offset 8, -20
+ 231              		.cfi_offset 9, -16
+ 232              		.cfi_offset 10, -12
+ 233              		.cfi_offset 11, -8
+ 234              		.cfi_offset 14, -4
+ 235 0004 85B0     		sub	sp, sp, #20
+ 236              	.LCFI3:
+ 237              		.cfi_def_cfa_offset 56
+ 238 0006 0546     		mov	r5, r0
+ 239 0008 8946     		mov	r9, r1
+ 240 000a 0192     		str	r2, [sp, #4]
+ 241 000c 1E46     		mov	r6, r3
+ 195:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T              name_len;
+ 242              		.loc 1 195 5 is_stmt 1 view .LVU57
+ 196:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T              pwd_len;
+ 243              		.loc 1 196 5 view .LVU58
+ 197:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T              i;
+ 244              		.loc 1 197 5 view .LVU59
+ 198:rtos/uC-Common/Auth/auth.c ****     CPU_INT16S              cmp_result;
+ 245              		.loc 1 198 5 view .LVU60
+ 199:rtos/uC-Common/Auth/auth.c ****     CPU_BOOLEAN             result     = DEF_FAIL;
+ 246              		.loc 1 199 5 view .LVU61
+ 200:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR                local_err;
+ 247              		.loc 1 200 5 view .LVU62
+ 248              	.LVL20:
+ 201:rtos/uC-Common/Auth/auth.c **** 
+ 249              		.loc 1 201 5 view .LVU63
+ 204:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 250              		.loc 1 204 5 view .LVU64
+ 251 000e 0022     		movs	r2, #0
+ARM GAS  /tmp/ccfJcmjl.s 			page 19
+
+
+ 252              	.LVL21:
+ 204:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 253              		.loc 1 204 5 is_stmt 0 view .LVU65
+ 254 0010 1146     		mov	r1, r2
+ 255              	.LVL22:
+ 204:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 256              		.loc 1 204 5 view .LVU66
+ 257 0012 3E48     		ldr	r0, .L34
+ 258              	.LVL23:
+ 204:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 259              		.loc 1 204 5 view .LVU67
+ 260 0014 0068     		ldr	r0, [r0]
+ 261 0016 FFF7FEFF 		bl	KAL_LockAcquire
+ 262              	.LVL24:
+ 205:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 263              		.loc 1 205 5 is_stmt 1 view .LVU68
+ 205:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 264              		.loc 1 205 9 is_stmt 0 view .LVU69
+ 265 001a 96F80080 		ldrb	r8, [r6]	@ zero_extendqisi2
+ 205:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 266              		.loc 1 205 8 view .LVU70
+ 267 001e B8F1000F 		cmp	r8, #0
+ 268 0022 05D0     		beq	.L28
+ 200:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR                local_err;
+ 269              		.loc 1 200 29 view .LVU71
+ 270 0024 4FF00008 		mov	r8, #0
+ 271              	.LVL25:
+ 272              	.L18:
+ 266:rtos/uC-Common/Auth/auth.c **** 
+ 273              		.loc 1 266 5 is_stmt 1 view .LVU72
+ 269:rtos/uC-Common/Auth/auth.c **** }
+ 274              		.loc 1 269 5 view .LVU73
+ 270:rtos/uC-Common/Auth/auth.c **** 
+ 275              		.loc 1 270 1 is_stmt 0 view .LVU74
+ 276 0028 4046     		mov	r0, r8
+ 277 002a 05B0     		add	sp, sp, #20
+ 278              	.LCFI4:
+ 279              		.cfi_remember_state
+ 280              		.cfi_def_cfa_offset 36
+ 281              		@ sp needed
+ 282 002c BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 283              	.LVL26:
+ 284              	.L28:
+ 285              	.LCFI5:
+ 286              		.cfi_restore_state
+ 209:rtos/uC-Common/Auth/auth.c ****     pwd_len  = Str_Len_N(p_pwd,  AUTH_PWD_MAX_LENGTH  + 1);
+ 287              		.loc 1 209 5 is_stmt 1 view .LVU75
+ 209:rtos/uC-Common/Auth/auth.c ****     pwd_len  = Str_Len_N(p_pwd,  AUTH_PWD_MAX_LENGTH  + 1);
+ 288              		.loc 1 209 16 is_stmt 0 view .LVU76
+ 289 0030 2121     		movs	r1, #33
+ 290 0032 2846     		mov	r0, r5
+ 291 0034 FFF7FEFF 		bl	Str_Len_N
+ 292              	.LVL27:
+ 293 0038 0746     		mov	r7, r0
+ 294              	.LVL28:
+ 210:rtos/uC-Common/Auth/auth.c **** 
+ 295              		.loc 1 210 5 is_stmt 1 view .LVU77
+ARM GAS  /tmp/ccfJcmjl.s 			page 20
+
+
+ 210:rtos/uC-Common/Auth/auth.c **** 
+ 296              		.loc 1 210 16 is_stmt 0 view .LVU78
+ 297 003a 2121     		movs	r1, #33
+ 298 003c 4846     		mov	r0, r9
+ 299              	.LVL29:
+ 210:rtos/uC-Common/Auth/auth.c **** 
+ 300              		.loc 1 210 16 view .LVU79
+ 301 003e FFF7FEFF 		bl	Str_Len_N
+ 302              	.LVL30:
+ 303 0042 8346     		mov	fp, r0
+ 304              	.LVL31:
+ 212:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_INVALID_STR_LEN;
+ 305              		.loc 1 212 5 is_stmt 1 view .LVU80
+ 212:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_INVALID_STR_LEN;
+ 306              		.loc 1 212 8 is_stmt 0 view .LVU81
+ 307 0044 202F     		cmp	r7, #32
+ 308 0046 17D8     		bhi	.L29
+ 217:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_INVALID_STR_LEN;
+ 309              		.loc 1 217 5 is_stmt 1 view .LVU82
+ 217:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_INVALID_STR_LEN;
+ 310              		.loc 1 217 8 is_stmt 0 view .LVU83
+ 311 0048 2028     		cmp	r0, #32
+ 312 004a 1ED8     		bhi	.L30
+ 223:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_NO_MORE_RSRC;
+ 313              		.loc 1 223 5 is_stmt 1 view .LVU84
+ 223:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_NO_MORE_RSRC;
+ 314              		.loc 1 223 22 is_stmt 0 view .LVU85
+ 315 004c 304B     		ldr	r3, .L34+4
+ 316 004e 1B68     		ldr	r3, [r3]
+ 223:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_NO_MORE_RSRC;
+ 317              		.loc 1 223 8 view .LVU86
+ 318 0050 092B     		cmp	r3, #9
+ 319 0052 1DD8     		bhi	.L31
+ 228:rtos/uC-Common/Auth/auth.c **** 
+ 320              		.loc 1 228 12 view .LVU87
+ 321 0054 0024     		movs	r4, #0
+ 322              	.LVL32:
+ 323              	.L22:
+ 228:rtos/uC-Common/Auth/auth.c **** 
+ 324              		.loc 1 228 17 is_stmt 1 discriminator 1 view .LVU88
+ 228:rtos/uC-Common/Auth/auth.c **** 
+ 325              		.loc 1 228 19 is_stmt 0 discriminator 1 view .LVU89
+ 326 0056 2E4B     		ldr	r3, .L34+4
+ 327 0058 D3F800A0 		ldr	r10, [r3]
+ 228:rtos/uC-Common/Auth/auth.c **** 
+ 328              		.loc 1 228 5 discriminator 1 view .LVU90
+ 329 005c A245     		cmp	r10, r4
+ 330 005e 1DD9     		bls	.L32
+ 230:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 331              		.loc 1 230 9 is_stmt 1 view .LVU91
+ 230:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 332              		.loc 1 230 61 is_stmt 0 view .LVU92
+ 333 0060 04EB0410 		add	r0, r4, r4, lsl #4
+ 230:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 334              		.loc 1 230 22 view .LVU93
+ 335 0064 3A46     		mov	r2, r7
+ 336 0066 2946     		mov	r1, r5
+ARM GAS  /tmp/ccfJcmjl.s 			page 21
+
+
+ 337 0068 2A4B     		ldr	r3, .L34+8
+ 338 006a 03EB8000 		add	r0, r3, r0, lsl #2
+ 339 006e FFF7FEFF 		bl	Str_Cmp_N
+ 340              	.LVL33:
+ 231:rtos/uC-Common/Auth/auth.c ****            *p_err = RTOS_ERR_ALREADY_EXISTS;
+ 341              		.loc 1 231 9 is_stmt 1 view .LVU94
+ 231:rtos/uC-Common/Auth/auth.c ****            *p_err = RTOS_ERR_ALREADY_EXISTS;
+ 342              		.loc 1 231 12 is_stmt 0 view .LVU95
+ 343 0072 80B1     		cbz	r0, .L33
+ 228:rtos/uC-Common/Auth/auth.c **** 
+ 344              		.loc 1 228 35 is_stmt 1 discriminator 2 view .LVU96
+ 345 0074 0134     		adds	r4, r4, #1
+ 346              	.LVL34:
+ 228:rtos/uC-Common/Auth/auth.c **** 
+ 347              		.loc 1 228 35 is_stmt 0 discriminator 2 view .LVU97
+ 348 0076 EEE7     		b	.L22
+ 349              	.LVL35:
+ 350              	.L29:
+ 213:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 351              		.loc 1 213 8 is_stmt 1 view .LVU98
+ 213:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 352              		.loc 1 213 15 is_stmt 0 view .LVU99
+ 353 0078 0523     		movs	r3, #5
+ 354 007a 3370     		strb	r3, [r6]
+ 214:rtos/uC-Common/Auth/auth.c ****     }
+ 355              		.loc 1 214 9 is_stmt 1 view .LVU100
+ 356              	.LVL36:
+ 357              	.L20:
+ 265:rtos/uC-Common/Auth/auth.c ****     (void)local_err;
+ 358              		.loc 1 265 5 view .LVU101
+ 359 007c 0DF10F01 		add	r1, sp, #15
+ 360 0080 224B     		ldr	r3, .L34
+ 361 0082 1868     		ldr	r0, [r3]
+ 362 0084 FFF7FEFF 		bl	KAL_LockRelease
+ 363              	.LVL37:
+ 364 0088 CEE7     		b	.L18
+ 365              	.LVL38:
+ 366              	.L30:
+ 218:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 367              		.loc 1 218 8 view .LVU102
+ 218:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 368              		.loc 1 218 15 is_stmt 0 view .LVU103
+ 369 008a 0523     		movs	r3, #5
+ 370 008c 3370     		strb	r3, [r6]
+ 219:rtos/uC-Common/Auth/auth.c ****     }
+ 371              		.loc 1 219 9 is_stmt 1 view .LVU104
+ 372 008e F5E7     		b	.L20
+ 373              	.L31:
+ 224:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 374              		.loc 1 224 8 view .LVU105
+ 224:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 375              		.loc 1 224 15 is_stmt 0 view .LVU106
+ 376 0090 0A23     		movs	r3, #10
+ 377 0092 3370     		strb	r3, [r6]
+ 225:rtos/uC-Common/Auth/auth.c ****     }
+ 378              		.loc 1 225 9 is_stmt 1 view .LVU107
+ 379 0094 F2E7     		b	.L20
+ARM GAS  /tmp/ccfJcmjl.s 			page 22
+
+
+ 380              	.LVL39:
+ 381              	.L33:
+ 232:rtos/uC-Common/Auth/auth.c ****             goto exit_release;
+ 382              		.loc 1 232 12 view .LVU108
+ 232:rtos/uC-Common/Auth/auth.c ****             goto exit_release;
+ 383              		.loc 1 232 19 is_stmt 0 view .LVU109
+ 384 0096 0D23     		movs	r3, #13
+ 385 0098 3370     		strb	r3, [r6]
+ 233:rtos/uC-Common/Auth/auth.c ****         }
+ 386              		.loc 1 233 13 is_stmt 1 view .LVU110
+ 387 009a EFE7     		b	.L20
+ 388              	.LVL40:
+ 389              	.L32:
+ 237:rtos/uC-Common/Auth/auth.c ****     ++Auth_UserNbr;
+ 390              		.loc 1 237 5 view .LVU111
+ 238:rtos/uC-Common/Auth/auth.c **** 
+ 391              		.loc 1 238 5 view .LVU112
+ 392 009c 0AF10102 		add	r2, r10, #1
+ 393 00a0 1A60     		str	r2, [r3]
+ 240:rtos/uC-Common/Auth/auth.c ****     pwd_len  = DEF_MIN(pwd_len + 1, AUTH_PWD_MAX_LENGTH);
+ 394              		.loc 1 240 5 view .LVU113
+ 240:rtos/uC-Common/Auth/auth.c ****     pwd_len  = DEF_MIN(pwd_len + 1, AUTH_PWD_MAX_LENGTH);
+ 395              		.loc 1 240 16 is_stmt 0 view .LVU114
+ 396 00a2 0137     		adds	r7, r7, #1
+ 397              	.LVL41:
+ 240:rtos/uC-Common/Auth/auth.c ****     pwd_len  = DEF_MIN(pwd_len + 1, AUTH_PWD_MAX_LENGTH);
+ 398              		.loc 1 240 14 view .LVU115
+ 399 00a4 202F     		cmp	r7, #32
+ 400 00a6 28BF     		it	cs
+ 401 00a8 2027     		movcs	r7, #32
+ 402              	.LVL42:
+ 241:rtos/uC-Common/Auth/auth.c **** 
+ 403              		.loc 1 241 5 is_stmt 1 view .LVU116
+ 241:rtos/uC-Common/Auth/auth.c **** 
+ 404              		.loc 1 241 16 is_stmt 0 view .LVU117
+ 405 00aa 0BF1010B 		add	fp, fp, #1
+ 406              	.LVL43:
+ 241:rtos/uC-Common/Auth/auth.c **** 
+ 407              		.loc 1 241 14 view .LVU118
+ 408 00ae BBF1200F 		cmp	fp, #32
+ 409 00b2 28BF     		it	cs
+ 410 00b4 4FF0200B 		movcs	fp, #32
+ 411              	.LVL44:
+ 243:rtos/uC-Common/Auth/auth.c ****                      p_name,
+ 412              		.loc 1 243 5 is_stmt 1 view .LVU119
+ 243:rtos/uC-Common/Auth/auth.c ****                      p_name,
+ 413              		.loc 1 243 39 is_stmt 0 view .LVU120
+ 414 00b8 164C     		ldr	r4, .L34+8
+ 415              	.LVL45:
+ 243:rtos/uC-Common/Auth/auth.c ****                      p_name,
+ 416              		.loc 1 243 39 view .LVU121
+ 417 00ba 4FEA0A18 		lsl	r8, r10, #4
+ 418 00be 0AEB0A10 		add	r0, r10, r10, lsl #4
+ 243:rtos/uC-Common/Auth/auth.c ****                      p_name,
+ 419              		.loc 1 243 11 view .LVU122
+ 420 00c2 3A46     		mov	r2, r7
+ 421 00c4 2946     		mov	r1, r5
+ARM GAS  /tmp/ccfJcmjl.s 			page 23
+
+
+ 422 00c6 04EB8000 		add	r0, r4, r0, lsl #2
+ 423 00ca FFF7FEFF 		bl	Str_Copy_N
+ 424              	.LVL46:
+ 247:rtos/uC-Common/Auth/auth.c ****                      p_pwd,
+ 425              		.loc 1 247 5 is_stmt 1 view .LVU123
+ 247:rtos/uC-Common/Auth/auth.c ****                      p_pwd,
+ 426              		.loc 1 247 33 is_stmt 0 view .LVU124
+ 427 00ce 08EB0A00 		add	r0, r8, r10
+ 428 00d2 8000     		lsls	r0, r0, #2
+ 429 00d4 2030     		adds	r0, r0, #32
+ 430 00d6 2044     		add	r0, r0, r4
+ 247:rtos/uC-Common/Auth/auth.c ****                      p_pwd,
+ 431              		.loc 1 247 11 view .LVU125
+ 432 00d8 5A46     		mov	r2, fp
+ 433 00da 4946     		mov	r1, r9
+ 434 00dc 0430     		adds	r0, r0, #4
+ 435 00de FFF7FEFF 		bl	Str_Copy_N
+ 436              	.LVL47:
+ 251:rtos/uC-Common/Auth/auth.c **** 
+ 437              		.loc 1 251 5 is_stmt 1 view .LVU126
+ 251:rtos/uC-Common/Auth/auth.c **** 
+ 438              		.loc 1 251 30 is_stmt 0 view .LVU127
+ 439 00e2 C244     		add	r10, r10, r8
+ 440              	.LVL48:
+ 251:rtos/uC-Common/Auth/auth.c **** 
+ 441              		.loc 1 251 30 view .LVU128
+ 442 00e4 04EB8A04 		add	r4, r4, r10, lsl #2
+ 443 00e8 4FF00008 		mov	r8, #0
+ 444 00ec C4F82080 		str	r8, [r4, #32]
+ 253:rtos/uC-Common/Auth/auth.c ****                      p_name,
+ 445              		.loc 1 253 5 is_stmt 1 view .LVU129
+ 253:rtos/uC-Common/Auth/auth.c ****                      p_name,
+ 446              		.loc 1 253 11 is_stmt 0 view .LVU130
+ 447 00f0 3A46     		mov	r2, r7
+ 448 00f2 2946     		mov	r1, r5
+ 449 00f4 019C     		ldr	r4, [sp, #4]
+ 450 00f6 2046     		mov	r0, r4
+ 451 00f8 FFF7FEFF 		bl	Str_Copy_N
+ 452              	.LVL49:
+ 257:rtos/uC-Common/Auth/auth.c **** 
+ 453              		.loc 1 257 5 is_stmt 1 view .LVU131
+ 257:rtos/uC-Common/Auth/auth.c **** 
+ 454              		.loc 1 257 20 is_stmt 0 view .LVU132
+ 455 00fc C4F82080 		str	r8, [r4, #32]
+ 260:rtos/uC-Common/Auth/auth.c ****    *p_err  = RTOS_ERR_NONE;
+ 456              		.loc 1 260 5 is_stmt 1 view .LVU133
+ 457              	.LVL50:
+ 261:rtos/uC-Common/Auth/auth.c **** 
+ 458              		.loc 1 261 4 view .LVU134
+ 261:rtos/uC-Common/Auth/auth.c **** 
+ 459              		.loc 1 261 12 is_stmt 0 view .LVU135
+ 460 0100 86F80080 		strb	r8, [r6]
+ 260:rtos/uC-Common/Auth/auth.c ****    *p_err  = RTOS_ERR_NONE;
+ 461              		.loc 1 260 12 view .LVU136
+ 462 0104 4FF00108 		mov	r8, #1
+ 463 0108 B8E7     		b	.L20
+ 464              	.L35:
+ARM GAS  /tmp/ccfJcmjl.s 			page 24
+
+
+ 465 010a 00BF     		.align	2
+ 466              	.L34:
+ 467 010c 00000000 		.word	.LANCHOR2
+ 468 0110 00000000 		.word	.LANCHOR1
+ 469 0114 00000000 		.word	.LANCHOR0
+ 470              		.cfi_endproc
+ 471              	.LFE1:
+ 473              		.section	.text.Auth_GetUser,"ax",%progbits
+ 474              		.align	1
+ 475              		.global	Auth_GetUser
+ 476              		.syntax unified
+ 477              		.thumb
+ 478              		.thumb_func
+ 479              		.fpu fpv4-sp-d16
+ 481              	Auth_GetUser:
+ 482              	.LVL51:
+ 483              	.LFB2:
+ 394:rtos/uC-Common/Auth/auth.c ****     CPU_BOOLEAN  result;
+ 484              		.loc 1 394 1 is_stmt 1 view -0
+ 485              		.cfi_startproc
+ 486              		@ args = 0, pretend = 0, frame = 8
+ 487              		@ frame_needed = 0, uses_anonymous_args = 0
+ 394:rtos/uC-Common/Auth/auth.c ****     CPU_BOOLEAN  result;
+ 488              		.loc 1 394 1 is_stmt 0 view .LVU138
+ 489 0000 70B5     		push	{r4, r5, r6, lr}
+ 490              	.LCFI6:
+ 491              		.cfi_def_cfa_offset 16
+ 492              		.cfi_offset 4, -16
+ 493              		.cfi_offset 5, -12
+ 494              		.cfi_offset 6, -8
+ 495              		.cfi_offset 14, -4
+ 496 0002 82B0     		sub	sp, sp, #8
+ 497              	.LCFI7:
+ 498              		.cfi_def_cfa_offset 24
+ 499 0004 0546     		mov	r5, r0
+ 500 0006 0E46     		mov	r6, r1
+ 501 0008 1446     		mov	r4, r2
+ 395:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR     local_err;
+ 502              		.loc 1 395 5 is_stmt 1 view .LVU139
+ 396:rtos/uC-Common/Auth/auth.c **** 
+ 503              		.loc 1 396 5 view .LVU140
+ 399:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 504              		.loc 1 399 5 view .LVU141
+ 505 000a 1346     		mov	r3, r2
+ 506 000c 0022     		movs	r2, #0
+ 507              	.LVL52:
+ 399:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 508              		.loc 1 399 5 is_stmt 0 view .LVU142
+ 509 000e 1146     		mov	r1, r2
+ 510              	.LVL53:
+ 399:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 511              		.loc 1 399 5 view .LVU143
+ 512 0010 0B48     		ldr	r0, .L41
+ 513              	.LVL54:
+ 399:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 514              		.loc 1 399 5 view .LVU144
+ 515 0012 0068     		ldr	r0, [r0]
+ARM GAS  /tmp/ccfJcmjl.s 			page 25
+
+
+ 516 0014 FFF7FEFF 		bl	KAL_LockAcquire
+ 517              	.LVL55:
+ 400:rtos/uC-Common/Auth/auth.c ****         result = DEF_FAIL;
+ 518              		.loc 1 400 5 is_stmt 1 view .LVU145
+ 400:rtos/uC-Common/Auth/auth.c ****         result = DEF_FAIL;
+ 519              		.loc 1 400 9 is_stmt 0 view .LVU146
+ 520 0018 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 400:rtos/uC-Common/Auth/auth.c ****         result = DEF_FAIL;
+ 521              		.loc 1 400 8 view .LVU147
+ 522 001a 1BB1     		cbz	r3, .L40
+ 401:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 523              		.loc 1 401 16 view .LVU148
+ 524 001c 0024     		movs	r4, #0
+ 525              	.LVL56:
+ 526              	.L37:
+ 408:rtos/uC-Common/Auth/auth.c **** 
+ 527              		.loc 1 408 5 is_stmt 1 view .LVU149
+ 411:rtos/uC-Common/Auth/auth.c **** }
+ 528              		.loc 1 411 5 view .LVU150
+ 412:rtos/uC-Common/Auth/auth.c **** 
+ 529              		.loc 1 412 1 is_stmt 0 view .LVU151
+ 530 001e 2046     		mov	r0, r4
+ 531 0020 02B0     		add	sp, sp, #8
+ 532              	.LCFI8:
+ 533              		.cfi_remember_state
+ 534              		.cfi_def_cfa_offset 16
+ 535              		@ sp needed
+ 536 0022 70BD     		pop	{r4, r5, r6, pc}
+ 537              	.LVL57:
+ 538              	.L40:
+ 539              	.LCFI9:
+ 540              		.cfi_restore_state
+ 405:rtos/uC-Common/Auth/auth.c **** 
+ 541              		.loc 1 405 5 is_stmt 1 view .LVU152
+ 405:rtos/uC-Common/Auth/auth.c **** 
+ 542              		.loc 1 405 14 is_stmt 0 view .LVU153
+ 543 0024 2246     		mov	r2, r4
+ 544 0026 3146     		mov	r1, r6
+ 545 0028 2846     		mov	r0, r5
+ 546 002a FFF7FEFF 		bl	Auth_GetUserHandler
+ 547              	.LVL58:
+ 548 002e 0446     		mov	r4, r0
+ 549              	.LVL59:
+ 407:rtos/uC-Common/Auth/auth.c ****     (void)local_err;
+ 550              		.loc 1 407 5 is_stmt 1 view .LVU154
+ 551 0030 0DF10701 		add	r1, sp, #7
+ 552 0034 024B     		ldr	r3, .L41
+ 553 0036 1868     		ldr	r0, [r3]
+ 554 0038 FFF7FEFF 		bl	KAL_LockRelease
+ 555              	.LVL60:
+ 556 003c EFE7     		b	.L37
+ 557              	.L42:
+ 558 003e 00BF     		.align	2
+ 559              	.L41:
+ 560 0040 00000000 		.word	.LANCHOR2
+ 561              		.cfi_endproc
+ 562              	.LFE2:
+ARM GAS  /tmp/ccfJcmjl.s 			page 26
+
+
+ 564              		.section	.text.Auth_ValidateCredentials,"ax",%progbits
+ 565              		.align	1
+ 566              		.global	Auth_ValidateCredentials
+ 567              		.syntax unified
+ 568              		.thumb
+ 569              		.thumb_func
+ 570              		.fpu fpv4-sp-d16
+ 572              	Auth_ValidateCredentials:
+ 573              	.LVL61:
+ 574              	.LFB3:
+ 447:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   name_len;
+ 575              		.loc 1 447 1 view -0
+ 576              		.cfi_startproc
+ 577              		@ args = 0, pretend = 0, frame = 8
+ 578              		@ frame_needed = 0, uses_anonymous_args = 0
+ 447:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   name_len;
+ 579              		.loc 1 447 1 is_stmt 0 view .LVU156
+ 580 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 581              	.LCFI10:
+ 582              		.cfi_def_cfa_offset 36
+ 583              		.cfi_offset 4, -36
+ 584              		.cfi_offset 5, -32
+ 585              		.cfi_offset 6, -28
+ 586              		.cfi_offset 7, -24
+ 587              		.cfi_offset 8, -20
+ 588              		.cfi_offset 9, -16
+ 589              		.cfi_offset 10, -12
+ 590              		.cfi_offset 11, -8
+ 591              		.cfi_offset 14, -4
+ 592 0004 83B0     		sub	sp, sp, #12
+ 593              	.LCFI11:
+ 594              		.cfi_def_cfa_offset 48
+ 595 0006 0546     		mov	r5, r0
+ 596 0008 8846     		mov	r8, r1
+ 597 000a 9246     		mov	r10, r2
+ 598 000c 1E46     		mov	r6, r3
+ 448:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   pwd_len;
+ 599              		.loc 1 448 5 is_stmt 1 view .LVU157
+ 449:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   i;
+ 600              		.loc 1 449 5 view .LVU158
+ 450:rtos/uC-Common/Auth/auth.c ****     CPU_INT16S   cmp_result;
+ 601              		.loc 1 450 5 view .LVU159
+ 451:rtos/uC-Common/Auth/auth.c ****     CPU_BOOLEAN  result     = DEF_FAIL;
+ 602              		.loc 1 451 5 view .LVU160
+ 452:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR     local_err;
+ 603              		.loc 1 452 5 view .LVU161
+ 604              	.LVL62:
+ 453:rtos/uC-Common/Auth/auth.c **** 
+ 605              		.loc 1 453 5 view .LVU162
+ 456:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 606              		.loc 1 456 5 view .LVU163
+ 607 000e 0022     		movs	r2, #0
+ 608              	.LVL63:
+ 456:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 609              		.loc 1 456 5 is_stmt 0 view .LVU164
+ 610 0010 1146     		mov	r1, r2
+ 611              	.LVL64:
+ARM GAS  /tmp/ccfJcmjl.s 			page 27
+
+
+ 456:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 612              		.loc 1 456 5 view .LVU165
+ 613 0012 2D48     		ldr	r0, .L59
+ 614              	.LVL65:
+ 456:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 615              		.loc 1 456 5 view .LVU166
+ 616 0014 0068     		ldr	r0, [r0]
+ 617 0016 FFF7FEFF 		bl	KAL_LockAcquire
+ 618              	.LVL66:
+ 457:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 619              		.loc 1 457 5 is_stmt 1 view .LVU167
+ 457:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 620              		.loc 1 457 9 is_stmt 0 view .LVU168
+ 621 001a 96F80090 		ldrb	r9, [r6]	@ zero_extendqisi2
+ 457:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 622              		.loc 1 457 8 view .LVU169
+ 623 001e B9F1000F 		cmp	r9, #0
+ 624 0022 05D0     		beq	.L54
+ 452:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR     local_err;
+ 625              		.loc 1 452 18 view .LVU170
+ 626 0024 4FF00009 		mov	r9, #0
+ 627              	.LVL67:
+ 628              	.L44:
+ 498:rtos/uC-Common/Auth/auth.c **** 
+ 629              		.loc 1 498 5 is_stmt 1 view .LVU171
+ 501:rtos/uC-Common/Auth/auth.c **** }
+ 630              		.loc 1 501 5 view .LVU172
+ 502:rtos/uC-Common/Auth/auth.c **** 
+ 631              		.loc 1 502 1 is_stmt 0 view .LVU173
+ 632 0028 4846     		mov	r0, r9
+ 633 002a 03B0     		add	sp, sp, #12
+ 634              	.LCFI12:
+ 635              		.cfi_remember_state
+ 636              		.cfi_def_cfa_offset 36
+ 637              		@ sp needed
+ 638 002c BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 639              	.LVL68:
+ 640              	.L54:
+ 641              	.LCFI13:
+ 642              		.cfi_restore_state
+ 461:rtos/uC-Common/Auth/auth.c ****     pwd_len  = Str_Len_N(p_pwd,  AUTH_PWD_MAX_LENGTH  + 1);
+ 643              		.loc 1 461 5 is_stmt 1 view .LVU174
+ 461:rtos/uC-Common/Auth/auth.c ****     pwd_len  = Str_Len_N(p_pwd,  AUTH_PWD_MAX_LENGTH  + 1);
+ 644              		.loc 1 461 16 is_stmt 0 view .LVU175
+ 645 0030 2121     		movs	r1, #33
+ 646 0032 2846     		mov	r0, r5
+ 647 0034 FFF7FEFF 		bl	Str_Len_N
+ 648              	.LVL69:
+ 649 0038 0746     		mov	r7, r0
+ 650              	.LVL70:
+ 462:rtos/uC-Common/Auth/auth.c **** 
+ 651              		.loc 1 462 5 is_stmt 1 view .LVU176
+ 462:rtos/uC-Common/Auth/auth.c **** 
+ 652              		.loc 1 462 16 is_stmt 0 view .LVU177
+ 653 003a 2121     		movs	r1, #33
+ 654 003c 4046     		mov	r0, r8
+ 655              	.LVL71:
+ARM GAS  /tmp/ccfJcmjl.s 			page 28
+
+
+ 462:rtos/uC-Common/Auth/auth.c **** 
+ 656              		.loc 1 462 16 view .LVU178
+ 657 003e FFF7FEFF 		bl	Str_Len_N
+ 658              	.LVL72:
+ 659 0042 8346     		mov	fp, r0
+ 660              	.LVL73:
+ 464:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_INVALID_STR_LEN;
+ 661              		.loc 1 464 5 is_stmt 1 view .LVU179
+ 464:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_INVALID_STR_LEN;
+ 662              		.loc 1 464 8 is_stmt 0 view .LVU180
+ 663 0044 202F     		cmp	r7, #32
+ 664 0046 12D8     		bhi	.L55
+ 469:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_INVALID_STR_LEN;
+ 665              		.loc 1 469 5 is_stmt 1 view .LVU181
+ 469:rtos/uC-Common/Auth/auth.c ****        *p_err = RTOS_ERR_INVALID_STR_LEN;
+ 666              		.loc 1 469 8 is_stmt 0 view .LVU182
+ 667 0048 2028     		cmp	r0, #32
+ 668 004a 13D8     		bhi	.L56
+ 474:rtos/uC-Common/Auth/auth.c **** 
+ 669              		.loc 1 474 12 view .LVU183
+ 670 004c 0024     		movs	r4, #0
+ 671              	.LVL74:
+ 672              	.L47:
+ 474:rtos/uC-Common/Auth/auth.c **** 
+ 673              		.loc 1 474 17 is_stmt 1 discriminator 1 view .LVU184
+ 474:rtos/uC-Common/Auth/auth.c **** 
+ 674              		.loc 1 474 19 is_stmt 0 discriminator 1 view .LVU185
+ 675 004e 1F4B     		ldr	r3, .L59+4
+ 676 0050 1B68     		ldr	r3, [r3]
+ 474:rtos/uC-Common/Auth/auth.c **** 
+ 677              		.loc 1 474 5 discriminator 1 view .LVU186
+ 678 0052 A342     		cmp	r3, r4
+ 679 0054 1DD9     		bls	.L49
+ 476:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 680              		.loc 1 476 9 is_stmt 1 view .LVU187
+ 476:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 681              		.loc 1 476 61 is_stmt 0 view .LVU188
+ 682 0056 04EB0410 		add	r0, r4, r4, lsl #4
+ 476:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 683              		.loc 1 476 22 view .LVU189
+ 684 005a 3A46     		mov	r2, r7
+ 685 005c 2946     		mov	r1, r5
+ 686 005e 1C4B     		ldr	r3, .L59+8
+ 687 0060 03EB8000 		add	r0, r3, r0, lsl #2
+ 688 0064 FFF7FEFF 		bl	Str_Cmp_N
+ 689              	.LVL75:
+ 477:rtos/uC-Common/Auth/auth.c **** 
+ 690              		.loc 1 477 9 is_stmt 1 view .LVU190
+ 477:rtos/uC-Common/Auth/auth.c **** 
+ 691              		.loc 1 477 12 is_stmt 0 view .LVU191
+ 692 0068 38B1     		cbz	r0, .L57
+ 474:rtos/uC-Common/Auth/auth.c **** 
+ 693              		.loc 1 474 35 is_stmt 1 discriminator 2 view .LVU192
+ 694 006a 0134     		adds	r4, r4, #1
+ 695              	.LVL76:
+ 474:rtos/uC-Common/Auth/auth.c **** 
+ 696              		.loc 1 474 35 is_stmt 0 discriminator 2 view .LVU193
+ARM GAS  /tmp/ccfJcmjl.s 			page 29
+
+
+ 697 006c EFE7     		b	.L47
+ 698              	.LVL77:
+ 699              	.L55:
+ 465:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 700              		.loc 1 465 8 is_stmt 1 view .LVU194
+ 465:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 701              		.loc 1 465 15 is_stmt 0 view .LVU195
+ 702 006e 0523     		movs	r3, #5
+ 703 0070 3370     		strb	r3, [r6]
+ 466:rtos/uC-Common/Auth/auth.c ****     }
+ 704              		.loc 1 466 9 is_stmt 1 view .LVU196
+ 705 0072 10E0     		b	.L46
+ 706              	.L56:
+ 470:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 707              		.loc 1 470 8 view .LVU197
+ 470:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 708              		.loc 1 470 15 is_stmt 0 view .LVU198
+ 709 0074 0523     		movs	r3, #5
+ 710 0076 3370     		strb	r3, [r6]
+ 471:rtos/uC-Common/Auth/auth.c ****     }
+ 711              		.loc 1 471 9 is_stmt 1 view .LVU199
+ 712 0078 0DE0     		b	.L46
+ 713              	.LVL78:
+ 714              	.L57:
+ 479:rtos/uC-Common/Auth/auth.c ****             if (cmp_result == 0) {
+ 715              		.loc 1 479 13 view .LVU200
+ 479:rtos/uC-Common/Auth/auth.c ****             if (cmp_result == 0) {
+ 716              		.loc 1 479 60 is_stmt 0 view .LVU201
+ 717 007a 04EB0410 		add	r0, r4, r4, lsl #4
+ 718              	.LVL79:
+ 479:rtos/uC-Common/Auth/auth.c ****             if (cmp_result == 0) {
+ 719              		.loc 1 479 60 view .LVU202
+ 720 007e 8000     		lsls	r0, r0, #2
+ 721 0080 2030     		adds	r0, r0, #32
+ 722 0082 134B     		ldr	r3, .L59+8
+ 723 0084 1844     		add	r0, r0, r3
+ 479:rtos/uC-Common/Auth/auth.c ****             if (cmp_result == 0) {
+ 724              		.loc 1 479 26 view .LVU203
+ 725 0086 5A46     		mov	r2, fp
+ 726 0088 4146     		mov	r1, r8
+ 727 008a 0430     		adds	r0, r0, #4
+ 728 008c FFF7FEFF 		bl	Str_Cmp_N
+ 729              	.LVL80:
+ 480:rtos/uC-Common/Auth/auth.c **** 
+ 730              		.loc 1 480 13 is_stmt 1 view .LVU204
+ 480:rtos/uC-Common/Auth/auth.c **** 
+ 731              		.loc 1 480 16 is_stmt 0 view .LVU205
+ 732 0090 40B1     		cbz	r0, .L58
+ 733              	.LVL81:
+ 734              	.L49:
+ 493:rtos/uC-Common/Auth/auth.c **** 
+ 735              		.loc 1 493 4 is_stmt 1 view .LVU206
+ 493:rtos/uC-Common/Auth/auth.c **** 
+ 736              		.loc 1 493 11 is_stmt 0 view .LVU207
+ 737 0092 0623     		movs	r3, #6
+ 738 0094 3370     		strb	r3, [r6]
+ 739              	.LVL82:
+ARM GAS  /tmp/ccfJcmjl.s 			page 30
+
+
+ 740              	.L46:
+ 497:rtos/uC-Common/Auth/auth.c ****     (void)local_err;
+ 741              		.loc 1 497 5 is_stmt 1 view .LVU208
+ 742 0096 0DF10701 		add	r1, sp, #7
+ 743 009a 0B4B     		ldr	r3, .L59
+ 744 009c 1868     		ldr	r0, [r3]
+ 745 009e FFF7FEFF 		bl	KAL_LockRelease
+ 746              	.LVL83:
+ 747 00a2 C1E7     		b	.L44
+ 748              	.LVL84:
+ 749              	.L58:
+ 482:rtos/uC-Common/Auth/auth.c ****                 p_user->Rights = Auth_UsersCredentials[i].User.Rights;
+ 750              		.loc 1 482 17 view .LVU209
+ 482:rtos/uC-Common/Auth/auth.c ****                 p_user->Rights = Auth_UsersCredentials[i].User.Rights;
+ 751              		.loc 1 482 23 is_stmt 0 view .LVU210
+ 752 00a4 3A46     		mov	r2, r7
+ 753 00a6 2946     		mov	r1, r5
+ 754 00a8 5046     		mov	r0, r10
+ 755              	.LVL85:
+ 482:rtos/uC-Common/Auth/auth.c ****                 p_user->Rights = Auth_UsersCredentials[i].User.Rights;
+ 756              		.loc 1 482 23 view .LVU211
+ 757 00aa FFF7FEFF 		bl	Str_Copy_N
+ 758              	.LVL86:
+ 483:rtos/uC-Common/Auth/auth.c **** 
+ 759              		.loc 1 483 17 is_stmt 1 view .LVU212
+ 483:rtos/uC-Common/Auth/auth.c **** 
+ 760              		.loc 1 483 63 is_stmt 0 view .LVU213
+ 761 00ae 04EB0414 		add	r4, r4, r4, lsl #4
+ 762              	.LVL87:
+ 483:rtos/uC-Common/Auth/auth.c **** 
+ 763              		.loc 1 483 63 view .LVU214
+ 764 00b2 074B     		ldr	r3, .L59+8
+ 765 00b4 03EB8403 		add	r3, r3, r4, lsl #2
+ 766 00b8 1B6A     		ldr	r3, [r3, #32]
+ 483:rtos/uC-Common/Auth/auth.c **** 
+ 767              		.loc 1 483 32 view .LVU215
+ 768 00ba CAF82030 		str	r3, [r10, #32]
+ 485:rtos/uC-Common/Auth/auth.c ****                *p_err  = RTOS_ERR_NONE;
+ 769              		.loc 1 485 17 is_stmt 1 view .LVU216
+ 770              	.LVL88:
+ 486:rtos/uC-Common/Auth/auth.c ****                 goto exit_release;
+ 771              		.loc 1 486 16 view .LVU217
+ 486:rtos/uC-Common/Auth/auth.c ****                 goto exit_release;
+ 772              		.loc 1 486 24 is_stmt 0 view .LVU218
+ 773 00be 0023     		movs	r3, #0
+ 774 00c0 3370     		strb	r3, [r6]
+ 487:rtos/uC-Common/Auth/auth.c ****             }
+ 775              		.loc 1 487 17 is_stmt 1 view .LVU219
+ 485:rtos/uC-Common/Auth/auth.c ****                *p_err  = RTOS_ERR_NONE;
+ 776              		.loc 1 485 24 is_stmt 0 view .LVU220
+ 777 00c2 4FF00109 		mov	r9, #1
+ 487:rtos/uC-Common/Auth/auth.c ****             }
+ 778              		.loc 1 487 17 view .LVU221
+ 779 00c6 E6E7     		b	.L46
+ 780              	.L60:
+ 781              		.align	2
+ 782              	.L59:
+ARM GAS  /tmp/ccfJcmjl.s 			page 31
+
+
+ 783 00c8 00000000 		.word	.LANCHOR2
+ 784 00cc 00000000 		.word	.LANCHOR1
+ 785 00d0 00000000 		.word	.LANCHOR0
+ 786              		.cfi_endproc
+ 787              	.LFE3:
+ 789              		.section	.text.Auth_GrantRight,"ax",%progbits
+ 790              		.align	1
+ 791              		.global	Auth_GrantRight
+ 792              		.syntax unified
+ 793              		.thumb
+ 794              		.thumb_func
+ 795              		.fpu fpv4-sp-d16
+ 797              	Auth_GrantRight:
+ 798              	.LVL89:
+ 799              	.LFB4:
+ 540:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   name_len;
+ 800              		.loc 1 540 1 is_stmt 1 view -0
+ 801              		.cfi_startproc
+ 802              		@ args = 0, pretend = 0, frame = 8
+ 803              		@ frame_needed = 0, uses_anonymous_args = 0
+ 540:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   name_len;
+ 804              		.loc 1 540 1 is_stmt 0 view .LVU223
+ 805 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 806              	.LCFI14:
+ 807              		.cfi_def_cfa_offset 36
+ 808              		.cfi_offset 4, -36
+ 809              		.cfi_offset 5, -32
+ 810              		.cfi_offset 6, -28
+ 811              		.cfi_offset 7, -24
+ 812              		.cfi_offset 8, -20
+ 813              		.cfi_offset 9, -16
+ 814              		.cfi_offset 10, -12
+ 815              		.cfi_offset 11, -8
+ 816              		.cfi_offset 14, -4
+ 817 0004 83B0     		sub	sp, sp, #12
+ 818              	.LCFI15:
+ 819              		.cfi_def_cfa_offset 48
+ 820 0006 8046     		mov	r8, r0
+ 821 0008 0F46     		mov	r7, r1
+ 822 000a 1446     		mov	r4, r2
+ 823 000c 1E46     		mov	r6, r3
+ 541:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   i;
+ 824              		.loc 1 541 5 is_stmt 1 view .LVU224
+ 542:rtos/uC-Common/Auth/auth.c ****     CPU_INT16S   cmp_result;
+ 825              		.loc 1 542 5 view .LVU225
+ 543:rtos/uC-Common/Auth/auth.c ****     CPU_BOOLEAN  result     = DEF_FAIL;
+ 826              		.loc 1 543 5 view .LVU226
+ 544:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR     local_err;
+ 827              		.loc 1 544 5 view .LVU227
+ 828              	.LVL90:
+ 545:rtos/uC-Common/Auth/auth.c **** 
+ 829              		.loc 1 545 5 view .LVU228
+ 548:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 830              		.loc 1 548 5 view .LVU229
+ 831 000e 0022     		movs	r2, #0
+ 832              	.LVL91:
+ 548:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ARM GAS  /tmp/ccfJcmjl.s 			page 32
+
+
+ 833              		.loc 1 548 5 is_stmt 0 view .LVU230
+ 834 0010 1146     		mov	r1, r2
+ 835              	.LVL92:
+ 548:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 836              		.loc 1 548 5 view .LVU231
+ 837 0012 2948     		ldr	r0, .L76
+ 838              	.LVL93:
+ 548:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 839              		.loc 1 548 5 view .LVU232
+ 840 0014 0068     		ldr	r0, [r0]
+ 841 0016 FFF7FEFF 		bl	KAL_LockAcquire
+ 842              	.LVL94:
+ 549:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 843              		.loc 1 549 5 is_stmt 1 view .LVU233
+ 549:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 844              		.loc 1 549 9 is_stmt 0 view .LVU234
+ 845 001a 3578     		ldrb	r5, [r6]	@ zero_extendqisi2
+ 549:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 846              		.loc 1 549 8 view .LVU235
+ 847 001c 25B1     		cbz	r5, .L71
+ 544:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR     local_err;
+ 848              		.loc 1 544 18 view .LVU236
+ 849 001e 0025     		movs	r5, #0
+ 850              	.LVL95:
+ 851              	.L62:
+ 587:rtos/uC-Common/Auth/auth.c **** 
+ 852              		.loc 1 587 5 is_stmt 1 view .LVU237
+ 590:rtos/uC-Common/Auth/auth.c **** }
+ 853              		.loc 1 590 5 view .LVU238
+ 591:rtos/uC-Common/Auth/auth.c **** 
+ 854              		.loc 1 591 1 is_stmt 0 view .LVU239
+ 855 0020 2846     		mov	r0, r5
+ 856 0022 03B0     		add	sp, sp, #12
+ 857              	.LCFI16:
+ 858              		.cfi_remember_state
+ 859              		.cfi_def_cfa_offset 36
+ 860              		@ sp needed
+ 861 0024 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 862              	.LVL96:
+ 863              	.L71:
+ 864              	.LCFI17:
+ 865              		.cfi_restore_state
+ 553:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 866              		.loc 1 553 5 is_stmt 1 view .LVU240
+ 553:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 867              		.loc 1 553 11 is_stmt 0 view .LVU241
+ 868 0028 3246     		mov	r2, r6
+ 869 002a 2146     		mov	r1, r4
+ 870 002c 2046     		mov	r0, r4
+ 871 002e FFF7FEFF 		bl	Auth_GetUserHandler
+ 872              	.LVL97:
+ 554:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 873              		.loc 1 554 5 is_stmt 1 view .LVU242
+ 554:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 874              		.loc 1 554 9 is_stmt 0 view .LVU243
+ 875 0032 96F800B0 		ldrb	fp, [r6]	@ zero_extendqisi2
+ 554:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ARM GAS  /tmp/ccfJcmjl.s 			page 33
+
+
+ 876              		.loc 1 554 8 view .LVU244
+ 877 0036 BBF1000F 		cmp	fp, #0
+ 878 003a 26D1     		bne	.L63
+ 558:rtos/uC-Common/Auth/auth.c ****          (DEF_BIT_IS_SET(p_as_user->Rights, right)           == DEF_NO)) &&
+ 879              		.loc 1 558 5 is_stmt 1 view .LVU245
+ 558:rtos/uC-Common/Auth/auth.c ****          (DEF_BIT_IS_SET(p_as_user->Rights, right)           == DEF_NO)) &&
+ 880              		.loc 1 558 11 is_stmt 0 view .LVU246
+ 881 003c 236A     		ldr	r3, [r4, #32]
+ 558:rtos/uC-Common/Auth/auth.c ****          (DEF_BIT_IS_SET(p_as_user->Rights, right)           == DEF_NO)) &&
+ 882              		.loc 1 558 8 view .LVU247
+ 883 003e 13F0804F 		tst	r3, #1073741824
+ 884 0042 02D0     		beq	.L64
+ 558:rtos/uC-Common/Auth/auth.c ****          (DEF_BIT_IS_SET(p_as_user->Rights, right)           == DEF_NO)) &&
+ 885              		.loc 1 558 74 discriminator 1 view .LVU248
+ 886 0044 38EA0302 		bics	r2, r8, r3
+ 887 0048 18D0     		beq	.L72
+ 888              	.L64:
+ 559:rtos/uC-Common/Auth/auth.c ****         (DEF_BIT_IS_SET(p_as_user->Rights, AUTH_RIGHT_ROOT)  == DEF_NO))  {
+ 889              		.loc 1 559 74 discriminator 1 view .LVU249
+ 890 004a 002B     		cmp	r3, #0
+ 891 004c 1ADA     		bge	.L73
+ 892              	.L65:
+ 565:rtos/uC-Common/Auth/auth.c **** 
+ 893              		.loc 1 565 5 is_stmt 1 view .LVU250
+ 565:rtos/uC-Common/Auth/auth.c **** 
+ 894              		.loc 1 565 32 is_stmt 0 view .LVU251
+ 895 004e BA46     		mov	r10, r7
+ 565:rtos/uC-Common/Auth/auth.c **** 
+ 896              		.loc 1 565 16 view .LVU252
+ 897 0050 2121     		movs	r1, #33
+ 898 0052 3846     		mov	r0, r7
+ 899 0054 FFF7FEFF 		bl	Str_Len_N
+ 900              	.LVL98:
+ 901 0058 8146     		mov	r9, r0
+ 902              	.LVL99:
+ 567:rtos/uC-Common/Auth/auth.c **** 
+ 903              		.loc 1 567 5 is_stmt 1 view .LVU253
+ 567:rtos/uC-Common/Auth/auth.c **** 
+ 904              		.loc 1 567 12 is_stmt 0 view .LVU254
+ 905 005a 0024     		movs	r4, #0
+ 906              	.LVL100:
+ 907              	.L66:
+ 567:rtos/uC-Common/Auth/auth.c **** 
+ 908              		.loc 1 567 17 is_stmt 1 discriminator 1 view .LVU255
+ 567:rtos/uC-Common/Auth/auth.c **** 
+ 909              		.loc 1 567 19 is_stmt 0 discriminator 1 view .LVU256
+ 910 005c 174B     		ldr	r3, .L76+4
+ 911 005e 1B68     		ldr	r3, [r3]
+ 567:rtos/uC-Common/Auth/auth.c **** 
+ 912              		.loc 1 567 5 discriminator 1 view .LVU257
+ 913 0060 A342     		cmp	r3, r4
+ 914 0062 25D9     		bls	.L74
+ 569:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 915              		.loc 1 569 9 is_stmt 1 view .LVU258
+ 569:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 916              		.loc 1 569 61 is_stmt 0 view .LVU259
+ 917 0064 04EB0415 		add	r5, r4, r4, lsl #4
+ARM GAS  /tmp/ccfJcmjl.s 			page 34
+
+
+ 569:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 918              		.loc 1 569 22 view .LVU260
+ 919 0068 4A46     		mov	r2, r9
+ 920 006a 5146     		mov	r1, r10
+ 921 006c 1448     		ldr	r0, .L76+8
+ 922 006e 00EB8500 		add	r0, r0, r5, lsl #2
+ 923 0072 FFF7FEFF 		bl	Str_Cmp_N
+ 924              	.LVL101:
+ 570:rtos/uC-Common/Auth/auth.c **** 
+ 925              		.loc 1 570 9 is_stmt 1 view .LVU261
+ 570:rtos/uC-Common/Auth/auth.c **** 
+ 926              		.loc 1 570 12 is_stmt 0 view .LVU262
+ 927 0076 78B1     		cbz	r0, .L75
+ 567:rtos/uC-Common/Auth/auth.c **** 
+ 928              		.loc 1 567 35 is_stmt 1 discriminator 2 view .LVU263
+ 929 0078 0134     		adds	r4, r4, #1
+ 930              	.LVL102:
+ 567:rtos/uC-Common/Auth/auth.c **** 
+ 931              		.loc 1 567 35 is_stmt 0 discriminator 2 view .LVU264
+ 932 007a EFE7     		b	.L66
+ 933              	.LVL103:
+ 934              	.L72:
+ 559:rtos/uC-Common/Auth/auth.c ****         (DEF_BIT_IS_SET(p_as_user->Rights, AUTH_RIGHT_ROOT)  == DEF_NO))  {
+ 935              		.loc 1 559 62 view .LVU265
+ 936 007c B8F1000F 		cmp	r8, #0
+ 937 0080 E5D1     		bne	.L65
+ 938 0082 E2E7     		b	.L64
+ 939              	.L73:
+ 561:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 940              		.loc 1 561 8 is_stmt 1 view .LVU266
+ 561:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 941              		.loc 1 561 15 is_stmt 0 view .LVU267
+ 942 0084 1523     		movs	r3, #21
+ 943 0086 3370     		strb	r3, [r6]
+ 562:rtos/uC-Common/Auth/auth.c ****     }
+ 944              		.loc 1 562 9 is_stmt 1 view .LVU268
+ 544:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR     local_err;
+ 945              		.loc 1 544 18 is_stmt 0 view .LVU269
+ 946 0088 5D46     		mov	r5, fp
+ 947              	.LVL104:
+ 948              	.L63:
+ 586:rtos/uC-Common/Auth/auth.c ****     (void)local_err;
+ 949              		.loc 1 586 5 is_stmt 1 view .LVU270
+ 950 008a 0DF10701 		add	r1, sp, #7
+ 951 008e 0A4B     		ldr	r3, .L76
+ 952 0090 1868     		ldr	r0, [r3]
+ 953 0092 FFF7FEFF 		bl	KAL_LockRelease
+ 954              	.LVL105:
+ 955 0096 C3E7     		b	.L62
+ 956              	.LVL106:
+ 957              	.L75:
+ 572:rtos/uC-Common/Auth/auth.c **** 
+ 958              		.loc 1 572 13 view .LVU271
+ 959 0098 094B     		ldr	r3, .L76+8
+ 960 009a 03EB8502 		add	r2, r3, r5, lsl #2
+ 961 009e 106A     		ldr	r0, [r2, #32]
+ 962              	.LVL107:
+ARM GAS  /tmp/ccfJcmjl.s 			page 35
+
+
+ 572:rtos/uC-Common/Auth/auth.c **** 
+ 963              		.loc 1 572 13 is_stmt 0 view .LVU272
+ 964 00a0 40EA0800 		orr	r0, r0, r8
+ 965 00a4 1062     		str	r0, [r2, #32]
+ 574:rtos/uC-Common/Auth/auth.c **** 
+ 966              		.loc 1 574 13 is_stmt 1 view .LVU273
+ 574:rtos/uC-Common/Auth/auth.c **** 
+ 967              		.loc 1 574 28 is_stmt 0 view .LVU274
+ 968 00a6 3862     		str	r0, [r7, #32]
+ 576:rtos/uC-Common/Auth/auth.c ****            *p_err  = RTOS_ERR_NONE;
+ 969              		.loc 1 576 13 is_stmt 1 view .LVU275
+ 970              	.LVL108:
+ 577:rtos/uC-Common/Auth/auth.c ****             goto exit_release;
+ 971              		.loc 1 577 12 view .LVU276
+ 577:rtos/uC-Common/Auth/auth.c ****             goto exit_release;
+ 972              		.loc 1 577 20 is_stmt 0 view .LVU277
+ 973 00a8 0023     		movs	r3, #0
+ 974 00aa 3370     		strb	r3, [r6]
+ 578:rtos/uC-Common/Auth/auth.c ****         }
+ 975              		.loc 1 578 13 is_stmt 1 view .LVU278
+ 576:rtos/uC-Common/Auth/auth.c ****            *p_err  = RTOS_ERR_NONE;
+ 976              		.loc 1 576 20 is_stmt 0 view .LVU279
+ 977 00ac 0125     		movs	r5, #1
+ 578:rtos/uC-Common/Auth/auth.c ****         }
+ 978              		.loc 1 578 13 view .LVU280
+ 979 00ae ECE7     		b	.L63
+ 980              	.LVL109:
+ 981              	.L74:
+ 582:rtos/uC-Common/Auth/auth.c **** 
+ 982              		.loc 1 582 4 is_stmt 1 view .LVU281
+ 582:rtos/uC-Common/Auth/auth.c **** 
+ 983              		.loc 1 582 11 is_stmt 0 view .LVU282
+ 984 00b0 0723     		movs	r3, #7
+ 985 00b2 3370     		strb	r3, [r6]
+ 544:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR     local_err;
+ 986              		.loc 1 544 18 view .LVU283
+ 987 00b4 5D46     		mov	r5, fp
+ 988 00b6 E8E7     		b	.L63
+ 989              	.L77:
+ 990              		.align	2
+ 991              	.L76:
+ 992 00b8 00000000 		.word	.LANCHOR2
+ 993 00bc 00000000 		.word	.LANCHOR1
+ 994 00c0 00000000 		.word	.LANCHOR0
+ 995              		.cfi_endproc
+ 996              	.LFE4:
+ 998              		.section	.text.Auth_RevokeRight,"ax",%progbits
+ 999              		.align	1
+ 1000              		.global	Auth_RevokeRight
+ 1001              		.syntax unified
+ 1002              		.thumb
+ 1003              		.thumb_func
+ 1004              		.fpu fpv4-sp-d16
+ 1006              	Auth_RevokeRight:
+ 1007              	.LVL110:
+ 1008              	.LFB5:
+ 629:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   name_len;
+ARM GAS  /tmp/ccfJcmjl.s 			page 36
+
+
+ 1009              		.loc 1 629 1 is_stmt 1 view -0
+ 1010              		.cfi_startproc
+ 1011              		@ args = 0, pretend = 0, frame = 8
+ 1012              		@ frame_needed = 0, uses_anonymous_args = 0
+ 629:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   name_len;
+ 1013              		.loc 1 629 1 is_stmt 0 view .LVU285
+ 1014 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1015              	.LCFI18:
+ 1016              		.cfi_def_cfa_offset 36
+ 1017              		.cfi_offset 4, -36
+ 1018              		.cfi_offset 5, -32
+ 1019              		.cfi_offset 6, -28
+ 1020              		.cfi_offset 7, -24
+ 1021              		.cfi_offset 8, -20
+ 1022              		.cfi_offset 9, -16
+ 1023              		.cfi_offset 10, -12
+ 1024              		.cfi_offset 11, -8
+ 1025              		.cfi_offset 14, -4
+ 1026 0004 83B0     		sub	sp, sp, #12
+ 1027              	.LCFI19:
+ 1028              		.cfi_def_cfa_offset 48
+ 1029 0006 8046     		mov	r8, r0
+ 1030 0008 0F46     		mov	r7, r1
+ 1031 000a 1446     		mov	r4, r2
+ 1032 000c 1E46     		mov	r6, r3
+ 630:rtos/uC-Common/Auth/auth.c ****     CPU_SIZE_T   i;
+ 1033              		.loc 1 630 5 is_stmt 1 view .LVU286
+ 631:rtos/uC-Common/Auth/auth.c ****     CPU_INT16S   cmp_result;
+ 1034              		.loc 1 631 5 view .LVU287
+ 632:rtos/uC-Common/Auth/auth.c ****     CPU_BOOLEAN  result     = DEF_FAIL;
+ 1035              		.loc 1 632 5 view .LVU288
+ 633:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR     local_err;
+ 1036              		.loc 1 633 5 view .LVU289
+ 1037              	.LVL111:
+ 634:rtos/uC-Common/Auth/auth.c **** 
+ 1038              		.loc 1 634 5 view .LVU290
+ 637:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 1039              		.loc 1 637 5 view .LVU291
+ 1040 000e 0022     		movs	r2, #0
+ 1041              	.LVL112:
+ 637:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 1042              		.loc 1 637 5 is_stmt 0 view .LVU292
+ 1043 0010 1146     		mov	r1, r2
+ 1044              	.LVL113:
+ 637:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 1045              		.loc 1 637 5 view .LVU293
+ 1046 0012 2948     		ldr	r0, .L93
+ 1047              	.LVL114:
+ 637:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 1048              		.loc 1 637 5 view .LVU294
+ 1049 0014 0068     		ldr	r0, [r0]
+ 1050 0016 FFF7FEFF 		bl	KAL_LockAcquire
+ 1051              	.LVL115:
+ 638:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 1052              		.loc 1 638 5 is_stmt 1 view .LVU295
+ 638:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 1053              		.loc 1 638 9 is_stmt 0 view .LVU296
+ARM GAS  /tmp/ccfJcmjl.s 			page 37
+
+
+ 1054 001a 3578     		ldrb	r5, [r6]	@ zero_extendqisi2
+ 638:rtos/uC-Common/Auth/auth.c ****         goto exit;
+ 1055              		.loc 1 638 8 view .LVU297
+ 1056 001c 25B1     		cbz	r5, .L88
+ 633:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR     local_err;
+ 1057              		.loc 1 633 18 view .LVU298
+ 1058 001e 0025     		movs	r5, #0
+ 1059              	.LVL116:
+ 1060              	.L79:
+ 678:rtos/uC-Common/Auth/auth.c **** 
+ 1061              		.loc 1 678 5 is_stmt 1 view .LVU299
+ 681:rtos/uC-Common/Auth/auth.c **** }
+ 1062              		.loc 1 681 5 view .LVU300
+ 682:rtos/uC-Common/Auth/auth.c **** 
+ 1063              		.loc 1 682 1 is_stmt 0 view .LVU301
+ 1064 0020 2846     		mov	r0, r5
+ 1065 0022 03B0     		add	sp, sp, #12
+ 1066              	.LCFI20:
+ 1067              		.cfi_remember_state
+ 1068              		.cfi_def_cfa_offset 36
+ 1069              		@ sp needed
+ 1070 0024 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1071              	.LVL117:
+ 1072              	.L88:
+ 1073              	.LCFI21:
+ 1074              		.cfi_restore_state
+ 642:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 1075              		.loc 1 642 5 is_stmt 1 view .LVU302
+ 642:rtos/uC-Common/Auth/auth.c ****     if (*p_err != RTOS_ERR_NONE) {
+ 1076              		.loc 1 642 11 is_stmt 0 view .LVU303
+ 1077 0028 3246     		mov	r2, r6
+ 1078 002a 2146     		mov	r1, r4
+ 1079 002c 2046     		mov	r0, r4
+ 1080 002e FFF7FEFF 		bl	Auth_GetUserHandler
+ 1081              	.LVL118:
+ 643:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 1082              		.loc 1 643 5 is_stmt 1 view .LVU304
+ 643:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 1083              		.loc 1 643 9 is_stmt 0 view .LVU305
+ 1084 0032 96F800B0 		ldrb	fp, [r6]	@ zero_extendqisi2
+ 643:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 1085              		.loc 1 643 8 view .LVU306
+ 1086 0036 BBF1000F 		cmp	fp, #0
+ 1087 003a 26D1     		bne	.L80
+ 649:rtos/uC-Common/Auth/auth.c ****          (DEF_BIT_IS_SET(p_as_user->Rights, right)           == DEF_NO)   ) &&
+ 1088              		.loc 1 649 5 is_stmt 1 view .LVU307
+ 649:rtos/uC-Common/Auth/auth.c ****          (DEF_BIT_IS_SET(p_as_user->Rights, right)           == DEF_NO)   ) &&
+ 1089              		.loc 1 649 11 is_stmt 0 view .LVU308
+ 1090 003c 236A     		ldr	r3, [r4, #32]
+ 649:rtos/uC-Common/Auth/auth.c ****          (DEF_BIT_IS_SET(p_as_user->Rights, right)           == DEF_NO)   ) &&
+ 1091              		.loc 1 649 8 view .LVU309
+ 1092 003e 13F0804F 		tst	r3, #1073741824
+ 1093 0042 02D0     		beq	.L81
+ 649:rtos/uC-Common/Auth/auth.c ****          (DEF_BIT_IS_SET(p_as_user->Rights, right)           == DEF_NO)   ) &&
+ 1094              		.loc 1 649 73 discriminator 1 view .LVU310
+ 1095 0044 38EA0302 		bics	r2, r8, r3
+ 1096 0048 18D0     		beq	.L89
+ARM GAS  /tmp/ccfJcmjl.s 			page 38
+
+
+ 1097              	.L81:
+ 650:rtos/uC-Common/Auth/auth.c ****         (DEF_BIT_IS_SET(p_as_user->Rights, AUTH_RIGHT_ROOT)  == DEF_NO    )    ) {
+ 1098              		.loc 1 650 77 discriminator 1 view .LVU311
+ 1099 004a 002B     		cmp	r3, #0
+ 1100 004c 1ADA     		bge	.L90
+ 1101              	.L82:
+ 656:rtos/uC-Common/Auth/auth.c **** 
+ 1102              		.loc 1 656 5 is_stmt 1 view .LVU312
+ 656:rtos/uC-Common/Auth/auth.c **** 
+ 1103              		.loc 1 656 32 is_stmt 0 view .LVU313
+ 1104 004e BA46     		mov	r10, r7
+ 656:rtos/uC-Common/Auth/auth.c **** 
+ 1105              		.loc 1 656 16 view .LVU314
+ 1106 0050 2121     		movs	r1, #33
+ 1107 0052 3846     		mov	r0, r7
+ 1108 0054 FFF7FEFF 		bl	Str_Len_N
+ 1109              	.LVL119:
+ 1110 0058 8146     		mov	r9, r0
+ 1111              	.LVL120:
+ 658:rtos/uC-Common/Auth/auth.c **** 
+ 1112              		.loc 1 658 5 is_stmt 1 view .LVU315
+ 658:rtos/uC-Common/Auth/auth.c **** 
+ 1113              		.loc 1 658 12 is_stmt 0 view .LVU316
+ 1114 005a 0024     		movs	r4, #0
+ 1115              	.LVL121:
+ 1116              	.L83:
+ 658:rtos/uC-Common/Auth/auth.c **** 
+ 1117              		.loc 1 658 17 is_stmt 1 discriminator 1 view .LVU317
+ 658:rtos/uC-Common/Auth/auth.c **** 
+ 1118              		.loc 1 658 19 is_stmt 0 discriminator 1 view .LVU318
+ 1119 005c 174B     		ldr	r3, .L93+4
+ 1120 005e 1B68     		ldr	r3, [r3]
+ 658:rtos/uC-Common/Auth/auth.c **** 
+ 1121              		.loc 1 658 5 discriminator 1 view .LVU319
+ 1122 0060 A342     		cmp	r3, r4
+ 1123 0062 25D9     		bls	.L91
+ 660:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 1124              		.loc 1 660 9 is_stmt 1 view .LVU320
+ 660:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 1125              		.loc 1 660 61 is_stmt 0 view .LVU321
+ 1126 0064 04EB0415 		add	r5, r4, r4, lsl #4
+ 660:rtos/uC-Common/Auth/auth.c ****         if (cmp_result == 0) {
+ 1127              		.loc 1 660 22 view .LVU322
+ 1128 0068 4A46     		mov	r2, r9
+ 1129 006a 5146     		mov	r1, r10
+ 1130 006c 1448     		ldr	r0, .L93+8
+ 1131 006e 00EB8500 		add	r0, r0, r5, lsl #2
+ 1132 0072 FFF7FEFF 		bl	Str_Cmp_N
+ 1133              	.LVL122:
+ 661:rtos/uC-Common/Auth/auth.c **** 
+ 1134              		.loc 1 661 9 is_stmt 1 view .LVU323
+ 661:rtos/uC-Common/Auth/auth.c **** 
+ 1135              		.loc 1 661 12 is_stmt 0 view .LVU324
+ 1136 0076 78B1     		cbz	r0, .L92
+ 658:rtos/uC-Common/Auth/auth.c **** 
+ 1137              		.loc 1 658 35 is_stmt 1 discriminator 2 view .LVU325
+ 1138 0078 0134     		adds	r4, r4, #1
+ARM GAS  /tmp/ccfJcmjl.s 			page 39
+
+
+ 1139              	.LVL123:
+ 658:rtos/uC-Common/Auth/auth.c **** 
+ 1140              		.loc 1 658 35 is_stmt 0 discriminator 2 view .LVU326
+ 1141 007a EFE7     		b	.L83
+ 1142              	.LVL124:
+ 1143              	.L89:
+ 650:rtos/uC-Common/Auth/auth.c ****         (DEF_BIT_IS_SET(p_as_user->Rights, AUTH_RIGHT_ROOT)  == DEF_NO    )    ) {
+ 1144              		.loc 1 650 62 view .LVU327
+ 1145 007c B8F1000F 		cmp	r8, #0
+ 1146 0080 E5D1     		bne	.L82
+ 1147 0082 E2E7     		b	.L81
+ 1148              	.L90:
+ 652:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 1149              		.loc 1 652 8 is_stmt 1 view .LVU328
+ 652:rtos/uC-Common/Auth/auth.c ****         goto exit_release;
+ 1150              		.loc 1 652 15 is_stmt 0 view .LVU329
+ 1151 0084 1523     		movs	r3, #21
+ 1152 0086 3370     		strb	r3, [r6]
+ 653:rtos/uC-Common/Auth/auth.c ****     }
+ 1153              		.loc 1 653 9 is_stmt 1 view .LVU330
+ 633:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR     local_err;
+ 1154              		.loc 1 633 18 is_stmt 0 view .LVU331
+ 1155 0088 5D46     		mov	r5, fp
+ 1156              	.LVL125:
+ 1157              	.L80:
+ 677:rtos/uC-Common/Auth/auth.c ****     (void)local_err;
+ 1158              		.loc 1 677 5 is_stmt 1 view .LVU332
+ 1159 008a 0DF10701 		add	r1, sp, #7
+ 1160 008e 0A4B     		ldr	r3, .L93
+ 1161 0090 1868     		ldr	r0, [r3]
+ 1162 0092 FFF7FEFF 		bl	KAL_LockRelease
+ 1163              	.LVL126:
+ 1164 0096 C3E7     		b	.L79
+ 1165              	.LVL127:
+ 1166              	.L92:
+ 663:rtos/uC-Common/Auth/auth.c **** 
+ 1167              		.loc 1 663 13 view .LVU333
+ 1168 0098 094B     		ldr	r3, .L93+8
+ 1169 009a 03EB8502 		add	r2, r3, r5, lsl #2
+ 1170 009e 106A     		ldr	r0, [r2, #32]
+ 1171              	.LVL128:
+ 663:rtos/uC-Common/Auth/auth.c **** 
+ 1172              		.loc 1 663 13 is_stmt 0 view .LVU334
+ 1173 00a0 20EA0800 		bic	r0, r0, r8
+ 1174 00a4 1062     		str	r0, [r2, #32]
+ 665:rtos/uC-Common/Auth/auth.c **** 
+ 1175              		.loc 1 665 13 is_stmt 1 view .LVU335
+ 665:rtos/uC-Common/Auth/auth.c **** 
+ 1176              		.loc 1 665 28 is_stmt 0 view .LVU336
+ 1177 00a6 3862     		str	r0, [r7, #32]
+ 667:rtos/uC-Common/Auth/auth.c ****            *p_err  = RTOS_ERR_NONE;
+ 1178              		.loc 1 667 13 is_stmt 1 view .LVU337
+ 1179              	.LVL129:
+ 668:rtos/uC-Common/Auth/auth.c ****             goto exit_release;
+ 1180              		.loc 1 668 12 view .LVU338
+ 668:rtos/uC-Common/Auth/auth.c ****             goto exit_release;
+ 1181              		.loc 1 668 20 is_stmt 0 view .LVU339
+ARM GAS  /tmp/ccfJcmjl.s 			page 40
+
+
+ 1182 00a8 0023     		movs	r3, #0
+ 1183 00aa 3370     		strb	r3, [r6]
+ 669:rtos/uC-Common/Auth/auth.c ****         }
+ 1184              		.loc 1 669 13 is_stmt 1 view .LVU340
+ 667:rtos/uC-Common/Auth/auth.c ****            *p_err  = RTOS_ERR_NONE;
+ 1185              		.loc 1 667 20 is_stmt 0 view .LVU341
+ 1186 00ac 0125     		movs	r5, #1
+ 669:rtos/uC-Common/Auth/auth.c ****         }
+ 1187              		.loc 1 669 13 view .LVU342
+ 1188 00ae ECE7     		b	.L80
+ 1189              	.LVL130:
+ 1190              	.L91:
+ 673:rtos/uC-Common/Auth/auth.c **** 
+ 1191              		.loc 1 673 4 is_stmt 1 view .LVU343
+ 673:rtos/uC-Common/Auth/auth.c **** 
+ 1192              		.loc 1 673 11 is_stmt 0 view .LVU344
+ 1193 00b0 0723     		movs	r3, #7
+ 1194 00b2 3370     		strb	r3, [r6]
+ 633:rtos/uC-Common/Auth/auth.c ****     RTOS_ERR     local_err;
+ 1195              		.loc 1 633 18 view .LVU345
+ 1196 00b4 5D46     		mov	r5, fp
+ 1197 00b6 E8E7     		b	.L80
+ 1198              	.L94:
+ 1199              		.align	2
+ 1200              	.L93:
+ 1201 00b8 00000000 		.word	.LANCHOR2
+ 1202 00bc 00000000 		.word	.LANCHOR1
+ 1203 00c0 00000000 		.word	.LANCHOR0
+ 1204              		.cfi_endproc
+ 1205              	.LFE5:
+ 1207              		.global	Auth_RootUser
+ 1208              		.section	.bss.Auth_LockHandle,"aw",%nobits
+ 1209              		.align	2
+ 1210              		.set	.LANCHOR2,. + 0
+ 1213              	Auth_LockHandle:
+ 1214 0000 00000000 		.space	4
+ 1215              		.section	.data.Auth_RootUser,"aw"
+ 1216              		.align	2
+ 1219              	Auth_RootUser:
+ 1220 0000 726F6F74 		.ascii	"root\000\000"
+ 1220      0000
+ 1221 0006 00000000 		.space	26
+ 1221      00000000 
+ 1221      00000000 
+ 1221      00000000 
+ 1221      00000000 
+ 1222 0020 00000080 		.word	-2147483648
+ 1223              		.section	.data.Auth_UserNbr,"aw"
+ 1224              		.align	2
+ 1225              		.set	.LANCHOR1,. + 0
+ 1228              	Auth_UserNbr:
+ 1229 0000 01000000 		.word	1
+ 1230              		.section	.data.Auth_UsersCredentials,"aw"
+ 1231              		.align	2
+ 1232              		.set	.LANCHOR0,. + 0
+ 1235              	Auth_UsersCredentials:
+ 1236 0000 726F6F74 		.ascii	"root\000\000"
+ARM GAS  /tmp/ccfJcmjl.s 			page 41
+
+
+ 1236      0000
+ 1237 0006 00000000 		.space	26
+ 1237      00000000 
+ 1237      00000000 
+ 1237      00000000 
+ 1237      00000000 
+ 1238 0020 00000080 		.word	-2147483648
+ 1239 0024 61646D69 		.ascii	"admin\000\000"
+ 1239      6E0000
+ 1240 002b 00000000 		.space	25
+ 1240      00000000 
+ 1240      00000000 
+ 1240      00000000 
+ 1240      00000000 
+ 1241 0044 00000000 		.space	612
+ 1241      00000000 
+ 1241      00000000 
+ 1241      00000000 
+ 1241      00000000 
+ 1242              		.text
+ 1243              	.Letext0:
+ 1244              		.file 2 "rtos/uC-CPU/ARM-Cortex-M/ARMv7-M/GNU/cpu.h"
+ 1245              		.file 3 "rtos/uC-Common/KAL/../common_err.h"
+ 1246              		.file 4 "rtos/uC-Common/KAL/kal.h"
+ 1247              		.file 5 "rtos/uC-Common/Auth/auth.h"
+ 1248              		.file 6 "rtos/uC-LIB/lib_str.h"
+ARM GAS  /tmp/ccfJcmjl.s 			page 42
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 auth.c
+     /tmp/ccfJcmjl.s:18     .text.Auth_GetUserHandler:0000000000000000 $t
+     /tmp/ccfJcmjl.s:25     .text.Auth_GetUserHandler:0000000000000000 Auth_GetUserHandler
+     /tmp/ccfJcmjl.s:137    .text.Auth_GetUserHandler:0000000000000054 $d
+     /tmp/ccfJcmjl.s:143    .rodata.Auth_Init.str1.4:0000000000000000 $d
+     /tmp/ccfJcmjl.s:147    .text.Auth_Init:0000000000000000 $t
+     /tmp/ccfJcmjl.s:154    .text.Auth_Init:0000000000000000 Auth_Init
+     /tmp/ccfJcmjl.s:202    .text.Auth_Init:0000000000000020 $d
+     /tmp/ccfJcmjl.s:208    .text.Auth_CreateUser:0000000000000000 $t
+     /tmp/ccfJcmjl.s:215    .text.Auth_CreateUser:0000000000000000 Auth_CreateUser
+     /tmp/ccfJcmjl.s:467    .text.Auth_CreateUser:000000000000010c $d
+     /tmp/ccfJcmjl.s:474    .text.Auth_GetUser:0000000000000000 $t
+     /tmp/ccfJcmjl.s:481    .text.Auth_GetUser:0000000000000000 Auth_GetUser
+     /tmp/ccfJcmjl.s:560    .text.Auth_GetUser:0000000000000040 $d
+     /tmp/ccfJcmjl.s:565    .text.Auth_ValidateCredentials:0000000000000000 $t
+     /tmp/ccfJcmjl.s:572    .text.Auth_ValidateCredentials:0000000000000000 Auth_ValidateCredentials
+     /tmp/ccfJcmjl.s:783    .text.Auth_ValidateCredentials:00000000000000c8 $d
+     /tmp/ccfJcmjl.s:790    .text.Auth_GrantRight:0000000000000000 $t
+     /tmp/ccfJcmjl.s:797    .text.Auth_GrantRight:0000000000000000 Auth_GrantRight
+     /tmp/ccfJcmjl.s:992    .text.Auth_GrantRight:00000000000000b8 $d
+     /tmp/ccfJcmjl.s:999    .text.Auth_RevokeRight:0000000000000000 $t
+     /tmp/ccfJcmjl.s:1006   .text.Auth_RevokeRight:0000000000000000 Auth_RevokeRight
+     /tmp/ccfJcmjl.s:1201   .text.Auth_RevokeRight:00000000000000b8 $d
+     /tmp/ccfJcmjl.s:1219   .data.Auth_RootUser:0000000000000000 Auth_RootUser
+     /tmp/ccfJcmjl.s:1209   .bss.Auth_LockHandle:0000000000000000 $d
+     /tmp/ccfJcmjl.s:1213   .bss.Auth_LockHandle:0000000000000000 Auth_LockHandle
+     /tmp/ccfJcmjl.s:1216   .data.Auth_RootUser:0000000000000000 $d
+     /tmp/ccfJcmjl.s:1224   .data.Auth_UserNbr:0000000000000000 $d
+     /tmp/ccfJcmjl.s:1228   .data.Auth_UserNbr:0000000000000000 Auth_UserNbr
+     /tmp/ccfJcmjl.s:1231   .data.Auth_UsersCredentials:0000000000000000 $d
+     /tmp/ccfJcmjl.s:1235   .data.Auth_UsersCredentials:0000000000000000 Auth_UsersCredentials
+                           .group:0000000000000000 wm4.0.0f5aa60db9403f389c005f20ecce4286
+                           .group:0000000000000000 wm4.lib_str.h.60.32f6cabaf9bf142bd5051c414a220578
+                           .group:0000000000000000 wm4.cpu_def.h.46.baa122a2898bdc40bb50d1f21ead1515
+                           .group:0000000000000000 wm4.cpu_cfg.h.45.38a6a562da8b04490c382a226238c57e
+                           .group:0000000000000000 wm4.cpu.h.171.3cb15ee3ccb812cbfdf76d1fbfb9eda0
+                           .group:0000000000000000 wm4.lib_def.h.66.6ab2a012067a8e1f4289db5765835062
+                           .group:0000000000000000 wm4.lib_ascii.h.84.da234f9d4d202bba866fb26067887eec
+                           .group:0000000000000000 wm4.lib_cfg.h.40.b2958733f73e73af70f675ca0f89303e
+                           .group:0000000000000000 wm4.lib_str.h.174.5879a17e9fe25aed81d2c99c1603a671
+                           .group:0000000000000000 wm4.cpu_core.h.51.bda0b8f45c33e87ce41267758624493c
+                           .group:0000000000000000 wm4.lib_mem.h.121.89b942a057fb20091baad8bf6b28b1e6
+                           .group:0000000000000000 wm4.kal.h.75.2fcd8ea37787ad02933f92a42909bcce
+                           .group:0000000000000000 wm4.auth.h.70.af7c241da6cf3afec97d0e233a10500b
+
+UNDEFINED SYMBOLS
+Str_Len_N
+Str_Cmp_N
+Str_Copy_N
+KAL_LockCreate
+KAL_LockAcquire
+KAL_LockRelease

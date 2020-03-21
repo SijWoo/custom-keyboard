@@ -52,7 +52,7 @@
 #include  "../kal.h"
 #include  <lib_math.h>
 #include  <lib_mem.h>
-#include  <Source/os.h>
+#include  <os.h>
 #include  <os_cfg.h>
 #include  <os_cfg_app.h>
 

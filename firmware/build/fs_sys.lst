@@ -1,0 +1,1988 @@
+ARM GAS  /tmp/cc0M7npT.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fs_sys.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.FSSys_ModuleInit,"ax",%progbits
+  18              		.align	1
+  19              		.global	FSSys_ModuleInit
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	FSSys_ModuleInit:
+  27              	.LVL0:
+  28              	.LFB0:
+  29              		.file 1 "rtos/uC-FS/Source/fs_sys.c"
+   1:rtos/uC-FS/Source/fs_sys.c **** /*
+   2:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+   3:rtos/uC-FS/Source/fs_sys.c **** *                                                uC/FS
+   4:rtos/uC-FS/Source/fs_sys.c **** *                                      The Embedded File System
+   5:rtos/uC-FS/Source/fs_sys.c **** *
+   6:rtos/uC-FS/Source/fs_sys.c **** *                         (c) Copyright 2008-2019; Silicon Laboratories Inc.,
+   7:rtos/uC-FS/Source/fs_sys.c **** *                                400 W. Cesar Chavez, Austin, TX 78701
+   8:rtos/uC-FS/Source/fs_sys.c **** *
+   9:rtos/uC-FS/Source/fs_sys.c **** *                   All rights reserved. Protected by international copyright laws.
+  10:rtos/uC-FS/Source/fs_sys.c **** *
+  11:rtos/uC-FS/Source/fs_sys.c **** *                  Your use of this software is subject to your acceptance of the terms
+  12:rtos/uC-FS/Source/fs_sys.c **** *                  of a Silicon Labs Micrium software license, which can be obtained by
+  13:rtos/uC-FS/Source/fs_sys.c **** *                  contacting info@micrium.com. If you do not agree to the terms of this
+  14:rtos/uC-FS/Source/fs_sys.c **** *                  license, you may not use this software.
+  15:rtos/uC-FS/Source/fs_sys.c **** *
+  16:rtos/uC-FS/Source/fs_sys.c **** *                  Please help us continue to provide the Embedded community with the finest
+  17:rtos/uC-FS/Source/fs_sys.c **** *                  software available. Your honesty is greatly appreciated.
+  18:rtos/uC-FS/Source/fs_sys.c **** *
+  19:rtos/uC-FS/Source/fs_sys.c **** *                    You can find our product's documentation at: doc.micrium.com
+  20:rtos/uC-FS/Source/fs_sys.c **** *
+  21:rtos/uC-FS/Source/fs_sys.c **** *                          For more information visit us at: www.micrium.com
+  22:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+  23:rtos/uC-FS/Source/fs_sys.c **** */
+  24:rtos/uC-FS/Source/fs_sys.c **** 
+  25:rtos/uC-FS/Source/fs_sys.c **** /*
+  26:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+  27:rtos/uC-FS/Source/fs_sys.c **** *
+  28:rtos/uC-FS/Source/fs_sys.c **** *                                FILE SYSTEM SYSTEM DRIVER MANAGEMENT
+  29:rtos/uC-FS/Source/fs_sys.c **** *
+ARM GAS  /tmp/cc0M7npT.s 			page 2
+
+
+  30:rtos/uC-FS/Source/fs_sys.c **** * Filename : fs_sys.c
+  31:rtos/uC-FS/Source/fs_sys.c **** * Version  : v4.07.06
+  32:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+  33:rtos/uC-FS/Source/fs_sys.c **** * Note(s)  : (1) The available system driver is known at compile time :
+  34:rtos/uC-FS/Source/fs_sys.c **** *
+  35:rtos/uC-FS/Source/fs_sys.c **** *                (a) The FAT system driver will be present if FS_CFG_SYS_DRV_SEL is FS_SYS_DRV_SEL_
+  36:rtos/uC-FS/Source/fs_sys.c **** *                    This will support FAT12, FAT16 & FAT32 systems (depending on configuration) &
+  37:rtos/uC-FS/Source/fs_sys.c **** *                    support LFN (depending on configuration).
+  38:rtos/uC-FS/Source/fs_sys.c **** *
+  39:rtos/uC-FS/Source/fs_sys.c **** *            (2) The "NO SYS DRV" pre-processor 'else'-conditional code will never be compiled/link
+  40:rtos/uC-FS/Source/fs_sys.c **** *                since 'fs_cfg_fs.h' ensures that at least one constant (e.g., FS_FAT_MODULE_PRESEN
+  41:rtos/uC-FS/Source/fs_sys.c **** *                will be defined.  The 'else'-conditional code is included for completeness & as an
+  42:rtos/uC-FS/Source/fs_sys.c **** *                extra precaution in case 'fs_cfg_fs.h' is incorrectly modified.
+  43:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+  44:rtos/uC-FS/Source/fs_sys.c **** */
+  45:rtos/uC-FS/Source/fs_sys.c **** 
+  46:rtos/uC-FS/Source/fs_sys.c **** /*
+  47:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+  48:rtos/uC-FS/Source/fs_sys.c **** *                                               MODULE
+  49:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+  50:rtos/uC-FS/Source/fs_sys.c **** */
+  51:rtos/uC-FS/Source/fs_sys.c **** 
+  52:rtos/uC-FS/Source/fs_sys.c **** #define  MICRIUM_SOURCE
+  53:rtos/uC-FS/Source/fs_sys.c **** #define  FS_SYS_MODULE
+  54:rtos/uC-FS/Source/fs_sys.c **** 
+  55:rtos/uC-FS/Source/fs_sys.c **** 
+  56:rtos/uC-FS/Source/fs_sys.c **** /*
+  57:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+  58:rtos/uC-FS/Source/fs_sys.c **** *                                            INCLUDE FILES
+  59:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+  60:rtos/uC-FS/Source/fs_sys.c **** */
+  61:rtos/uC-FS/Source/fs_sys.c **** 
+  62:rtos/uC-FS/Source/fs_sys.c **** #include  "fs.h"
+  63:rtos/uC-FS/Source/fs_sys.c **** #include  "fs_err.h"
+  64:rtos/uC-FS/Source/fs_sys.c **** #include  "fs_file.h"
+  65:rtos/uC-FS/Source/fs_sys.c **** #include  "fs_sys.h"
+  66:rtos/uC-FS/Source/fs_sys.c **** #include  "../FAT/fs_fat.h"
+  67:rtos/uC-FS/Source/fs_sys.c **** #include  "../FAT/fs_fat_dir.h"
+  68:rtos/uC-FS/Source/fs_sys.c **** #include  "../FAT/fs_fat_entry.h"
+  69:rtos/uC-FS/Source/fs_sys.c **** #include  "../FAT/fs_fat_file.h"
+  70:rtos/uC-FS/Source/fs_sys.c **** 
+  71:rtos/uC-FS/Source/fs_sys.c **** 
+  72:rtos/uC-FS/Source/fs_sys.c **** /*
+  73:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+  74:rtos/uC-FS/Source/fs_sys.c **** *                                            LOCAL DEFINES
+  75:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+  76:rtos/uC-FS/Source/fs_sys.c **** */
+  77:rtos/uC-FS/Source/fs_sys.c **** 
+  78:rtos/uC-FS/Source/fs_sys.c **** 
+  79:rtos/uC-FS/Source/fs_sys.c **** /*
+  80:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+  81:rtos/uC-FS/Source/fs_sys.c **** *                                           LOCAL CONSTANTS
+  82:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+  83:rtos/uC-FS/Source/fs_sys.c **** */
+  84:rtos/uC-FS/Source/fs_sys.c **** 
+  85:rtos/uC-FS/Source/fs_sys.c **** 
+  86:rtos/uC-FS/Source/fs_sys.c **** /*
+ARM GAS  /tmp/cc0M7npT.s 			page 3
+
+
+  87:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+  88:rtos/uC-FS/Source/fs_sys.c **** *                                          LOCAL DATA TYPES
+  89:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+  90:rtos/uC-FS/Source/fs_sys.c **** */
+  91:rtos/uC-FS/Source/fs_sys.c **** 
+  92:rtos/uC-FS/Source/fs_sys.c **** 
+  93:rtos/uC-FS/Source/fs_sys.c **** /*
+  94:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+  95:rtos/uC-FS/Source/fs_sys.c **** *                                            LOCAL TABLES
+  96:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+  97:rtos/uC-FS/Source/fs_sys.c **** */
+  98:rtos/uC-FS/Source/fs_sys.c **** 
+  99:rtos/uC-FS/Source/fs_sys.c **** 
+ 100:rtos/uC-FS/Source/fs_sys.c **** /*
+ 101:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 102:rtos/uC-FS/Source/fs_sys.c **** *                                       LOCAL GLOBAL VARIABLES
+ 103:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 104:rtos/uC-FS/Source/fs_sys.c **** */
+ 105:rtos/uC-FS/Source/fs_sys.c **** 
+ 106:rtos/uC-FS/Source/fs_sys.c **** 
+ 107:rtos/uC-FS/Source/fs_sys.c **** /*
+ 108:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 109:rtos/uC-FS/Source/fs_sys.c **** *                                      LOCAL FUNCTION PROTOTYPES
+ 110:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 111:rtos/uC-FS/Source/fs_sys.c **** */
+ 112:rtos/uC-FS/Source/fs_sys.c **** 
+ 113:rtos/uC-FS/Source/fs_sys.c **** 
+ 114:rtos/uC-FS/Source/fs_sys.c **** /*
+ 115:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 116:rtos/uC-FS/Source/fs_sys.c **** *                                     LOCAL CONFIGURATION ERRORS
+ 117:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 118:rtos/uC-FS/Source/fs_sys.c **** */
+ 119:rtos/uC-FS/Source/fs_sys.c **** 
+ 120:rtos/uC-FS/Source/fs_sys.c **** 
+ 121:rtos/uC-FS/Source/fs_sys.c **** /*
+ 122:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 123:rtos/uC-FS/Source/fs_sys.c **** *                                         FSSys_ModuleInit()
+ 124:rtos/uC-FS/Source/fs_sys.c **** *
+ 125:rtos/uC-FS/Source/fs_sys.c **** * Description : Initialize system driver.
+ 126:rtos/uC-FS/Source/fs_sys.c **** *
+ 127:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : vol_cnt     Number of volumes in use.
+ 128:rtos/uC-FS/Source/fs_sys.c **** *
+ 129:rtos/uC-FS/Source/fs_sys.c **** *               file_cnt    Number of files in use.
+ 130:rtos/uC-FS/Source/fs_sys.c **** *
+ 131:rtos/uC-FS/Source/fs_sys.c **** *               dir_cnt     Number of directories in use.
+ 132:rtos/uC-FS/Source/fs_sys.c **** *
+ 133:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 134:rtos/uC-FS/Source/fs_sys.c **** *
+ 135:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NONE         Module initialized.
+ 136:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_MEM_ALLOC    Memory could not be allocated.
+ 137:rtos/uC-FS/Source/fs_sys.c **** *
+ 138:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 139:rtos/uC-FS/Source/fs_sys.c **** *
+ 140:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 141:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 142:rtos/uC-FS/Source/fs_sys.c **** */
+ 143:rtos/uC-FS/Source/fs_sys.c **** 
+ARM GAS  /tmp/cc0M7npT.s 			page 4
+
+
+ 144:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_ModuleInit (FS_QTY   vol_cnt,
+ 145:rtos/uC-FS/Source/fs_sys.c ****                         FS_QTY   file_cnt,
+ 146:rtos/uC-FS/Source/fs_sys.c ****                         FS_QTY   dir_cnt,
+ 147:rtos/uC-FS/Source/fs_sys.c ****                         FS_ERR  *p_err)
+ 148:rtos/uC-FS/Source/fs_sys.c **** {
+  30              		.loc 1 148 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 148 1 is_stmt 0 view .LVU1
+  35 0000 08B5     		push	{r3, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 3, -8
+  39              		.cfi_offset 14, -4
+ 149:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 150:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_ModuleInit(vol_cnt, file_cnt, dir_cnt, p_err);
+  40              		.loc 1 150 5 is_stmt 1 view .LVU2
+  41 0002 FFF7FEFF 		bl	FS_FAT_ModuleInit
+  42              	.LVL1:
+ 151:rtos/uC-FS/Source/fs_sys.c **** #else
+ 152:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 153:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 154:rtos/uC-FS/Source/fs_sys.c **** }
+  43              		.loc 1 154 1 is_stmt 0 view .LVU3
+  44 0006 08BD     		pop	{r3, pc}
+  45              		.cfi_endproc
+  46              	.LFE0:
+  48              		.section	.text.FSSys_VolClose,"ax",%progbits
+  49              		.align	1
+  50              		.global	FSSys_VolClose
+  51              		.syntax unified
+  52              		.thumb
+  53              		.thumb_func
+  54              		.fpu fpv4-sp-d16
+  56              	FSSys_VolClose:
+  57              	.LVL2:
+  58              	.LFB1:
+ 155:rtos/uC-FS/Source/fs_sys.c **** 
+ 156:rtos/uC-FS/Source/fs_sys.c **** 
+ 157:rtos/uC-FS/Source/fs_sys.c **** /*
+ 158:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 159:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 160:rtos/uC-FS/Source/fs_sys.c **** *                                          VOLUME FUNCTIONS
+ 161:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 162:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 163:rtos/uC-FS/Source/fs_sys.c **** */
+ 164:rtos/uC-FS/Source/fs_sys.c **** 
+ 165:rtos/uC-FS/Source/fs_sys.c **** /*
+ 166:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 167:rtos/uC-FS/Source/fs_sys.c **** *                                          FSSys_VolClose()
+ 168:rtos/uC-FS/Source/fs_sys.c **** *
+ 169:rtos/uC-FS/Source/fs_sys.c **** * Description : Free system driver-specific structures.
+ 170:rtos/uC-FS/Source/fs_sys.c **** *
+ 171:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_vol       Pointer to volume.
+ 172:rtos/uC-FS/Source/fs_sys.c **** *
+ 173:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ARM GAS  /tmp/cc0M7npT.s 			page 5
+
+
+ 174:rtos/uC-FS/Source/fs_sys.c **** *
+ 175:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 176:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 177:rtos/uC-FS/Source/fs_sys.c **** */
+ 178:rtos/uC-FS/Source/fs_sys.c **** 
+ 179:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_VolClose (FS_VOL  *p_vol)
+ 180:rtos/uC-FS/Source/fs_sys.c **** {
+  59              		.loc 1 180 1 is_stmt 1 view -0
+  60              		.cfi_startproc
+  61              		@ args = 0, pretend = 0, frame = 0
+  62              		@ frame_needed = 0, uses_anonymous_args = 0
+  63              		.loc 1 180 1 is_stmt 0 view .LVU5
+  64 0000 08B5     		push	{r3, lr}
+  65              	.LCFI1:
+  66              		.cfi_def_cfa_offset 8
+  67              		.cfi_offset 3, -8
+  68              		.cfi_offset 14, -4
+ 181:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 182:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_VolClose(p_vol);
+  69              		.loc 1 182 5 is_stmt 1 view .LVU6
+  70 0002 FFF7FEFF 		bl	FS_FAT_VolClose
+  71              	.LVL3:
+ 183:rtos/uC-FS/Source/fs_sys.c **** #else
+ 184:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 185:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 186:rtos/uC-FS/Source/fs_sys.c **** }
+  72              		.loc 1 186 1 is_stmt 0 view .LVU7
+  73 0006 08BD     		pop	{r3, pc}
+  74              		.cfi_endproc
+  75              	.LFE1:
+  77              		.section	.text.FSSys_VolFmt,"ax",%progbits
+  78              		.align	1
+  79              		.global	FSSys_VolFmt
+  80              		.syntax unified
+  81              		.thumb
+  82              		.thumb_func
+  83              		.fpu fpv4-sp-d16
+  85              	FSSys_VolFmt:
+  86              	.LVL4:
+  87              	.LFB2:
+ 187:rtos/uC-FS/Source/fs_sys.c **** 
+ 188:rtos/uC-FS/Source/fs_sys.c **** 
+ 189:rtos/uC-FS/Source/fs_sys.c **** /*
+ 190:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 191:rtos/uC-FS/Source/fs_sys.c **** *                                           FSSys_VolFmt()
+ 192:rtos/uC-FS/Source/fs_sys.c **** *
+ 193:rtos/uC-FS/Source/fs_sys.c **** * Description : Format a volume.
+ 194:rtos/uC-FS/Source/fs_sys.c **** *
+ 195:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_dev       Pointer to device.
+ 196:rtos/uC-FS/Source/fs_sys.c **** *
+ 197:rtos/uC-FS/Source/fs_sys.c **** *               p_sys_cfg   File system configuration.
+ 198:rtos/uC-FS/Source/fs_sys.c **** *
+ 199:rtos/uC-FS/Source/fs_sys.c **** *               start       Start sector of file system.
+ 200:rtos/uC-FS/Source/fs_sys.c **** *
+ 201:rtos/uC-FS/Source/fs_sys.c **** *               size        Number of sectors in file system.
+ 202:rtos/uC-FS/Source/fs_sys.c **** *
+ 203:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ARM GAS  /tmp/cc0M7npT.s 			page 6
+
+
+ 204:rtos/uC-FS/Source/fs_sys.c **** *
+ 205:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NONE                Volume formatted successfully.
+ 206:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_BUF_NONE_AVAIL      No buf available.
+ 207:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV                 Device access error.
+ 208:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV_INVALID_SIZE    Invalid device size.
+ 209:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_VOL_INVALID_SYS     Invalid volume for file system.
+ 210:rtos/uC-FS/Source/fs_sys.c **** *
+ 211:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 212:rtos/uC-FS/Source/fs_sys.c **** *
+ 213:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 214:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 215:rtos/uC-FS/Source/fs_sys.c **** */
+ 216:rtos/uC-FS/Source/fs_sys.c **** 
+ 217:rtos/uC-FS/Source/fs_sys.c **** #if (FS_CFG_RD_ONLY_EN == DEF_DISABLED)
+ 218:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_VolFmt (FS_VOL       *p_vol,
+ 219:rtos/uC-FS/Source/fs_sys.c ****                     void         *p_sys_cfg,
+ 220:rtos/uC-FS/Source/fs_sys.c ****                     FS_SEC_SIZE   sec_size,
+ 221:rtos/uC-FS/Source/fs_sys.c ****                     FS_SEC_QTY    size,
+ 222:rtos/uC-FS/Source/fs_sys.c ****                     FS_ERR       *p_err)
+ 223:rtos/uC-FS/Source/fs_sys.c **** {
+  88              		.loc 1 223 1 is_stmt 1 view -0
+  89              		.cfi_startproc
+  90              		@ args = 4, pretend = 0, frame = 0
+  91              		@ frame_needed = 0, uses_anonymous_args = 0
+  92              		.loc 1 223 1 is_stmt 0 view .LVU9
+  93 0000 10B5     		push	{r4, lr}
+  94              	.LCFI2:
+  95              		.cfi_def_cfa_offset 8
+  96              		.cfi_offset 4, -8
+  97              		.cfi_offset 14, -4
+  98 0002 82B0     		sub	sp, sp, #8
+  99              	.LCFI3:
+ 100              		.cfi_def_cfa_offset 16
+ 224:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 225:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_VolFmt(p_vol, p_sys_cfg, sec_size, size, p_err);
+ 101              		.loc 1 225 5 is_stmt 1 view .LVU10
+ 102 0004 049C     		ldr	r4, [sp, #16]
+ 103 0006 0094     		str	r4, [sp]
+ 104 0008 FFF7FEFF 		bl	FS_FAT_VolFmt
+ 105              	.LVL5:
+ 226:rtos/uC-FS/Source/fs_sys.c **** #else
+ 227:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 228:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 229:rtos/uC-FS/Source/fs_sys.c **** }
+ 106              		.loc 1 229 1 is_stmt 0 view .LVU11
+ 107 000c 02B0     		add	sp, sp, #8
+ 108              	.LCFI4:
+ 109              		.cfi_def_cfa_offset 8
+ 110              		@ sp needed
+ 111 000e 10BD     		pop	{r4, pc}
+ 112              		.loc 1 229 1 view .LVU12
+ 113              		.cfi_endproc
+ 114              	.LFE2:
+ 116              		.section	.text.FSSys_VolLabelGet,"ax",%progbits
+ 117              		.align	1
+ 118              		.global	FSSys_VolLabelGet
+ 119              		.syntax unified
+ARM GAS  /tmp/cc0M7npT.s 			page 7
+
+
+ 120              		.thumb
+ 121              		.thumb_func
+ 122              		.fpu fpv4-sp-d16
+ 124              	FSSys_VolLabelGet:
+ 125              	.LVL6:
+ 126              	.LFB3:
+ 230:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 231:rtos/uC-FS/Source/fs_sys.c **** 
+ 232:rtos/uC-FS/Source/fs_sys.c **** 
+ 233:rtos/uC-FS/Source/fs_sys.c **** /*
+ 234:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 235:rtos/uC-FS/Source/fs_sys.c **** *                                         FSSys_VolLabelGet()
+ 236:rtos/uC-FS/Source/fs_sys.c **** *
+ 237:rtos/uC-FS/Source/fs_sys.c **** * Description : Get volume label.
+ 238:rtos/uC-FS/Source/fs_sys.c **** *
+ 239:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_vol       Pointer to volume.
+ 240:rtos/uC-FS/Source/fs_sys.c **** *
+ 241:rtos/uC-FS/Source/fs_sys.c **** *               label       String buffer that will receive volume label.
+ 242:rtos/uC-FS/Source/fs_sys.c **** *
+ 243:rtos/uC-FS/Source/fs_sys.c **** *               len_max     Size of string buffer.
+ 244:rtos/uC-FS/Source/fs_sys.c **** *
+ 245:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 246:rtos/uC-FS/Source/fs_sys.c **** *
+ 247:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NONE                   Label gotten.
+ 248:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_VOL_LABEL_NOT_FOUND    Volume label was not found.
+ 249:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_VOL_LABEL_TOO_LONG     Volume label is too long.
+ 250:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV                    Device access error.
+ 251:rtos/uC-FS/Source/fs_sys.c **** *
+ 252:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 253:rtos/uC-FS/Source/fs_sys.c **** *
+ 254:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 255:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 256:rtos/uC-FS/Source/fs_sys.c **** */
+ 257:rtos/uC-FS/Source/fs_sys.c **** 
+ 258:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_VolLabelGet (FS_VOL      *p_vol,
+ 259:rtos/uC-FS/Source/fs_sys.c ****                          CPU_CHAR    *label,
+ 260:rtos/uC-FS/Source/fs_sys.c ****                          CPU_SIZE_T   len_max,
+ 261:rtos/uC-FS/Source/fs_sys.c ****                          FS_ERR      *p_err)
+ 262:rtos/uC-FS/Source/fs_sys.c **** {
+ 127              		.loc 1 262 1 is_stmt 1 view -0
+ 128              		.cfi_startproc
+ 129              		@ args = 0, pretend = 0, frame = 0
+ 130              		@ frame_needed = 0, uses_anonymous_args = 0
+ 131              		.loc 1 262 1 is_stmt 0 view .LVU14
+ 132 0000 08B5     		push	{r3, lr}
+ 133              	.LCFI5:
+ 134              		.cfi_def_cfa_offset 8
+ 135              		.cfi_offset 3, -8
+ 136              		.cfi_offset 14, -4
+ 263:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 264:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_VolLabelGet(p_vol, label, len_max, p_err);
+ 137              		.loc 1 264 5 is_stmt 1 view .LVU15
+ 138 0002 FFF7FEFF 		bl	FS_FAT_VolLabelGet
+ 139              	.LVL7:
+ 265:rtos/uC-FS/Source/fs_sys.c **** #else
+ 266:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 267:rtos/uC-FS/Source/fs_sys.c **** #endif
+ARM GAS  /tmp/cc0M7npT.s 			page 8
+
+
+ 268:rtos/uC-FS/Source/fs_sys.c **** }
+ 140              		.loc 1 268 1 is_stmt 0 view .LVU16
+ 141 0006 08BD     		pop	{r3, pc}
+ 142              		.cfi_endproc
+ 143              	.LFE3:
+ 145              		.section	.text.FSSys_VolLabelSet,"ax",%progbits
+ 146              		.align	1
+ 147              		.global	FSSys_VolLabelSet
+ 148              		.syntax unified
+ 149              		.thumb
+ 150              		.thumb_func
+ 151              		.fpu fpv4-sp-d16
+ 153              	FSSys_VolLabelSet:
+ 154              	.LVL8:
+ 155              	.LFB4:
+ 269:rtos/uC-FS/Source/fs_sys.c **** 
+ 270:rtos/uC-FS/Source/fs_sys.c **** 
+ 271:rtos/uC-FS/Source/fs_sys.c **** /*
+ 272:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 273:rtos/uC-FS/Source/fs_sys.c **** *                                         FSSys_VolLabelSet()
+ 274:rtos/uC-FS/Source/fs_sys.c **** *
+ 275:rtos/uC-FS/Source/fs_sys.c **** * Description : Set volume label.
+ 276:rtos/uC-FS/Source/fs_sys.c **** *
+ 277:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_vol       Pointer to volume.
+ 278:rtos/uC-FS/Source/fs_sys.c **** *
+ 279:rtos/uC-FS/Source/fs_sys.c **** *               label       Volume label.
+ 280:rtos/uC-FS/Source/fs_sys.c **** *
+ 281:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 282:rtos/uC-FS/Source/fs_sys.c **** *
+ 283:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NONE                  Label set.
+ 284:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_VOL_LABEL_INVALID     Volume label is invalid.
+ 285:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_VOL_LABEL_TOO_LONG    Volume label is too long.
+ 286:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV                   Device access error.
+ 287:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DIR_FULL              Directory is full (space could not be 
+ 288:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV_FULL              Device is full (space could not be all
+ 289:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_CORRUPT         File system entry is corrupt.
+ 290:rtos/uC-FS/Source/fs_sys.c **** *
+ 291:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 292:rtos/uC-FS/Source/fs_sys.c **** *
+ 293:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 294:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 295:rtos/uC-FS/Source/fs_sys.c **** */
+ 296:rtos/uC-FS/Source/fs_sys.c **** 
+ 297:rtos/uC-FS/Source/fs_sys.c **** #if (FS_CFG_RD_ONLY_EN == DEF_DISABLED)
+ 298:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_VolLabelSet (FS_VOL    *p_vol,
+ 299:rtos/uC-FS/Source/fs_sys.c ****                          CPU_CHAR  *label,
+ 300:rtos/uC-FS/Source/fs_sys.c ****                          FS_ERR    *p_err)
+ 301:rtos/uC-FS/Source/fs_sys.c **** {
+ 156              		.loc 1 301 1 is_stmt 1 view -0
+ 157              		.cfi_startproc
+ 158              		@ args = 0, pretend = 0, frame = 0
+ 159              		@ frame_needed = 0, uses_anonymous_args = 0
+ 160              		.loc 1 301 1 is_stmt 0 view .LVU18
+ 161 0000 08B5     		push	{r3, lr}
+ 162              	.LCFI6:
+ 163              		.cfi_def_cfa_offset 8
+ 164              		.cfi_offset 3, -8
+ARM GAS  /tmp/cc0M7npT.s 			page 9
+
+
+ 165              		.cfi_offset 14, -4
+ 302:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 303:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_VolLabelSet(p_vol, label, p_err);
+ 166              		.loc 1 303 5 is_stmt 1 view .LVU19
+ 167 0002 FFF7FEFF 		bl	FS_FAT_VolLabelSet
+ 168              	.LVL9:
+ 304:rtos/uC-FS/Source/fs_sys.c **** #else
+ 305:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 306:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 307:rtos/uC-FS/Source/fs_sys.c **** }
+ 169              		.loc 1 307 1 is_stmt 0 view .LVU20
+ 170 0006 08BD     		pop	{r3, pc}
+ 171              		.cfi_endproc
+ 172              	.LFE4:
+ 174              		.section	.text.FSSys_VolOpen,"ax",%progbits
+ 175              		.align	1
+ 176              		.global	FSSys_VolOpen
+ 177              		.syntax unified
+ 178              		.thumb
+ 179              		.thumb_func
+ 180              		.fpu fpv4-sp-d16
+ 182              	FSSys_VolOpen:
+ 183              	.LVL10:
+ 184              	.LFB5:
+ 308:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 309:rtos/uC-FS/Source/fs_sys.c **** 
+ 310:rtos/uC-FS/Source/fs_sys.c **** 
+ 311:rtos/uC-FS/Source/fs_sys.c **** /*
+ 312:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 313:rtos/uC-FS/Source/fs_sys.c **** *                                           FSSys_VolOpen()
+ 314:rtos/uC-FS/Source/fs_sys.c **** *
+ 315:rtos/uC-FS/Source/fs_sys.c **** * Description : Detect file system on volume & initialize associated structures.
+ 316:rtos/uC-FS/Source/fs_sys.c **** *
+ 317:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_vol       Pointer to volume.
+ 318:rtos/uC-FS/Source/fs_sys.c **** *
+ 319:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 320:rtos/uC-FS/Source/fs_sys.c **** *
+ 321:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NONE              File system information gotten.
+ 322:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_BUF_NONE_AVAIL    No buffer available.
+ 323:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV               Device access error.
+ 324:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_INVALID_SYS       Invalid file system.
+ 325:rtos/uC-FS/Source/fs_sys.c **** *
+ 326:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 327:rtos/uC-FS/Source/fs_sys.c **** *
+ 328:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 329:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 330:rtos/uC-FS/Source/fs_sys.c **** */
+ 331:rtos/uC-FS/Source/fs_sys.c **** 
+ 332:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_VolOpen (FS_VOL  *p_vol,
+ 333:rtos/uC-FS/Source/fs_sys.c ****                      FS_ERR  *p_err)
+ 334:rtos/uC-FS/Source/fs_sys.c **** {
+ 185              		.loc 1 334 1 is_stmt 1 view -0
+ 186              		.cfi_startproc
+ 187              		@ args = 0, pretend = 0, frame = 0
+ 188              		@ frame_needed = 0, uses_anonymous_args = 0
+ 189              		.loc 1 334 1 is_stmt 0 view .LVU22
+ 190 0000 08B5     		push	{r3, lr}
+ARM GAS  /tmp/cc0M7npT.s 			page 10
+
+
+ 191              	.LCFI7:
+ 192              		.cfi_def_cfa_offset 8
+ 193              		.cfi_offset 3, -8
+ 194              		.cfi_offset 14, -4
+ 335:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 336:rtos/uC-FS/Source/fs_sys.c ****      FS_FAT_VolOpen(p_vol, p_err);
+ 195              		.loc 1 336 6 is_stmt 1 view .LVU23
+ 196 0002 FFF7FEFF 		bl	FS_FAT_VolOpen
+ 197              	.LVL11:
+ 337:rtos/uC-FS/Source/fs_sys.c **** #else
+ 338:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 339:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 340:rtos/uC-FS/Source/fs_sys.c **** }
+ 198              		.loc 1 340 1 is_stmt 0 view .LVU24
+ 199 0006 08BD     		pop	{r3, pc}
+ 200              		.cfi_endproc
+ 201              	.LFE5:
+ 203              		.section	.text.FSSys_VolQuery,"ax",%progbits
+ 204              		.align	1
+ 205              		.global	FSSys_VolQuery
+ 206              		.syntax unified
+ 207              		.thumb
+ 208              		.thumb_func
+ 209              		.fpu fpv4-sp-d16
+ 211              	FSSys_VolQuery:
+ 212              	.LVL12:
+ 213              	.LFB6:
+ 341:rtos/uC-FS/Source/fs_sys.c **** 
+ 342:rtos/uC-FS/Source/fs_sys.c **** 
+ 343:rtos/uC-FS/Source/fs_sys.c **** /*
+ 344:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 345:rtos/uC-FS/Source/fs_sys.c **** *                                          FSSys_VolQuery()
+ 346:rtos/uC-FS/Source/fs_sys.c **** *
+ 347:rtos/uC-FS/Source/fs_sys.c **** * Description : Get info about file system on a volume.
+ 348:rtos/uC-FS/Source/fs_sys.c **** *
+ 349:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_vol       Pointer to volume.
+ 350:rtos/uC-FS/Source/fs_sys.c **** *
+ 351:rtos/uC-FS/Source/fs_sys.c **** *               p_info      Pointer to structure that will receive file system information.
+ 352:rtos/uC-FS/Source/fs_sys.c **** *
+ 353:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 354:rtos/uC-FS/Source/fs_sys.c **** *
+ 355:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NONE              File system information gotten.
+ 356:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_BUF_NONE_AVAIL    No buffer available.
+ 357:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV               Device access error.
+ 358:rtos/uC-FS/Source/fs_sys.c **** *
+ 359:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 360:rtos/uC-FS/Source/fs_sys.c **** *
+ 361:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 362:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 363:rtos/uC-FS/Source/fs_sys.c **** */
+ 364:rtos/uC-FS/Source/fs_sys.c **** 
+ 365:rtos/uC-FS/Source/fs_sys.c **** 
+ 366:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_VolQuery (FS_VOL       *p_vol,
+ 367:rtos/uC-FS/Source/fs_sys.c ****                       FS_SYS_INFO  *p_info,
+ 368:rtos/uC-FS/Source/fs_sys.c ****                       FS_ERR       *p_err)
+ 369:rtos/uC-FS/Source/fs_sys.c **** {
+ 214              		.loc 1 369 1 is_stmt 1 view -0
+ARM GAS  /tmp/cc0M7npT.s 			page 11
+
+
+ 215              		.cfi_startproc
+ 216              		@ args = 0, pretend = 0, frame = 0
+ 217              		@ frame_needed = 0, uses_anonymous_args = 0
+ 218              		.loc 1 369 1 is_stmt 0 view .LVU26
+ 219 0000 08B5     		push	{r3, lr}
+ 220              	.LCFI8:
+ 221              		.cfi_def_cfa_offset 8
+ 222              		.cfi_offset 3, -8
+ 223              		.cfi_offset 14, -4
+ 370:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 371:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_VolQuery(p_vol, p_info, p_err);
+ 224              		.loc 1 371 5 is_stmt 1 view .LVU27
+ 225 0002 FFF7FEFF 		bl	FS_FAT_VolQuery
+ 226              	.LVL13:
+ 372:rtos/uC-FS/Source/fs_sys.c **** #else
+ 373:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 374:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 375:rtos/uC-FS/Source/fs_sys.c **** }
+ 227              		.loc 1 375 1 is_stmt 0 view .LVU28
+ 228 0006 08BD     		pop	{r3, pc}
+ 229              		.cfi_endproc
+ 230              	.LFE6:
+ 232              		.section	.text.FSSys_FileClose,"ax",%progbits
+ 233              		.align	1
+ 234              		.global	FSSys_FileClose
+ 235              		.syntax unified
+ 236              		.thumb
+ 237              		.thumb_func
+ 238              		.fpu fpv4-sp-d16
+ 240              	FSSys_FileClose:
+ 241              	.LVL14:
+ 242              	.LFB7:
+ 376:rtos/uC-FS/Source/fs_sys.c **** 
+ 377:rtos/uC-FS/Source/fs_sys.c **** 
+ 378:rtos/uC-FS/Source/fs_sys.c **** /*
+ 379:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 380:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 381:rtos/uC-FS/Source/fs_sys.c **** *                                           FILE FUNCTIONS
+ 382:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 383:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 384:rtos/uC-FS/Source/fs_sys.c **** */
+ 385:rtos/uC-FS/Source/fs_sys.c **** 
+ 386:rtos/uC-FS/Source/fs_sys.c **** /*
+ 387:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 388:rtos/uC-FS/Source/fs_sys.c **** *                                          FSSys_FileClose()
+ 389:rtos/uC-FS/Source/fs_sys.c **** *
+ 390:rtos/uC-FS/Source/fs_sys.c **** * Description : Close a file.
+ 391:rtos/uC-FS/Source/fs_sys.c **** *
+ 392:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_file      Pointer to a file.
+ 393:rtos/uC-FS/Source/fs_sys.c **** *               -----       Argument validated by caller.
+ 394:rtos/uC-FS/Source/fs_sys.c **** *
+ 395:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 396:rtos/uC-FS/Source/fs_sys.c **** *
+ 397:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NONE        File closed.
+ 398:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NULL_PTR    FS_FAT_FileClose() NULL pointer error return.
+ 399:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 400:rtos/uC-FS/Source/fs_sys.c **** *
+ARM GAS  /tmp/cc0M7npT.s 			page 12
+
+
+ 401:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 402:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 403:rtos/uC-FS/Source/fs_sys.c **** */
+ 404:rtos/uC-FS/Source/fs_sys.c **** 
+ 405:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_FileClose  (FS_FILE  *p_file,
+ 406:rtos/uC-FS/Source/fs_sys.c ****                         FS_ERR   *p_err)
+ 407:rtos/uC-FS/Source/fs_sys.c **** {
+ 243              		.loc 1 407 1 is_stmt 1 view -0
+ 244              		.cfi_startproc
+ 245              		@ args = 0, pretend = 0, frame = 0
+ 246              		@ frame_needed = 0, uses_anonymous_args = 0
+ 247              		.loc 1 407 1 is_stmt 0 view .LVU30
+ 248 0000 08B5     		push	{r3, lr}
+ 249              	.LCFI9:
+ 250              		.cfi_def_cfa_offset 8
+ 251              		.cfi_offset 3, -8
+ 252              		.cfi_offset 14, -4
+ 408:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 409:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_FileClose(p_file, p_err);
+ 253              		.loc 1 409 5 is_stmt 1 view .LVU31
+ 254 0002 FFF7FEFF 		bl	FS_FAT_FileClose
+ 255              	.LVL15:
+ 410:rtos/uC-FS/Source/fs_sys.c **** #else
+ 411:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 412:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 413:rtos/uC-FS/Source/fs_sys.c **** }
+ 256              		.loc 1 413 1 is_stmt 0 view .LVU32
+ 257 0006 08BD     		pop	{r3, pc}
+ 258              		.cfi_endproc
+ 259              	.LFE7:
+ 261              		.section	.text.FSSys_FileOpen,"ax",%progbits
+ 262              		.align	1
+ 263              		.global	FSSys_FileOpen
+ 264              		.syntax unified
+ 265              		.thumb
+ 266              		.thumb_func
+ 267              		.fpu fpv4-sp-d16
+ 269              	FSSys_FileOpen:
+ 270              	.LVL16:
+ 271              	.LFB8:
+ 414:rtos/uC-FS/Source/fs_sys.c **** 
+ 415:rtos/uC-FS/Source/fs_sys.c **** 
+ 416:rtos/uC-FS/Source/fs_sys.c **** /*
+ 417:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 418:rtos/uC-FS/Source/fs_sys.c **** *                                          FSSys_FileOpen()
+ 419:rtos/uC-FS/Source/fs_sys.c **** *
+ 420:rtos/uC-FS/Source/fs_sys.c **** * Description : Open a file.
+ 421:rtos/uC-FS/Source/fs_sys.c **** *
+ 422:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_file          Pointer to a file.
+ 423:rtos/uC-FS/Source/fs_sys.c **** *               ------          Argument validated by caller.
+ 424:rtos/uC-FS/Source/fs_sys.c **** *
+ 425:rtos/uC-FS/Source/fs_sys.c **** *               name_file       Name of the file.
+ 426:rtos/uC-FS/Source/fs_sys.c **** *               ---------       Pointer validated by caller.
+ 427:rtos/uC-FS/Source/fs_sys.c **** *
+ 428:rtos/uC-FS/Source/fs_sys.c **** *               p_err           Pointer to variable that will receive the return error code from th
+ 429:rtos/uC-FS/Source/fs_sys.c **** *
+ 430:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_NONE                      File opened successfully.
+ARM GAS  /tmp/cc0M7npT.s 			page 13
+
+
+ 431:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_BUF_NONE_AVAIL            Buffer not available.
+ 432:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_DEV                       Device access error.
+ 433:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_DEV_FULL                  Device is full (space could no
+ 434:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_DIR_FULL                  Directory is full (space could
+ 435:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_CORRUPT             File system entry is corrupt.
+ 436:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_EXISTS              File system entry exists.
+ 437:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_NOT_FILE            File system entry NOT a file.
+ 438:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_NOT_FOUND           File system entry NOT found
+ 439:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_PARENT_NOT_FOUND    Entry parent NOT found.
+ 440:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_PARENT_NOT_DIR      Entry parent NOT a directory.
+ 441:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_RD_ONLY             File system entry marked read-
+ 442:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_NAME_INVALID              Invalid file name or path.
+ 443:rtos/uC-FS/Source/fs_sys.c **** *
+ 444:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 445:rtos/uC-FS/Source/fs_sys.c **** *
+ 446:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 447:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 448:rtos/uC-FS/Source/fs_sys.c **** */
+ 449:rtos/uC-FS/Source/fs_sys.c **** 
+ 450:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_FileOpen (FS_FILE   *p_file,
+ 451:rtos/uC-FS/Source/fs_sys.c ****                       CPU_CHAR  *name_file,
+ 452:rtos/uC-FS/Source/fs_sys.c ****                       FS_ERR    *p_err)
+ 453:rtos/uC-FS/Source/fs_sys.c **** {
+ 272              		.loc 1 453 1 is_stmt 1 view -0
+ 273              		.cfi_startproc
+ 274              		@ args = 0, pretend = 0, frame = 0
+ 275              		@ frame_needed = 0, uses_anonymous_args = 0
+ 276              		.loc 1 453 1 is_stmt 0 view .LVU34
+ 277 0000 08B5     		push	{r3, lr}
+ 278              	.LCFI10:
+ 279              		.cfi_def_cfa_offset 8
+ 280              		.cfi_offset 3, -8
+ 281              		.cfi_offset 14, -4
+ 454:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 455:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_FileOpen(p_file, name_file, p_err);
+ 282              		.loc 1 455 5 is_stmt 1 view .LVU35
+ 283 0002 FFF7FEFF 		bl	FS_FAT_FileOpen
+ 284              	.LVL17:
+ 456:rtos/uC-FS/Source/fs_sys.c **** #else
+ 457:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 458:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 459:rtos/uC-FS/Source/fs_sys.c **** }
+ 285              		.loc 1 459 1 is_stmt 0 view .LVU36
+ 286 0006 08BD     		pop	{r3, pc}
+ 287              		.cfi_endproc
+ 288              	.LFE8:
+ 290              		.section	.text.FSSys_FilePosSet,"ax",%progbits
+ 291              		.align	1
+ 292              		.global	FSSys_FilePosSet
+ 293              		.syntax unified
+ 294              		.thumb
+ 295              		.thumb_func
+ 296              		.fpu fpv4-sp-d16
+ 298              	FSSys_FilePosSet:
+ 299              	.LVL18:
+ 300              	.LFB9:
+ 460:rtos/uC-FS/Source/fs_sys.c **** 
+ARM GAS  /tmp/cc0M7npT.s 			page 14
+
+
+ 461:rtos/uC-FS/Source/fs_sys.c **** 
+ 462:rtos/uC-FS/Source/fs_sys.c **** /*
+ 463:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 464:rtos/uC-FS/Source/fs_sys.c **** *                                         FSSys_FilePosSet()
+ 465:rtos/uC-FS/Source/fs_sys.c **** *
+ 466:rtos/uC-FS/Source/fs_sys.c **** * Description : Set file position indicator.
+ 467:rtos/uC-FS/Source/fs_sys.c **** *
+ 468:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_file      Pointer to a file.
+ 469:rtos/uC-FS/Source/fs_sys.c **** *               ------      Argument validated by caller.
+ 470:rtos/uC-FS/Source/fs_sys.c **** *
+ 471:rtos/uC-FS/Source/fs_sys.c **** *               pos_new     File position.
+ 472:rtos/uC-FS/Source/fs_sys.c **** *
+ 473:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 474:rtos/uC-FS/Source/fs_sys.c **** *
+ 475:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NONE             File position set successful.
+ 476:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_BUF_NONE_AVAIL   No buffer available.
+ 477:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV              Device access error.
+ 478:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV_FULL         Device is full (no space could be allocated
+ 479:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_CORRUPT    File system entry is corrupt.
+ 480:rtos/uC-FS/Source/fs_sys.c **** *
+ 481:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 482:rtos/uC-FS/Source/fs_sys.c **** *
+ 483:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 484:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 485:rtos/uC-FS/Source/fs_sys.c **** */
+ 486:rtos/uC-FS/Source/fs_sys.c **** 
+ 487:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_FilePosSet (FS_FILE       *p_file,
+ 488:rtos/uC-FS/Source/fs_sys.c ****                         FS_FILE_SIZE   pos_new,
+ 489:rtos/uC-FS/Source/fs_sys.c ****                         FS_ERR        *p_err)
+ 490:rtos/uC-FS/Source/fs_sys.c **** {
+ 301              		.loc 1 490 1 is_stmt 1 view -0
+ 302              		.cfi_startproc
+ 303              		@ args = 0, pretend = 0, frame = 0
+ 304              		@ frame_needed = 0, uses_anonymous_args = 0
+ 305              		.loc 1 490 1 is_stmt 0 view .LVU38
+ 306 0000 08B5     		push	{r3, lr}
+ 307              	.LCFI11:
+ 308              		.cfi_def_cfa_offset 8
+ 309              		.cfi_offset 3, -8
+ 310              		.cfi_offset 14, -4
+ 491:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 492:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_FilePosSet(p_file, pos_new, p_err);
+ 311              		.loc 1 492 5 is_stmt 1 view .LVU39
+ 312 0002 FFF7FEFF 		bl	FS_FAT_FilePosSet
+ 313              	.LVL19:
+ 493:rtos/uC-FS/Source/fs_sys.c **** #else
+ 494:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 495:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 496:rtos/uC-FS/Source/fs_sys.c **** }
+ 314              		.loc 1 496 1 is_stmt 0 view .LVU40
+ 315 0006 08BD     		pop	{r3, pc}
+ 316              		.cfi_endproc
+ 317              	.LFE9:
+ 319              		.section	.text.FSSys_FileQuery,"ax",%progbits
+ 320              		.align	1
+ 321              		.global	FSSys_FileQuery
+ 322              		.syntax unified
+ARM GAS  /tmp/cc0M7npT.s 			page 15
+
+
+ 323              		.thumb
+ 324              		.thumb_func
+ 325              		.fpu fpv4-sp-d16
+ 327              	FSSys_FileQuery:
+ 328              	.LVL20:
+ 329              	.LFB10:
+ 497:rtos/uC-FS/Source/fs_sys.c **** 
+ 498:rtos/uC-FS/Source/fs_sys.c **** 
+ 499:rtos/uC-FS/Source/fs_sys.c **** /*
+ 500:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 501:rtos/uC-FS/Source/fs_sys.c **** *                                          FSSys_FileQuery()
+ 502:rtos/uC-FS/Source/fs_sys.c **** *
+ 503:rtos/uC-FS/Source/fs_sys.c **** * Description : Get information about a file.
+ 504:rtos/uC-FS/Source/fs_sys.c **** *
+ 505:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_file      Pointer to a file.
+ 506:rtos/uC-FS/Source/fs_sys.c **** *               ------      Argument validated by caller.
+ 507:rtos/uC-FS/Source/fs_sys.c **** *
+ 508:rtos/uC-FS/Source/fs_sys.c **** *               p_info      Pointer to structure that will receive the file information.
+ 509:rtos/uC-FS/Source/fs_sys.c **** *               ------      Pointer validated by caller.
+ 510:rtos/uC-FS/Source/fs_sys.c **** *
+ 511:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 512:rtos/uC-FS/Source/fs_sys.c **** *
+ 513:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NONE              File information obtained successful.
+ 514:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_BUF_NONE_AVAIL    No buffer available.
+ 515:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV               Device access error.
+ 516:rtos/uC-FS/Source/fs_sys.c **** *
+ 517:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 518:rtos/uC-FS/Source/fs_sys.c **** *
+ 519:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 520:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 521:rtos/uC-FS/Source/fs_sys.c **** */
+ 522:rtos/uC-FS/Source/fs_sys.c **** 
+ 523:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_FileQuery (FS_FILE        *p_file,
+ 524:rtos/uC-FS/Source/fs_sys.c ****                        FS_ENTRY_INFO  *p_info,
+ 525:rtos/uC-FS/Source/fs_sys.c ****                        FS_ERR         *p_err)
+ 526:rtos/uC-FS/Source/fs_sys.c **** {
+ 330              		.loc 1 526 1 is_stmt 1 view -0
+ 331              		.cfi_startproc
+ 332              		@ args = 0, pretend = 0, frame = 0
+ 333              		@ frame_needed = 0, uses_anonymous_args = 0
+ 334              		.loc 1 526 1 is_stmt 0 view .LVU42
+ 335 0000 08B5     		push	{r3, lr}
+ 336              	.LCFI12:
+ 337              		.cfi_def_cfa_offset 8
+ 338              		.cfi_offset 3, -8
+ 339              		.cfi_offset 14, -4
+ 527:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 528:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_FileQuery(p_file, p_info, p_err);
+ 340              		.loc 1 528 5 is_stmt 1 view .LVU43
+ 341 0002 FFF7FEFF 		bl	FS_FAT_FileQuery
+ 342              	.LVL21:
+ 529:rtos/uC-FS/Source/fs_sys.c **** #else
+ 530:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 531:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 532:rtos/uC-FS/Source/fs_sys.c **** }
+ 343              		.loc 1 532 1 is_stmt 0 view .LVU44
+ 344 0006 08BD     		pop	{r3, pc}
+ARM GAS  /tmp/cc0M7npT.s 			page 16
+
+
+ 345              		.cfi_endproc
+ 346              	.LFE10:
+ 348              		.section	.text.FSSys_FileRd,"ax",%progbits
+ 349              		.align	1
+ 350              		.global	FSSys_FileRd
+ 351              		.syntax unified
+ 352              		.thumb
+ 353              		.thumb_func
+ 354              		.fpu fpv4-sp-d16
+ 356              	FSSys_FileRd:
+ 357              	.LVL22:
+ 358              	.LFB11:
+ 533:rtos/uC-FS/Source/fs_sys.c **** 
+ 534:rtos/uC-FS/Source/fs_sys.c **** 
+ 535:rtos/uC-FS/Source/fs_sys.c **** /*
+ 536:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 537:rtos/uC-FS/Source/fs_sys.c **** *                                           FSSys_FileRd()
+ 538:rtos/uC-FS/Source/fs_sys.c **** *
+ 539:rtos/uC-FS/Source/fs_sys.c **** * Description : Read from a file.
+ 540:rtos/uC-FS/Source/fs_sys.c **** *
+ 541:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_file      Pointer to a file.
+ 542:rtos/uC-FS/Source/fs_sys.c **** *               ------      Argument validated by caller.
+ 543:rtos/uC-FS/Source/fs_sys.c **** *
+ 544:rtos/uC-FS/Source/fs_sys.c **** *               p_dest      Pointer to destination buffer.
+ 545:rtos/uC-FS/Source/fs_sys.c **** *               ------      Argument validated by caller.
+ 546:rtos/uC-FS/Source/fs_sys.c **** *
+ 547:rtos/uC-FS/Source/fs_sys.c **** *               size        Number of octets to read.
+ 548:rtos/uC-FS/Source/fs_sys.c **** *
+ 549:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 550:rtos/uC-FS/Source/fs_sys.c **** *
+ 551:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NONE              File read successful.
+ 552:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_BUF_NONE_AVAIL    No buffer available.
+ 553:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV               Device access error.
+ 554:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_CORRUPT     File system entry corrupt.
+ 555:rtos/uC-FS/Source/fs_sys.c **** *
+ 556:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : Number of bytes read, if file read successful.
+ 557:rtos/uC-FS/Source/fs_sys.c **** *               0,                    otherwise.
+ 558:rtos/uC-FS/Source/fs_sys.c **** *
+ 559:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 560:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 561:rtos/uC-FS/Source/fs_sys.c **** */
+ 562:rtos/uC-FS/Source/fs_sys.c **** 
+ 563:rtos/uC-FS/Source/fs_sys.c **** CPU_SIZE_T  FSSys_FileRd (FS_FILE     *p_file,
+ 564:rtos/uC-FS/Source/fs_sys.c ****                           void        *p_dest,
+ 565:rtos/uC-FS/Source/fs_sys.c ****                           CPU_SIZE_T   size,
+ 566:rtos/uC-FS/Source/fs_sys.c ****                           FS_ERR      *p_err)
+ 567:rtos/uC-FS/Source/fs_sys.c **** {
+ 359              		.loc 1 567 1 is_stmt 1 view -0
+ 360              		.cfi_startproc
+ 361              		@ args = 0, pretend = 0, frame = 0
+ 362              		@ frame_needed = 0, uses_anonymous_args = 0
+ 363              		.loc 1 567 1 is_stmt 0 view .LVU46
+ 364 0000 08B5     		push	{r3, lr}
+ 365              	.LCFI13:
+ 366              		.cfi_def_cfa_offset 8
+ 367              		.cfi_offset 3, -8
+ 368              		.cfi_offset 14, -4
+ARM GAS  /tmp/cc0M7npT.s 			page 17
+
+
+ 568:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 569:rtos/uC-FS/Source/fs_sys.c ****     CPU_SIZE_T  size_rd;
+ 369              		.loc 1 569 5 is_stmt 1 view .LVU47
+ 570:rtos/uC-FS/Source/fs_sys.c **** 
+ 571:rtos/uC-FS/Source/fs_sys.c ****     size_rd = FS_FAT_FileRd(p_file, p_dest, size, p_err);
+ 370              		.loc 1 571 5 view .LVU48
+ 371              		.loc 1 571 15 is_stmt 0 view .LVU49
+ 372 0002 FFF7FEFF 		bl	FS_FAT_FileRd
+ 373              	.LVL23:
+ 572:rtos/uC-FS/Source/fs_sys.c ****     return (size_rd);
+ 374              		.loc 1 572 5 is_stmt 1 view .LVU50
+ 573:rtos/uC-FS/Source/fs_sys.c **** #else
+ 574:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 575:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 576:rtos/uC-FS/Source/fs_sys.c **** }
+ 375              		.loc 1 576 1 is_stmt 0 view .LVU51
+ 376 0006 08BD     		pop	{r3, pc}
+ 377              		.cfi_endproc
+ 378              	.LFE11:
+ 380              		.section	.text.FSSys_FileTruncate,"ax",%progbits
+ 381              		.align	1
+ 382              		.global	FSSys_FileTruncate
+ 383              		.syntax unified
+ 384              		.thumb
+ 385              		.thumb_func
+ 386              		.fpu fpv4-sp-d16
+ 388              	FSSys_FileTruncate:
+ 389              	.LVL24:
+ 390              	.LFB12:
+ 577:rtos/uC-FS/Source/fs_sys.c **** 
+ 578:rtos/uC-FS/Source/fs_sys.c **** 
+ 579:rtos/uC-FS/Source/fs_sys.c **** /*
+ 580:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 581:rtos/uC-FS/Source/fs_sys.c **** *                                        FSSys_FileTruncate()
+ 582:rtos/uC-FS/Source/fs_sys.c **** *
+ 583:rtos/uC-FS/Source/fs_sys.c **** * Description : Truncate a file.
+ 584:rtos/uC-FS/Source/fs_sys.c **** *
+ 585:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_file      Pointer to a file.
+ 586:rtos/uC-FS/Source/fs_sys.c **** *               ------      Argument validated by caller.
+ 587:rtos/uC-FS/Source/fs_sys.c **** *
+ 588:rtos/uC-FS/Source/fs_sys.c **** *               size        Size of file after truncation.
+ 589:rtos/uC-FS/Source/fs_sys.c **** *
+ 590:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 591:rtos/uC-FS/Source/fs_sys.c **** *
+ 592:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NONE              File truncated successful.
+ 593:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_BUF_NONE_AVAIL    No buffer available.
+ 594:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV               Device access error.
+ 595:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV_FULL          Device is full (no space could be allocate
+ 596:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_CORRUPT     File system entry is corrupt.
+ 597:rtos/uC-FS/Source/fs_sys.c **** *
+ 598:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 599:rtos/uC-FS/Source/fs_sys.c **** *
+ 600:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 601:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 602:rtos/uC-FS/Source/fs_sys.c **** */
+ 603:rtos/uC-FS/Source/fs_sys.c **** 
+ 604:rtos/uC-FS/Source/fs_sys.c **** #if (FS_CFG_RD_ONLY_EN == DEF_DISABLED)
+ARM GAS  /tmp/cc0M7npT.s 			page 18
+
+
+ 605:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_FileTruncate (FS_FILE       *p_file,
+ 606:rtos/uC-FS/Source/fs_sys.c ****                           FS_FILE_SIZE   size,
+ 607:rtos/uC-FS/Source/fs_sys.c ****                           FS_ERR        *p_err)
+ 608:rtos/uC-FS/Source/fs_sys.c **** {
+ 391              		.loc 1 608 1 is_stmt 1 view -0
+ 392              		.cfi_startproc
+ 393              		@ args = 0, pretend = 0, frame = 0
+ 394              		@ frame_needed = 0, uses_anonymous_args = 0
+ 395              		.loc 1 608 1 is_stmt 0 view .LVU53
+ 396 0000 08B5     		push	{r3, lr}
+ 397              	.LCFI14:
+ 398              		.cfi_def_cfa_offset 8
+ 399              		.cfi_offset 3, -8
+ 400              		.cfi_offset 14, -4
+ 609:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 610:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_FileTruncate(p_file, size, p_err);
+ 401              		.loc 1 610 5 is_stmt 1 view .LVU54
+ 402 0002 FFF7FEFF 		bl	FS_FAT_FileTruncate
+ 403              	.LVL25:
+ 611:rtos/uC-FS/Source/fs_sys.c **** #else
+ 612:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 613:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 614:rtos/uC-FS/Source/fs_sys.c **** }
+ 404              		.loc 1 614 1 is_stmt 0 view .LVU55
+ 405 0006 08BD     		pop	{r3, pc}
+ 406              		.cfi_endproc
+ 407              	.LFE12:
+ 409              		.section	.text.FSSys_FileWr,"ax",%progbits
+ 410              		.align	1
+ 411              		.global	FSSys_FileWr
+ 412              		.syntax unified
+ 413              		.thumb
+ 414              		.thumb_func
+ 415              		.fpu fpv4-sp-d16
+ 417              	FSSys_FileWr:
+ 418              	.LVL26:
+ 419              	.LFB13:
+ 615:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 616:rtos/uC-FS/Source/fs_sys.c **** 
+ 617:rtos/uC-FS/Source/fs_sys.c **** 
+ 618:rtos/uC-FS/Source/fs_sys.c **** /*
+ 619:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 620:rtos/uC-FS/Source/fs_sys.c **** *                                           FSSys_FileWr()
+ 621:rtos/uC-FS/Source/fs_sys.c **** *
+ 622:rtos/uC-FS/Source/fs_sys.c **** * Description : Write to a file.
+ 623:rtos/uC-FS/Source/fs_sys.c **** *
+ 624:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_file      Pointer to a file.
+ 625:rtos/uC-FS/Source/fs_sys.c **** *               ------      Argument validated by caller.
+ 626:rtos/uC-FS/Source/fs_sys.c **** *
+ 627:rtos/uC-FS/Source/fs_sys.c **** *               p_src       Pointer to source buffer.
+ 628:rtos/uC-FS/Source/fs_sys.c **** *               -----       Argument validated by caller.
+ 629:rtos/uC-FS/Source/fs_sys.c **** *
+ 630:rtos/uC-FS/Source/fs_sys.c **** *               size        Number of octets to write.
+ 631:rtos/uC-FS/Source/fs_sys.c **** *
+ 632:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 633:rtos/uC-FS/Source/fs_sys.c **** *
+ 634:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NONE             File written successful.
+ARM GAS  /tmp/cc0M7npT.s 			page 19
+
+
+ 635:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV              Device access error.
+ 636:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV_FULL         Device is full (no space could be allocated
+ 637:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_CORRUPT    File system entry is corrupt.
+ 638:rtos/uC-FS/Source/fs_sys.c **** *
+ 639:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : Number of bytes read, if file read successful.
+ 640:rtos/uC-FS/Source/fs_sys.c **** *               0,                    otherwise.
+ 641:rtos/uC-FS/Source/fs_sys.c **** *
+ 642:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 643:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 644:rtos/uC-FS/Source/fs_sys.c **** */
+ 645:rtos/uC-FS/Source/fs_sys.c **** 
+ 646:rtos/uC-FS/Source/fs_sys.c **** #if (FS_CFG_RD_ONLY_EN == DEF_DISABLED)
+ 647:rtos/uC-FS/Source/fs_sys.c **** CPU_SIZE_T  FSSys_FileWr (FS_FILE     *p_file,
+ 648:rtos/uC-FS/Source/fs_sys.c ****                           void        *p_src,
+ 649:rtos/uC-FS/Source/fs_sys.c ****                           CPU_SIZE_T   size,
+ 650:rtos/uC-FS/Source/fs_sys.c ****                           FS_ERR      *p_err)
+ 651:rtos/uC-FS/Source/fs_sys.c **** {
+ 420              		.loc 1 651 1 is_stmt 1 view -0
+ 421              		.cfi_startproc
+ 422              		@ args = 0, pretend = 0, frame = 0
+ 423              		@ frame_needed = 0, uses_anonymous_args = 0
+ 424              		.loc 1 651 1 is_stmt 0 view .LVU57
+ 425 0000 08B5     		push	{r3, lr}
+ 426              	.LCFI15:
+ 427              		.cfi_def_cfa_offset 8
+ 428              		.cfi_offset 3, -8
+ 429              		.cfi_offset 14, -4
+ 652:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 653:rtos/uC-FS/Source/fs_sys.c ****     CPU_SIZE_T  size_wr;
+ 430              		.loc 1 653 5 is_stmt 1 view .LVU58
+ 654:rtos/uC-FS/Source/fs_sys.c **** 
+ 655:rtos/uC-FS/Source/fs_sys.c ****     size_wr = FS_FAT_FileWr(p_file, p_src, size, p_err);
+ 431              		.loc 1 655 5 view .LVU59
+ 432              		.loc 1 655 15 is_stmt 0 view .LVU60
+ 433 0002 FFF7FEFF 		bl	FS_FAT_FileWr
+ 434              	.LVL27:
+ 656:rtos/uC-FS/Source/fs_sys.c ****     return (size_wr);
+ 435              		.loc 1 656 5 is_stmt 1 view .LVU61
+ 657:rtos/uC-FS/Source/fs_sys.c **** #else
+ 658:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 659:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 660:rtos/uC-FS/Source/fs_sys.c **** }
+ 436              		.loc 1 660 1 is_stmt 0 view .LVU62
+ 437 0006 08BD     		pop	{r3, pc}
+ 438              		.cfi_endproc
+ 439              	.LFE13:
+ 441              		.section	.text.FSSys_DirClose,"ax",%progbits
+ 442              		.align	1
+ 443              		.global	FSSys_DirClose
+ 444              		.syntax unified
+ 445              		.thumb
+ 446              		.thumb_func
+ 447              		.fpu fpv4-sp-d16
+ 449              	FSSys_DirClose:
+ 450              	.LVL28:
+ 451              	.LFB14:
+ 661:rtos/uC-FS/Source/fs_sys.c **** #endif
+ARM GAS  /tmp/cc0M7npT.s 			page 20
+
+
+ 662:rtos/uC-FS/Source/fs_sys.c **** 
+ 663:rtos/uC-FS/Source/fs_sys.c **** 
+ 664:rtos/uC-FS/Source/fs_sys.c **** /*
+ 665:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 666:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 667:rtos/uC-FS/Source/fs_sys.c **** *                                         DIRECTORY FUNCTIONS
+ 668:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 669:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 670:rtos/uC-FS/Source/fs_sys.c **** */
+ 671:rtos/uC-FS/Source/fs_sys.c **** 
+ 672:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_DIR_MODULE_PRESENT
+ 673:rtos/uC-FS/Source/fs_sys.c **** /*
+ 674:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 675:rtos/uC-FS/Source/fs_sys.c **** *                                          FSSys_DirClose()
+ 676:rtos/uC-FS/Source/fs_sys.c **** *
+ 677:rtos/uC-FS/Source/fs_sys.c **** * Description : Close a directory.
+ 678:rtos/uC-FS/Source/fs_sys.c **** *
+ 679:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_dir       Pointer to a directory.
+ 680:rtos/uC-FS/Source/fs_sys.c **** *
+ 681:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 682:rtos/uC-FS/Source/fs_sys.c **** *
+ 683:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 684:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 685:rtos/uC-FS/Source/fs_sys.c **** */
+ 686:rtos/uC-FS/Source/fs_sys.c **** 
+ 687:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_DirClose (FS_DIR  *p_dir)
+ 688:rtos/uC-FS/Source/fs_sys.c **** {
+ 452              		.loc 1 688 1 is_stmt 1 view -0
+ 453              		.cfi_startproc
+ 454              		@ args = 0, pretend = 0, frame = 0
+ 455              		@ frame_needed = 0, uses_anonymous_args = 0
+ 456              		.loc 1 688 1 is_stmt 0 view .LVU64
+ 457 0000 08B5     		push	{r3, lr}
+ 458              	.LCFI16:
+ 459              		.cfi_def_cfa_offset 8
+ 460              		.cfi_offset 3, -8
+ 461              		.cfi_offset 14, -4
+ 689:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 690:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_DirClose(p_dir);
+ 462              		.loc 1 690 5 is_stmt 1 view .LVU65
+ 463 0002 FFF7FEFF 		bl	FS_FAT_DirClose
+ 464              	.LVL29:
+ 691:rtos/uC-FS/Source/fs_sys.c **** #else
+ 692:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 693:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 694:rtos/uC-FS/Source/fs_sys.c **** }
+ 465              		.loc 1 694 1 is_stmt 0 view .LVU66
+ 466 0006 08BD     		pop	{r3, pc}
+ 467              		.cfi_endproc
+ 468              	.LFE14:
+ 470              		.section	.text.FSSys_DirOpen,"ax",%progbits
+ 471              		.align	1
+ 472              		.global	FSSys_DirOpen
+ 473              		.syntax unified
+ 474              		.thumb
+ 475              		.thumb_func
+ 476              		.fpu fpv4-sp-d16
+ARM GAS  /tmp/cc0M7npT.s 			page 21
+
+
+ 478              	FSSys_DirOpen:
+ 479              	.LVL30:
+ 480              	.LFB15:
+ 695:rtos/uC-FS/Source/fs_sys.c **** 
+ 696:rtos/uC-FS/Source/fs_sys.c **** 
+ 697:rtos/uC-FS/Source/fs_sys.c **** /*
+ 698:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 699:rtos/uC-FS/Source/fs_sys.c **** *                                           FSSys_DirOpen()
+ 700:rtos/uC-FS/Source/fs_sys.c **** *
+ 701:rtos/uC-FS/Source/fs_sys.c **** * Description : Open a directory.
+ 702:rtos/uC-FS/Source/fs_sys.c **** *
+ 703:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_dir       Pointer to associated directory.
+ 704:rtos/uC-FS/Source/fs_sys.c **** *
+ 705:rtos/uC-FS/Source/fs_sys.c **** *               name_dir    Name of the directory.
+ 706:rtos/uC-FS/Source/fs_sys.c **** *
+ 707:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 708:rtos/uC-FS/Source/fs_sys.c **** *
+ 709:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_NONE                      Directory opened successfully.
+ 710:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_BUF_NONE_AVAIL            Buffer not available.
+ 711:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_DEV                       Device access error.
+ 712:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_NOT_DIR             File system entry NOT a direct
+ 713:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_NOT_FOUND           File system entry NOT found
+ 714:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_PARENT_NOT_FOUND    Entry parent NOT found.
+ 715:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_PARENT_NOT_DIR      Entry parent NOT a directory.
+ 716:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_NAME_INVALID              Invalid file name or path.
+ 717:rtos/uC-FS/Source/fs_sys.c **** *
+ 718:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 719:rtos/uC-FS/Source/fs_sys.c **** *
+ 720:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 721:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 722:rtos/uC-FS/Source/fs_sys.c **** */
+ 723:rtos/uC-FS/Source/fs_sys.c **** 
+ 724:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_DirOpen (FS_DIR    *p_dir,
+ 725:rtos/uC-FS/Source/fs_sys.c ****                      CPU_CHAR  *name_dir,
+ 726:rtos/uC-FS/Source/fs_sys.c ****                      FS_ERR    *p_err)
+ 727:rtos/uC-FS/Source/fs_sys.c **** {
+ 481              		.loc 1 727 1 is_stmt 1 view -0
+ 482              		.cfi_startproc
+ 483              		@ args = 0, pretend = 0, frame = 0
+ 484              		@ frame_needed = 0, uses_anonymous_args = 0
+ 485              		.loc 1 727 1 is_stmt 0 view .LVU68
+ 486 0000 08B5     		push	{r3, lr}
+ 487              	.LCFI17:
+ 488              		.cfi_def_cfa_offset 8
+ 489              		.cfi_offset 3, -8
+ 490              		.cfi_offset 14, -4
+ 728:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 729:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_DirOpen(p_dir, name_dir, p_err);
+ 491              		.loc 1 729 5 is_stmt 1 view .LVU69
+ 492 0002 FFF7FEFF 		bl	FS_FAT_DirOpen
+ 493              	.LVL31:
+ 730:rtos/uC-FS/Source/fs_sys.c **** #else
+ 731:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 732:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 733:rtos/uC-FS/Source/fs_sys.c **** }
+ 494              		.loc 1 733 1 is_stmt 0 view .LVU70
+ 495 0006 08BD     		pop	{r3, pc}
+ARM GAS  /tmp/cc0M7npT.s 			page 22
+
+
+ 496              		.cfi_endproc
+ 497              	.LFE15:
+ 499              		.section	.text.FSSys_DirRd,"ax",%progbits
+ 500              		.align	1
+ 501              		.global	FSSys_DirRd
+ 502              		.syntax unified
+ 503              		.thumb
+ 504              		.thumb_func
+ 505              		.fpu fpv4-sp-d16
+ 507              	FSSys_DirRd:
+ 508              	.LVL32:
+ 509              	.LFB16:
+ 734:rtos/uC-FS/Source/fs_sys.c **** 
+ 735:rtos/uC-FS/Source/fs_sys.c **** 
+ 736:rtos/uC-FS/Source/fs_sys.c **** /*
+ 737:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 738:rtos/uC-FS/Source/fs_sys.c **** *                                            FSSys_DirRd()
+ 739:rtos/uC-FS/Source/fs_sys.c **** *
+ 740:rtos/uC-FS/Source/fs_sys.c **** * Description : Read a directory entry from a directory.
+ 741:rtos/uC-FS/Source/fs_sys.c **** *
+ 742:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_dir           Pointer to a directory.
+ 743:rtos/uC-FS/Source/fs_sys.c **** *
+ 744:rtos/uC-FS/Source/fs_sys.c **** *               p_dir_entry     Pointer to a directory entry.
+ 745:rtos/uC-FS/Source/fs_sys.c **** *
+ 746:rtos/uC-FS/Source/fs_sys.c **** *               p_err           Pointer to variable that will receive the return error code from th
+ 747:rtos/uC-FS/Source/fs_sys.c **** *
+ 748:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_NONE              Directory entry read successfully.
+ 749:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_EOF               End of directory reached.
+ 750:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_DEV               Device access error.
+ 751:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_BUF_NONE_AVAIL    Buffer not available.
+ 752:rtos/uC-FS/Source/fs_sys.c **** *
+ 753:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 754:rtos/uC-FS/Source/fs_sys.c **** *
+ 755:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 756:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 757:rtos/uC-FS/Source/fs_sys.c **** */
+ 758:rtos/uC-FS/Source/fs_sys.c **** 
+ 759:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_DirRd (FS_DIR        *p_dir,
+ 760:rtos/uC-FS/Source/fs_sys.c ****                    FS_DIR_ENTRY  *p_dir_entry,
+ 761:rtos/uC-FS/Source/fs_sys.c ****                    FS_ERR        *p_err)
+ 762:rtos/uC-FS/Source/fs_sys.c **** {
+ 510              		.loc 1 762 1 is_stmt 1 view -0
+ 511              		.cfi_startproc
+ 512              		@ args = 0, pretend = 0, frame = 0
+ 513              		@ frame_needed = 0, uses_anonymous_args = 0
+ 514              		.loc 1 762 1 is_stmt 0 view .LVU72
+ 515 0000 08B5     		push	{r3, lr}
+ 516              	.LCFI18:
+ 517              		.cfi_def_cfa_offset 8
+ 518              		.cfi_offset 3, -8
+ 519              		.cfi_offset 14, -4
+ 763:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 764:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_DirRd(p_dir, p_dir_entry, p_err);
+ 520              		.loc 1 764 5 is_stmt 1 view .LVU73
+ 521 0002 FFF7FEFF 		bl	FS_FAT_DirRd
+ 522              	.LVL33:
+ 765:rtos/uC-FS/Source/fs_sys.c **** #else
+ARM GAS  /tmp/cc0M7npT.s 			page 23
+
+
+ 766:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 767:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 768:rtos/uC-FS/Source/fs_sys.c **** }
+ 523              		.loc 1 768 1 is_stmt 0 view .LVU74
+ 524 0006 08BD     		pop	{r3, pc}
+ 525              		.cfi_endproc
+ 526              	.LFE16:
+ 528              		.section	.text.FSSys_EntryAttribSet,"ax",%progbits
+ 529              		.align	1
+ 530              		.global	FSSys_EntryAttribSet
+ 531              		.syntax unified
+ 532              		.thumb
+ 533              		.thumb_func
+ 534              		.fpu fpv4-sp-d16
+ 536              	FSSys_EntryAttribSet:
+ 537              	.LVL34:
+ 538              	.LFB17:
+ 769:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 770:rtos/uC-FS/Source/fs_sys.c **** 
+ 771:rtos/uC-FS/Source/fs_sys.c **** 
+ 772:rtos/uC-FS/Source/fs_sys.c **** /*
+ 773:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 774:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 775:rtos/uC-FS/Source/fs_sys.c **** *                                           ENTRY FUNCTIONS
+ 776:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 777:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 778:rtos/uC-FS/Source/fs_sys.c **** */
+ 779:rtos/uC-FS/Source/fs_sys.c **** 
+ 780:rtos/uC-FS/Source/fs_sys.c **** /*
+ 781:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 782:rtos/uC-FS/Source/fs_sys.c **** *                                       FSSys_EntryAttribSet()
+ 783:rtos/uC-FS/Source/fs_sys.c **** *
+ 784:rtos/uC-FS/Source/fs_sys.c **** * Description : Set a file or directory's attributes.
+ 785:rtos/uC-FS/Source/fs_sys.c **** *
+ 786:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_vol       Pointer to volume on which the entry resides.
+ 787:rtos/uC-FS/Source/fs_sys.c **** *
+ 788:rtos/uC-FS/Source/fs_sys.c **** *               name_entry  Name of the entry.
+ 789:rtos/uC-FS/Source/fs_sys.c **** *
+ 790:rtos/uC-FS/Source/fs_sys.c **** *               attrib      Entry attributes to set (see Note #1).
+ 791:rtos/uC-FS/Source/fs_sys.c **** *
+ 792:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 793:rtos/uC-FS/Source/fs_sys.c **** *
+ 794:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NONE                      Entry attributes set successfully.
+ 795:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_BUF_NONE_AVAIL            Buffer not available.
+ 796:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV                       Device access error.
+ 797:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_NOT_FOUND           File system entry NOT found
+ 798:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_PARENT_NOT_FOUND    Entry parent NOT found.
+ 799:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_PARENT_NOT_DIR      Entry parent NOT a directory.
+ 800:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NAME_INVALID              Invalid file name or path.
+ 801:rtos/uC-FS/Source/fs_sys.c **** *
+ 802:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 803:rtos/uC-FS/Source/fs_sys.c **** *
+ 804:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 805:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 806:rtos/uC-FS/Source/fs_sys.c **** */
+ 807:rtos/uC-FS/Source/fs_sys.c **** 
+ 808:rtos/uC-FS/Source/fs_sys.c **** #if (FS_CFG_RD_ONLY_EN == DEF_DISABLED)
+ARM GAS  /tmp/cc0M7npT.s 			page 24
+
+
+ 809:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_EntryAttribSet (FS_VOL    *p_vol,
+ 810:rtos/uC-FS/Source/fs_sys.c ****                             CPU_CHAR  *name_entry,
+ 811:rtos/uC-FS/Source/fs_sys.c ****                             FS_FLAGS   attrib,
+ 812:rtos/uC-FS/Source/fs_sys.c ****                             FS_ERR    *p_err)
+ 813:rtos/uC-FS/Source/fs_sys.c **** {
+ 539              		.loc 1 813 1 is_stmt 1 view -0
+ 540              		.cfi_startproc
+ 541              		@ args = 0, pretend = 0, frame = 0
+ 542              		@ frame_needed = 0, uses_anonymous_args = 0
+ 543              		.loc 1 813 1 is_stmt 0 view .LVU76
+ 544 0000 08B5     		push	{r3, lr}
+ 545              	.LCFI19:
+ 546              		.cfi_def_cfa_offset 8
+ 547              		.cfi_offset 3, -8
+ 548              		.cfi_offset 14, -4
+ 814:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 815:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_EntryAttribSet(p_vol, name_entry, attrib, p_err);
+ 549              		.loc 1 815 5 is_stmt 1 view .LVU77
+ 550 0002 FFF7FEFF 		bl	FS_FAT_EntryAttribSet
+ 551              	.LVL35:
+ 816:rtos/uC-FS/Source/fs_sys.c **** #else
+ 817:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 818:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 819:rtos/uC-FS/Source/fs_sys.c **** }
+ 552              		.loc 1 819 1 is_stmt 0 view .LVU78
+ 553 0006 08BD     		pop	{r3, pc}
+ 554              		.cfi_endproc
+ 555              	.LFE17:
+ 557              		.section	.text.FSSys_EntryCreate,"ax",%progbits
+ 558              		.align	1
+ 559              		.global	FSSys_EntryCreate
+ 560              		.syntax unified
+ 561              		.thumb
+ 562              		.thumb_func
+ 563              		.fpu fpv4-sp-d16
+ 565              	FSSys_EntryCreate:
+ 566              	.LVL36:
+ 567              	.LFB18:
+ 820:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 821:rtos/uC-FS/Source/fs_sys.c **** 
+ 822:rtos/uC-FS/Source/fs_sys.c **** 
+ 823:rtos/uC-FS/Source/fs_sys.c **** /*
+ 824:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 825:rtos/uC-FS/Source/fs_sys.c **** *                                         FSSys_EntryCreate()
+ 826:rtos/uC-FS/Source/fs_sys.c **** *
+ 827:rtos/uC-FS/Source/fs_sys.c **** * Description : Create an entry.
+ 828:rtos/uC-FS/Source/fs_sys.c **** *
+ 829:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_vol       Pointer to volume on which entry resides.
+ 830:rtos/uC-FS/Source/fs_sys.c **** *
+ 831:rtos/uC-FS/Source/fs_sys.c **** *               name_entry  Name of the entry.
+ 832:rtos/uC-FS/Source/fs_sys.c **** *
+ 833:rtos/uC-FS/Source/fs_sys.c **** *               entry_type  Indicates whether the new entry shall be a directory or a file :
+ 834:rtos/uC-FS/Source/fs_sys.c **** *
+ 835:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ENTRY_TYPE_DIR,  if the entry shall be a directory.
+ 836:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ENTRY_TYPE_FILE, if the entry shall be a file.
+ 837:rtos/uC-FS/Source/fs_sys.c **** *
+ 838:rtos/uC-FS/Source/fs_sys.c **** *               excl        Indicates whether creation of new entry should be exclusive :
+ARM GAS  /tmp/cc0M7npT.s 			page 25
+
+
+ 839:rtos/uC-FS/Source/fs_sys.c **** *
+ 840:rtos/uC-FS/Source/fs_sys.c **** *                               DEF_YES, if the entry will be created ONLY if 'name_entry' does not
+ 841:rtos/uC-FS/Source/fs_sys.c **** *                               DEF_NO,  if the entry will be created even if 'name_entry' does    
+ 842:rtos/uC-FS/Source/fs_sys.c **** *
+ 843:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 844:rtos/uC-FS/Source/fs_sys.c **** *
+ 845:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NONE                      Entry created successfully.
+ 846:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_BUF_NONE_AVAIL            Buffer not available.
+ 847:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV                       Device access error.
+ 848:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV_FULL                  Device is full (space could not be
+ 849:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DIR_FULL                  Directory is full (space could not
+ 850:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_CORRUPT             File system entry is corrupt.
+ 851:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_EXISTS              File system entry exists.
+ 852:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_NOT_DIR             File system entry NOT a directory.
+ 853:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_NOT_EMPTY           File system entry NOT empty.
+ 854:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_NOT_FILE            File system entry NOT a file.
+ 855:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_PARENT_NOT_FOUND    Entry parent NOT found.
+ 856:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_PARENT_NOT_DIR      Entry parent NOT a directory.
+ 857:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_RD_ONLY             File system entry marked read-only
+ 858:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NAME_INVALID              Invalid file name or path.
+ 859:rtos/uC-FS/Source/fs_sys.c **** *
+ 860:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 861:rtos/uC-FS/Source/fs_sys.c **** *
+ 862:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 863:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 864:rtos/uC-FS/Source/fs_sys.c **** */
+ 865:rtos/uC-FS/Source/fs_sys.c **** 
+ 866:rtos/uC-FS/Source/fs_sys.c **** #if (FS_CFG_RD_ONLY_EN == DEF_DISABLED)
+ 867:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_EntryCreate (FS_VOL       *p_vol,
+ 868:rtos/uC-FS/Source/fs_sys.c ****                          CPU_CHAR     *name_entry,
+ 869:rtos/uC-FS/Source/fs_sys.c ****                          FS_FLAGS      entry_type,
+ 870:rtos/uC-FS/Source/fs_sys.c ****                          CPU_BOOLEAN   excl,
+ 871:rtos/uC-FS/Source/fs_sys.c ****                          FS_ERR       *p_err)
+ 872:rtos/uC-FS/Source/fs_sys.c **** {
+ 568              		.loc 1 872 1 is_stmt 1 view -0
+ 569              		.cfi_startproc
+ 570              		@ args = 4, pretend = 0, frame = 0
+ 571              		@ frame_needed = 0, uses_anonymous_args = 0
+ 572              		.loc 1 872 1 is_stmt 0 view .LVU80
+ 573 0000 10B5     		push	{r4, lr}
+ 574              	.LCFI20:
+ 575              		.cfi_def_cfa_offset 8
+ 576              		.cfi_offset 4, -8
+ 577              		.cfi_offset 14, -4
+ 578 0002 82B0     		sub	sp, sp, #8
+ 579              	.LCFI21:
+ 580              		.cfi_def_cfa_offset 16
+ 873:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 874:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_EntryCreate(p_vol, name_entry, entry_type, excl, p_err);
+ 581              		.loc 1 874 5 is_stmt 1 view .LVU81
+ 582 0004 049C     		ldr	r4, [sp, #16]
+ 583 0006 0094     		str	r4, [sp]
+ 584 0008 FFF7FEFF 		bl	FS_FAT_EntryCreate
+ 585              	.LVL37:
+ 875:rtos/uC-FS/Source/fs_sys.c **** #else
+ 876:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 877:rtos/uC-FS/Source/fs_sys.c **** #endif
+ARM GAS  /tmp/cc0M7npT.s 			page 26
+
+
+ 878:rtos/uC-FS/Source/fs_sys.c **** }
+ 586              		.loc 1 878 1 is_stmt 0 view .LVU82
+ 587 000c 02B0     		add	sp, sp, #8
+ 588              	.LCFI22:
+ 589              		.cfi_def_cfa_offset 8
+ 590              		@ sp needed
+ 591 000e 10BD     		pop	{r4, pc}
+ 592              		.loc 1 878 1 view .LVU83
+ 593              		.cfi_endproc
+ 594              	.LFE18:
+ 596              		.section	.text.FSSys_EntryDel,"ax",%progbits
+ 597              		.align	1
+ 598              		.global	FSSys_EntryDel
+ 599              		.syntax unified
+ 600              		.thumb
+ 601              		.thumb_func
+ 602              		.fpu fpv4-sp-d16
+ 604              	FSSys_EntryDel:
+ 605              	.LVL38:
+ 606              	.LFB19:
+ 879:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 880:rtos/uC-FS/Source/fs_sys.c **** 
+ 881:rtos/uC-FS/Source/fs_sys.c **** /*
+ 882:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 883:rtos/uC-FS/Source/fs_sys.c **** *                                          FSSys_EntryDel()
+ 884:rtos/uC-FS/Source/fs_sys.c **** *
+ 885:rtos/uC-FS/Source/fs_sys.c **** * Description : Delete a file or directory.
+ 886:rtos/uC-FS/Source/fs_sys.c **** *
+ 887:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_vol       Pointer to volume on which the entry resides.
+ 888:rtos/uC-FS/Source/fs_sys.c **** *
+ 889:rtos/uC-FS/Source/fs_sys.c **** *               name_entry  Name of the entry.
+ 890:rtos/uC-FS/Source/fs_sys.c **** *
+ 891:rtos/uC-FS/Source/fs_sys.c **** *               entry_type  Indicates whether the new entry can be a directory / a file :
+ 892:rtos/uC-FS/Source/fs_sys.c **** *
+ 893:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ENTRY_TYPE_DIR,  if the entry can be a directory.
+ 894:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ENTRY_TYPE_FILE, if the entry can be a file.
+ 895:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ENTRY_TYPE_ANY,  if the entry can be any type
+ 896:rtos/uC-FS/Source/fs_sys.c **** *
+ 897:rtos/uC-FS/Source/fs_sys.c **** *                           These values can be OR'd to allow multiple types.
+ 898:rtos/uC-FS/Source/fs_sys.c **** *
+ 899:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 900:rtos/uC-FS/Source/fs_sys.c **** *
+ 901:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NONE                      Entry deleted successfully.
+ 902:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_BUF_NONE_AVAIL            Buffer not available.
+ 903:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV                       Device access error.
+ 904:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_NOT_DIR             File system entry NOT a directory.
+ 905:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_NOT_EMPTY           File system entry NOT empty.
+ 906:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_PARENT_NOT_FOUND    Entry parent NOT found.
+ 907:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_PARENT_NOT_DIR      Entry parent NOT a directory.
+ 908:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_RD_ONLY             File system entry marked read-only
+ 909:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NAME_INVALID              Invalid file name or path.
+ 910:rtos/uC-FS/Source/fs_sys.c **** *
+ 911:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 912:rtos/uC-FS/Source/fs_sys.c **** *
+ 913:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 914:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 915:rtos/uC-FS/Source/fs_sys.c **** */
+ARM GAS  /tmp/cc0M7npT.s 			page 27
+
+
+ 916:rtos/uC-FS/Source/fs_sys.c **** 
+ 917:rtos/uC-FS/Source/fs_sys.c **** #if (FS_CFG_RD_ONLY_EN == DEF_DISABLED)
+ 918:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_EntryDel (FS_VOL       *p_vol,
+ 919:rtos/uC-FS/Source/fs_sys.c ****                       CPU_CHAR     *name_entry,
+ 920:rtos/uC-FS/Source/fs_sys.c ****                       FS_FLAGS      entry_type,
+ 921:rtos/uC-FS/Source/fs_sys.c ****                       FS_ERR       *p_err)
+ 922:rtos/uC-FS/Source/fs_sys.c **** {
+ 607              		.loc 1 922 1 is_stmt 1 view -0
+ 608              		.cfi_startproc
+ 609              		@ args = 0, pretend = 0, frame = 0
+ 610              		@ frame_needed = 0, uses_anonymous_args = 0
+ 611              		.loc 1 922 1 is_stmt 0 view .LVU85
+ 612 0000 08B5     		push	{r3, lr}
+ 613              	.LCFI23:
+ 614              		.cfi_def_cfa_offset 8
+ 615              		.cfi_offset 3, -8
+ 616              		.cfi_offset 14, -4
+ 923:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 924:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_EntryDel(p_vol, name_entry, entry_type, p_err);
+ 617              		.loc 1 924 5 is_stmt 1 view .LVU86
+ 618 0002 FFF7FEFF 		bl	FS_FAT_EntryDel
+ 619              	.LVL39:
+ 925:rtos/uC-FS/Source/fs_sys.c **** #else
+ 926:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 927:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 928:rtos/uC-FS/Source/fs_sys.c **** }
+ 620              		.loc 1 928 1 is_stmt 0 view .LVU87
+ 621 0006 08BD     		pop	{r3, pc}
+ 622              		.cfi_endproc
+ 623              	.LFE19:
+ 625              		.section	.text.FSSys_EntryQuery,"ax",%progbits
+ 626              		.align	1
+ 627              		.global	FSSys_EntryQuery
+ 628              		.syntax unified
+ 629              		.thumb
+ 630              		.thumb_func
+ 631              		.fpu fpv4-sp-d16
+ 633              	FSSys_EntryQuery:
+ 634              	.LVL40:
+ 635              	.LFB20:
+ 929:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 930:rtos/uC-FS/Source/fs_sys.c **** 
+ 931:rtos/uC-FS/Source/fs_sys.c **** 
+ 932:rtos/uC-FS/Source/fs_sys.c **** /*
+ 933:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 934:rtos/uC-FS/Source/fs_sys.c **** *                                         FSSys_EntryQuery()
+ 935:rtos/uC-FS/Source/fs_sys.c **** *
+ 936:rtos/uC-FS/Source/fs_sys.c **** * Description : Get information about a file or directory.
+ 937:rtos/uC-FS/Source/fs_sys.c **** *
+ 938:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_vol       Pointer to volume on which the entry resides.
+ 939:rtos/uC-FS/Source/fs_sys.c **** *
+ 940:rtos/uC-FS/Source/fs_sys.c **** *               name_entry  Name of the entry.
+ 941:rtos/uC-FS/Source/fs_sys.c **** *
+ 942:rtos/uC-FS/Source/fs_sys.c **** *               p_info      Pointer to structure that will receive the entry information.
+ 943:rtos/uC-FS/Source/fs_sys.c **** *
+ 944:rtos/uC-FS/Source/fs_sys.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 945:rtos/uC-FS/Source/fs_sys.c **** *
+ARM GAS  /tmp/cc0M7npT.s 			page 28
+
+
+ 946:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NONE                      Entry information gotten successfu
+ 947:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_BUF_NONE_AVAIL            Buffer not available.
+ 948:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_DEV                       Device access error.
+ 949:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_NOT_FOUND           File system entry NOT found
+ 950:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_PARENT_NOT_FOUND    Entry parent NOT found.
+ 951:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_ENTRY_PARENT_NOT_DIR      Entry parent NOT a directory.
+ 952:rtos/uC-FS/Source/fs_sys.c **** *                               FS_ERR_NAME_INVALID              Invalid file name or path.
+ 953:rtos/uC-FS/Source/fs_sys.c **** *
+ 954:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+ 955:rtos/uC-FS/Source/fs_sys.c **** *
+ 956:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+ 957:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 958:rtos/uC-FS/Source/fs_sys.c **** */
+ 959:rtos/uC-FS/Source/fs_sys.c **** 
+ 960:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_EntryQuery (FS_VOL         *p_vol,
+ 961:rtos/uC-FS/Source/fs_sys.c ****                         CPU_CHAR       *name_entry,
+ 962:rtos/uC-FS/Source/fs_sys.c ****                         FS_ENTRY_INFO  *p_info,
+ 963:rtos/uC-FS/Source/fs_sys.c ****                         FS_ERR         *p_err)
+ 964:rtos/uC-FS/Source/fs_sys.c **** {
+ 636              		.loc 1 964 1 is_stmt 1 view -0
+ 637              		.cfi_startproc
+ 638              		@ args = 0, pretend = 0, frame = 0
+ 639              		@ frame_needed = 0, uses_anonymous_args = 0
+ 640              		.loc 1 964 1 is_stmt 0 view .LVU89
+ 641 0000 08B5     		push	{r3, lr}
+ 642              	.LCFI24:
+ 643              		.cfi_def_cfa_offset 8
+ 644              		.cfi_offset 3, -8
+ 645              		.cfi_offset 14, -4
+ 965:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+ 966:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_EntryQuery(p_vol, name_entry, p_info, p_err);
+ 646              		.loc 1 966 5 is_stmt 1 view .LVU90
+ 647 0002 FFF7FEFF 		bl	FS_FAT_EntryQuery
+ 648              	.LVL41:
+ 967:rtos/uC-FS/Source/fs_sys.c **** #else
+ 968:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+ 969:rtos/uC-FS/Source/fs_sys.c **** #endif
+ 970:rtos/uC-FS/Source/fs_sys.c **** }
+ 649              		.loc 1 970 1 is_stmt 0 view .LVU91
+ 650 0006 08BD     		pop	{r3, pc}
+ 651              		.cfi_endproc
+ 652              	.LFE20:
+ 654              		.section	.text.FSSys_EntryRename,"ax",%progbits
+ 655              		.align	1
+ 656              		.global	FSSys_EntryRename
+ 657              		.syntax unified
+ 658              		.thumb
+ 659              		.thumb_func
+ 660              		.fpu fpv4-sp-d16
+ 662              	FSSys_EntryRename:
+ 663              	.LVL42:
+ 664              	.LFB21:
+ 971:rtos/uC-FS/Source/fs_sys.c **** 
+ 972:rtos/uC-FS/Source/fs_sys.c **** 
+ 973:rtos/uC-FS/Source/fs_sys.c **** /*
+ 974:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+ 975:rtos/uC-FS/Source/fs_sys.c **** *                                         FSSys_EntryRename()
+ARM GAS  /tmp/cc0M7npT.s 			page 29
+
+
+ 976:rtos/uC-FS/Source/fs_sys.c **** *
+ 977:rtos/uC-FS/Source/fs_sys.c **** * Description : Rename a file or directory.
+ 978:rtos/uC-FS/Source/fs_sys.c **** *
+ 979:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_vol           Pointer to volume on which the entry resides.
+ 980:rtos/uC-FS/Source/fs_sys.c **** *
+ 981:rtos/uC-FS/Source/fs_sys.c **** *               name_entry_old  Old path of the entry.
+ 982:rtos/uC-FS/Source/fs_sys.c **** *
+ 983:rtos/uC-FS/Source/fs_sys.c **** *               name_entry_new  New path of the entry.
+ 984:rtos/uC-FS/Source/fs_sys.c **** *
+ 985:rtos/uC-FS/Source/fs_sys.c **** *               excl            Indicates whether creation of new entry should be exclusive:
+ 986:rtos/uC-FS/Source/fs_sys.c **** *
+ 987:rtos/uC-FS/Source/fs_sys.c **** *                                   DEF_YES, if the entry will be renamed ONLY if 'name_entry_new' 
+ 988:rtos/uC-FS/Source/fs_sys.c **** *                                                not exist.
+ 989:rtos/uC-FS/Source/fs_sys.c **** *                                   DEF_NO,  if the entry will be renamed even if 'name_entry_new' 
+ 990:rtos/uC-FS/Source/fs_sys.c **** *                                                exist.
+ 991:rtos/uC-FS/Source/fs_sys.c **** *
+ 992:rtos/uC-FS/Source/fs_sys.c **** *               p_err           Pointer to variable that will receive the return error code from th
+ 993:rtos/uC-FS/Source/fs_sys.c **** *
+ 994:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_NONE                      Entry renamed successfully.
+ 995:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_BUF_NONE_AVAIL            Buffer not available.
+ 996:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_DEV                       Device access error.
+ 997:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_DEV_FULL                  Device is full (space could no
+ 998:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_DIR_FULL                  Directory is full (space could
+ 999:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRIES_TYPE_DIFF         Paths do not both specify file
+1000:rtos/uC-FS/Source/fs_sys.c **** *                                                                        OR directories.
+1001:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_CORRUPT             File system entry is corrupt.
+1002:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_EXISTS              File system entry exists.
+1003:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_NOT_FOUND           File system entry NOT found
+1004:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_NOT_EMPTY           File system entry NOT empty.
+1005:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_PARENT_NOT_FOUND    Entry parent NOT found.
+1006:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_PARENT_NOT_DIR      Entry parent NOT a directory.
+1007:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_RD_ONLY             File system entry marked read-
+1008:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_NAME_INVALID              Invalid file name or path.
+1009:rtos/uC-FS/Source/fs_sys.c **** *
+1010:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+1011:rtos/uC-FS/Source/fs_sys.c **** *
+1012:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+1013:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+1014:rtos/uC-FS/Source/fs_sys.c **** */
+1015:rtos/uC-FS/Source/fs_sys.c **** 
+1016:rtos/uC-FS/Source/fs_sys.c **** #if (FS_CFG_RD_ONLY_EN == DEF_DISABLED)
+1017:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_EntryRename (FS_VOL       *p_vol,
+1018:rtos/uC-FS/Source/fs_sys.c ****                          CPU_CHAR     *name_entry_old,
+1019:rtos/uC-FS/Source/fs_sys.c ****                          CPU_CHAR     *name_entry_new,
+1020:rtos/uC-FS/Source/fs_sys.c ****                          CPU_BOOLEAN   excl,
+1021:rtos/uC-FS/Source/fs_sys.c ****                          FS_ERR       *p_err)
+1022:rtos/uC-FS/Source/fs_sys.c **** {
+ 665              		.loc 1 1022 1 is_stmt 1 view -0
+ 666              		.cfi_startproc
+ 667              		@ args = 4, pretend = 0, frame = 0
+ 668              		@ frame_needed = 0, uses_anonymous_args = 0
+ 669              		.loc 1 1022 1 is_stmt 0 view .LVU93
+ 670 0000 10B5     		push	{r4, lr}
+ 671              	.LCFI25:
+ 672              		.cfi_def_cfa_offset 8
+ 673              		.cfi_offset 4, -8
+ 674              		.cfi_offset 14, -4
+ARM GAS  /tmp/cc0M7npT.s 			page 30
+
+
+ 675 0002 82B0     		sub	sp, sp, #8
+ 676              	.LCFI26:
+ 677              		.cfi_def_cfa_offset 16
+1023:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+1024:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_EntryRename(p_vol, name_entry_old, name_entry_new, excl, p_err);
+ 678              		.loc 1 1024 5 is_stmt 1 view .LVU94
+ 679 0004 049C     		ldr	r4, [sp, #16]
+ 680 0006 0094     		str	r4, [sp]
+ 681 0008 FFF7FEFF 		bl	FS_FAT_EntryRename
+ 682              	.LVL43:
+1025:rtos/uC-FS/Source/fs_sys.c **** #else
+1026:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+1027:rtos/uC-FS/Source/fs_sys.c **** #endif
+1028:rtos/uC-FS/Source/fs_sys.c **** }
+ 683              		.loc 1 1028 1 is_stmt 0 view .LVU95
+ 684 000c 02B0     		add	sp, sp, #8
+ 685              	.LCFI27:
+ 686              		.cfi_def_cfa_offset 8
+ 687              		@ sp needed
+ 688 000e 10BD     		pop	{r4, pc}
+ 689              		.loc 1 1028 1 view .LVU96
+ 690              		.cfi_endproc
+ 691              	.LFE21:
+ 693              		.section	.text.FSSys_EntryTimeSet,"ax",%progbits
+ 694              		.align	1
+ 695              		.global	FSSys_EntryTimeSet
+ 696              		.syntax unified
+ 697              		.thumb
+ 698              		.thumb_func
+ 699              		.fpu fpv4-sp-d16
+ 701              	FSSys_EntryTimeSet:
+ 702              	.LVL44:
+ 703              	.LFB22:
+1029:rtos/uC-FS/Source/fs_sys.c **** #endif
+1030:rtos/uC-FS/Source/fs_sys.c **** 
+1031:rtos/uC-FS/Source/fs_sys.c **** 
+1032:rtos/uC-FS/Source/fs_sys.c **** /*
+1033:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+1034:rtos/uC-FS/Source/fs_sys.c **** *                                        FSSys_EntryTimeSet()
+1035:rtos/uC-FS/Source/fs_sys.c **** *
+1036:rtos/uC-FS/Source/fs_sys.c **** * Description : Set a file or directory's date/time.
+1037:rtos/uC-FS/Source/fs_sys.c **** *
+1038:rtos/uC-FS/Source/fs_sys.c **** * Argument(s) : p_vol           Pointer to volume on which the entry resides.
+1039:rtos/uC-FS/Source/fs_sys.c **** *
+1040:rtos/uC-FS/Source/fs_sys.c **** *               name_entry      Name of the entry.
+1041:rtos/uC-FS/Source/fs_sys.c **** *
+1042:rtos/uC-FS/Source/fs_sys.c **** *               p_time          Pointer to date/time.
+1043:rtos/uC-FS/Source/fs_sys.c **** *
+1044:rtos/uC-FS/Source/fs_sys.c **** *               time_type       Flag to indicate which Date/Time should be set
+1045:rtos/uC-FS/Source/fs_sys.c **** *
+1046:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_DATE_TIME_CREATE
+1047:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_DATE_TIME_MODIFY
+1048:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_DATE_TIME_ACCESS
+1049:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_DATE_TIME_ALL
+1050:rtos/uC-FS/Source/fs_sys.c **** *
+1051:rtos/uC-FS/Source/fs_sys.c **** *               p_err           Pointer to variable that will receive the return error code from th
+1052:rtos/uC-FS/Source/fs_sys.c **** *
+ARM GAS  /tmp/cc0M7npT.s 			page 31
+
+
+1053:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_NONE                         Entry date/time set success
+1054:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_BUF_NONE_AVAIL               Buffer not available.
+1055:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_DEV                          Device access error.
+1056:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_NOT_FOUND              File system entry NOT found
+1057:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_PARENT_NOT_FOUND       Entry parent NOT found.
+1058:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_ENTRY_PARENT_NOT_DIR         Entry parent NOT a director
+1059:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_NAME_INVALID                 Invalid file name or path.
+1060:rtos/uC-FS/Source/fs_sys.c **** *                                   FS_ERR_FILE_INVALID_DATE_TIME_TYPE  Which date/time flag is spe
+1061:rtos/uC-FS/Source/fs_sys.c **** *
+1062:rtos/uC-FS/Source/fs_sys.c **** * Return(s)   : none.
+1063:rtos/uC-FS/Source/fs_sys.c **** *
+1064:rtos/uC-FS/Source/fs_sys.c **** * Note(s)     : none.
+1065:rtos/uC-FS/Source/fs_sys.c **** ***************************************************************************************************
+1066:rtos/uC-FS/Source/fs_sys.c **** */
+1067:rtos/uC-FS/Source/fs_sys.c **** 
+1068:rtos/uC-FS/Source/fs_sys.c **** #if (FS_CFG_RD_ONLY_EN == DEF_DISABLED)
+1069:rtos/uC-FS/Source/fs_sys.c **** void  FSSys_EntryTimeSet (FS_VOL        *p_vol,
+1070:rtos/uC-FS/Source/fs_sys.c ****                           CPU_CHAR      *name_entry,
+1071:rtos/uC-FS/Source/fs_sys.c ****                           CLK_DATE_TIME *p_time,
+1072:rtos/uC-FS/Source/fs_sys.c ****                           CPU_INT08U     time_type,
+1073:rtos/uC-FS/Source/fs_sys.c ****                           FS_ERR        *p_err)
+1074:rtos/uC-FS/Source/fs_sys.c **** {
+ 704              		.loc 1 1074 1 is_stmt 1 view -0
+ 705              		.cfi_startproc
+ 706              		@ args = 4, pretend = 0, frame = 0
+ 707              		@ frame_needed = 0, uses_anonymous_args = 0
+ 708              		.loc 1 1074 1 is_stmt 0 view .LVU98
+ 709 0000 10B5     		push	{r4, lr}
+ 710              	.LCFI28:
+ 711              		.cfi_def_cfa_offset 8
+ 712              		.cfi_offset 4, -8
+ 713              		.cfi_offset 14, -4
+ 714 0002 82B0     		sub	sp, sp, #8
+ 715              	.LCFI29:
+ 716              		.cfi_def_cfa_offset 16
+1075:rtos/uC-FS/Source/fs_sys.c **** #ifdef FS_FAT_MODULE_PRESENT
+1076:rtos/uC-FS/Source/fs_sys.c ****     FS_FAT_EntryTimeSet(p_vol, name_entry, p_time, time_type, p_err);
+ 717              		.loc 1 1076 5 is_stmt 1 view .LVU99
+ 718 0004 049C     		ldr	r4, [sp, #16]
+ 719 0006 0094     		str	r4, [sp]
+ 720 0008 FFF7FEFF 		bl	FS_FAT_EntryTimeSet
+ 721              	.LVL45:
+1077:rtos/uC-FS/Source/fs_sys.c **** #else
+1078:rtos/uC-FS/Source/fs_sys.c **** #error  "NO SYS DRIVER PRESENT"                                 /* See 'fs_sys.c  Notes #1'.       
+1079:rtos/uC-FS/Source/fs_sys.c **** #endif
+1080:rtos/uC-FS/Source/fs_sys.c **** }
+ 722              		.loc 1 1080 1 is_stmt 0 view .LVU100
+ 723 000c 02B0     		add	sp, sp, #8
+ 724              	.LCFI30:
+ 725              		.cfi_def_cfa_offset 8
+ 726              		@ sp needed
+ 727 000e 10BD     		pop	{r4, pc}
+ 728              		.loc 1 1080 1 view .LVU101
+ 729              		.cfi_endproc
+ 730              	.LFE22:
+ 732              		.text
+ 733              	.Letext0:
+ARM GAS  /tmp/cc0M7npT.s 			page 32
+
+
+ 734              		.file 2 "rtos/uC-CPU/ARM-Cortex-M/ARMv7-M/GNU/cpu.h"
+ 735              		.file 3 "rtos/uC-Clk/Source/clk.h"
+ 736              		.file 4 "rtos/uC-LIB/lib_mem.h"
+ 737              		.file 5 "rtos/uC-FS/Source/fs_type.h"
+ 738              		.file 6 "rtos/uC-FS/Source/fs_dir.h"
+ 739              		.file 7 "rtos/uC-FS/Source/fs_entry.h"
+ 740              		.file 8 "rtos/uC-FS/Source/fs_file.h"
+ 741              		.file 9 "rtos/uC-FS/Source/fs_sys.h"
+ 742              		.file 10 "rtos/uC-FS/Source/fs_err.h"
+ 743              		.file 11 "rtos/uC-FS/Source/fs_ctr.h"
+ 744              		.file 12 "rtos/uC-FS/Source/../FAT/fs_fat_entry.h"
+ 745              		.file 13 "rtos/uC-FS/Source/../FAT/fs_fat_dir.h"
+ 746              		.file 14 "rtos/uC-FS/Source/../FAT/fs_fat_file.h"
+ 747              		.file 15 "rtos/uC-FS/Source/../FAT/fs_fat.h"
+ARM GAS  /tmp/cc0M7npT.s 			page 33
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 fs_sys.c
+     /tmp/cc0M7npT.s:18     .text.FSSys_ModuleInit:0000000000000000 $t
+     /tmp/cc0M7npT.s:26     .text.FSSys_ModuleInit:0000000000000000 FSSys_ModuleInit
+     /tmp/cc0M7npT.s:49     .text.FSSys_VolClose:0000000000000000 $t
+     /tmp/cc0M7npT.s:56     .text.FSSys_VolClose:0000000000000000 FSSys_VolClose
+     /tmp/cc0M7npT.s:78     .text.FSSys_VolFmt:0000000000000000 $t
+     /tmp/cc0M7npT.s:85     .text.FSSys_VolFmt:0000000000000000 FSSys_VolFmt
+     /tmp/cc0M7npT.s:117    .text.FSSys_VolLabelGet:0000000000000000 $t
+     /tmp/cc0M7npT.s:124    .text.FSSys_VolLabelGet:0000000000000000 FSSys_VolLabelGet
+     /tmp/cc0M7npT.s:146    .text.FSSys_VolLabelSet:0000000000000000 $t
+     /tmp/cc0M7npT.s:153    .text.FSSys_VolLabelSet:0000000000000000 FSSys_VolLabelSet
+     /tmp/cc0M7npT.s:175    .text.FSSys_VolOpen:0000000000000000 $t
+     /tmp/cc0M7npT.s:182    .text.FSSys_VolOpen:0000000000000000 FSSys_VolOpen
+     /tmp/cc0M7npT.s:204    .text.FSSys_VolQuery:0000000000000000 $t
+     /tmp/cc0M7npT.s:211    .text.FSSys_VolQuery:0000000000000000 FSSys_VolQuery
+     /tmp/cc0M7npT.s:233    .text.FSSys_FileClose:0000000000000000 $t
+     /tmp/cc0M7npT.s:240    .text.FSSys_FileClose:0000000000000000 FSSys_FileClose
+     /tmp/cc0M7npT.s:262    .text.FSSys_FileOpen:0000000000000000 $t
+     /tmp/cc0M7npT.s:269    .text.FSSys_FileOpen:0000000000000000 FSSys_FileOpen
+     /tmp/cc0M7npT.s:291    .text.FSSys_FilePosSet:0000000000000000 $t
+     /tmp/cc0M7npT.s:298    .text.FSSys_FilePosSet:0000000000000000 FSSys_FilePosSet
+     /tmp/cc0M7npT.s:320    .text.FSSys_FileQuery:0000000000000000 $t
+     /tmp/cc0M7npT.s:327    .text.FSSys_FileQuery:0000000000000000 FSSys_FileQuery
+     /tmp/cc0M7npT.s:349    .text.FSSys_FileRd:0000000000000000 $t
+     /tmp/cc0M7npT.s:356    .text.FSSys_FileRd:0000000000000000 FSSys_FileRd
+     /tmp/cc0M7npT.s:381    .text.FSSys_FileTruncate:0000000000000000 $t
+     /tmp/cc0M7npT.s:388    .text.FSSys_FileTruncate:0000000000000000 FSSys_FileTruncate
+     /tmp/cc0M7npT.s:410    .text.FSSys_FileWr:0000000000000000 $t
+     /tmp/cc0M7npT.s:417    .text.FSSys_FileWr:0000000000000000 FSSys_FileWr
+     /tmp/cc0M7npT.s:442    .text.FSSys_DirClose:0000000000000000 $t
+     /tmp/cc0M7npT.s:449    .text.FSSys_DirClose:0000000000000000 FSSys_DirClose
+     /tmp/cc0M7npT.s:471    .text.FSSys_DirOpen:0000000000000000 $t
+     /tmp/cc0M7npT.s:478    .text.FSSys_DirOpen:0000000000000000 FSSys_DirOpen
+     /tmp/cc0M7npT.s:500    .text.FSSys_DirRd:0000000000000000 $t
+     /tmp/cc0M7npT.s:507    .text.FSSys_DirRd:0000000000000000 FSSys_DirRd
+     /tmp/cc0M7npT.s:529    .text.FSSys_EntryAttribSet:0000000000000000 $t
+     /tmp/cc0M7npT.s:536    .text.FSSys_EntryAttribSet:0000000000000000 FSSys_EntryAttribSet
+     /tmp/cc0M7npT.s:558    .text.FSSys_EntryCreate:0000000000000000 $t
+     /tmp/cc0M7npT.s:565    .text.FSSys_EntryCreate:0000000000000000 FSSys_EntryCreate
+     /tmp/cc0M7npT.s:597    .text.FSSys_EntryDel:0000000000000000 $t
+     /tmp/cc0M7npT.s:604    .text.FSSys_EntryDel:0000000000000000 FSSys_EntryDel
+     /tmp/cc0M7npT.s:626    .text.FSSys_EntryQuery:0000000000000000 $t
+     /tmp/cc0M7npT.s:633    .text.FSSys_EntryQuery:0000000000000000 FSSys_EntryQuery
+     /tmp/cc0M7npT.s:655    .text.FSSys_EntryRename:0000000000000000 $t
+     /tmp/cc0M7npT.s:662    .text.FSSys_EntryRename:0000000000000000 FSSys_EntryRename
+     /tmp/cc0M7npT.s:694    .text.FSSys_EntryTimeSet:0000000000000000 $t
+     /tmp/cc0M7npT.s:701    .text.FSSys_EntryTimeSet:0000000000000000 FSSys_EntryTimeSet
+                           .group:0000000000000000 wm4.0.0f5aa60db9403f389c005f20ecce4286
+                           .group:0000000000000000 wm4.fs.h.42.4f6311a594ee5619f1ee7a9392eb7faa
+                           .group:0000000000000000 wm4.cpu_def.h.46.baa122a2898bdc40bb50d1f21ead1515
+                           .group:0000000000000000 wm4.cpu_cfg.h.45.38a6a562da8b04490c382a226238c57e
+                           .group:0000000000000000 wm4.cpu.h.171.3cb15ee3ccb812cbfdf76d1fbfb9eda0
+                           .group:0000000000000000 wm4.lib_def.h.66.6ab2a012067a8e1f4289db5765835062
+                           .group:0000000000000000 wm4.lib_ascii.h.132.fab7475cf7158ae9b59cf42e0e06afca
+                           .group:0000000000000000 wm4.fs_def.h.42.653ad677c23ef93c522ec84af681385d
+                           .group:0000000000000000 wm4.fs_cfg.h.116.da4f8e9d0b9040a97ef3bf26c61e90fd
+ARM GAS  /tmp/cc0M7npT.s 			page 34
+
+
+                           .group:0000000000000000 wm4.clk.h.99.39403db6a27321e53b261bbe20b56e1d
+                           .group:0000000000000000 wm4.cpu_core.h.51.bda0b8f45c33e87ce41267758624493c
+                           .group:0000000000000000 wm4.lib_str.h.60.32f6cabaf9bf142bd5051c414a220578
+                           .group:0000000000000000 wm4.lib_cfg.h.40.b2958733f73e73af70f675ca0f89303e
+                           .group:0000000000000000 wm4.lib_str.h.174.5879a17e9fe25aed81d2c99c1603a671
+                           .group:0000000000000000 wm4.clk_cfg.h.45.428f260ed0fbcfa16fc822c67c85dade
+                           .group:0000000000000000 wm4.clk.h.219.c24c7347fcc7691d3157fe73514cb366
+                           .group:0000000000000000 wm4.fs_cfg_fs.h.176.c85074fbe881bfa594608376a65f4dc2
+                           .group:0000000000000000 wm4.fs_type.h.42.0906d0337a2df5da9e27cec176b255f1
+                           .group:0000000000000000 wm4.lib_mem.h.65.5ae3d762676d2043783018a38f269058
+                           .group:0000000000000000 wm4.fs_type.h.139.acab71eb554f7e54c56a7894094211e6
+                           .group:0000000000000000 wm4.fs_err.h.42.d52bfed31dff3d1419c5cf09952dee67
+                           .group:0000000000000000 wm4.fs.h.97.1d629f0ba32b5622ab4e01a254bd98e8
+                           .group:0000000000000000 wm4.fs_file.h.42.f7d55bbd535c4e6a60fafdc6ebaa8edb
+                           .group:0000000000000000 wm4.fs_ctr.h.42.9d1398cac157503ac8af114819f7782b
+                           .group:0000000000000000 wm4.fs_file.h.84.fedb5cc95e0d5755b63f4511370393bc
+                           .group:0000000000000000 wm4.fs_entry.h.42.9d70c930b2952a9ef63a0a4e9d586c20
+                           .group:0000000000000000 wm4.fs_dir.h.83.d0300b5b24eed020443871730cac76e3
+                           .group:0000000000000000 wm4.fs_util.h.64.fe7812d6ca4c430dea2d2e705fd73c11
+                           .group:0000000000000000 wm4.fs_fat_type.h.44.5030ef39a150a8f4f55331616cd38bbd
+                           .group:0000000000000000 wm4.fs_fat.h.103.89adf2d396ea9a0dd44def3a42712dd1
+                           .group:0000000000000000 wm4.fs_fat_entry.h.46.7474ff090b0dacb3a454e67b7c6e951c
+                           .group:0000000000000000 wm4.fs_fat_file.h.46.57a3dc191e4dabebc97abce5b708f253
+
+UNDEFINED SYMBOLS
+FS_FAT_ModuleInit
+FS_FAT_VolClose
+FS_FAT_VolFmt
+FS_FAT_VolLabelGet
+FS_FAT_VolLabelSet
+FS_FAT_VolOpen
+FS_FAT_VolQuery
+FS_FAT_FileClose
+FS_FAT_FileOpen
+FS_FAT_FilePosSet
+FS_FAT_FileQuery
+FS_FAT_FileRd
+FS_FAT_FileTruncate
+FS_FAT_FileWr
+FS_FAT_DirClose
+FS_FAT_DirOpen
+FS_FAT_DirRd
+FS_FAT_EntryAttribSet
+FS_FAT_EntryCreate
+FS_FAT_EntryDel
+FS_FAT_EntryQuery
+FS_FAT_EntryRename
+FS_FAT_EntryTimeSet

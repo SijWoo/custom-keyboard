@@ -1,0 +1,735 @@
+ARM GAS  /tmp/ccl9N3rq.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fs_fat_fat32.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.FS_FAT_FAT32_ClusValRd,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	FS_FAT_FAT32_ClusValRd:
+  26              	.LVL0:
+  27              	.LFB1:
+  28              		.file 1 "rtos/uC-FS/FAT/fs_fat_fat32.c"
+   1:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+   2:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+   3:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                                uC/FS
+   4:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                      The Embedded File System
+   5:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+   6:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                         (c) Copyright 2008-2019; Silicon Laboratories Inc.,
+   7:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                400 W. Cesar Chavez, Austin, TX 78701
+   8:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+   9:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                   All rights reserved. Protected by international copyright laws.
+  10:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+  11:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                  Your use of this software is subject to your acceptance of the terms
+  12:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                  of a Silicon Labs Micrium software license, which can be obtained by
+  13:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                  contacting info@micrium.com. If you do not agree to the terms of this
+  14:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                  license, you may not use this software.
+  15:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+  16:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                  Please help us continue to provide the Embedded community with the finest
+  17:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                  software available. Your honesty is greatly appreciated.
+  18:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+  19:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                    You can find our product's documentation at: doc.micrium.com
+  20:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+  21:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                          For more information visit us at: www.micrium.com
+  22:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+  23:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+  24:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+  25:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+  26:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+  27:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+  28:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                     FILE SYSTEM FAT MANAGEMENT
+  29:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+  30:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                            FAT32 SUPPORT
+ARM GAS  /tmp/ccl9N3rq.s 			page 2
+
+
+  31:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+  32:rtos/uC-FS/FAT/fs_fat_fat32.c **** * Filename : fs_fat_fat32.c
+  33:rtos/uC-FS/FAT/fs_fat_fat32.c **** * Version  : v4.07.06
+  34:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+  35:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+  36:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+  37:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+  38:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+  39:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                               MODULE
+  40:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+  41:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+  42:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+  43:rtos/uC-FS/FAT/fs_fat_fat32.c **** #define  MICRIUM_SOURCE
+  44:rtos/uC-FS/FAT/fs_fat_fat32.c **** #define  FS_FAT_FAT32_MODULE
+  45:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+  46:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+  47:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+  48:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+  49:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                            INCLUDE FILES
+  50:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+  51:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+  52:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+  53:rtos/uC-FS/FAT/fs_fat_fat32.c **** #include  <lib_mem.h>
+  54:rtos/uC-FS/FAT/fs_fat_fat32.c **** #include  "../Source/fs.h"
+  55:rtos/uC-FS/FAT/fs_fat_fat32.c **** #include  "../Source/fs_buf.h"
+  56:rtos/uC-FS/FAT/fs_fat_fat32.c **** #include  "../Source/fs_sys.h"
+  57:rtos/uC-FS/FAT/fs_fat_fat32.c **** #include  "../Source/fs_vol.h"
+  58:rtos/uC-FS/FAT/fs_fat_fat32.c **** #include  "fs_fat.h"
+  59:rtos/uC-FS/FAT/fs_fat_fat32.c **** #include  "fs_fat_fat32.h"
+  60:rtos/uC-FS/FAT/fs_fat_fat32.c **** #include  "fs_fat_type.h"
+  61:rtos/uC-FS/FAT/fs_fat_fat32.c **** #include  "fs_fat_journal.h"
+  62:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+  63:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+  64:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+  65:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+  66:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                               MODULE
+  67:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+  68:rtos/uC-FS/FAT/fs_fat_fat32.c **** * Note(s) : (1) See 'fs_fat.h  MODULE'.
+  69:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+  70:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+  71:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+  72:rtos/uC-FS/FAT/fs_fat_fat32.c **** #ifdef   FS_FAT_FAT32_MODULE_PRESENT                            /* See Note #1.                    
+  73:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+  74:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+  75:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+  76:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+  77:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                            LOCAL DEFINES
+  78:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+  79:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+  80:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+  81:rtos/uC-FS/FAT/fs_fat_fat32.c **** #define  FS_FAT_FAT32_CLUS_BAD                    0x0FFFFFF7u
+  82:rtos/uC-FS/FAT/fs_fat_fat32.c **** #define  FS_FAT_FAT32_CLUS_EOF                    0x0FFFFFF8u
+  83:rtos/uC-FS/FAT/fs_fat_fat32.c **** #define  FS_FAT_FAT32_CLUS_FREE                   0x00000000u
+  84:rtos/uC-FS/FAT/fs_fat_fat32.c **** #define  FS_FAT_FAT32_CLUS_MASK                   0x0FFFFFFFu
+  85:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+  86:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+  87:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+ARM GAS  /tmp/ccl9N3rq.s 			page 3
+
+
+  88:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+  89:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                          LOCAL DATA TYPES
+  90:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+  91:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+  92:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+  93:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+  94:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+  95:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+  96:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                           LOCAL CONSTANTS
+  97:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+  98:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+  99:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 100:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 101:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+ 102:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 103:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                            LOCAL TABLES
+ 104:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 105:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+ 106:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 107:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 108:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+ 109:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 110:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                       LOCAL GLOBAL VARIABLES
+ 111:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 112:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+ 113:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 114:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 115:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+ 116:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 117:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                            LOCAL MACRO'S
+ 118:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 119:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+ 120:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 121:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 122:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+ 123:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 124:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                      LOCAL FUNCTION PROTOTYPES
+ 125:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 126:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+ 127:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 128:rtos/uC-FS/FAT/fs_fat_fat32.c **** #if (FS_CFG_RD_ONLY_EN == DEF_DISABLED)                                             /* ---------- L
+ 129:rtos/uC-FS/FAT/fs_fat_fat32.c **** static  void             FS_FAT_FAT32_ClusValWr       (FS_VOL           *p_vol,     /* Write value 
+ 130:rtos/uC-FS/FAT/fs_fat_fat32.c ****                                                        FS_BUF           *p_buf,
+ 131:rtos/uC-FS/FAT/fs_fat_fat32.c ****                                                        FS_FAT_CLUS_NBR   clus,
+ 132:rtos/uC-FS/FAT/fs_fat_fat32.c ****                                                        FS_FAT_CLUS_NBR   val,
+ 133:rtos/uC-FS/FAT/fs_fat_fat32.c ****                                                        FS_ERR           *p_err);
+ 134:rtos/uC-FS/FAT/fs_fat_fat32.c **** #endif
+ 135:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 136:rtos/uC-FS/FAT/fs_fat_fat32.c **** static  FS_FAT_CLUS_NBR  FS_FAT_FAT32_ClusValRd       (FS_VOL           *p_vol,     /* Read value f
+ 137:rtos/uC-FS/FAT/fs_fat_fat32.c ****                                                        FS_BUF           *p_buf,
+ 138:rtos/uC-FS/FAT/fs_fat_fat32.c ****                                                        FS_FAT_CLUS_NBR   clus,
+ 139:rtos/uC-FS/FAT/fs_fat_fat32.c ****                                                        FS_ERR           *p_err);
+ 140:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 141:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 142:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+ 143:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 144:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                         INTERFACE STRUCTURE
+ARM GAS  /tmp/ccl9N3rq.s 			page 4
+
+
+ 145:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 146:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+ 147:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 148:rtos/uC-FS/FAT/fs_fat_fat32.c **** const  FS_FAT_TYPE_API  FS_FAT_FAT32_API = {
+ 149:rtos/uC-FS/FAT/fs_fat_fat32.c **** #if (FS_CFG_RD_ONLY_EN      == DEF_DISABLED)
+ 150:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_FAT_FAT32_ClusValWr,
+ 151:rtos/uC-FS/FAT/fs_fat_fat32.c **** #endif
+ 152:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_FAT_FAT32_ClusValRd,
+ 153:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 154:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_FAT_FAT32_CLUS_BAD,
+ 155:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_FAT_FAT32_CLUS_EOF,
+ 156:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_FAT_FAT32_CLUS_FREE,
+ 157:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_FAT_BS_FAT32_FILESYSTYPE
+ 158:rtos/uC-FS/FAT/fs_fat_fat32.c **** };
+ 159:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 160:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 161:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+ 162:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 163:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                     LOCAL CONFIGURATION ERRORS
+ 164:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 165:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+ 166:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 167:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+ 168:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 169:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 170:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                           LOCAL FUNCTIONS
+ 171:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 172:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 173:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+ 174:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 175:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+ 176:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 177:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                        FS_FAT_FAT32_ClusValWr()
+ 178:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ 179:rtos/uC-FS/FAT/fs_fat_fat32.c **** * Description : Write value into cluster.
+ 180:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ 181:rtos/uC-FS/FAT/fs_fat_fat32.c **** * Argument(s) : p_vol       Pointer to volume.
+ 182:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ 183:rtos/uC-FS/FAT/fs_fat_fat32.c **** *               p_buf       Pointer to temporary buffer.
+ 184:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ 185:rtos/uC-FS/FAT/fs_fat_fat32.c **** *               clus        Cluster to modify.
+ 186:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ 187:rtos/uC-FS/FAT/fs_fat_fat32.c **** *               val         Value to write into cluster.
+ 188:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ 189:rtos/uC-FS/FAT/fs_fat_fat32.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 190:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ 191:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                               FS_ERR_NONE    Cluster written.
+ 192:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                               FS_ERR_DEV     Device error.
+ 193:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ 194:rtos/uC-FS/FAT/fs_fat_fat32.c **** * Return(s)   : none.
+ 195:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ 196:rtos/uC-FS/FAT/fs_fat_fat32.c **** * Note(s)     : (1) The FAT entry on a FAT32 volume is a 28-bit value stored in 32-bit datum; the u
+ 197:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                   four bits, which are not valid bits, are not modified.
+ 198:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 199:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+ 200:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 201:rtos/uC-FS/FAT/fs_fat_fat32.c **** #if (FS_CFG_RD_ONLY_EN == DEF_DISABLED)
+ARM GAS  /tmp/ccl9N3rq.s 			page 5
+
+
+ 202:rtos/uC-FS/FAT/fs_fat_fat32.c **** static  void  FS_FAT_FAT32_ClusValWr (FS_VOL           *p_vol,
+ 203:rtos/uC-FS/FAT/fs_fat_fat32.c ****                                       FS_BUF           *p_buf,
+ 204:rtos/uC-FS/FAT/fs_fat_fat32.c ****                                       FS_FAT_CLUS_NBR   clus,
+ 205:rtos/uC-FS/FAT/fs_fat_fat32.c ****                                       FS_FAT_CLUS_NBR   val,
+ 206:rtos/uC-FS/FAT/fs_fat_fat32.c ****                                       FS_ERR           *p_err)
+ 207:rtos/uC-FS/FAT/fs_fat_fat32.c **** {
+ 208:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_SEC_SIZE      fat_offset;
+ 209:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_FAT_SEC_NBR   fat_sec;
+ 210:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_SEC_SIZE      fat_sec_offset;
+ 211:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_FAT_SEC_NBR   fat_start_sec;
+ 212:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_FAT_DATA     *p_fat_data;
+ 213:rtos/uC-FS/FAT/fs_fat_fat32.c ****     CPU_INT32U       val_temp;
+ 214:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 215:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 216:rtos/uC-FS/FAT/fs_fat_fat32.c ****     p_fat_data     = (FS_FAT_DATA *)p_vol->DataPtr;
+ 217:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 218:rtos/uC-FS/FAT/fs_fat_fat32.c ****     fat_start_sec  =  p_fat_data->FAT1_Start;
+ 219:rtos/uC-FS/FAT/fs_fat_fat32.c ****     fat_offset     = (FS_SEC_SIZE)clus * FS_FAT_FAT32_ENTRY_NBR_OCTETS;
+ 220:rtos/uC-FS/FAT/fs_fat_fat32.c ****     fat_sec        =  fat_start_sec + (FS_FAT_SEC_NBR)FS_UTIL_DIV_PWR2(fat_offset, p_fat_data->SecS
+ 221:rtos/uC-FS/FAT/fs_fat_fat32.c ****     fat_sec_offset =  fat_offset & (p_fat_data->SecSize - 1u);
+ 222:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 223:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FSBuf_Set(p_buf,                                            /* Rd FAT sec.                     
+ 224:rtos/uC-FS/FAT/fs_fat_fat32.c ****               fat_sec,
+ 225:rtos/uC-FS/FAT/fs_fat_fat32.c ****               FS_VOL_SEC_TYPE_MGMT,
+ 226:rtos/uC-FS/FAT/fs_fat_fat32.c ****               DEF_YES,
+ 227:rtos/uC-FS/FAT/fs_fat_fat32.c ****               p_err);
+ 228:rtos/uC-FS/FAT/fs_fat_fat32.c ****     if (*p_err != FS_ERR_NONE) {
+ 229:rtos/uC-FS/FAT/fs_fat_fat32.c ****         return;
+ 230:rtos/uC-FS/FAT/fs_fat_fat32.c ****     }
+ 231:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 232:rtos/uC-FS/FAT/fs_fat_fat32.c ****     val_temp  =  MEM_VAL_GET_INT32U_LITTLE((void *)((CPU_INT08U *)p_buf->DataPtr + fat_sec_offset))
+ 233:rtos/uC-FS/FAT/fs_fat_fat32.c ****     val_temp &= ~FS_FAT_FAT32_CLUS_MASK;                        /* Keep upper entry bits (see Note 
+ 234:rtos/uC-FS/FAT/fs_fat_fat32.c ****     val_temp |=  val;
+ 235:rtos/uC-FS/FAT/fs_fat_fat32.c ****     MEM_VAL_SET_INT32U_LITTLE((void *)((CPU_INT08U *)p_buf->DataPtr + fat_sec_offset), val_temp);
+ 236:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 237:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FSBuf_MarkDirty(p_buf, p_err);                              /* Wr FAT sec.                     
+ 238:rtos/uC-FS/FAT/fs_fat_fat32.c **** }
+ 239:rtos/uC-FS/FAT/fs_fat_fat32.c **** #endif
+ 240:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 241:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 242:rtos/uC-FS/FAT/fs_fat_fat32.c **** /*
+ 243:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 244:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                                        FS_FAT_FAT32_ClusValRd()
+ 245:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ 246:rtos/uC-FS/FAT/fs_fat_fat32.c **** * Description : Read value from cluster.
+ 247:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ 248:rtos/uC-FS/FAT/fs_fat_fat32.c **** * Argument(s) : p_vol       Pointer to volume.
+ 249:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ 250:rtos/uC-FS/FAT/fs_fat_fat32.c **** *               p_buf       Pointer to temporary buffer.
+ 251:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ 252:rtos/uC-FS/FAT/fs_fat_fat32.c **** *               clus        Cluster to modify.
+ 253:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ 254:rtos/uC-FS/FAT/fs_fat_fat32.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 255:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ 256:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                               FS_ERR_NONE    Cluster read.
+ 257:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                               FS_ERR_DEV     Device error.
+ 258:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ARM GAS  /tmp/ccl9N3rq.s 			page 6
+
+
+ 259:rtos/uC-FS/FAT/fs_fat_fat32.c **** * Return(s)   : Cluster value.
+ 260:rtos/uC-FS/FAT/fs_fat_fat32.c **** *
+ 261:rtos/uC-FS/FAT/fs_fat_fat32.c **** * Note(s)     : (1) The FAT entry on a FAT32 volume is a 28-bit value stored in 32-bit datum; the u
+ 262:rtos/uC-FS/FAT/fs_fat_fat32.c **** *                   four bits, which are not valid bits, are masked off the returned value.
+ 263:rtos/uC-FS/FAT/fs_fat_fat32.c **** ***************************************************************************************************
+ 264:rtos/uC-FS/FAT/fs_fat_fat32.c **** */
+ 265:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 266:rtos/uC-FS/FAT/fs_fat_fat32.c **** static  FS_FAT_CLUS_NBR  FS_FAT_FAT32_ClusValRd (FS_VOL           *p_vol,
+ 267:rtos/uC-FS/FAT/fs_fat_fat32.c ****                                                  FS_BUF           *p_buf,
+ 268:rtos/uC-FS/FAT/fs_fat_fat32.c ****                                                  FS_FAT_CLUS_NBR   clus,
+ 269:rtos/uC-FS/FAT/fs_fat_fat32.c ****                                                  FS_ERR           *p_err)
+ 270:rtos/uC-FS/FAT/fs_fat_fat32.c **** {
+  29              		.loc 1 270 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		.loc 1 270 1 is_stmt 0 view .LVU1
+  34 0000 70B5     		push	{r4, r5, r6, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 16
+  37              		.cfi_offset 4, -16
+  38              		.cfi_offset 5, -12
+  39              		.cfi_offset 6, -8
+  40              		.cfi_offset 14, -4
+  41 0002 82B0     		sub	sp, sp, #8
+  42              	.LCFI1:
+  43              		.cfi_def_cfa_offset 24
+  44 0004 0E46     		mov	r6, r1
+  45 0006 1D46     		mov	r5, r3
+ 271:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_SEC_SIZE       fat_offset;
+  46              		.loc 1 271 5 is_stmt 1 view .LVU2
+ 272:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_FAT_SEC_NBR    fat_sec;
+  47              		.loc 1 272 5 view .LVU3
+ 273:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_SEC_SIZE       fat_sec_offset;
+  48              		.loc 1 273 5 view .LVU4
+ 274:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_FAT_SEC_NBR    fat_start_sec;
+  49              		.loc 1 274 5 view .LVU5
+ 275:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_FAT_DATA      *p_fat_data;
+  50              		.loc 1 275 5 view .LVU6
+ 276:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_FAT_CLUS_NBR   val;
+  51              		.loc 1 276 5 view .LVU7
+ 277:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 278:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 279:rtos/uC-FS/FAT/fs_fat_fat32.c ****     p_fat_data     = (FS_FAT_DATA *)p_vol->DataPtr;
+  52              		.loc 1 279 5 view .LVU8
+  53              		.loc 1 279 20 is_stmt 0 view .LVU9
+  54 0008 436B     		ldr	r3, [r0, #52]
+  55              	.LVL1:
+ 280:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 281:rtos/uC-FS/FAT/fs_fat_fat32.c ****     fat_start_sec  =  p_fat_data->FAT1_Start;
+  56              		.loc 1 281 5 is_stmt 1 view .LVU10
+  57              		.loc 1 281 20 is_stmt 0 view .LVU11
+  58 000a 186A     		ldr	r0, [r3, #32]
+  59              	.LVL2:
+ 282:rtos/uC-FS/FAT/fs_fat_fat32.c ****     fat_offset     = (FS_SEC_SIZE)clus * FS_FAT_FAT32_ENTRY_NBR_OCTETS;
+  60              		.loc 1 282 5 is_stmt 1 view .LVU12
+  61              		.loc 1 282 20 is_stmt 0 view .LVU13
+ARM GAS  /tmp/ccl9N3rq.s 			page 7
+
+
+  62 000c 9200     		lsls	r2, r2, #2
+  63              	.LVL3:
+ 283:rtos/uC-FS/FAT/fs_fat_fat32.c ****     fat_sec        =  fat_start_sec + (FS_FAT_SEC_NBR)FS_UTIL_DIV_PWR2(fat_offset, p_fat_data->SecS
+  64              		.loc 1 283 5 is_stmt 1 view .LVU14
+  65              		.loc 1 283 55 is_stmt 0 view .LVU15
+  66 000e 93F83810 		ldrb	r1, [r3, #56]	@ zero_extendqisi2
+  67              	.LVL4:
+  68              		.loc 1 283 55 view .LVU16
+  69 0012 22FA01F1 		lsr	r1, r2, r1
+  70              	.LVL5:
+ 284:rtos/uC-FS/FAT/fs_fat_fat32.c ****     fat_sec_offset =  fat_offset & (p_fat_data->SecSize - 1u);
+  71              		.loc 1 284 5 is_stmt 1 view .LVU17
+  72              		.loc 1 284 47 is_stmt 0 view .LVU18
+  73 0016 5C6B     		ldr	r4, [r3, #52]
+  74              		.loc 1 284 57 view .LVU19
+  75 0018 013C     		subs	r4, r4, #1
+  76              		.loc 1 284 20 view .LVU20
+  77 001a 1440     		ands	r4, r4, r2
+  78              	.LVL6:
+ 285:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 286:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FSBuf_Set(p_buf,
+  79              		.loc 1 286 5 is_stmt 1 view .LVU21
+  80 001c 0095     		str	r5, [sp]
+  81 001e 0123     		movs	r3, #1
+  82              	.LVL7:
+  83              		.loc 1 286 5 is_stmt 0 view .LVU22
+  84 0020 1A46     		mov	r2, r3
+  85              	.LVL8:
+  86              		.loc 1 286 5 view .LVU23
+  87 0022 0144     		add	r1, r1, r0
+  88              	.LVL9:
+  89              		.loc 1 286 5 view .LVU24
+  90 0024 3046     		mov	r0, r6
+  91              	.LVL10:
+  92              		.loc 1 286 5 view .LVU25
+  93 0026 FFF7FEFF 		bl	FSBuf_Set
+  94              	.LVL11:
+ 287:rtos/uC-FS/FAT/fs_fat_fat32.c ****               fat_sec,
+ 288:rtos/uC-FS/FAT/fs_fat_fat32.c ****               FS_VOL_SEC_TYPE_MGMT,
+ 289:rtos/uC-FS/FAT/fs_fat_fat32.c ****               DEF_YES,
+ 290:rtos/uC-FS/FAT/fs_fat_fat32.c ****               p_err);
+ 291:rtos/uC-FS/FAT/fs_fat_fat32.c ****     if (*p_err != FS_ERR_NONE) {
+  95              		.loc 1 291 5 is_stmt 1 view .LVU26
+  96              		.loc 1 291 9 is_stmt 0 view .LVU27
+  97 002a 2B88     		ldrh	r3, [r5]
+  98              		.loc 1 291 8 view .LVU28
+  99 002c 7BB9     		cbnz	r3, .L3
+ 292:rtos/uC-FS/FAT/fs_fat_fat32.c ****         return (0u);
+ 293:rtos/uC-FS/FAT/fs_fat_fat32.c ****     }
+ 294:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 295:rtos/uC-FS/FAT/fs_fat_fat32.c ****     val  = MEM_VAL_GET_INT32U_LITTLE((void *)((CPU_INT08U *)p_buf->DataPtr + fat_sec_offset));
+ 100              		.loc 1 295 5 is_stmt 1 view .LVU29
+ 101              		.loc 1 295 12 is_stmt 0 view .LVU30
+ 102 002e 3269     		ldr	r2, [r6, #16]
+ 103 0030 1319     		adds	r3, r2, r4
+ 104 0032 105D     		ldrb	r0, [r2, r4]	@ zero_extendqisi2
+ 105 0034 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ARM GAS  /tmp/ccl9N3rq.s 			page 8
+
+
+ 106 0036 00EB0220 		add	r0, r0, r2, lsl #8
+ 107 003a 9A78     		ldrb	r2, [r3, #2]	@ zero_extendqisi2
+ 108 003c 00EB0240 		add	r0, r0, r2, lsl #16
+ 109 0040 DB78     		ldrb	r3, [r3, #3]	@ zero_extendqisi2
+ 110              		.loc 1 295 10 view .LVU31
+ 111 0042 00EB0360 		add	r0, r0, r3, lsl #24
+ 112              	.LVL12:
+ 296:rtos/uC-FS/FAT/fs_fat_fat32.c ****     val &= FS_FAT_FAT32_CLUS_MASK;                              /* Mask off upper entry bits (see N
+ 113              		.loc 1 296 5 is_stmt 1 view .LVU32
+ 114              		.loc 1 296 9 is_stmt 0 view .LVU33
+ 115 0046 20F07040 		bic	r0, r0, #-268435456
+ 116              	.LVL13:
+ 297:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 298:rtos/uC-FS/FAT/fs_fat_fat32.c ****     return (val);
+ 117              		.loc 1 298 5 is_stmt 1 view .LVU34
+ 118              	.L1:
+ 299:rtos/uC-FS/FAT/fs_fat_fat32.c **** }
+ 119              		.loc 1 299 1 is_stmt 0 view .LVU35
+ 120 004a 02B0     		add	sp, sp, #8
+ 121              	.LCFI2:
+ 122              		.cfi_remember_state
+ 123              		.cfi_def_cfa_offset 16
+ 124              		@ sp needed
+ 125 004c 70BD     		pop	{r4, r5, r6, pc}
+ 126              	.LVL14:
+ 127              	.L3:
+ 128              	.LCFI3:
+ 129              		.cfi_restore_state
+ 292:rtos/uC-FS/FAT/fs_fat_fat32.c ****     }
+ 130              		.loc 1 292 16 view .LVU36
+ 131 004e 0020     		movs	r0, #0
+ 132 0050 FBE7     		b	.L1
+ 133              		.cfi_endproc
+ 134              	.LFE1:
+ 136              		.section	.text.FS_FAT_FAT32_ClusValWr,"ax",%progbits
+ 137              		.align	1
+ 138              		.syntax unified
+ 139              		.thumb
+ 140              		.thumb_func
+ 141              		.fpu fpv4-sp-d16
+ 143              	FS_FAT_FAT32_ClusValWr:
+ 144              	.LVL15:
+ 145              	.LFB0:
+ 207:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_SEC_SIZE      fat_offset;
+ 146              		.loc 1 207 1 is_stmt 1 view -0
+ 147              		.cfi_startproc
+ 148              		@ args = 4, pretend = 0, frame = 0
+ 149              		@ frame_needed = 0, uses_anonymous_args = 0
+ 207:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_SEC_SIZE      fat_offset;
+ 150              		.loc 1 207 1 is_stmt 0 view .LVU38
+ 151 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 152              	.LCFI4:
+ 153              		.cfi_def_cfa_offset 20
+ 154              		.cfi_offset 4, -20
+ 155              		.cfi_offset 5, -16
+ 156              		.cfi_offset 6, -12
+ 157              		.cfi_offset 7, -8
+ARM GAS  /tmp/ccl9N3rq.s 			page 9
+
+
+ 158              		.cfi_offset 14, -4
+ 159 0002 83B0     		sub	sp, sp, #12
+ 160              	.LCFI5:
+ 161              		.cfi_def_cfa_offset 32
+ 162 0004 0D46     		mov	r5, r1
+ 163 0006 1F46     		mov	r7, r3
+ 164 0008 089E     		ldr	r6, [sp, #32]
+ 208:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_FAT_SEC_NBR   fat_sec;
+ 165              		.loc 1 208 5 is_stmt 1 view .LVU39
+ 209:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_SEC_SIZE      fat_sec_offset;
+ 166              		.loc 1 209 5 view .LVU40
+ 210:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_FAT_SEC_NBR   fat_start_sec;
+ 167              		.loc 1 210 5 view .LVU41
+ 211:rtos/uC-FS/FAT/fs_fat_fat32.c ****     FS_FAT_DATA     *p_fat_data;
+ 168              		.loc 1 211 5 view .LVU42
+ 212:rtos/uC-FS/FAT/fs_fat_fat32.c ****     CPU_INT32U       val_temp;
+ 169              		.loc 1 212 5 view .LVU43
+ 213:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 170              		.loc 1 213 5 view .LVU44
+ 216:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 171              		.loc 1 216 5 view .LVU45
+ 216:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 172              		.loc 1 216 20 is_stmt 0 view .LVU46
+ 173 000a 436B     		ldr	r3, [r0, #52]
+ 174              	.LVL16:
+ 218:rtos/uC-FS/FAT/fs_fat_fat32.c ****     fat_offset     = (FS_SEC_SIZE)clus * FS_FAT_FAT32_ENTRY_NBR_OCTETS;
+ 175              		.loc 1 218 5 is_stmt 1 view .LVU47
+ 218:rtos/uC-FS/FAT/fs_fat_fat32.c ****     fat_offset     = (FS_SEC_SIZE)clus * FS_FAT_FAT32_ENTRY_NBR_OCTETS;
+ 176              		.loc 1 218 20 is_stmt 0 view .LVU48
+ 177 000c 186A     		ldr	r0, [r3, #32]
+ 178              	.LVL17:
+ 219:rtos/uC-FS/FAT/fs_fat_fat32.c ****     fat_sec        =  fat_start_sec + (FS_FAT_SEC_NBR)FS_UTIL_DIV_PWR2(fat_offset, p_fat_data->SecS
+ 179              		.loc 1 219 5 is_stmt 1 view .LVU49
+ 219:rtos/uC-FS/FAT/fs_fat_fat32.c ****     fat_sec        =  fat_start_sec + (FS_FAT_SEC_NBR)FS_UTIL_DIV_PWR2(fat_offset, p_fat_data->SecS
+ 180              		.loc 1 219 20 is_stmt 0 view .LVU50
+ 181 000e 9200     		lsls	r2, r2, #2
+ 182              	.LVL18:
+ 220:rtos/uC-FS/FAT/fs_fat_fat32.c ****     fat_sec_offset =  fat_offset & (p_fat_data->SecSize - 1u);
+ 183              		.loc 1 220 5 is_stmt 1 view .LVU51
+ 220:rtos/uC-FS/FAT/fs_fat_fat32.c ****     fat_sec_offset =  fat_offset & (p_fat_data->SecSize - 1u);
+ 184              		.loc 1 220 55 is_stmt 0 view .LVU52
+ 185 0010 93F83810 		ldrb	r1, [r3, #56]	@ zero_extendqisi2
+ 186              	.LVL19:
+ 220:rtos/uC-FS/FAT/fs_fat_fat32.c ****     fat_sec_offset =  fat_offset & (p_fat_data->SecSize - 1u);
+ 187              		.loc 1 220 55 view .LVU53
+ 188 0014 22FA01F1 		lsr	r1, r2, r1
+ 189              	.LVL20:
+ 221:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 190              		.loc 1 221 5 is_stmt 1 view .LVU54
+ 221:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 191              		.loc 1 221 47 is_stmt 0 view .LVU55
+ 192 0018 5C6B     		ldr	r4, [r3, #52]
+ 221:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 193              		.loc 1 221 57 view .LVU56
+ 194 001a 013C     		subs	r4, r4, #1
+ 221:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 195              		.loc 1 221 20 view .LVU57
+ARM GAS  /tmp/ccl9N3rq.s 			page 10
+
+
+ 196 001c 1440     		ands	r4, r4, r2
+ 197              	.LVL21:
+ 223:rtos/uC-FS/FAT/fs_fat_fat32.c ****               fat_sec,
+ 198              		.loc 1 223 5 is_stmt 1 view .LVU58
+ 199 001e 0096     		str	r6, [sp]
+ 200 0020 0123     		movs	r3, #1
+ 201              	.LVL22:
+ 223:rtos/uC-FS/FAT/fs_fat_fat32.c ****               fat_sec,
+ 202              		.loc 1 223 5 is_stmt 0 view .LVU59
+ 203 0022 1A46     		mov	r2, r3
+ 204              	.LVL23:
+ 223:rtos/uC-FS/FAT/fs_fat_fat32.c ****               fat_sec,
+ 205              		.loc 1 223 5 view .LVU60
+ 206 0024 0144     		add	r1, r1, r0
+ 207              	.LVL24:
+ 223:rtos/uC-FS/FAT/fs_fat_fat32.c ****               fat_sec,
+ 208              		.loc 1 223 5 view .LVU61
+ 209 0026 2846     		mov	r0, r5
+ 210              	.LVL25:
+ 223:rtos/uC-FS/FAT/fs_fat_fat32.c ****               fat_sec,
+ 211              		.loc 1 223 5 view .LVU62
+ 212 0028 FFF7FEFF 		bl	FSBuf_Set
+ 213              	.LVL26:
+ 228:rtos/uC-FS/FAT/fs_fat_fat32.c ****         return;
+ 214              		.loc 1 228 5 is_stmt 1 view .LVU63
+ 228:rtos/uC-FS/FAT/fs_fat_fat32.c ****         return;
+ 215              		.loc 1 228 9 is_stmt 0 view .LVU64
+ 216 002c 3388     		ldrh	r3, [r6]
+ 228:rtos/uC-FS/FAT/fs_fat_fat32.c ****         return;
+ 217              		.loc 1 228 8 view .LVU65
+ 218 002e 0BB1     		cbz	r3, .L8
+ 219              	.LVL27:
+ 220              	.L5:
+ 238:rtos/uC-FS/FAT/fs_fat_fat32.c **** #endif
+ 221              		.loc 1 238 1 view .LVU66
+ 222 0030 03B0     		add	sp, sp, #12
+ 223              	.LCFI6:
+ 224              		.cfi_remember_state
+ 225              		.cfi_def_cfa_offset 20
+ 226              		@ sp needed
+ 227 0032 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 228              	.LVL28:
+ 229              	.L8:
+ 230              	.LCFI7:
+ 231              		.cfi_restore_state
+ 232:rtos/uC-FS/FAT/fs_fat_fat32.c ****     val_temp &= ~FS_FAT_FAT32_CLUS_MASK;                        /* Keep upper entry bits (see Note 
+ 232              		.loc 1 232 5 is_stmt 1 view .LVU67
+ 232:rtos/uC-FS/FAT/fs_fat_fat32.c ****     val_temp &= ~FS_FAT_FAT32_CLUS_MASK;                        /* Keep upper entry bits (see Note 
+ 233              		.loc 1 232 18 is_stmt 0 view .LVU68
+ 234 0034 2A69     		ldr	r2, [r5, #16]
+ 235 0036 1319     		adds	r3, r2, r4
+ 236 0038 105D     		ldrb	r0, [r2, r4]	@ zero_extendqisi2
+ 237 003a 5978     		ldrb	r1, [r3, #1]	@ zero_extendqisi2
+ 238 003c 00EB0120 		add	r0, r0, r1, lsl #8
+ 239 0040 9978     		ldrb	r1, [r3, #2]	@ zero_extendqisi2
+ 240 0042 00EB0140 		add	r0, r0, r1, lsl #16
+ 241 0046 DB78     		ldrb	r3, [r3, #3]	@ zero_extendqisi2
+ARM GAS  /tmp/ccl9N3rq.s 			page 11
+
+
+ 232:rtos/uC-FS/FAT/fs_fat_fat32.c ****     val_temp &= ~FS_FAT_FAT32_CLUS_MASK;                        /* Keep upper entry bits (see Note 
+ 242              		.loc 1 232 15 view .LVU69
+ 243 0048 00EB0360 		add	r0, r0, r3, lsl #24
+ 244              	.LVL29:
+ 233:rtos/uC-FS/FAT/fs_fat_fat32.c ****     val_temp |=  val;
+ 245              		.loc 1 233 5 is_stmt 1 view .LVU70
+ 233:rtos/uC-FS/FAT/fs_fat_fat32.c ****     val_temp |=  val;
+ 246              		.loc 1 233 14 is_stmt 0 view .LVU71
+ 247 004c 00F07040 		and	r0, r0, #-268435456
+ 248              	.LVL30:
+ 234:rtos/uC-FS/FAT/fs_fat_fat32.c ****     MEM_VAL_SET_INT32U_LITTLE((void *)((CPU_INT08U *)p_buf->DataPtr + fat_sec_offset), val_temp);
+ 249              		.loc 1 234 5 is_stmt 1 view .LVU72
+ 234:rtos/uC-FS/FAT/fs_fat_fat32.c ****     MEM_VAL_SET_INT32U_LITTLE((void *)((CPU_INT08U *)p_buf->DataPtr + fat_sec_offset), val_temp);
+ 250              		.loc 1 234 14 is_stmt 0 view .LVU73
+ 251 0050 3843     		orrs	r0, r0, r7
+ 252              	.LVL31:
+ 235:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 253              		.loc 1 235 5 is_stmt 1 view .LVU74
+ 235:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 254              		.loc 1 235 5 view .LVU75
+ 255 0052 1755     		strb	r7, [r2, r4]
+ 235:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 256              		.loc 1 235 5 view .LVU76
+ 257 0054 2B69     		ldr	r3, [r5, #16]
+ 258 0056 2344     		add	r3, r3, r4
+ 259 0058 C7F30722 		ubfx	r2, r7, #8, #8
+ 260 005c 5A70     		strb	r2, [r3, #1]
+ 235:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 261              		.loc 1 235 5 view .LVU77
+ 262 005e 2B69     		ldr	r3, [r5, #16]
+ 263 0060 2344     		add	r3, r3, r4
+ 264 0062 C7F30747 		ubfx	r7, r7, #16, #8
+ 265              	.LVL32:
+ 235:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 266              		.loc 1 235 5 is_stmt 0 view .LVU78
+ 267 0066 9F70     		strb	r7, [r3, #2]
+ 235:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 268              		.loc 1 235 5 is_stmt 1 view .LVU79
+ 269 0068 2A69     		ldr	r2, [r5, #16]
+ 270 006a 1444     		add	r4, r4, r2
+ 271              	.LVL33:
+ 235:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 272              		.loc 1 235 5 is_stmt 0 view .LVU80
+ 273 006c 030E     		lsrs	r3, r0, #24
+ 274 006e E370     		strb	r3, [r4, #3]
+ 235:rtos/uC-FS/FAT/fs_fat_fat32.c **** 
+ 275              		.loc 1 235 5 is_stmt 1 view .LVU81
+ 237:rtos/uC-FS/FAT/fs_fat_fat32.c **** }
+ 276              		.loc 1 237 5 view .LVU82
+ 277 0070 3146     		mov	r1, r6
+ 278 0072 2846     		mov	r0, r5
+ 279              	.LVL34:
+ 237:rtos/uC-FS/FAT/fs_fat_fat32.c **** }
+ 280              		.loc 1 237 5 is_stmt 0 view .LVU83
+ 281 0074 FFF7FEFF 		bl	FSBuf_MarkDirty
+ 282              	.LVL35:
+ 283 0078 DAE7     		b	.L5
+ARM GAS  /tmp/ccl9N3rq.s 			page 12
+
+
+ 284              		.cfi_endproc
+ 285              	.LFE0:
+ 287              		.global	FS_FAT_FAT32_API
+ 288              		.section	.rodata.FS_FAT_FAT32_API,"a"
+ 289              		.align	2
+ 292              	FS_FAT_FAT32_API:
+ 293 0000 00000000 		.word	FS_FAT_FAT32_ClusValWr
+ 294 0004 00000000 		.word	FS_FAT_FAT32_ClusValRd
+ 295 0008 F7FFFF0F 		.word	268435447
+ 296 000c F8FFFF0F 		.word	268435448
+ 297 0010 00000000 		.word	0
+ 298 0014 46415433 		.ascii	"FAT32   \000"
+ 298      32202020 
+ 298      00
+ 299 001d 000000   		.space	3
+ 300              		.text
+ 301              	.Letext0:
+ 302              		.file 2 "rtos/uC-CPU/ARM-Cortex-M/ARMv7-M/GNU/cpu.h"
+ 303              		.file 3 "rtos/uC-FS/FAT/../Source/fs_type.h"
+ 304              		.file 4 "rtos/uC-FS/FAT/../Source/fs_buf.h"
+ 305              		.file 5 "rtos/uC-FS/FAT/../Source/fs_vol.h"
+ 306              		.file 6 "rtos/uC-FS/FAT/../Source/fs_err.h"
+ 307              		.file 7 "rtos/uC-FS/FAT/../Source/fs_ctr.h"
+ 308              		.file 8 "rtos/uC-FS/FAT/fs_fat_type.h"
+ 309              		.file 9 "rtos/uC-FS/FAT/fs_fat.h"
+ 310              		.file 10 "rtos/uC-FS/FAT/fs_fat_fat32.h"
+ARM GAS  /tmp/ccl9N3rq.s 			page 13
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 fs_fat_fat32.c
+     /tmp/ccl9N3rq.s:18     .text.FS_FAT_FAT32_ClusValRd:0000000000000000 $t
+     /tmp/ccl9N3rq.s:25     .text.FS_FAT_FAT32_ClusValRd:0000000000000000 FS_FAT_FAT32_ClusValRd
+     /tmp/ccl9N3rq.s:137    .text.FS_FAT_FAT32_ClusValWr:0000000000000000 $t
+     /tmp/ccl9N3rq.s:143    .text.FS_FAT_FAT32_ClusValWr:0000000000000000 FS_FAT_FAT32_ClusValWr
+     /tmp/ccl9N3rq.s:292    .rodata.FS_FAT_FAT32_API:0000000000000000 FS_FAT_FAT32_API
+     /tmp/ccl9N3rq.s:289    .rodata.FS_FAT_FAT32_API:0000000000000000 $d
+                           .group:0000000000000000 wm4.0.0f5aa60db9403f389c005f20ecce4286
+                           .group:0000000000000000 wm4.cpu_def.h.46.baa122a2898bdc40bb50d1f21ead1515
+                           .group:0000000000000000 wm4.cpu_cfg.h.45.38a6a562da8b04490c382a226238c57e
+                           .group:0000000000000000 wm4.cpu.h.171.3cb15ee3ccb812cbfdf76d1fbfb9eda0
+                           .group:0000000000000000 wm4.cpu_core.h.51.7b35a59c319673f88ae4a256248776ec
+                           .group:0000000000000000 wm4.lib_def.h.66.6ab2a012067a8e1f4289db5765835062
+                           .group:0000000000000000 wm4.cpu_core.h.143.d3b700e12b3a14ed3bee14c822b49a7d
+                           .group:0000000000000000 wm4.lib_cfg.h.40.b2958733f73e73af70f675ca0f89303e
+                           .group:0000000000000000 wm4.lib_mem.h.121.89b942a057fb20091baad8bf6b28b1e6
+                           .group:0000000000000000 wm4.fs.h.42.4f6311a594ee5619f1ee7a9392eb7faa
+                           .group:0000000000000000 wm4.lib_ascii.h.84.da234f9d4d202bba866fb26067887eec
+                           .group:0000000000000000 wm4.fs_def.h.42.653ad677c23ef93c522ec84af681385d
+                           .group:0000000000000000 wm4.fs_cfg.h.116.da4f8e9d0b9040a97ef3bf26c61e90fd
+                           .group:0000000000000000 wm4.clk.h.99.39403db6a27321e53b261bbe20b56e1d
+                           .group:0000000000000000 wm4.lib_str.h.60.d6fb3a1336db17c586ed26be94929677
+                           .group:0000000000000000 wm4.clk_cfg.h.45.428f260ed0fbcfa16fc822c67c85dade
+                           .group:0000000000000000 wm4.clk.h.219.c24c7347fcc7691d3157fe73514cb366
+                           .group:0000000000000000 wm4.fs_cfg_fs.h.176.c85074fbe881bfa594608376a65f4dc2
+                           .group:0000000000000000 wm4.fs_type.h.42.3e681b291920189044ba1da24ae0f22a
+                           .group:0000000000000000 wm4.fs_err.h.42.d52bfed31dff3d1419c5cf09952dee67
+                           .group:0000000000000000 wm4.fs.h.97.1d629f0ba32b5622ab4e01a254bd98e8
+                           .group:0000000000000000 wm4.fs_buf.h.42.0c8ba10968f085926266a27b71b3972d
+                           .group:0000000000000000 wm4.fs_ctr.h.42.9d1398cac157503ac8af114819f7782b
+                           .group:0000000000000000 wm4.fs_entry.h.42.9d70c930b2952a9ef63a0a4e9d586c20
+                           .group:0000000000000000 wm4.fs_dir.h.83.d0300b5b24eed020443871730cac76e3
+                           .group:0000000000000000 wm4.fs_file.h.42.74c26597bc17b842069a1de9e164f613
+                           .group:0000000000000000 wm4.fs_vol.h.42.b307128eec61fcaf68a96ce7f965d41e
+                           .group:0000000000000000 wm4.fs_util.h.64.fe7812d6ca4c430dea2d2e705fd73c11
+                           .group:0000000000000000 wm4.fs_fat_type.h.44.5030ef39a150a8f4f55331616cd38bbd
+                           .group:0000000000000000 wm4.fs_fat.h.103.89adf2d396ea9a0dd44def3a42712dd1
+                           .group:0000000000000000 wm4.fs_fat_fat32.h.50.29caa49366f57352e7957fcee3bb9efd
+
+UNDEFINED SYMBOLS
+FSBuf_Set
+FSBuf_MarkDirty

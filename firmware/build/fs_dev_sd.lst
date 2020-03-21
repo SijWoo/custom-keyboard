@@ -1,0 +1,1773 @@
+ARM GAS  /tmp/ccBThpyc.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fs_dev_sd.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.FSDev_SD_ParseCSD,"ax",%progbits
+  18              		.align	1
+  19              		.global	FSDev_SD_ParseCSD
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	FSDev_SD_ParseCSD:
+  27              	.LVL0:
+  28              	.LFB0:
+  29              		.file 1 "rtos/uC-FS/Dev/SD/fs_dev_sd.c"
+   1:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+   2:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+   3:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                                uC/FS
+   4:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                      The Embedded File System
+   5:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+   6:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                         (c) Copyright 2008-2019; Silicon Laboratories Inc.,
+   7:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                400 W. Cesar Chavez, Austin, TX 78701
+   8:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+   9:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                   All rights reserved. Protected by international copyright laws.
+  10:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+  11:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                  Your use of this software is subject to your acceptance of the terms
+  12:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                  of a Silicon Labs Micrium software license, which can be obtained by
+  13:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                  contacting info@micrium.com. If you do not agree to the terms of this
+  14:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                  license, you may not use this software.
+  15:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+  16:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                  Please help us continue to provide the Embedded community with the finest
+  17:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                  software available. Your honesty is greatly appreciated.
+  18:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+  19:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                    You can find our product's documentation at: doc.micrium.com
+  20:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+  21:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                          For more information visit us at: www.micrium.com
+  22:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+  23:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+  24:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+  25:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+  26:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+  27:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+  28:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                      FILE SYSTEM DEVICE DRIVER
+  29:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ARM GAS  /tmp/ccBThpyc.s 			page 2
+
+
+  30:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                             SD/MMC CARD
+  31:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                     COMMON DEFINES & FUNCTIONS
+  32:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+  33:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Filename     : fs_dev_sd.c
+  34:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Version      : v4.07.06
+  35:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+  36:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Reference(s) : (1) SD Card Association.  "Physical Layer Simplified Specification Version 2.00".
+  37:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                    July 26, 2006.
+  38:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+  39:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                (2) JEDEC Solid State Technology Association.  "MultiMediaCard (MMC) Electrical
+  40:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                    Standard, High Capacity".  JESD84-B42.  July 2007.
+  41:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+  42:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+  43:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+  44:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+  45:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+  46:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                               MODULE
+  47:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+  48:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+  49:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+  50:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** #define  MICRIUM_SOURCE
+  51:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** #define  FS_DEV_SD_MODULE
+  52:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+  53:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+  54:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+  55:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+  56:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                            INCLUDE FILES
+  57:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+  58:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+  59:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+  60:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** #include  <lib_mem.h>
+  61:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** #include  "../../Source/fs.h"
+  62:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** #include  "fs_dev_sd.h"
+  63:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+  64:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+  65:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+  66:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+  67:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                            LOCAL DEFINES
+  68:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+  69:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+  70:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+  71:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 /* ------------------ CHECKSUMS (4.
+  72:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** #define  FS_DEV_SD_CRC7_POLY                            0x09u   /* 7-bit checksum polynomial: x7 + 
+  73:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+  74:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+  75:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+  76:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+  77:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                          LOCAL DATA TYPES
+  78:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+  79:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+  80:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+  81:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+  82:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+  83:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+  84:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                           LOCAL CONSTANTS
+  85:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+  86:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+ARM GAS  /tmp/ccBThpyc.s 			page 3
+
+
+  87:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+  88:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 /* Converts CSD read_bl_len field t
+  89:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** static  const  CPU_INT32U  FSDev_SD_BlkLen[]         = {       512u,
+  90:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                               1024u,
+  91:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                               2048u};
+  92:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+  93:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 /* Converts CSD c_size_mult field t
+  94:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** static  const  CPU_INT32U  FSDev_SD_Mult[]           = {         4u,
+  95:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                  8u,
+  96:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 16u,
+  97:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 32u,
+  98:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 64u,
+  99:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                128u,
+ 100:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                256u,
+ 101:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                512u,
+ 102:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                               1024u};
+ 103:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 104:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 /* Converts CSD TAAC field's time u
+ 105:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** static  const  CPU_INT32U  FSDev_SD_TAAC_TimeUnit[]  = {         1u,
+ 106:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 10u,
+ 107:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                100u,
+ 108:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                               1000u,
+ 109:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                              10000u,
+ 110:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                             100000u,
+ 111:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                            1000000u,
+ 112:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                           10000000u};
+ 113:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 114:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 /* Converts CSD TAAC field's time v
+ 115:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** static  const  CPU_INT32U  FSDev_SD_TAAC_TimeValue[] = {         0u,
+ 116:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 10u,
+ 117:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 12u,
+ 118:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 13u,
+ 119:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 15u,
+ 120:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 20u,
+ 121:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 25u,
+ 122:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 30u,
+ 123:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 35u,
+ 124:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 40u,
+ 125:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 45u,
+ 126:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 50u,
+ 127:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 55u,
+ 128:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 60u,
+ 129:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 70u,
+ 130:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 80u};
+ 131:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 132:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 /* Converts CSD tran_speed field's 
+ 133:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** static  const  CPU_INT32U  FSDev_SD_TranSpdUnit[]    = {     10000u,
+ 134:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                             100000u,
+ 135:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                            1000000u,
+ 136:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                           10000000u};
+ 137:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 138:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 /* Converts CSD tran_speed field's 
+ 139:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** static  const  CPU_INT32U  FSDev_SD_TranSpdValue[]   = {         0u,
+ 140:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 10u,
+ 141:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 12u,
+ 142:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 13u,
+ 143:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 15u,
+ARM GAS  /tmp/ccBThpyc.s 			page 4
+
+
+ 144:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 20u,
+ 145:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 25u,
+ 146:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 30u,
+ 147:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 35u,
+ 148:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 40u,
+ 149:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 45u,
+ 150:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 50u,
+ 151:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 55u,
+ 152:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 60u,
+ 153:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 70u,
+ 154:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 80u};
+ 155:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 156:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** #if (FS_DEV_SD_SPI_CFG_CRC_EN == DEF_ENABLED)
+ 157:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** static  const  CRC_MODEL_16  FSDev_SD_ModelCRC16     = {
+ 158:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     0x1021u,
+ 159:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     0x0000u,
+ 160:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     DEF_NO,
+ 161:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     0x0000u,
+ 162:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****    &CRC_TblCRC16_1021[0]
+ 163:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** };
+ 164:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** #endif
+ 165:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 166:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 167:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+ 168:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 169:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                            LOCAL TABLES
+ 170:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 171:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+ 172:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 173:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 174:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+ 175:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 176:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                       LOCAL GLOBAL VARIABLES
+ 177:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 178:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+ 179:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 180:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 181:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+ 182:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 183:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                            LOCAL MACRO'S
+ 184:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 185:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+ 186:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 187:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 188:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+ 189:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 190:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                      LOCAL FUNCTION PROTOTYPES
+ 191:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 192:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+ 193:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 194:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 195:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+ 196:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 197:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                     LOCAL CONFIGURATION ERRORS
+ 198:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 199:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+ 200:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ARM GAS  /tmp/ccBThpyc.s 			page 5
+
+
+ 201:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 202:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+ 203:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 204:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                         FSDev_SD_ParseCSD()
+ 205:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 206:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Description : Parse CSD data.
+ 207:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 208:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Argument(s) : csd         Array holding CSD data.
+ 209:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 210:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *               p_sd_info   Pointer to struct into which CSD data will be parsed.
+ 211:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 212:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *               card_type   Type of card :
+ 213:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 214:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                               FS_DEV_SD_CARDTYPE_SD_V1_X       SD card v1.x.
+ 215:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                               FS_DEV_SD_CARDTYPE_SD_V2_0       SD card v2.0, standard capacity.
+ 216:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                               FS_DEV_SD_CARDTYPE_SD_V2_0_HC    SD card v2.0, high capacity.
+ 217:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                               FS_DEV_SD_CARDTYPE_MMC           MMC, standard capacity.
+ 218:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                               FS_DEV_SD_CARDTYPE_MMC_HC        MMC, high capacity.
+ 219:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 220:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Return(s)   : DEF_OK   if the CSD could be parsed.
+ 221:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *               DEF_FAIL if the CSD was illegal.
+ 222:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 223:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Note(s)     : (1) (a) For SD v1.x & SD v2.0 standard capacity, the structure of the CSD is define
+ 224:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                       [Ref 1], Section 5.3.2.
+ 225:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 226:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                   (b) For MMC cards, the structure of the CSD is defined in [Ref 2], Section 8.3.
+ 227:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 228:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                   (c) For SD v2.0 high capacity cards, the structure of the CSD is defined in [Re
+ 229:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                       Section 5.3.3.
+ 230:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 231:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *               (2) The calculation of the card capacity is demonstrated in the [Ref 1], Section 5.
+ 232:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                   The text does not explicitly state that the card capacity for a v1.x-compliant 
+ 233:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                   shall not exceed the capacity of a 32-bit integer.
+ 234:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 235:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *               (3) According to [Ref 1], for a v1.x-compliant card, the CSD's tran_speed field "sh
+ 236:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                   be always 0_0110_010b (032h)", or 25MHz.  In high-speed mode, the field value "
+ 237:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                   be always 0_1011_010b (06Ah)", or 50MHz.
+ 238:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 239:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *               (4) According to [Ref 1], Section 4.6.2.1-2, the timeouts for high-capacity SD card
+ 240:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                   should be fixed; consequently, TSAC & NSAC should not be consulted.
+ 241:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 242:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+ 243:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 244:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** CPU_BOOLEAN  FSDev_SD_ParseCSD (CPU_INT08U       csd[],
+ 245:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                 FS_DEV_SD_INFO  *p_sd_info,
+ 246:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                 CPU_INT08U       card_type)
+ 247:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** {
+  30              		.loc 1 247 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  35              		.loc 1 247 1 is_stmt 0 view .LVU1
+  36 0000 30B4     		push	{r4, r5}
+  37              	.LCFI0:
+  38              		.cfi_def_cfa_offset 8
+  39              		.cfi_offset 4, -8
+ARM GAS  /tmp/ccBThpyc.s 			page 6
+
+
+  40              		.cfi_offset 5, -4
+ 248:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT32U  block_len;
+  41              		.loc 1 248 5 is_stmt 1 view .LVU2
+ 249:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT32U  blocknr;
+  42              		.loc 1 249 5 view .LVU3
+ 250:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT32U  c_size;
+  43              		.loc 1 250 5 view .LVU4
+ 251:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT32U  c_size_mult;
+  44              		.loc 1 251 5 view .LVU5
+ 252:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT32U  clk_freq;
+  45              		.loc 1 252 5 view .LVU6
+ 253:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT32U  mult;
+  46              		.loc 1 253 5 view .LVU7
+ 254:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT08U  nsac;
+  47              		.loc 1 254 5 view .LVU8
+ 255:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT08U  taac;
+  48              		.loc 1 255 5 view .LVU9
+ 256:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT32U  taac_time;
+  49              		.loc 1 256 5 view .LVU10
+ 257:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT08U  rd_bl_len;
+  50              		.loc 1 257 5 view .LVU11
+ 258:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT08U  tran_spd;
+  51              		.loc 1 258 5 view .LVU12
+ 259:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT08U  tran_spd_unit;
+  52              		.loc 1 259 5 view .LVU13
+ 260:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 261:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 262:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 263:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     if (card_type == FS_DEV_SD_CARDTYPE_SD_V2_0_HC) {           /* ----------- CALC DISK SIZE (SD H
+  53              		.loc 1 263 5 view .LVU14
+  54              		.loc 1 263 8 is_stmt 0 view .LVU15
+  55 0002 032A     		cmp	r2, #3
+  56 0004 50D0     		beq	.L9
+ 264:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         c_size             = (((CPU_INT32U)csd[7] & 0x3Fu) << 16)       /* Get dev size.           
+ 265:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                            | (((CPU_INT32U)csd[8] & 0xFFu) <<  8)
+ 266:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                            | (((CPU_INT32U)csd[9] & 0xFFu) <<  0);
+ 267:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 268:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         p_sd_info->BlkSize = FS_DEV_SD_BLK_SIZE;
+ 269:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         p_sd_info->NbrBlks = (c_size + 1u) * 1024u;
+ 270:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 271:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 272:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 273:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     } else {                                                    /* ----------- CALC DISK SIZE (SD S
+ 274:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         rd_bl_len          = csd[5] & DEF_NIBBLE_MASK;                  /* Get rd blk len exp.     
+  57              		.loc 1 274 9 is_stmt 1 view .LVU16
+  58              		.loc 1 274 33 is_stmt 0 view .LVU17
+  59 0006 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
+  60              		.loc 1 274 28 view .LVU18
+  61 0008 03F00F03 		and	r3, r3, #15
+  62              	.LVL1:
+ 275:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 276:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         if ((rd_bl_len < 9u) || (rd_bl_len > 11u)) {
+  63              		.loc 1 276 9 is_stmt 1 view .LVU19
+  64              		.loc 1 276 30 is_stmt 0 view .LVU20
+  65 000c A3F10902 		sub	r2, r3, #9
+  66              	.LVL2:
+  67              		.loc 1 276 30 view .LVU21
+ARM GAS  /tmp/ccBThpyc.s 			page 7
+
+
+  68 0010 D2B2     		uxtb	r2, r2
+  69              		.loc 1 276 12 view .LVU22
+  70 0012 022A     		cmp	r2, #2
+  71 0014 58D8     		bhi	.L5
+ 277:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             return (DEF_NO);
+ 278:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         }
+ 279:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 280:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         block_len          = FSDev_SD_BlkLen[rd_bl_len - 9u];           /* Calc blk len.           
+  72              		.loc 1 280 9 is_stmt 1 view .LVU23
+  73              		.loc 1 280 56 is_stmt 0 view .LVU24
+  74 0016 093B     		subs	r3, r3, #9
+  75              	.LVL3:
+  76              		.loc 1 280 28 view .LVU25
+  77 0018 2D4A     		ldr	r2, .L10
+  78 001a 52F82340 		ldr	r4, [r2, r3, lsl #2]
+  79              	.LVL4:
+ 281:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 282:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         c_size             = (((CPU_INT32U)csd[8] & 0xC0u) >>  6)       /* Get dev size.           
+  80              		.loc 1 282 9 is_stmt 1 view .LVU26
+  81              		.loc 1 282 47 is_stmt 0 view .LVU27
+  82 001e 027A     		ldrb	r2, [r0, #8]	@ zero_extendqisi2
+ 283:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                            | (((CPU_INT32U)csd[7] & 0xFFu) <<  2)
+  83              		.loc 1 283 47 view .LVU28
+  84 0020 C379     		ldrb	r3, [r0, #7]	@ zero_extendqisi2
+  85              	.LVL5:
+  86              		.loc 1 283 60 view .LVU29
+  87 0022 9B00     		lsls	r3, r3, #2
+  88              		.loc 1 283 28 view .LVU30
+  89 0024 43EA9213 		orr	r3, r3, r2, lsr #6
+ 284:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                            | (((CPU_INT32U)csd[6] & 0x03u) << 10);
+  90              		.loc 1 284 47 view .LVU31
+  91 0028 8279     		ldrb	r2, [r0, #6]	@ zero_extendqisi2
+  92              		.loc 1 284 60 view .LVU32
+  93 002a 9202     		lsls	r2, r2, #10
+  94 002c 02F44062 		and	r2, r2, #3072
+ 282:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                            | (((CPU_INT32U)csd[7] & 0xFFu) <<  2)
+  95              		.loc 1 282 28 view .LVU33
+  96 0030 1343     		orrs	r3, r3, r2
+  97              	.LVL6:
+ 285:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 286:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         c_size_mult        = (((CPU_INT32U)csd[10] & 0x80u) >> 7)       /* Get dev size mult.      
+  98              		.loc 1 286 9 is_stmt 1 view .LVU34
+  99              		.loc 1 286 47 is_stmt 0 view .LVU35
+ 100 0032 857A     		ldrb	r5, [r0, #10]	@ zero_extendqisi2
+ 287:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                            | (((CPU_INT32U)csd[9]  & 0x03u) << 1);
+ 101              		.loc 1 287 47 view .LVU36
+ 102 0034 427A     		ldrb	r2, [r0, #9]	@ zero_extendqisi2
+ 103              		.loc 1 287 61 view .LVU37
+ 104 0036 5200     		lsls	r2, r2, #1
+ 105 0038 02F00602 		and	r2, r2, #6
+ 286:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                            | (((CPU_INT32U)csd[9]  & 0x03u) << 1);
+ 106              		.loc 1 286 28 view .LVU38
+ 107 003c 42EAD512 		orr	r2, r2, r5, lsr #7
+ 108              	.LVL7:
+ 288:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 289:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 290:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         if (c_size_mult >= 8u) {
+ARM GAS  /tmp/ccBThpyc.s 			page 8
+
+
+ 109              		.loc 1 290 9 is_stmt 1 view .LVU39
+ 291:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             return (DEF_NO);
+ 292:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         }
+ 293:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 294:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         mult               = FSDev_SD_Mult[c_size_mult];                /* Calc mult.              
+ 110              		.loc 1 294 9 view .LVU40
+ 111              		.loc 1 294 28 is_stmt 0 view .LVU41
+ 112 0040 244D     		ldr	r5, .L10+4
+ 113 0042 55F82220 		ldr	r2, [r5, r2, lsl #2]
+ 114              	.LVL8:
+ 295:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         blocknr            = (c_size + 1u) * mult;                      /* Calc nbr blks.          
+ 115              		.loc 1 295 9 is_stmt 1 view .LVU42
+ 116              		.loc 1 295 28 is_stmt 0 view .LVU43
+ 117 0046 03FB0222 		mla	r2, r3, r2, r2
+ 118              	.LVL9:
+ 296:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 297:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         p_sd_info->BlkSize = block_len;
+ 119              		.loc 1 297 9 is_stmt 1 view .LVU44
+ 120              		.loc 1 297 28 is_stmt 0 view .LVU45
+ 121 004a 0C60     		str	r4, [r1]
+ 122              	.LVL10:
+ 298:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         p_sd_info->NbrBlks = blocknr;
+ 123              		.loc 1 298 9 is_stmt 1 view .LVU46
+ 124              		.loc 1 298 28 is_stmt 0 view .LVU47
+ 125 004c 4A60     		str	r2, [r1, #4]
+ 126              	.LVL11:
+ 127              	.L3:
+ 299:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     }
+ 300:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 301:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 302:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 303:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 /* ------------------- CALC CLK SPD
+ 304:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     taac                = csd[1];                               /* TAAC data access time.          
+ 128              		.loc 1 304 5 is_stmt 1 view .LVU48
+ 129              		.loc 1 304 25 is_stmt 0 view .LVU49
+ 130 004e 4278     		ldrb	r2, [r0, #1]	@ zero_extendqisi2
+ 131              	.LVL12:
+ 305:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     taac_time           = FSDev_SD_TAAC_TimeUnit[taac & 0x07u];
+ 132              		.loc 1 305 5 is_stmt 1 view .LVU50
+ 133              		.loc 1 305 55 is_stmt 0 view .LVU51
+ 134 0050 02F00704 		and	r4, r2, #7
+ 135              		.loc 1 305 25 view .LVU52
+ 136 0054 204B     		ldr	r3, .L10+8
+ 137 0056 53F82440 		ldr	r4, [r3, r4, lsl #2]
+ 138              	.LVL13:
+ 306:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     taac_time          *= FSDev_SD_TAAC_TimeValue[(taac & 0x78u) >> 3];
+ 139              		.loc 1 306 5 is_stmt 1 view .LVU53
+ 140              		.loc 1 306 66 is_stmt 0 view .LVU54
+ 141 005a C2F3C302 		ubfx	r2, r2, #3, #4
+ 142              	.LVL14:
+ 143              		.loc 1 306 50 view .LVU55
+ 144 005e 1F4B     		ldr	r3, .L10+12
+ 145 0060 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 146              		.loc 1 306 24 view .LVU56
+ 147 0064 04FB03F4 		mul	r4, r4, r3
+ 148              	.LVL15:
+ 307:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ARM GAS  /tmp/ccBThpyc.s 			page 9
+
+
+ 308:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     nsac                = csd[2];                               /* NSAC data access time.          
+ 149              		.loc 1 308 5 is_stmt 1 view .LVU57
+ 150              		.loc 1 308 25 is_stmt 0 view .LVU58
+ 151 0068 8578     		ldrb	r5, [r0, #2]	@ zero_extendqisi2
+ 152              	.LVL16:
+ 309:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 310:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     tran_spd            = csd[3];                               /* Max transfer rate.              
+ 153              		.loc 1 310 5 is_stmt 1 view .LVU59
+ 154              		.loc 1 310 25 is_stmt 0 view .LVU60
+ 155 006a C278     		ldrb	r2, [r0, #3]	@ zero_extendqisi2
+ 156              	.LVL17:
+ 311:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     tran_spd_unit       = tran_spd & 0x07u;
+ 157              		.loc 1 311 5 is_stmt 1 view .LVU61
+ 158              		.loc 1 311 25 is_stmt 0 view .LVU62
+ 159 006c 02F00703 		and	r3, r2, #7
+ 160              	.LVL18:
+ 312:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     if (tran_spd_unit > 3u) {
+ 161              		.loc 1 312 5 is_stmt 1 view .LVU63
+ 162              		.loc 1 312 8 is_stmt 0 view .LVU64
+ 163 0070 12F0040F 		tst	r2, #4
+ 164 0074 2AD1     		bne	.L7
+ 313:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         return (DEF_NO);
+ 314:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     }
+ 315:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     clk_freq            = FSDev_SD_TranSpdUnit[tran_spd_unit];
+ 165              		.loc 1 315 5 is_stmt 1 view .LVU65
+ 166              		.loc 1 315 25 is_stmt 0 view .LVU66
+ 167 0076 1A48     		ldr	r0, .L10+16
+ 168              	.LVL19:
+ 169              		.loc 1 315 25 view .LVU67
+ 170 0078 50F82330 		ldr	r3, [r0, r3, lsl #2]
+ 171              	.LVL20:
+ 316:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     clk_freq           *= FSDev_SD_TranSpdValue[(tran_spd & 0x78u) >> 3];
+ 172              		.loc 1 316 5 is_stmt 1 view .LVU68
+ 173              		.loc 1 316 68 is_stmt 0 view .LVU69
+ 174 007c C2F3C302 		ubfx	r2, r2, #3, #4
+ 175              	.LVL21:
+ 176              		.loc 1 316 48 view .LVU70
+ 177 0080 1848     		ldr	r0, .L10+20
+ 178 0082 50F82220 		ldr	r2, [r0, r2, lsl #2]
+ 179              		.loc 1 316 24 view .LVU71
+ 180 0086 03FB02F3 		mul	r3, r3, r2
+ 181              	.LVL22:
+ 317:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->ClkFreq  = clk_freq;                             /* Max clk freq, in clk/sec.       
+ 182              		.loc 1 317 5 is_stmt 1 view .LVU72
+ 183              		.loc 1 317 25 is_stmt 0 view .LVU73
+ 184 008a 8B60     		str	r3, [r1, #8]
+ 185              	.LVL23:
+ 318:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 319:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     clk_freq           /= 100u;                                 /* Conv to clk/100 us.             
+ 186              		.loc 1 319 5 is_stmt 1 view .LVU74
+ 187              		.loc 1 319 24 is_stmt 0 view .LVU75
+ 188 008c 164A     		ldr	r2, .L10+24
+ 189 008e A2FB0323 		umull	r2, r3, r2, r3
+ 190              	.LVL24:
+ 191              		.loc 1 319 24 view .LVU76
+ 192 0092 5B09     		lsrs	r3, r3, #5
+ 193              	.LVL25:
+ARM GAS  /tmp/ccBThpyc.s 			page 10
+
+
+ 320:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     taac_time          /= 1000000u;                             /* Conv to 100 us.                 
+ 194              		.loc 1 320 5 is_stmt 1 view .LVU77
+ 195              		.loc 1 320 24 is_stmt 0 view .LVU78
+ 196 0094 154A     		ldr	r2, .L10+28
+ 197 0096 A2FB0402 		umull	r0, r2, r2, r4
+ 198 009a 920C     		lsrs	r2, r2, #18
+ 199              	.LVL26:
+ 321:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->Timeout  = (taac_time * clk_freq) + nsac;        /* Timeout, in clks.               
+ 200              		.loc 1 321 5 is_stmt 1 view .LVU79
+ 201              		.loc 1 321 50 is_stmt 0 view .LVU80
+ 202 009c 02FB0353 		mla	r3, r2, r3, r5
+ 203              	.LVL27:
+ 204              		.loc 1 321 25 view .LVU81
+ 205 00a0 CB60     		str	r3, [r1, #12]
+ 322:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 323:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     return (DEF_YES);
+ 206              		.loc 1 323 5 is_stmt 1 view .LVU82
+ 207              		.loc 1 323 12 is_stmt 0 view .LVU83
+ 208 00a2 0120     		movs	r0, #1
+ 209              	.LVL28:
+ 210              	.L4:
+ 324:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** }
+ 211              		.loc 1 324 1 view .LVU84
+ 212 00a4 30BC     		pop	{r4, r5}
+ 213              	.LCFI1:
+ 214              		.cfi_remember_state
+ 215              		.cfi_restore 5
+ 216              		.cfi_restore 4
+ 217              		.cfi_def_cfa_offset 0
+ 218 00a6 7047     		bx	lr
+ 219              	.LVL29:
+ 220              	.L9:
+ 221              	.LCFI2:
+ 222              		.cfi_restore_state
+ 264:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                            | (((CPU_INT32U)csd[8] & 0xFFu) <<  8)
+ 223              		.loc 1 264 9 is_stmt 1 view .LVU85
+ 264:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                            | (((CPU_INT32U)csd[8] & 0xFFu) <<  8)
+ 224              		.loc 1 264 47 is_stmt 0 view .LVU86
+ 225 00a8 C379     		ldrb	r3, [r0, #7]	@ zero_extendqisi2
+ 264:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                            | (((CPU_INT32U)csd[8] & 0xFFu) <<  8)
+ 226              		.loc 1 264 60 view .LVU87
+ 227 00aa 1B04     		lsls	r3, r3, #16
+ 228 00ac 03F47C13 		and	r3, r3, #4128768
+ 265:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                            | (((CPU_INT32U)csd[9] & 0xFFu) <<  0);
+ 229              		.loc 1 265 47 view .LVU88
+ 230 00b0 027A     		ldrb	r2, [r0, #8]	@ zero_extendqisi2
+ 231              	.LVL30:
+ 265:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                            | (((CPU_INT32U)csd[9] & 0xFFu) <<  0);
+ 232              		.loc 1 265 28 view .LVU89
+ 233 00b2 43EA0223 		orr	r3, r3, r2, lsl #8
+ 266:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 234              		.loc 1 266 47 view .LVU90
+ 235 00b6 427A     		ldrb	r2, [r0, #9]	@ zero_extendqisi2
+ 264:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                            | (((CPU_INT32U)csd[8] & 0xFFu) <<  8)
+ 236              		.loc 1 264 28 view .LVU91
+ 237 00b8 1343     		orrs	r3, r3, r2
+ 238              	.LVL31:
+ARM GAS  /tmp/ccBThpyc.s 			page 11
+
+
+ 268:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         p_sd_info->NbrBlks = (c_size + 1u) * 1024u;
+ 239              		.loc 1 268 9 is_stmt 1 view .LVU92
+ 268:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         p_sd_info->NbrBlks = (c_size + 1u) * 1024u;
+ 240              		.loc 1 268 28 is_stmt 0 view .LVU93
+ 241 00ba 4FF40072 		mov	r2, #512
+ 242 00be 0A60     		str	r2, [r1]
+ 269:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 243              		.loc 1 269 9 is_stmt 1 view .LVU94
+ 269:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 244              		.loc 1 269 38 is_stmt 0 view .LVU95
+ 245 00c0 0133     		adds	r3, r3, #1
+ 246              	.LVL32:
+ 269:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 247              		.loc 1 269 44 view .LVU96
+ 248 00c2 9B02     		lsls	r3, r3, #10
+ 249              	.LVL33:
+ 269:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 250              		.loc 1 269 28 view .LVU97
+ 251 00c4 4B60     		str	r3, [r1, #4]
+ 252 00c6 C2E7     		b	.L3
+ 253              	.LVL34:
+ 254              	.L5:
+ 277:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         }
+ 255              		.loc 1 277 20 view .LVU98
+ 256 00c8 0020     		movs	r0, #0
+ 257              	.LVL35:
+ 277:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         }
+ 258              		.loc 1 277 20 view .LVU99
+ 259 00ca EBE7     		b	.L4
+ 260              	.LVL36:
+ 261              	.L7:
+ 313:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     }
+ 262              		.loc 1 313 16 view .LVU100
+ 263 00cc 0020     		movs	r0, #0
+ 264              	.LVL37:
+ 313:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     }
+ 265              		.loc 1 313 16 view .LVU101
+ 266 00ce E9E7     		b	.L4
+ 267              	.L11:
+ 268              		.align	2
+ 269              	.L10:
+ 270 00d0 00000000 		.word	.LANCHOR0
+ 271 00d4 00000000 		.word	.LANCHOR1
+ 272 00d8 00000000 		.word	.LANCHOR2
+ 273 00dc 00000000 		.word	.LANCHOR3
+ 274 00e0 00000000 		.word	.LANCHOR4
+ 275 00e4 00000000 		.word	.LANCHOR5
+ 276 00e8 1F85EB51 		.word	1374389535
+ 277 00ec 83DE1B43 		.word	1125899907
+ 278              		.cfi_endproc
+ 279              	.LFE0:
+ 281              		.section	.text.FSDev_SD_ParseCID,"ax",%progbits
+ 282              		.align	1
+ 283              		.global	FSDev_SD_ParseCID
+ 284              		.syntax unified
+ 285              		.thumb
+ 286              		.thumb_func
+ARM GAS  /tmp/ccBThpyc.s 			page 12
+
+
+ 287              		.fpu fpv4-sp-d16
+ 289              	FSDev_SD_ParseCID:
+ 290              	.LVL38:
+ 291              	.LFB1:
+ 325:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 326:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 327:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+ 328:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 329:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                         FSDev_SD_ParseCID()
+ 330:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 331:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Description : Parse CID data.
+ 332:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 333:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Argument(s) : cid         Array holding CID data.
+ 334:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 335:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *               p_sd_info   Pointer to struct into which CID data will be parsed.
+ 336:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 337:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *               card_type   Type of card :
+ 338:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 339:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                               FS_DEV_SD_CARDTYPE_SD_V1_X       SD card v1.x.
+ 340:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                               FS_DEV_SD_CARDTYPE_SD_V2_0       SD card v2.0, standard capacity.
+ 341:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                               FS_DEV_SD_CARDTYPE_SD_V2_0_HC    SD card v2.0, high capacity.
+ 342:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                               FS_DEV_SD_CARDTYPE_MMC           MMC, standard capacity.
+ 343:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                               FS_DEV_SD_CARDTYPE_MMC_HC        MMC, high capacity.
+ 344:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 345:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Return(s)   : DEF_OK   if the CID could be parsed.
+ 346:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *               DEF_FAIL if the CID was illegal.
+ 347:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 348:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Note(s)     : (1) (a) For SD cards, the structure of the CID is defined in [Ref 1] Section 5.1.
+ 349:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 350:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                   (b) For MMC cards, the structure of the CID is defined in [Ref 2] Section 8.2.
+ 351:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 352:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+ 353:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 354:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** CPU_BOOLEAN  FSDev_SD_ParseCID (CPU_INT08U       cid[],
+ 355:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                 FS_DEV_SD_INFO  *p_sd_info,
+ 356:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                 CPU_INT08U       card_type)
+ 357:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** {
+ 292              		.loc 1 357 1 is_stmt 1 view -0
+ 293              		.cfi_startproc
+ 294              		@ args = 0, pretend = 0, frame = 8
+ 295              		@ frame_needed = 0, uses_anonymous_args = 0
+ 296              		.loc 1 357 1 is_stmt 0 view .LVU103
+ 297 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 298              	.LCFI3:
+ 299              		.cfi_def_cfa_offset 20
+ 300              		.cfi_offset 4, -20
+ 301              		.cfi_offset 5, -16
+ 302              		.cfi_offset 6, -12
+ 303              		.cfi_offset 7, -8
+ 304              		.cfi_offset 14, -4
+ 305 0002 83B0     		sub	sp, sp, #12
+ 306              	.LCFI4:
+ 307              		.cfi_def_cfa_offset 32
+ 308 0004 0C46     		mov	r4, r1
+ 358:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT08U  manuf_id;
+ 309              		.loc 1 358 5 is_stmt 1 view .LVU104
+ 359:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT16U  oem_id;
+ARM GAS  /tmp/ccBThpyc.s 			page 13
+
+
+ 310              		.loc 1 359 5 view .LVU105
+ 360:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT32U  prod_sn;
+ 311              		.loc 1 360 5 view .LVU106
+ 361:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_CHAR    prod_name[7];
+ 312              		.loc 1 361 5 view .LVU107
+ 362:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT16U  prod_rev;
+ 313              		.loc 1 362 5 view .LVU108
+ 363:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT16U  date;
+ 314              		.loc 1 363 5 view .LVU109
+ 364:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 365:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 366:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     manuf_id =  cid[0];
+ 315              		.loc 1 366 5 view .LVU110
+ 316              		.loc 1 366 14 is_stmt 0 view .LVU111
+ 317 0006 0778     		ldrb	r7, [r0]	@ zero_extendqisi2
+ 318              	.LVL39:
+ 367:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 368:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     oem_id   = (CPU_INT16U)((CPU_INT16U)cid[1] << 8)
+ 319              		.loc 1 368 5 is_stmt 1 view .LVU112
+ 320              		.loc 1 368 44 is_stmt 0 view .LVU113
+ 321 0008 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 369:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****              | (CPU_INT16U)((CPU_INT16U)cid[2] << 0);
+ 322              		.loc 1 369 44 view .LVU114
+ 323 000a 8178     		ldrb	r1, [r0, #2]	@ zero_extendqisi2
+ 324              	.LVL40:
+ 368:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****              | (CPU_INT16U)((CPU_INT16U)cid[2] << 0);
+ 325              		.loc 1 368 14 view .LVU115
+ 326 000c 41EA0321 		orr	r1, r1, r3, lsl #8
+ 327              	.LVL41:
+ 370:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 371:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     if ((card_type == FS_DEV_SD_CARDTYPE_SD_V1_X) ||
+ 328              		.loc 1 371 5 is_stmt 1 view .LVU116
+ 372:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         (card_type == FS_DEV_SD_CARDTYPE_SD_V2_0) ||
+ 329              		.loc 1 372 51 is_stmt 0 view .LVU117
+ 330 0010 013A     		subs	r2, r2, #1
+ 331              	.LVL42:
+ 332              		.loc 1 372 51 view .LVU118
+ 333 0012 D2B2     		uxtb	r2, r2
+ 371:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         (card_type == FS_DEV_SD_CARDTYPE_SD_V2_0) ||
+ 334              		.loc 1 371 8 view .LVU119
+ 335 0014 022A     		cmp	r2, #2
+ 336 0016 3ED8     		bhi	.L13
+ 373:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         (card_type == FS_DEV_SD_CARDTYPE_SD_V2_0_HC)) {
+ 374:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_sn      = ((CPU_INT32U)cid[9]  << 24)
+ 337              		.loc 1 374 9 is_stmt 1 view .LVU120
+ 338              		.loc 1 374 40 is_stmt 0 view .LVU121
+ 339 0018 427A     		ldrb	r2, [r0, #9]	@ zero_extendqisi2
+ 375:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      | ((CPU_INT32U)cid[10] << 16)
+ 340              		.loc 1 375 40 view .LVU122
+ 341 001a 837A     		ldrb	r3, [r0, #10]	@ zero_extendqisi2
+ 342              		.loc 1 375 45 view .LVU123
+ 343 001c 1B04     		lsls	r3, r3, #16
+ 344              		.loc 1 375 22 view .LVU124
+ 345 001e 43EA0263 		orr	r3, r3, r2, lsl #24
+ 376:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      | ((CPU_INT32U)cid[11] <<  8)
+ 346              		.loc 1 376 40 view .LVU125
+ 347 0022 C27A     		ldrb	r2, [r0, #11]	@ zero_extendqisi2
+ARM GAS  /tmp/ccBThpyc.s 			page 14
+
+
+ 348              		.loc 1 376 22 view .LVU126
+ 349 0024 43EA0223 		orr	r3, r3, r2, lsl #8
+ 377:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      | ((CPU_INT32U)cid[12] <<  0);
+ 350              		.loc 1 377 40 view .LVU127
+ 351 0028 027B     		ldrb	r2, [r0, #12]	@ zero_extendqisi2
+ 374:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      | ((CPU_INT32U)cid[10] << 16)
+ 352              		.loc 1 374 22 view .LVU128
+ 353 002a 1343     		orrs	r3, r3, r2
+ 354              	.LVL43:
+ 378:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 379:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[0] = (CPU_CHAR)cid[3];
+ 355              		.loc 1 379 9 is_stmt 1 view .LVU129
+ 356              		.loc 1 379 24 is_stmt 0 view .LVU130
+ 357 002c C278     		ldrb	r2, [r0, #3]	@ zero_extendqisi2
+ 358              		.loc 1 379 22 view .LVU131
+ 359 002e 8DF80020 		strb	r2, [sp]
+ 380:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[1] = (CPU_CHAR)cid[4];
+ 360              		.loc 1 380 9 is_stmt 1 view .LVU132
+ 361              		.loc 1 380 24 is_stmt 0 view .LVU133
+ 362 0032 0279     		ldrb	r2, [r0, #4]	@ zero_extendqisi2
+ 363              		.loc 1 380 22 view .LVU134
+ 364 0034 8DF80120 		strb	r2, [sp, #1]
+ 381:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[2] = (CPU_CHAR)cid[5];
+ 365              		.loc 1 381 9 is_stmt 1 view .LVU135
+ 366              		.loc 1 381 24 is_stmt 0 view .LVU136
+ 367 0038 4279     		ldrb	r2, [r0, #5]	@ zero_extendqisi2
+ 368              		.loc 1 381 22 view .LVU137
+ 369 003a 8DF80220 		strb	r2, [sp, #2]
+ 382:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[3] = (CPU_CHAR)cid[6];
+ 370              		.loc 1 382 9 is_stmt 1 view .LVU138
+ 371              		.loc 1 382 24 is_stmt 0 view .LVU139
+ 372 003e 8279     		ldrb	r2, [r0, #6]	@ zero_extendqisi2
+ 373              		.loc 1 382 22 view .LVU140
+ 374 0040 8DF80320 		strb	r2, [sp, #3]
+ 383:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[4] = (CPU_CHAR)cid[7];
+ 375              		.loc 1 383 9 is_stmt 1 view .LVU141
+ 376              		.loc 1 383 24 is_stmt 0 view .LVU142
+ 377 0044 C279     		ldrb	r2, [r0, #7]	@ zero_extendqisi2
+ 378              		.loc 1 383 22 view .LVU143
+ 379 0046 8DF80420 		strb	r2, [sp, #4]
+ 384:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[5] = (CPU_CHAR)'\0';
+ 380              		.loc 1 384 9 is_stmt 1 view .LVU144
+ 381              		.loc 1 384 22 is_stmt 0 view .LVU145
+ 382 004a 0022     		movs	r2, #0
+ 383 004c 8DF80520 		strb	r2, [sp, #5]
+ 385:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[6] = (CPU_CHAR)'\0';
+ 384              		.loc 1 385 9 is_stmt 1 view .LVU146
+ 385              		.loc 1 385 22 is_stmt 0 view .LVU147
+ 386 0050 8DF80620 		strb	r2, [sp, #6]
+ 386:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 387:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_rev     = ((((CPU_INT16U)cid[8] & 0xF0u) >> 4) * 10u)
+ 387              		.loc 1 387 9 is_stmt 1 view .LVU148
+ 388              		.loc 1 387 42 is_stmt 0 view .LVU149
+ 389 0054 027A     		ldrb	r2, [r0, #8]	@ zero_extendqisi2
+ 390              		.loc 1 387 55 view .LVU150
+ 391 0056 1609     		lsrs	r6, r2, #4
+ 392              		.loc 1 387 61 view .LVU151
+ARM GAS  /tmp/ccBThpyc.s 			page 15
+
+
+ 393 0058 06EB8606 		add	r6, r6, r6, lsl #2
+ 388:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      +   ((CPU_INT16U)cid[8] & 0x0Fu);
+ 394              		.loc 1 388 46 view .LVU152
+ 395 005c 02F00F02 		and	r2, r2, #15
+ 387:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      +   ((CPU_INT16U)cid[8] & 0x0Fu);
+ 396              		.loc 1 387 22 view .LVU153
+ 397 0060 02EB4606 		add	r6, r2, r6, lsl #1
+ 398              	.LVL44:
+ 389:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 390:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         date         =  (((CPU_INT16U)cid[14] & 0x0Fu) * 256u)
+ 399              		.loc 1 390 9 is_stmt 1 view .LVU154
+ 400              		.loc 1 390 42 is_stmt 0 view .LVU155
+ 401 0064 827B     		ldrb	r2, [r0, #14]	@ zero_extendqisi2
+ 391:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      + ((((CPU_INT16U)cid[13] & 0x0Fu) << 4)
+ 402              		.loc 1 391 22 view .LVU156
+ 403 0066 02F00F0C 		and	ip, r2, #15
+ 404              		.loc 1 391 42 view .LVU157
+ 405 006a 457B     		ldrb	r5, [r0, #13]	@ zero_extendqisi2
+ 406              		.loc 1 391 56 view .LVU158
+ 407 006c 2D01     		lsls	r5, r5, #4
+ 408 006e 05F0F005 		and	r5, r5, #240
+ 392:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      +  (((CPU_INT16U)cid[14] & 0xF0u) >> 4));
+ 409              		.loc 1 392 22 view .LVU159
+ 410 0072 05EB1215 		add	r5, r5, r2, lsr #4
+ 390:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      + ((((CPU_INT16U)cid[13] & 0x0Fu) << 4)
+ 411              		.loc 1 390 22 view .LVU160
+ 412 0076 05EB0C25 		add	r5, r5, ip, lsl #8
+ 413              	.LVL45:
+ 414              	.L14:
+ 393:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 394:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 395:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     } else {
+ 396:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_sn      = ((CPU_INT32U)cid[10] << 24)
+ 397:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      | ((CPU_INT32U)cid[11] << 16)
+ 398:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      | ((CPU_INT32U)cid[12] <<  8)
+ 399:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      | ((CPU_INT32U)cid[13] <<  0);
+ 400:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 401:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[0] = (CPU_CHAR)cid[3];
+ 402:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[1] = (CPU_CHAR)cid[4];
+ 403:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[2] = (CPU_CHAR)cid[5];
+ 404:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[3] = (CPU_CHAR)cid[6];
+ 405:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[4] = (CPU_CHAR)cid[7];
+ 406:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[5] = (CPU_CHAR)cid[8];
+ 407:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[6] = (CPU_CHAR)'\0';
+ 408:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 409:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_rev     = (((CPU_INT16U)cid[9] & 0x0Fu) * 10u)
+ 410:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      + (((CPU_INT16U)cid[9] & 0xF0u) >> 4);
+ 411:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 412:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         date         = ((((CPU_INT16U)cid[14] & 0xF0u) >> 4) * 256u)
+ 413:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      +   ((CPU_INT16U)cid[14] & 0x0Fu);
+ 414:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     }
+ 415:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 416:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->ManufID = manuf_id;
+ 415              		.loc 1 416 5 is_stmt 1 view .LVU161
+ 416              		.loc 1 416 24 is_stmt 0 view .LVU162
+ 417 007a A774     		strb	r7, [r4, #18]
+ 417:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->OEM_ID  = oem_id;
+ARM GAS  /tmp/ccBThpyc.s 			page 16
+
+
+ 418              		.loc 1 417 5 is_stmt 1 view .LVU163
+ 419              		.loc 1 417 24 is_stmt 0 view .LVU164
+ 420 007c A182     		strh	r1, [r4, #20]	@ movhi
+ 418:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->ProdSN  = prod_sn;
+ 421              		.loc 1 418 5 is_stmt 1 view .LVU165
+ 422              		.loc 1 418 24 is_stmt 0 view .LVU166
+ 423 007e A361     		str	r3, [r4, #24]
+ 419:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     Mem_Copy(&p_sd_info->ProdName[0], &prod_name[0], 7u);
+ 424              		.loc 1 419 5 is_stmt 1 view .LVU167
+ 425 0080 0722     		movs	r2, #7
+ 426 0082 6946     		mov	r1, sp
+ 427              	.LVL46:
+ 428              		.loc 1 419 5 is_stmt 0 view .LVU168
+ 429 0084 04F11C00 		add	r0, r4, #28
+ 430              	.LVL47:
+ 431              		.loc 1 419 5 view .LVU169
+ 432 0088 FFF7FEFF 		bl	Mem_Copy
+ 433              	.LVL48:
+ 420:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->ProdRev = prod_rev;
+ 434              		.loc 1 420 5 is_stmt 1 view .LVU170
+ 435              		.loc 1 420 24 is_stmt 0 view .LVU171
+ 436 008c A684     		strh	r6, [r4, #36]	@ movhi
+ 421:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->Date    = date;
+ 437              		.loc 1 421 5 is_stmt 1 view .LVU172
+ 438              		.loc 1 421 24 is_stmt 0 view .LVU173
+ 439 008e E584     		strh	r5, [r4, #38]	@ movhi
+ 422:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 423:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     return (DEF_YES);
+ 440              		.loc 1 423 5 is_stmt 1 view .LVU174
+ 424:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** }
+ 441              		.loc 1 424 1 is_stmt 0 view .LVU175
+ 442 0090 0120     		movs	r0, #1
+ 443 0092 03B0     		add	sp, sp, #12
+ 444              	.LCFI5:
+ 445              		.cfi_remember_state
+ 446              		.cfi_def_cfa_offset 20
+ 447              		@ sp needed
+ 448 0094 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 449              	.LVL49:
+ 450              	.L13:
+ 451              	.LCFI6:
+ 452              		.cfi_restore_state
+ 396:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      | ((CPU_INT32U)cid[11] << 16)
+ 453              		.loc 1 396 9 is_stmt 1 view .LVU176
+ 396:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      | ((CPU_INT32U)cid[11] << 16)
+ 454              		.loc 1 396 40 is_stmt 0 view .LVU177
+ 455 0096 827A     		ldrb	r2, [r0, #10]	@ zero_extendqisi2
+ 397:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      | ((CPU_INT32U)cid[12] <<  8)
+ 456              		.loc 1 397 40 view .LVU178
+ 457 0098 C37A     		ldrb	r3, [r0, #11]	@ zero_extendqisi2
+ 397:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      | ((CPU_INT32U)cid[12] <<  8)
+ 458              		.loc 1 397 45 view .LVU179
+ 459 009a 1B04     		lsls	r3, r3, #16
+ 397:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      | ((CPU_INT32U)cid[12] <<  8)
+ 460              		.loc 1 397 22 view .LVU180
+ 461 009c 43EA0263 		orr	r3, r3, r2, lsl #24
+ 398:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      | ((CPU_INT32U)cid[13] <<  0);
+ARM GAS  /tmp/ccBThpyc.s 			page 17
+
+
+ 462              		.loc 1 398 40 view .LVU181
+ 463 00a0 027B     		ldrb	r2, [r0, #12]	@ zero_extendqisi2
+ 398:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      | ((CPU_INT32U)cid[13] <<  0);
+ 464              		.loc 1 398 22 view .LVU182
+ 465 00a2 43EA0223 		orr	r3, r3, r2, lsl #8
+ 399:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 466              		.loc 1 399 40 view .LVU183
+ 467 00a6 427B     		ldrb	r2, [r0, #13]	@ zero_extendqisi2
+ 396:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      | ((CPU_INT32U)cid[11] << 16)
+ 468              		.loc 1 396 22 view .LVU184
+ 469 00a8 1343     		orrs	r3, r3, r2
+ 470              	.LVL50:
+ 401:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[1] = (CPU_CHAR)cid[4];
+ 471              		.loc 1 401 9 is_stmt 1 view .LVU185
+ 401:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[1] = (CPU_CHAR)cid[4];
+ 472              		.loc 1 401 24 is_stmt 0 view .LVU186
+ 473 00aa C278     		ldrb	r2, [r0, #3]	@ zero_extendqisi2
+ 401:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[1] = (CPU_CHAR)cid[4];
+ 474              		.loc 1 401 22 view .LVU187
+ 475 00ac 8DF80020 		strb	r2, [sp]
+ 402:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[2] = (CPU_CHAR)cid[5];
+ 476              		.loc 1 402 9 is_stmt 1 view .LVU188
+ 402:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[2] = (CPU_CHAR)cid[5];
+ 477              		.loc 1 402 24 is_stmt 0 view .LVU189
+ 478 00b0 0279     		ldrb	r2, [r0, #4]	@ zero_extendqisi2
+ 402:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[2] = (CPU_CHAR)cid[5];
+ 479              		.loc 1 402 22 view .LVU190
+ 480 00b2 8DF80120 		strb	r2, [sp, #1]
+ 403:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[3] = (CPU_CHAR)cid[6];
+ 481              		.loc 1 403 9 is_stmt 1 view .LVU191
+ 403:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[3] = (CPU_CHAR)cid[6];
+ 482              		.loc 1 403 24 is_stmt 0 view .LVU192
+ 483 00b6 4279     		ldrb	r2, [r0, #5]	@ zero_extendqisi2
+ 403:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[3] = (CPU_CHAR)cid[6];
+ 484              		.loc 1 403 22 view .LVU193
+ 485 00b8 8DF80220 		strb	r2, [sp, #2]
+ 404:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[4] = (CPU_CHAR)cid[7];
+ 486              		.loc 1 404 9 is_stmt 1 view .LVU194
+ 404:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[4] = (CPU_CHAR)cid[7];
+ 487              		.loc 1 404 24 is_stmt 0 view .LVU195
+ 488 00bc 8279     		ldrb	r2, [r0, #6]	@ zero_extendqisi2
+ 404:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[4] = (CPU_CHAR)cid[7];
+ 489              		.loc 1 404 22 view .LVU196
+ 490 00be 8DF80320 		strb	r2, [sp, #3]
+ 405:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[5] = (CPU_CHAR)cid[8];
+ 491              		.loc 1 405 9 is_stmt 1 view .LVU197
+ 405:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[5] = (CPU_CHAR)cid[8];
+ 492              		.loc 1 405 24 is_stmt 0 view .LVU198
+ 493 00c2 C279     		ldrb	r2, [r0, #7]	@ zero_extendqisi2
+ 405:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[5] = (CPU_CHAR)cid[8];
+ 494              		.loc 1 405 22 view .LVU199
+ 495 00c4 8DF80420 		strb	r2, [sp, #4]
+ 406:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[6] = (CPU_CHAR)'\0';
+ 496              		.loc 1 406 9 is_stmt 1 view .LVU200
+ 406:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[6] = (CPU_CHAR)'\0';
+ 497              		.loc 1 406 24 is_stmt 0 view .LVU201
+ 498 00c8 027A     		ldrb	r2, [r0, #8]	@ zero_extendqisi2
+ARM GAS  /tmp/ccBThpyc.s 			page 18
+
+
+ 406:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         prod_name[6] = (CPU_CHAR)'\0';
+ 499              		.loc 1 406 22 view .LVU202
+ 500 00ca 8DF80520 		strb	r2, [sp, #5]
+ 407:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 501              		.loc 1 407 9 is_stmt 1 view .LVU203
+ 407:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 502              		.loc 1 407 22 is_stmt 0 view .LVU204
+ 503 00ce 0022     		movs	r2, #0
+ 504 00d0 8DF80620 		strb	r2, [sp, #6]
+ 409:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      + (((CPU_INT16U)cid[9] & 0xF0u) >> 4);
+ 505              		.loc 1 409 9 is_stmt 1 view .LVU205
+ 409:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      + (((CPU_INT16U)cid[9] & 0xF0u) >> 4);
+ 506              		.loc 1 409 41 is_stmt 0 view .LVU206
+ 507 00d4 427A     		ldrb	r2, [r0, #9]	@ zero_extendqisi2
+ 410:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 508              		.loc 1 410 22 view .LVU207
+ 509 00d6 02F00F06 		and	r6, r2, #15
+ 510 00da 06EB8606 		add	r6, r6, r6, lsl #2
+ 410:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 511              		.loc 1 410 54 view .LVU208
+ 512 00de 1209     		lsrs	r2, r2, #4
+ 409:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      + (((CPU_INT16U)cid[9] & 0xF0u) >> 4);
+ 513              		.loc 1 409 22 view .LVU209
+ 514 00e0 02EB4606 		add	r6, r2, r6, lsl #1
+ 515              	.LVL51:
+ 412:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      +   ((CPU_INT16U)cid[14] & 0x0Fu);
+ 516              		.loc 1 412 9 is_stmt 1 view .LVU210
+ 412:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      +   ((CPU_INT16U)cid[14] & 0x0Fu);
+ 517              		.loc 1 412 42 is_stmt 0 view .LVU211
+ 518 00e4 857B     		ldrb	r5, [r0, #14]	@ zero_extendqisi2
+ 412:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      +   ((CPU_INT16U)cid[14] & 0x0Fu);
+ 519              		.loc 1 412 56 view .LVU212
+ 520 00e6 2A09     		lsrs	r2, r5, #4
+ 413:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     }
+ 521              		.loc 1 413 47 view .LVU213
+ 522 00e8 05F00F05 		and	r5, r5, #15
+ 412:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      +   ((CPU_INT16U)cid[14] & 0x0Fu);
+ 523              		.loc 1 412 22 view .LVU214
+ 524 00ec 05EB0225 		add	r5, r5, r2, lsl #8
+ 525              	.LVL52:
+ 412:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                      +   ((CPU_INT16U)cid[14] & 0x0Fu);
+ 526              		.loc 1 412 22 view .LVU215
+ 527 00f0 C3E7     		b	.L14
+ 528              		.cfi_endproc
+ 529              	.LFE1:
+ 531              		.section	.text.FSDev_SD_ChkSumCalc_7Bit,"ax",%progbits
+ 532              		.align	1
+ 533              		.global	FSDev_SD_ChkSumCalc_7Bit
+ 534              		.syntax unified
+ 535              		.thumb
+ 536              		.thumb_func
+ 537              		.fpu fpv4-sp-d16
+ 539              	FSDev_SD_ChkSumCalc_7Bit:
+ 540              	.LVL53:
+ 541              	.LFB2:
+ 425:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 426:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ARM GAS  /tmp/ccBThpyc.s 			page 19
+
+
+ 427:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 428:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+ 429:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 430:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                     FSDev_SD_ChkSumCalc_7Bit()
+ 431:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 432:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Description : Calculate 7-bit Cyclic Redundancy Checksum (CRC).
+ 433:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 434:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Argument(s) : p_data      Pointer to buffer.
+ 435:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 436:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *               size        Size of buffer, in octets.
+ 437:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 438:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Return(s)   : 7-bit CRC, in 8-bit value.
+ 439:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 440:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Note(s)     : (1) According to [Ref 1], Section 7.2.2 :
+ 441:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 442:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                   (a) The CRC7 is required for the reset command, CMD0, since the card is still i
+ 443:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                       mode when this command is received.
+ 444:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 445:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                   (b) Despite being in SPI mode, the card always verifies the CRC for CMD8.
+ 446:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 447:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                   (c) Otherwise, unless CMD59 is sent to enable CRC verification, the CRC7 need n
+ 448:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                       be calculated.
+ 449:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 450:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+ 451:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 452:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** CPU_INT08U  FSDev_SD_ChkSumCalc_7Bit (CPU_INT08U  *p_data,
+ 453:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                       CPU_INT32U   size)
+ 454:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** {
+ 542              		.loc 1 454 1 is_stmt 1 view -0
+ 543              		.cfi_startproc
+ 544              		@ args = 0, pretend = 0, frame = 0
+ 545              		@ frame_needed = 0, uses_anonymous_args = 0
+ 546              		@ link register save eliminated.
+ 455:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT08U  crc;
+ 547              		.loc 1 455 5 view .LVU217
+ 456:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT08U  data;
+ 548              		.loc 1 456 5 view .LVU218
+ 457:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT08U  mask;
+ 549              		.loc 1 457 5 view .LVU219
+ 458:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT08U  bit_ix;
+ 550              		.loc 1 458 5 view .LVU220
+ 459:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 460:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 461:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     crc = 0u;
+ 551              		.loc 1 461 5 view .LVU221
+ 462:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 463:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     while (size > 0u) {
+ 552              		.loc 1 463 5 view .LVU222
+ 461:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 553              		.loc 1 461 9 is_stmt 0 view .LVU223
+ 554 0000 0023     		movs	r3, #0
+ 555              	.LVL54:
+ 556              		.loc 1 463 11 is_stmt 1 view .LVU224
+ 557 0002 61B3     		cbz	r1, .L29
+ 454:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT08U  crc;
+ 558              		.loc 1 454 1 is_stmt 0 view .LVU225
+ 559 0004 30B4     		push	{r4, r5}
+ARM GAS  /tmp/ccBThpyc.s 			page 20
+
+
+ 560              	.LCFI7:
+ 561              		.cfi_def_cfa_offset 8
+ 562              		.cfi_offset 4, -8
+ 563              		.cfi_offset 5, -4
+ 564 0006 13E0     		b	.L24
+ 565              	.LVL55:
+ 566              	.L18:
+ 464:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         data  = *p_data;
+ 465:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 /* Add in uppermost bit of byte.   
+ 466:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         mask = (DEF_BIT_IS_SET(data, DEF_BIT_07) == DEF_YES) ? DEF_BIT_06 : DEF_BIT_NONE;
+ 467:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         if (((crc & DEF_BIT_06) ^ mask) != 0x00u) {
+ 468:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             crc = ((CPU_INT08U)(crc << 1)) ^ FS_DEV_SD_CRC7_POLY;
+ 469:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         } else {
+ 470:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             crc <<= 1;
+ 567              		.loc 1 470 13 is_stmt 1 view .LVU226
+ 568              		.loc 1 470 17 is_stmt 0 view .LVU227
+ 569 0008 5B00     		lsls	r3, r3, #1
+ 570              	.LVL56:
+ 571              		.loc 1 470 17 view .LVU228
+ 572 000a DBB2     		uxtb	r3, r3
+ 573              	.LVL57:
+ 574              		.loc 1 470 17 view .LVU229
+ 575 000c 20E0     		b	.L19
+ 576              	.LVL58:
+ 577              	.L21:
+ 471:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         }
+ 472:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 473:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         crc ^= data;                                            /* Add in remaining bits of byte.  
+ 474:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         for (bit_ix = 0u; bit_ix < 7u; bit_ix++) {
+ 475:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             if (DEF_BIT_IS_SET(crc, DEF_BIT_06) == DEF_YES) {
+ 476:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                 crc = ((CPU_INT08U)(crc << 1)) ^ FS_DEV_SD_CRC7_POLY;
+ 477:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             } else {
+ 478:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                 crc <<= 1;
+ 578              		.loc 1 478 17 is_stmt 1 view .LVU230
+ 579              		.loc 1 478 21 is_stmt 0 view .LVU231
+ 580 000e 5B00     		lsls	r3, r3, #1
+ 581              	.LVL59:
+ 582              		.loc 1 478 21 view .LVU232
+ 583 0010 DBB2     		uxtb	r3, r3
+ 584              	.LVL60:
+ 585              	.L22:
+ 474:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             if (DEF_BIT_IS_SET(crc, DEF_BIT_06) == DEF_YES) {
+ 586              		.loc 1 474 40 is_stmt 1 discriminator 2 view .LVU233
+ 474:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             if (DEF_BIT_IS_SET(crc, DEF_BIT_06) == DEF_YES) {
+ 587              		.loc 1 474 46 is_stmt 0 discriminator 2 view .LVU234
+ 588 0012 0132     		adds	r2, r2, #1
+ 589              	.LVL61:
+ 474:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             if (DEF_BIT_IS_SET(crc, DEF_BIT_06) == DEF_YES) {
+ 590              		.loc 1 474 46 discriminator 2 view .LVU235
+ 591 0014 D2B2     		uxtb	r2, r2
+ 592              	.LVL62:
+ 593              	.L20:
+ 474:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             if (DEF_BIT_IS_SET(crc, DEF_BIT_06) == DEF_YES) {
+ 594              		.loc 1 474 27 is_stmt 1 discriminator 1 view .LVU236
+ 474:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             if (DEF_BIT_IS_SET(crc, DEF_BIT_06) == DEF_YES) {
+ 595              		.loc 1 474 9 is_stmt 0 discriminator 1 view .LVU237
+ 596 0016 062A     		cmp	r2, #6
+ARM GAS  /tmp/ccBThpyc.s 			page 21
+
+
+ 597 0018 07D8     		bhi	.L30
+ 475:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                 crc = ((CPU_INT08U)(crc << 1)) ^ FS_DEV_SD_CRC7_POLY;
+ 598              		.loc 1 475 13 is_stmt 1 view .LVU238
+ 475:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                 crc = ((CPU_INT08U)(crc << 1)) ^ FS_DEV_SD_CRC7_POLY;
+ 599              		.loc 1 475 16 is_stmt 0 view .LVU239
+ 600 001a 13F0400F 		tst	r3, #64
+ 601 001e F6D0     		beq	.L21
+ 476:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             } else {
+ 602              		.loc 1 476 17 is_stmt 1 view .LVU240
+ 476:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             } else {
+ 603              		.loc 1 476 24 is_stmt 0 view .LVU241
+ 604 0020 5B00     		lsls	r3, r3, #1
+ 605              	.LVL63:
+ 476:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             } else {
+ 606              		.loc 1 476 24 view .LVU242
+ 607 0022 DBB2     		uxtb	r3, r3
+ 476:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             } else {
+ 608              		.loc 1 476 21 view .LVU243
+ 609 0024 83F00903 		eor	r3, r3, #9
+ 610              	.LVL64:
+ 476:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             } else {
+ 611              		.loc 1 476 21 view .LVU244
+ 612 0028 F3E7     		b	.L22
+ 613              	.L30:
+ 479:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             }
+ 480:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         }
+ 481:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 482:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         size--;
+ 614              		.loc 1 482 9 is_stmt 1 view .LVU245
+ 615              		.loc 1 482 13 is_stmt 0 view .LVU246
+ 616 002a 0139     		subs	r1, r1, #1
+ 617              	.LVL65:
+ 483:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         p_data++;
+ 618              		.loc 1 483 9 is_stmt 1 view .LVU247
+ 619              		.loc 1 483 15 is_stmt 0 view .LVU248
+ 620 002c 0130     		adds	r0, r0, #1
+ 621              	.LVL66:
+ 463:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         data  = *p_data;
+ 622              		.loc 1 463 11 is_stmt 1 view .LVU249
+ 623 002e 91B1     		cbz	r1, .L31
+ 624              	.LVL67:
+ 625              	.L24:
+ 464:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 /* Add in uppermost bit of byte.   
+ 626              		.loc 1 464 9 view .LVU250
+ 464:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                                 /* Add in uppermost bit of byte.   
+ 627              		.loc 1 464 15 is_stmt 0 view .LVU251
+ 628 0030 0478     		ldrb	r4, [r0]	@ zero_extendqisi2
+ 629              	.LVL68:
+ 466:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         if (((crc & DEF_BIT_06) ^ mask) != 0x00u) {
+ 630              		.loc 1 466 9 is_stmt 1 view .LVU252
+ 466:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         if (((crc & DEF_BIT_06) ^ mask) != 0x00u) {
+ 631              		.loc 1 466 17 is_stmt 0 view .LVU253
+ 632 0032 90F90020 		ldrsb	r2, [r0]
+ 633 0036 D211     		asrs	r2, r2, #7
+ 634 0038 D2B2     		uxtb	r2, r2
+ 466:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         if (((crc & DEF_BIT_06) ^ mask) != 0x00u) {
+ 635              		.loc 1 466 75 view .LVU254
+ARM GAS  /tmp/ccBThpyc.s 			page 22
+
+
+ 636 003a 9201     		lsls	r2, r2, #6
+ 466:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         if (((crc & DEF_BIT_06) ^ mask) != 0x00u) {
+ 637              		.loc 1 466 14 view .LVU255
+ 638 003c 02F04002 		and	r2, r2, #64
+ 639              	.LVL69:
+ 467:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             crc = ((CPU_INT08U)(crc << 1)) ^ FS_DEV_SD_CRC7_POLY;
+ 640              		.loc 1 467 9 is_stmt 1 view .LVU256
+ 467:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             crc = ((CPU_INT08U)(crc << 1)) ^ FS_DEV_SD_CRC7_POLY;
+ 641              		.loc 1 467 12 is_stmt 0 view .LVU257
+ 642 0040 03F04005 		and	r5, r3, #64
+ 643 0044 9542     		cmp	r5, r2
+ 644 0046 DFD0     		beq	.L18
+ 468:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         } else {
+ 645              		.loc 1 468 13 is_stmt 1 view .LVU258
+ 468:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         } else {
+ 646              		.loc 1 468 20 is_stmt 0 view .LVU259
+ 647 0048 5B00     		lsls	r3, r3, #1
+ 648              	.LVL70:
+ 468:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         } else {
+ 649              		.loc 1 468 20 view .LVU260
+ 650 004a DBB2     		uxtb	r3, r3
+ 468:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         } else {
+ 651              		.loc 1 468 17 view .LVU261
+ 652 004c 83F00903 		eor	r3, r3, #9
+ 653              	.LVL71:
+ 654              	.L19:
+ 473:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         for (bit_ix = 0u; bit_ix < 7u; bit_ix++) {
+ 655              		.loc 1 473 9 is_stmt 1 view .LVU262
+ 473:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         for (bit_ix = 0u; bit_ix < 7u; bit_ix++) {
+ 656              		.loc 1 473 13 is_stmt 0 view .LVU263
+ 657 0050 6340     		eors	r3, r3, r4
+ 658              	.LVL72:
+ 474:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             if (DEF_BIT_IS_SET(crc, DEF_BIT_06) == DEF_YES) {
+ 659              		.loc 1 474 9 is_stmt 1 view .LVU264
+ 474:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             if (DEF_BIT_IS_SET(crc, DEF_BIT_06) == DEF_YES) {
+ 660              		.loc 1 474 21 is_stmt 0 view .LVU265
+ 661 0052 0022     		movs	r2, #0
+ 662              	.LVL73:
+ 474:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****             if (DEF_BIT_IS_SET(crc, DEF_BIT_06) == DEF_YES) {
+ 663              		.loc 1 474 9 view .LVU266
+ 664 0054 DFE7     		b	.L20
+ 665              	.LVL74:
+ 666              	.L31:
+ 484:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     }
+ 485:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 486:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     crc &= 0x7Fu;
+ 667              		.loc 1 486 5 is_stmt 1 view .LVU267
+ 487:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     return (crc);
+ 668              		.loc 1 487 5 view .LVU268
+ 488:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** }
+ 669              		.loc 1 488 1 is_stmt 0 view .LVU269
+ 670 0056 03F07F00 		and	r0, r3, #127
+ 671              	.LVL75:
+ 672              		.loc 1 488 1 view .LVU270
+ 673 005a 30BC     		pop	{r4, r5}
+ 674              	.LCFI8:
+ 675              		.cfi_restore 5
+ARM GAS  /tmp/ccBThpyc.s 			page 23
+
+
+ 676              		.cfi_restore 4
+ 677              		.cfi_def_cfa_offset 0
+ 678              	.LVL76:
+ 679              		.loc 1 488 1 view .LVU271
+ 680 005c 7047     		bx	lr
+ 681              	.LVL77:
+ 682              	.L29:
+ 486:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     return (crc);
+ 683              		.loc 1 486 5 is_stmt 1 view .LVU272
+ 487:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     return (crc);
+ 684              		.loc 1 487 5 view .LVU273
+ 685              		.loc 1 488 1 is_stmt 0 view .LVU274
+ 686 005e 03F07F00 		and	r0, r3, #127
+ 687              	.LVL78:
+ 688              		.loc 1 488 1 view .LVU275
+ 689 0062 7047     		bx	lr
+ 690              		.cfi_endproc
+ 691              	.LFE2:
+ 693              		.section	.text.FSDev_SD_ClrInfo,"ax",%progbits
+ 694              		.align	1
+ 695              		.global	FSDev_SD_ClrInfo
+ 696              		.syntax unified
+ 697              		.thumb
+ 698              		.thumb_func
+ 699              		.fpu fpv4-sp-d16
+ 701              	FSDev_SD_ClrInfo:
+ 702              	.LVL79:
+ 703              	.LFB3:
+ 489:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 490:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 491:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+ 492:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 493:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                     FSDev_SD_ChkSumCalc_16Bit()
+ 494:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 495:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Description : Calculate 16-bit Cyclic Redundancy Checksum (CRC).
+ 496:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 497:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Argument(s) : p_data      Pointer to buffer.
+ 498:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 499:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *               size        Size of buffer, in octets.
+ 500:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 501:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Return(s)   : 16-bit CRC.
+ 502:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 503:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Note(s)     : none.
+ 504:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 505:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+ 506:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 507:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** #if (FS_DEV_SD_SPI_CFG_CRC_EN == DEF_ENABLED)
+ 508:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** CPU_INT16U  FSDev_SD_ChkSumCalc_16Bit (CPU_INT08U  *p_data,
+ 509:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                        CPU_INT32U   size)
+ 510:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** {
+ 511:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT16U  crc;
+ 512:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     EDC_ERR     crc_err;
+ 513:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 514:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 515:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     crc = CRC_ChkSumCalc_16Bit((CRC_MODEL_16 *)&FSDev_SD_ModelCRC16,
+ 516:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                 p_data,
+ 517:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                 size,
+ARM GAS  /tmp/ccBThpyc.s 			page 24
+
+
+ 518:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                                &crc_err);
+ 519:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 520:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     return (crc);
+ 521:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** }
+ 522:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** #endif
+ 523:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 524:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 525:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** #if (FS_TRACE_LEVEL >= TRACE_LEVEL_INFO)
+ 526:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+ 527:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 528:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                        FSDev_SD_TraceInfo()
+ 529:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 530:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Description : Output SD trace info.
+ 531:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 532:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Argument(s) : p_sd_info   Pointer to SD info.
+ 533:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 534:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Return(s)   : none.
+ 535:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 536:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Note(s)     : none.
+ 537:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 538:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+ 539:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 540:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** void  FSDev_SD_TraceInfo (FS_DEV_SD_INFO  *p_sd_info)
+ 541:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** {
+ 542:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     switch (p_sd_info->CardType) {
+ 543:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         case FS_DEV_SD_CARDTYPE_SD_V1_X:
+ 544:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****              FS_TRACE_INFO(("SD/MMC FOUND:  v1.x SD card\r\n"));
+ 545:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****              break;
+ 546:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 547:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         case FS_DEV_SD_CARDTYPE_SD_V2_0:
+ 548:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****              FS_TRACE_INFO(("SD/MMC FOUND:  v2.0 standard-capacity SD card\r\n"));
+ 549:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****              break;
+ 550:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 551:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         case FS_DEV_SD_CARDTYPE_SD_V2_0_HC:
+ 552:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****              FS_TRACE_INFO(("SD/MMC FOUND:  v2.0 high-capacity card\r\n"));
+ 553:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****              break;
+ 554:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 555:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         case FS_DEV_SD_CARDTYPE_MMC:
+ 556:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****              FS_TRACE_INFO(("SD/MMC FOUND:  standard-capacity MMC card\r\n"));
+ 557:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****              break;
+ 558:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 559:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         case FS_DEV_SD_CARDTYPE_MMC_HC:
+ 560:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****              FS_TRACE_INFO(("SD/MMC FOUND:  high-capacity MMC card\r\n"));
+ 561:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****              break;
+ 562:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 563:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****         default:
+ 564:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****              break;
+ 565:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     }
+ 566:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 567:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     FS_TRACE_INFO(("               Blk Size       : %d bytes\r\n", p_sd_info->BlkSize));
+ 568:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     FS_TRACE_INFO(("               # Blks         : %d\r\n",       p_sd_info->NbrBlks));
+ 569:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     FS_TRACE_INFO(("               Max Clk        : %d Hz\r\n",    p_sd_info->ClkFreq));
+ 570:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     FS_TRACE_INFO(("               Manufacturer ID: 0x%02X\r\n",   p_sd_info->ManufID));
+ 571:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     FS_TRACE_INFO(("               OEM/App ID     : 0x%04X\r\n",   p_sd_info->OEM_ID));
+ 572:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     FS_TRACE_INFO(("               Prod Name      : %s\r\n",      &p_sd_info->ProdName[0]));
+ 573:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     FS_TRACE_INFO(("               Prod Rev       : %d.%d\r\n",    p_sd_info->ProdRev / 10u, p_sd_i
+ 574:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     FS_TRACE_INFO(("               Prod SN        : 0x%08X\r\n",   p_sd_info->ProdSN));
+ARM GAS  /tmp/ccBThpyc.s 			page 25
+
+
+ 575:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     FS_TRACE_INFO(("               Date           : %d/%d\r\n",    p_sd_info->Date / 256u, p_sd_inf
+ 576:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** }
+ 577:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** #endif
+ 578:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 579:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 580:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+ 581:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 582:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                         FSDev_SD_ClrInfo()
+ 583:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 584:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Description : Clear SD info.
+ 585:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 586:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Argument(s) : p_sd_info   Pointer to SD info.
+ 587:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 588:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Return(s)   : none.
+ 589:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 590:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Note(s)     : none.
+ 591:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 592:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+ 593:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 594:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** void  FSDev_SD_ClrInfo (FS_DEV_SD_INFO  *p_sd_info)
+ 595:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** {
+ 704              		.loc 1 595 1 is_stmt 1 view -0
+ 705              		.cfi_startproc
+ 706              		@ args = 0, pretend = 0, frame = 0
+ 707              		@ frame_needed = 0, uses_anonymous_args = 0
+ 708              		.loc 1 595 1 is_stmt 0 view .LVU277
+ 709 0000 38B5     		push	{r3, r4, r5, lr}
+ 710              	.LCFI9:
+ 711              		.cfi_def_cfa_offset 16
+ 712              		.cfi_offset 3, -16
+ 713              		.cfi_offset 4, -12
+ 714              		.cfi_offset 5, -8
+ 715              		.cfi_offset 14, -4
+ 716 0002 0446     		mov	r4, r0
+ 596:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->BlkSize      = 0u;
+ 717              		.loc 1 596 5 is_stmt 1 view .LVU278
+ 718              		.loc 1 596 29 is_stmt 0 view .LVU279
+ 719 0004 0025     		movs	r5, #0
+ 720 0006 0560     		str	r5, [r0]
+ 597:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->NbrBlks      = 0u;
+ 721              		.loc 1 597 5 is_stmt 1 view .LVU280
+ 722              		.loc 1 597 29 is_stmt 0 view .LVU281
+ 723 0008 4560     		str	r5, [r0, #4]
+ 598:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->ClkFreq      = 0u;
+ 724              		.loc 1 598 5 is_stmt 1 view .LVU282
+ 725              		.loc 1 598 29 is_stmt 0 view .LVU283
+ 726 000a 8560     		str	r5, [r0, #8]
+ 599:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->Timeout      = 0u;
+ 727              		.loc 1 599 5 is_stmt 1 view .LVU284
+ 728              		.loc 1 599 29 is_stmt 0 view .LVU285
+ 729 000c C560     		str	r5, [r0, #12]
+ 600:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->CardType     = FS_DEV_SD_CARDTYPE_NONE;
+ 730              		.loc 1 600 5 is_stmt 1 view .LVU286
+ 731              		.loc 1 600 29 is_stmt 0 view .LVU287
+ 732 000e 0574     		strb	r5, [r0, #16]
+ 601:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->HighCapacity = DEF_NO;
+ 733              		.loc 1 601 5 is_stmt 1 view .LVU288
+ARM GAS  /tmp/ccBThpyc.s 			page 26
+
+
+ 734              		.loc 1 601 29 is_stmt 0 view .LVU289
+ 735 0010 4574     		strb	r5, [r0, #17]
+ 602:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 603:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->ManufID      = 0u;
+ 736              		.loc 1 603 5 is_stmt 1 view .LVU290
+ 737              		.loc 1 603 29 is_stmt 0 view .LVU291
+ 738 0012 8574     		strb	r5, [r0, #18]
+ 604:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->OEM_ID       = 0u;
+ 739              		.loc 1 604 5 is_stmt 1 view .LVU292
+ 740              		.loc 1 604 29 is_stmt 0 view .LVU293
+ 741 0014 8582     		strh	r5, [r0, #20]	@ movhi
+ 605:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->ProdSN       = 0u;
+ 742              		.loc 1 605 5 is_stmt 1 view .LVU294
+ 743              		.loc 1 605 29 is_stmt 0 view .LVU295
+ 744 0016 8561     		str	r5, [r0, #24]
+ 606:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     Mem_Set(&p_sd_info->ProdName[0], (CPU_INT08U)'\0', 7u);
+ 745              		.loc 1 606 5 is_stmt 1 view .LVU296
+ 746 0018 0722     		movs	r2, #7
+ 747 001a 2946     		mov	r1, r5
+ 748 001c 1C30     		adds	r0, r0, #28
+ 749              	.LVL80:
+ 750              		.loc 1 606 5 is_stmt 0 view .LVU297
+ 751 001e FFF7FEFF 		bl	Mem_Set
+ 752              	.LVL81:
+ 607:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->ProdRev      = 0u;
+ 753              		.loc 1 607 5 is_stmt 1 view .LVU298
+ 754              		.loc 1 607 29 is_stmt 0 view .LVU299
+ 755 0022 A584     		strh	r5, [r4, #36]	@ movhi
+ 608:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->Date         = 0u;
+ 756              		.loc 1 608 5 is_stmt 1 view .LVU300
+ 757              		.loc 1 608 29 is_stmt 0 view .LVU301
+ 758 0024 E584     		strh	r5, [r4, #38]	@ movhi
+ 609:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** }
+ 759              		.loc 1 609 1 view .LVU302
+ 760 0026 38BD     		pop	{r3, r4, r5, pc}
+ 761              		.loc 1 609 1 view .LVU303
+ 762              		.cfi_endproc
+ 763              	.LFE3:
+ 765              		.section	.text.FSDev_SD_ParseEXT_CSD,"ax",%progbits
+ 766              		.align	1
+ 767              		.global	FSDev_SD_ParseEXT_CSD
+ 768              		.syntax unified
+ 769              		.thumb
+ 770              		.thumb_func
+ 771              		.fpu fpv4-sp-d16
+ 773              	FSDev_SD_ParseEXT_CSD:
+ 774              	.LVL82:
+ 775              	.LFB4:
+ 610:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 611:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 612:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** /*
+ 613:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 614:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *                                        FSDev_SD_ParseEXT_CSD()
+ 615:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 616:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Description : Parse MMC's EXT_CSD data.
+ 617:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 618:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Argument(s) : ext_csd     Array holding EXT_CSD data.
+ARM GAS  /tmp/ccBThpyc.s 			page 27
+
+
+ 619:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 620:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *               p_sd_info   Pointer to struct into which EXT_CSD data will be parsed.
+ 621:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 622:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Return(s)   : DEF_OK,    if the EXT_CSD could be parsed.
+ 623:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *               DEF_FAIL,  if the EXT_CSD was illegal.
+ 624:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** *
+ 625:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** * Note(s)     : none.
+ 626:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** ***************************************************************************************************
+ 627:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** */
+ 628:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 629:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** CPU_BOOLEAN  FSDev_SD_ParseEXT_CSD (CPU_INT08U       ext_csd[],
+ 630:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****                                     FS_DEV_SD_INFO  *p_sd_info)
+ 631:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** {
+ 776              		.loc 1 631 1 is_stmt 1 view -0
+ 777              		.cfi_startproc
+ 778              		@ args = 0, pretend = 0, frame = 0
+ 779              		@ frame_needed = 0, uses_anonymous_args = 0
+ 780              		@ link register save eliminated.
+ 632:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     CPU_INT32U  size;
+ 781              		.loc 1 632 5 view .LVU305
+ 633:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 634:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 635:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     size = (((CPU_INT32U)ext_csd[215]) << 24)                 /* Get dev size.                     
+ 782              		.loc 1 635 5 view .LVU306
+ 783              		.loc 1 635 33 is_stmt 0 view .LVU307
+ 784 0000 90F8D720 		ldrb	r2, [r0, #215]	@ zero_extendqisi2
+ 636:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****          | (((CPU_INT32U)ext_csd[214]) << 16)
+ 785              		.loc 1 636 33 view .LVU308
+ 786 0004 90F8D630 		ldrb	r3, [r0, #214]	@ zero_extendqisi2
+ 787              		.loc 1 636 40 view .LVU309
+ 788 0008 1B04     		lsls	r3, r3, #16
+ 789              		.loc 1 636 10 view .LVU310
+ 790 000a 43EA0263 		orr	r3, r3, r2, lsl #24
+ 637:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****          | (((CPU_INT32U)ext_csd[213]) <<  8)
+ 791              		.loc 1 637 33 view .LVU311
+ 792 000e 90F8D520 		ldrb	r2, [r0, #213]	@ zero_extendqisi2
+ 793              		.loc 1 637 10 view .LVU312
+ 794 0012 43EA0223 		orr	r3, r3, r2, lsl #8
+ 638:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****          | (((CPU_INT32U)ext_csd[212]) <<  0);
+ 795              		.loc 1 638 33 view .LVU313
+ 796 0016 90F8D420 		ldrb	r2, [r0, #212]	@ zero_extendqisi2
+ 635:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****          | (((CPU_INT32U)ext_csd[214]) << 16)
+ 797              		.loc 1 635 10 view .LVU314
+ 798 001a 1343     		orrs	r3, r3, r2
+ 799              	.LVL83:
+ 639:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 640:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     p_sd_info->NbrBlks = size;
+ 800              		.loc 1 640 5 is_stmt 1 view .LVU315
+ 801              		.loc 1 640 24 is_stmt 0 view .LVU316
+ 802 001c 4B60     		str	r3, [r1, #4]
+ 641:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** 
+ 642:rtos/uC-FS/Dev/SD/fs_dev_sd.c ****     return (DEF_OK);
+ 803              		.loc 1 642 5 is_stmt 1 view .LVU317
+ 643:rtos/uC-FS/Dev/SD/fs_dev_sd.c **** }
+ 804              		.loc 1 643 1 is_stmt 0 view .LVU318
+ 805 001e 0120     		movs	r0, #1
+ 806              	.LVL84:
+ARM GAS  /tmp/ccBThpyc.s 			page 28
+
+
+ 807              		.loc 1 643 1 view .LVU319
+ 808 0020 7047     		bx	lr
+ 809              		.cfi_endproc
+ 810              	.LFE4:
+ 812              		.section	.rodata.FSDev_SD_BlkLen,"a"
+ 813              		.align	2
+ 814              		.set	.LANCHOR0,. + 0
+ 817              	FSDev_SD_BlkLen:
+ 818 0000 00020000 		.word	512
+ 819 0004 00040000 		.word	1024
+ 820 0008 00080000 		.word	2048
+ 821              		.section	.rodata.FSDev_SD_Mult,"a"
+ 822              		.align	2
+ 823              		.set	.LANCHOR1,. + 0
+ 826              	FSDev_SD_Mult:
+ 827 0000 04000000 		.word	4
+ 828 0004 08000000 		.word	8
+ 829 0008 10000000 		.word	16
+ 830 000c 20000000 		.word	32
+ 831 0010 40000000 		.word	64
+ 832 0014 80000000 		.word	128
+ 833 0018 00010000 		.word	256
+ 834 001c 00020000 		.word	512
+ 835 0020 00040000 		.word	1024
+ 836              		.section	.rodata.FSDev_SD_TAAC_TimeUnit,"a"
+ 837              		.align	2
+ 838              		.set	.LANCHOR2,. + 0
+ 841              	FSDev_SD_TAAC_TimeUnit:
+ 842 0000 01000000 		.word	1
+ 843 0004 0A000000 		.word	10
+ 844 0008 64000000 		.word	100
+ 845 000c E8030000 		.word	1000
+ 846 0010 10270000 		.word	10000
+ 847 0014 A0860100 		.word	100000
+ 848 0018 40420F00 		.word	1000000
+ 849 001c 80969800 		.word	10000000
+ 850              		.section	.rodata.FSDev_SD_TAAC_TimeValue,"a"
+ 851              		.align	2
+ 852              		.set	.LANCHOR3,. + 0
+ 855              	FSDev_SD_TAAC_TimeValue:
+ 856 0000 00000000 		.word	0
+ 857 0004 0A000000 		.word	10
+ 858 0008 0C000000 		.word	12
+ 859 000c 0D000000 		.word	13
+ 860 0010 0F000000 		.word	15
+ 861 0014 14000000 		.word	20
+ 862 0018 19000000 		.word	25
+ 863 001c 1E000000 		.word	30
+ 864 0020 23000000 		.word	35
+ 865 0024 28000000 		.word	40
+ 866 0028 2D000000 		.word	45
+ 867 002c 32000000 		.word	50
+ 868 0030 37000000 		.word	55
+ 869 0034 3C000000 		.word	60
+ 870 0038 46000000 		.word	70
+ 871 003c 50000000 		.word	80
+ 872              		.section	.rodata.FSDev_SD_TranSpdUnit,"a"
+ARM GAS  /tmp/ccBThpyc.s 			page 29
+
+
+ 873              		.align	2
+ 874              		.set	.LANCHOR4,. + 0
+ 877              	FSDev_SD_TranSpdUnit:
+ 878 0000 10270000 		.word	10000
+ 879 0004 A0860100 		.word	100000
+ 880 0008 40420F00 		.word	1000000
+ 881 000c 80969800 		.word	10000000
+ 882              		.section	.rodata.FSDev_SD_TranSpdValue,"a"
+ 883              		.align	2
+ 884              		.set	.LANCHOR5,. + 0
+ 887              	FSDev_SD_TranSpdValue:
+ 888 0000 00000000 		.word	0
+ 889 0004 0A000000 		.word	10
+ 890 0008 0C000000 		.word	12
+ 891 000c 0D000000 		.word	13
+ 892 0010 0F000000 		.word	15
+ 893 0014 14000000 		.word	20
+ 894 0018 19000000 		.word	25
+ 895 001c 1E000000 		.word	30
+ 896 0020 23000000 		.word	35
+ 897 0024 28000000 		.word	40
+ 898 0028 2D000000 		.word	45
+ 899 002c 32000000 		.word	50
+ 900 0030 37000000 		.word	55
+ 901 0034 3C000000 		.word	60
+ 902 0038 46000000 		.word	70
+ 903 003c 50000000 		.word	80
+ 904              		.text
+ 905              	.Letext0:
+ 906              		.file 2 "rtos/uC-CPU/ARM-Cortex-M/ARMv7-M/GNU/cpu.h"
+ 907              		.file 3 "rtos/uC-FS/Dev/SD/fs_dev_sd.h"
+ 908              		.file 4 "rtos/uC-LIB/lib_mem.h"
+ARM GAS  /tmp/ccBThpyc.s 			page 30
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 fs_dev_sd.c
+     /tmp/ccBThpyc.s:18     .text.FSDev_SD_ParseCSD:0000000000000000 $t
+     /tmp/ccBThpyc.s:26     .text.FSDev_SD_ParseCSD:0000000000000000 FSDev_SD_ParseCSD
+     /tmp/ccBThpyc.s:270    .text.FSDev_SD_ParseCSD:00000000000000d0 $d
+     /tmp/ccBThpyc.s:282    .text.FSDev_SD_ParseCID:0000000000000000 $t
+     /tmp/ccBThpyc.s:289    .text.FSDev_SD_ParseCID:0000000000000000 FSDev_SD_ParseCID
+     /tmp/ccBThpyc.s:532    .text.FSDev_SD_ChkSumCalc_7Bit:0000000000000000 $t
+     /tmp/ccBThpyc.s:539    .text.FSDev_SD_ChkSumCalc_7Bit:0000000000000000 FSDev_SD_ChkSumCalc_7Bit
+     /tmp/ccBThpyc.s:694    .text.FSDev_SD_ClrInfo:0000000000000000 $t
+     /tmp/ccBThpyc.s:701    .text.FSDev_SD_ClrInfo:0000000000000000 FSDev_SD_ClrInfo
+     /tmp/ccBThpyc.s:766    .text.FSDev_SD_ParseEXT_CSD:0000000000000000 $t
+     /tmp/ccBThpyc.s:773    .text.FSDev_SD_ParseEXT_CSD:0000000000000000 FSDev_SD_ParseEXT_CSD
+     /tmp/ccBThpyc.s:813    .rodata.FSDev_SD_BlkLen:0000000000000000 $d
+     /tmp/ccBThpyc.s:817    .rodata.FSDev_SD_BlkLen:0000000000000000 FSDev_SD_BlkLen
+     /tmp/ccBThpyc.s:822    .rodata.FSDev_SD_Mult:0000000000000000 $d
+     /tmp/ccBThpyc.s:826    .rodata.FSDev_SD_Mult:0000000000000000 FSDev_SD_Mult
+     /tmp/ccBThpyc.s:837    .rodata.FSDev_SD_TAAC_TimeUnit:0000000000000000 $d
+     /tmp/ccBThpyc.s:841    .rodata.FSDev_SD_TAAC_TimeUnit:0000000000000000 FSDev_SD_TAAC_TimeUnit
+     /tmp/ccBThpyc.s:851    .rodata.FSDev_SD_TAAC_TimeValue:0000000000000000 $d
+     /tmp/ccBThpyc.s:855    .rodata.FSDev_SD_TAAC_TimeValue:0000000000000000 FSDev_SD_TAAC_TimeValue
+     /tmp/ccBThpyc.s:873    .rodata.FSDev_SD_TranSpdUnit:0000000000000000 $d
+     /tmp/ccBThpyc.s:877    .rodata.FSDev_SD_TranSpdUnit:0000000000000000 FSDev_SD_TranSpdUnit
+     /tmp/ccBThpyc.s:883    .rodata.FSDev_SD_TranSpdValue:0000000000000000 $d
+     /tmp/ccBThpyc.s:887    .rodata.FSDev_SD_TranSpdValue:0000000000000000 FSDev_SD_TranSpdValue
+                           .group:0000000000000000 wm4.0.0f5aa60db9403f389c005f20ecce4286
+                           .group:0000000000000000 wm4.cpu_def.h.46.baa122a2898bdc40bb50d1f21ead1515
+                           .group:0000000000000000 wm4.cpu_cfg.h.45.38a6a562da8b04490c382a226238c57e
+                           .group:0000000000000000 wm4.cpu.h.171.3cb15ee3ccb812cbfdf76d1fbfb9eda0
+                           .group:0000000000000000 wm4.cpu_core.h.51.7b35a59c319673f88ae4a256248776ec
+                           .group:0000000000000000 wm4.lib_def.h.66.6ab2a012067a8e1f4289db5765835062
+                           .group:0000000000000000 wm4.cpu_core.h.143.d3b700e12b3a14ed3bee14c822b49a7d
+                           .group:0000000000000000 wm4.lib_cfg.h.40.b2958733f73e73af70f675ca0f89303e
+                           .group:0000000000000000 wm4.lib_mem.h.121.89b942a057fb20091baad8bf6b28b1e6
+                           .group:0000000000000000 wm4.fs.h.42.4f6311a594ee5619f1ee7a9392eb7faa
+                           .group:0000000000000000 wm4.lib_ascii.h.84.da234f9d4d202bba866fb26067887eec
+                           .group:0000000000000000 wm4.fs_def.h.42.653ad677c23ef93c522ec84af681385d
+                           .group:0000000000000000 wm4.fs_cfg.h.116.da4f8e9d0b9040a97ef3bf26c61e90fd
+                           .group:0000000000000000 wm4.clk.h.99.39403db6a27321e53b261bbe20b56e1d
+                           .group:0000000000000000 wm4.lib_str.h.60.d6fb3a1336db17c586ed26be94929677
+                           .group:0000000000000000 wm4.clk_cfg.h.45.428f260ed0fbcfa16fc822c67c85dade
+                           .group:0000000000000000 wm4.clk.h.219.c24c7347fcc7691d3157fe73514cb366
+                           .group:0000000000000000 wm4.fs_cfg_fs.h.176.c85074fbe881bfa594608376a65f4dc2
+                           .group:0000000000000000 wm4.fs_type.h.42.3e681b291920189044ba1da24ae0f22a
+                           .group:0000000000000000 wm4.fs_err.h.42.d52bfed31dff3d1419c5cf09952dee67
+                           .group:0000000000000000 wm4.fs.h.97.1d629f0ba32b5622ab4e01a254bd98e8
+                           .group:0000000000000000 wm4.fs_dev_sd.h.51.7657312624f06ffd83da76c69ba23207
+                           .group:0000000000000000 wm4.fs_dev.h.42.457d0b7de373584765db5fbe40e7c30d
+                           .group:0000000000000000 wm4.fs_ctr.h.42.9d1398cac157503ac8af114819f7782b
+                           .group:0000000000000000 wm4.fs_dev.h.84.0b8682dc82cfd464ab0da30a876c8006
+                           .group:0000000000000000 wm4.fs_dev_sd.h.87.291a6dec37946aecadc14eb5adc7a3fa
+
+UNDEFINED SYMBOLS
+Mem_Copy
+Mem_Set

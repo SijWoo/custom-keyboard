@@ -87,7 +87,7 @@
 *********************************************************************************************************
 */
 
-#include  <Source/clk.h>
+#include  <clk.h>
 #include  <cpu.h>
 #include  "../Source/fs_err.h"
 #include  "../Source/fs_util.h"

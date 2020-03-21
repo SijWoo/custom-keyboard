@@ -1,0 +1,481 @@
+ARM GAS  /tmp/cc6UP3v4.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"os_prio.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.OS_PrioInit,"ax",%progbits
+  18              		.align	1
+  19              		.global	OS_PrioInit
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	OS_PrioInit:
+  27              	.LFB0:
+  28              		.file 1 "rtos/uCOS-III/Source/os_prio.c"
+   1:rtos/uCOS-III/Source/os_prio.c **** /*
+   2:rtos/uCOS-III/Source/os_prio.c **** ***************************************************************************************************
+   3:rtos/uCOS-III/Source/os_prio.c **** *                                                uC/OS-III
+   4:rtos/uCOS-III/Source/os_prio.c **** *                                          The Real-Time Kernel
+   5:rtos/uCOS-III/Source/os_prio.c **** *
+   6:rtos/uCOS-III/Source/os_prio.c **** *                         (c) Copyright 2009-2019; Silicon Laboratories Inc.,
+   7:rtos/uCOS-III/Source/os_prio.c **** *                                400 W. Cesar Chavez, Austin, TX 78701
+   8:rtos/uCOS-III/Source/os_prio.c **** *
+   9:rtos/uCOS-III/Source/os_prio.c **** *                   All rights reserved. Protected by international copyright laws.
+  10:rtos/uCOS-III/Source/os_prio.c **** *
+  11:rtos/uCOS-III/Source/os_prio.c **** *                  Your use of this software is subject to your acceptance of the terms
+  12:rtos/uCOS-III/Source/os_prio.c **** *                  of a Silicon Labs Micrium software license, which can be obtained by
+  13:rtos/uCOS-III/Source/os_prio.c **** *                  contacting info@micrium.com. If you do not agree to the terms of this
+  14:rtos/uCOS-III/Source/os_prio.c **** *                  license, you may not use this software.
+  15:rtos/uCOS-III/Source/os_prio.c **** *
+  16:rtos/uCOS-III/Source/os_prio.c **** *                  Please help us continue to provide the Embedded community with the finest
+  17:rtos/uCOS-III/Source/os_prio.c **** *                  software available. Your honesty is greatly appreciated.
+  18:rtos/uCOS-III/Source/os_prio.c **** *
+  19:rtos/uCOS-III/Source/os_prio.c **** *                    You can find our product's documentation at: doc.micrium.com
+  20:rtos/uCOS-III/Source/os_prio.c **** *
+  21:rtos/uCOS-III/Source/os_prio.c **** *                          For more information visit us at: www.micrium.com
+  22:rtos/uCOS-III/Source/os_prio.c **** ***************************************************************************************************
+  23:rtos/uCOS-III/Source/os_prio.c **** */
+  24:rtos/uCOS-III/Source/os_prio.c **** 
+  25:rtos/uCOS-III/Source/os_prio.c **** /*
+  26:rtos/uCOS-III/Source/os_prio.c **** ***************************************************************************************************
+  27:rtos/uCOS-III/Source/os_prio.c **** *                                          PRIORITY MANAGEMENT
+  28:rtos/uCOS-III/Source/os_prio.c **** *
+  29:rtos/uCOS-III/Source/os_prio.c **** * File    : os_prio.c
+  30:rtos/uCOS-III/Source/os_prio.c **** * Version : V3.07.04
+ARM GAS  /tmp/cc6UP3v4.s 			page 2
+
+
+  31:rtos/uCOS-III/Source/os_prio.c **** ***************************************************************************************************
+  32:rtos/uCOS-III/Source/os_prio.c **** */
+  33:rtos/uCOS-III/Source/os_prio.c **** 
+  34:rtos/uCOS-III/Source/os_prio.c **** #define  MICRIUM_SOURCE
+  35:rtos/uCOS-III/Source/os_prio.c **** #include "os.h"
+  36:rtos/uCOS-III/Source/os_prio.c **** 
+  37:rtos/uCOS-III/Source/os_prio.c **** #ifdef VSC_INCLUDE_SOURCE_FILE_NAMES
+  38:rtos/uCOS-III/Source/os_prio.c **** const  CPU_CHAR  *os_prio__c = "$Id: $";
+  39:rtos/uCOS-III/Source/os_prio.c **** #endif
+  40:rtos/uCOS-III/Source/os_prio.c **** 
+  41:rtos/uCOS-III/Source/os_prio.c **** 
+  42:rtos/uCOS-III/Source/os_prio.c **** /*
+  43:rtos/uCOS-III/Source/os_prio.c **** ***************************************************************************************************
+  44:rtos/uCOS-III/Source/os_prio.c **** *                                               INITIALIZE THE PRIORITY LIST
+  45:rtos/uCOS-III/Source/os_prio.c **** *
+  46:rtos/uCOS-III/Source/os_prio.c **** * Description: This function is called by uC/OS-III to initialize the list of ready priorities.
+  47:rtos/uCOS-III/Source/os_prio.c **** *
+  48:rtos/uCOS-III/Source/os_prio.c **** * Arguments  : none
+  49:rtos/uCOS-III/Source/os_prio.c **** *
+  50:rtos/uCOS-III/Source/os_prio.c **** * Returns    : none
+  51:rtos/uCOS-III/Source/os_prio.c **** *
+  52:rtos/uCOS-III/Source/os_prio.c **** * Note       : This function is INTERNAL to uC/OS-III and your application should not call it.
+  53:rtos/uCOS-III/Source/os_prio.c **** ***************************************************************************************************
+  54:rtos/uCOS-III/Source/os_prio.c **** */
+  55:rtos/uCOS-III/Source/os_prio.c **** 
+  56:rtos/uCOS-III/Source/os_prio.c **** void  OS_PrioInit (void)
+  57:rtos/uCOS-III/Source/os_prio.c **** {
+  29              		.loc 1 57 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  58:rtos/uCOS-III/Source/os_prio.c ****     CPU_DATA  i;
+  34              		.loc 1 58 5 view .LVU1
+  59:rtos/uCOS-III/Source/os_prio.c **** 
+  60:rtos/uCOS-III/Source/os_prio.c **** 
+  61:rtos/uCOS-III/Source/os_prio.c ****                                                                 /* Clear the bitmap table ... no ta
+  62:rtos/uCOS-III/Source/os_prio.c ****     for (i = 0u; i < OS_PRIO_TBL_SIZE; i++) {
+  35              		.loc 1 62 5 view .LVU2
+  36              	.LVL0:
+  37              		.loc 1 62 12 is_stmt 0 view .LVU3
+  38 0000 0023     		movs	r3, #0
+  39              		.loc 1 62 5 view .LVU4
+  40 0002 04E0     		b	.L2
+  41              	.LVL1:
+  42              	.L3:
+  63:rtos/uCOS-III/Source/os_prio.c ****          OSPrioTbl[i] = 0u;
+  43              		.loc 1 63 10 is_stmt 1 discriminator 3 view .LVU5
+  44              		.loc 1 63 23 is_stmt 0 discriminator 3 view .LVU6
+  45 0004 034A     		ldr	r2, .L4
+  46 0006 0021     		movs	r1, #0
+  47 0008 42F82310 		str	r1, [r2, r3, lsl #2]
+  62:rtos/uCOS-III/Source/os_prio.c ****          OSPrioTbl[i] = 0u;
+  48              		.loc 1 62 40 is_stmt 1 discriminator 3 view .LVU7
+  62:rtos/uCOS-III/Source/os_prio.c ****          OSPrioTbl[i] = 0u;
+  49              		.loc 1 62 41 is_stmt 0 discriminator 3 view .LVU8
+  50 000c 0133     		adds	r3, r3, #1
+ARM GAS  /tmp/cc6UP3v4.s 			page 3
+
+
+  51              	.LVL2:
+  52              	.L2:
+  62:rtos/uCOS-III/Source/os_prio.c ****          OSPrioTbl[i] = 0u;
+  53              		.loc 1 62 18 is_stmt 1 discriminator 1 view .LVU9
+  62:rtos/uCOS-III/Source/os_prio.c ****          OSPrioTbl[i] = 0u;
+  54              		.loc 1 62 5 is_stmt 0 discriminator 1 view .LVU10
+  55 000e 012B     		cmp	r3, #1
+  56 0010 F8D9     		bls	.L3
+  64:rtos/uCOS-III/Source/os_prio.c ****     }
+  65:rtos/uCOS-III/Source/os_prio.c **** 
+  66:rtos/uCOS-III/Source/os_prio.c **** #if (OS_CFG_TASK_IDLE_EN == 0u)
+  67:rtos/uCOS-III/Source/os_prio.c ****     OS_PrioInsert ((OS_PRIO)(OS_CFG_PRIO_MAX - 1u));            /* Insert what would be the idle ta
+  68:rtos/uCOS-III/Source/os_prio.c **** #endif
+  69:rtos/uCOS-III/Source/os_prio.c **** }
+  57              		.loc 1 69 1 view .LVU11
+  58 0012 7047     		bx	lr
+  59              	.L5:
+  60              		.align	2
+  61              	.L4:
+  62 0014 00000000 		.word	OSPrioTbl
+  63              		.cfi_endproc
+  64              	.LFE0:
+  66              		.section	.text.OS_PrioGetHighest,"ax",%progbits
+  67              		.align	1
+  68              		.global	OS_PrioGetHighest
+  69              		.syntax unified
+  70              		.thumb
+  71              		.thumb_func
+  72              		.fpu fpv4-sp-d16
+  74              	OS_PrioGetHighest:
+  75              	.LFB1:
+  70:rtos/uCOS-III/Source/os_prio.c **** 
+  71:rtos/uCOS-III/Source/os_prio.c **** /*
+  72:rtos/uCOS-III/Source/os_prio.c **** ***************************************************************************************************
+  73:rtos/uCOS-III/Source/os_prio.c **** *                                           GET HIGHEST PRIORITY TASK WAITING
+  74:rtos/uCOS-III/Source/os_prio.c **** *
+  75:rtos/uCOS-III/Source/os_prio.c **** * Description: This function is called by other uC/OS-III services to determine the highest priorit
+  76:rtos/uCOS-III/Source/os_prio.c **** *              waiting on the event.
+  77:rtos/uCOS-III/Source/os_prio.c **** *
+  78:rtos/uCOS-III/Source/os_prio.c **** * Arguments  : none
+  79:rtos/uCOS-III/Source/os_prio.c **** *
+  80:rtos/uCOS-III/Source/os_prio.c **** * Returns    : The priority of the Highest Priority Task (HPT) waiting for the event
+  81:rtos/uCOS-III/Source/os_prio.c **** *
+  82:rtos/uCOS-III/Source/os_prio.c **** * Note(s)    : 1) This function is INTERNAL to uC/OS-III and your application MUST NOT call it.
+  83:rtos/uCOS-III/Source/os_prio.c **** ***************************************************************************************************
+  84:rtos/uCOS-III/Source/os_prio.c **** */
+  85:rtos/uCOS-III/Source/os_prio.c **** 
+  86:rtos/uCOS-III/Source/os_prio.c **** OS_PRIO  OS_PrioGetHighest (void)
+  87:rtos/uCOS-III/Source/os_prio.c **** {
+  76              		.loc 1 87 1 is_stmt 1 view -0
+  77              		.cfi_startproc
+  78              		@ args = 0, pretend = 0, frame = 0
+  79              		@ frame_needed = 0, uses_anonymous_args = 0
+  80 0000 08B5     		push	{r3, lr}
+  81              	.LCFI0:
+  82              		.cfi_def_cfa_offset 8
+  83              		.cfi_offset 3, -8
+ARM GAS  /tmp/cc6UP3v4.s 			page 4
+
+
+  84              		.cfi_offset 14, -4
+  88:rtos/uCOS-III/Source/os_prio.c **** #if   (OS_CFG_PRIO_MAX <= (CPU_CFG_DATA_SIZE * 8u))             /* Optimize for less than word size
+  89:rtos/uCOS-III/Source/os_prio.c ****     return ((OS_PRIO)CPU_CntLeadZeros(OSPrioTbl[0]));
+  90:rtos/uCOS-III/Source/os_prio.c **** 
+  91:rtos/uCOS-III/Source/os_prio.c **** 
+  92:rtos/uCOS-III/Source/os_prio.c **** #elif (OS_CFG_PRIO_MAX <= (2u * (CPU_CFG_DATA_SIZE * 8u)))      /* Optimize for    2x the word size
+  93:rtos/uCOS-III/Source/os_prio.c ****     if (OSPrioTbl[0] == 0u) {
+  85              		.loc 1 93 5 view .LVU13
+  86              		.loc 1 93 18 is_stmt 0 view .LVU14
+  87 0002 074B     		ldr	r3, .L10
+  88 0004 1868     		ldr	r0, [r3]
+  89              		.loc 1 93 8 view .LVU15
+  90 0006 30B9     		cbnz	r0, .L7
+  94:rtos/uCOS-III/Source/os_prio.c ****         return ((OS_PRIO)((OS_PRIO)CPU_CntLeadZeros(OSPrioTbl[1]) + (CPU_CFG_DATA_SIZE * 8u)));
+  91              		.loc 1 94 9 is_stmt 1 view .LVU16
+  92              		.loc 1 94 36 is_stmt 0 view .LVU17
+  93 0008 5868     		ldr	r0, [r3, #4]
+  94 000a FFF7FEFF 		bl	CPU_CntLeadZeros
+  95              	.LVL3:
+  96              		.loc 1 94 27 view .LVU18
+  97 000e C0B2     		uxtb	r0, r0
+  98              		.loc 1 94 17 view .LVU19
+  99 0010 2030     		adds	r0, r0, #32
+ 100 0012 C0B2     		uxtb	r0, r0
+ 101              	.L8:
+  95:rtos/uCOS-III/Source/os_prio.c ****     } else {
+  96:rtos/uCOS-III/Source/os_prio.c ****         return ((OS_PRIO)((OS_PRIO)CPU_CntLeadZeros(OSPrioTbl[0])));
+  97:rtos/uCOS-III/Source/os_prio.c ****     }
+  98:rtos/uCOS-III/Source/os_prio.c **** 
+  99:rtos/uCOS-III/Source/os_prio.c **** 
+ 100:rtos/uCOS-III/Source/os_prio.c **** #else
+ 101:rtos/uCOS-III/Source/os_prio.c ****     CPU_DATA  *p_tbl;
+ 102:rtos/uCOS-III/Source/os_prio.c ****     OS_PRIO    prio;
+ 103:rtos/uCOS-III/Source/os_prio.c **** 
+ 104:rtos/uCOS-III/Source/os_prio.c **** 
+ 105:rtos/uCOS-III/Source/os_prio.c ****     prio  = 0u;
+ 106:rtos/uCOS-III/Source/os_prio.c ****     p_tbl = &OSPrioTbl[0];
+ 107:rtos/uCOS-III/Source/os_prio.c ****     while (*p_tbl == 0u) {                                      /* Search the bitmap table for the 
+ 108:rtos/uCOS-III/Source/os_prio.c ****         prio = (OS_PRIO)(prio + (CPU_CFG_DATA_SIZE * 8u));      /* Compute the step of each CPU_DAT
+ 109:rtos/uCOS-III/Source/os_prio.c ****         p_tbl++;
+ 110:rtos/uCOS-III/Source/os_prio.c ****     }
+ 111:rtos/uCOS-III/Source/os_prio.c ****     prio += (OS_PRIO)CPU_CntLeadZeros(*p_tbl);                  /* Find the position of the first b
+ 112:rtos/uCOS-III/Source/os_prio.c **** 
+ 113:rtos/uCOS-III/Source/os_prio.c ****     return (prio);
+ 114:rtos/uCOS-III/Source/os_prio.c **** #endif
+ 115:rtos/uCOS-III/Source/os_prio.c **** }
+ 102              		.loc 1 115 1 view .LVU20
+ 103 0014 08BD     		pop	{r3, pc}
+ 104              	.L7:
+  96:rtos/uCOS-III/Source/os_prio.c ****     }
+ 105              		.loc 1 96 9 is_stmt 1 view .LVU21
+  96:rtos/uCOS-III/Source/os_prio.c ****     }
+ 106              		.loc 1 96 36 is_stmt 0 view .LVU22
+ 107 0016 FFF7FEFF 		bl	CPU_CntLeadZeros
+ 108              	.LVL4:
+  96:rtos/uCOS-III/Source/os_prio.c ****     }
+ 109              		.loc 1 96 17 view .LVU23
+ARM GAS  /tmp/cc6UP3v4.s 			page 5
+
+
+ 110 001a C0B2     		uxtb	r0, r0
+ 111 001c FAE7     		b	.L8
+ 112              	.L11:
+ 113 001e 00BF     		.align	2
+ 114              	.L10:
+ 115 0020 00000000 		.word	OSPrioTbl
+ 116              		.cfi_endproc
+ 117              	.LFE1:
+ 119              		.section	.text.OS_PrioInsert,"ax",%progbits
+ 120              		.align	1
+ 121              		.global	OS_PrioInsert
+ 122              		.syntax unified
+ 123              		.thumb
+ 124              		.thumb_func
+ 125              		.fpu fpv4-sp-d16
+ 127              	OS_PrioInsert:
+ 128              	.LVL5:
+ 129              	.LFB2:
+ 116:rtos/uCOS-III/Source/os_prio.c **** 
+ 117:rtos/uCOS-III/Source/os_prio.c **** /*
+ 118:rtos/uCOS-III/Source/os_prio.c **** ***************************************************************************************************
+ 119:rtos/uCOS-III/Source/os_prio.c **** *                                                  INSERT PRIORITY
+ 120:rtos/uCOS-III/Source/os_prio.c **** *
+ 121:rtos/uCOS-III/Source/os_prio.c **** * Description: This function is called to insert a priority in the priority table.
+ 122:rtos/uCOS-III/Source/os_prio.c **** *
+ 123:rtos/uCOS-III/Source/os_prio.c **** * Arguments  : prio     is the priority to insert
+ 124:rtos/uCOS-III/Source/os_prio.c **** *
+ 125:rtos/uCOS-III/Source/os_prio.c **** * Returns    : none
+ 126:rtos/uCOS-III/Source/os_prio.c **** *
+ 127:rtos/uCOS-III/Source/os_prio.c **** * Note(s)    : 1) This function is INTERNAL to uC/OS-III and your application MUST NOT call it.
+ 128:rtos/uCOS-III/Source/os_prio.c **** ***************************************************************************************************
+ 129:rtos/uCOS-III/Source/os_prio.c **** */
+ 130:rtos/uCOS-III/Source/os_prio.c **** 
+ 131:rtos/uCOS-III/Source/os_prio.c **** void  OS_PrioInsert (OS_PRIO  prio)
+ 132:rtos/uCOS-III/Source/os_prio.c **** {
+ 130              		.loc 1 132 1 is_stmt 1 view -0
+ 131              		.cfi_startproc
+ 132              		@ args = 0, pretend = 0, frame = 0
+ 133              		@ frame_needed = 0, uses_anonymous_args = 0
+ 134              		@ link register save eliminated.
+ 133:rtos/uCOS-III/Source/os_prio.c **** #if   (OS_CFG_PRIO_MAX <= (CPU_CFG_DATA_SIZE * 8u))             /* Optimize for less than word size
+ 134:rtos/uCOS-III/Source/os_prio.c ****     OSPrioTbl[0] |= (CPU_DATA)1u << (((CPU_CFG_DATA_SIZE * 8u) - 1u) - prio);
+ 135:rtos/uCOS-III/Source/os_prio.c **** 
+ 136:rtos/uCOS-III/Source/os_prio.c **** 
+ 137:rtos/uCOS-III/Source/os_prio.c **** #elif (OS_CFG_PRIO_MAX <= (2u * (CPU_CFG_DATA_SIZE * 8u)))      /* Optimize for    2x the word size
+ 138:rtos/uCOS-III/Source/os_prio.c ****     if (prio < (CPU_CFG_DATA_SIZE * 8u)) {
+ 135              		.loc 1 138 5 view .LVU25
+ 136              		.loc 1 138 8 is_stmt 0 view .LVU26
+ 137 0000 1F28     		cmp	r0, #31
+ 138 0002 08D8     		bhi	.L13
+ 139:rtos/uCOS-III/Source/os_prio.c ****         OSPrioTbl[0] |= (CPU_DATA)1u << (((CPU_CFG_DATA_SIZE * 8u) - 1u) - prio);
+ 139              		.loc 1 139 9 is_stmt 1 view .LVU27
+ 140              		.loc 1 139 38 is_stmt 0 view .LVU28
+ 141 0004 4FF00043 		mov	r3, #-2147483648
+ 142 0008 23FA00F0 		lsr	r0, r3, r0
+ 143              	.LVL6:
+ 144              		.loc 1 139 22 view .LVU29
+ARM GAS  /tmp/cc6UP3v4.s 			page 6
+
+
+ 145 000c 074A     		ldr	r2, .L15
+ 146 000e 1368     		ldr	r3, [r2]
+ 147 0010 0343     		orrs	r3, r3, r0
+ 148 0012 1360     		str	r3, [r2]
+ 149 0014 7047     		bx	lr
+ 150              	.LVL7:
+ 151              	.L13:
+ 140:rtos/uCOS-III/Source/os_prio.c ****     } else {
+ 141:rtos/uCOS-III/Source/os_prio.c ****         OSPrioTbl[1] |= (CPU_DATA)1u << (((CPU_CFG_DATA_SIZE * 8u) - 1u) - (prio - (CPU_CFG_DATA_SI
+ 152              		.loc 1 141 9 is_stmt 1 view .LVU30
+ 153              		.loc 1 141 74 is_stmt 0 view .LVU31
+ 154 0016 C0F13F00 		rsb	r0, r0, #63
+ 155              	.LVL8:
+ 156              		.loc 1 141 38 view .LVU32
+ 157 001a 0123     		movs	r3, #1
+ 158 001c 03FA00F0 		lsl	r0, r3, r0
+ 159              		.loc 1 141 22 view .LVU33
+ 160 0020 024A     		ldr	r2, .L15
+ 161 0022 5368     		ldr	r3, [r2, #4]
+ 162 0024 0343     		orrs	r3, r3, r0
+ 163 0026 5360     		str	r3, [r2, #4]
+ 142:rtos/uCOS-III/Source/os_prio.c ****     }
+ 143:rtos/uCOS-III/Source/os_prio.c **** 
+ 144:rtos/uCOS-III/Source/os_prio.c **** 
+ 145:rtos/uCOS-III/Source/os_prio.c **** #else
+ 146:rtos/uCOS-III/Source/os_prio.c ****     CPU_DATA  bit_nbr;
+ 147:rtos/uCOS-III/Source/os_prio.c ****     OS_PRIO   ix;
+ 148:rtos/uCOS-III/Source/os_prio.c **** 
+ 149:rtos/uCOS-III/Source/os_prio.c ****     ix             = (OS_PRIO)(prio /  (CPU_CFG_DATA_SIZE * 8u));
+ 150:rtos/uCOS-III/Source/os_prio.c ****     bit_nbr        = (CPU_DATA)prio & ((CPU_CFG_DATA_SIZE * 8u) - 1u);
+ 151:rtos/uCOS-III/Source/os_prio.c ****     OSPrioTbl[ix] |= (CPU_DATA)1u << (((CPU_CFG_DATA_SIZE * 8u) - 1u) - bit_nbr);
+ 152:rtos/uCOS-III/Source/os_prio.c **** #endif
+ 153:rtos/uCOS-III/Source/os_prio.c **** }
+ 164              		.loc 1 153 1 view .LVU34
+ 165 0028 7047     		bx	lr
+ 166              	.L16:
+ 167 002a 00BF     		.align	2
+ 168              	.L15:
+ 169 002c 00000000 		.word	OSPrioTbl
+ 170              		.cfi_endproc
+ 171              	.LFE2:
+ 173              		.section	.text.OS_PrioRemove,"ax",%progbits
+ 174              		.align	1
+ 175              		.global	OS_PrioRemove
+ 176              		.syntax unified
+ 177              		.thumb
+ 178              		.thumb_func
+ 179              		.fpu fpv4-sp-d16
+ 181              	OS_PrioRemove:
+ 182              	.LVL9:
+ 183              	.LFB3:
+ 154:rtos/uCOS-III/Source/os_prio.c **** 
+ 155:rtos/uCOS-III/Source/os_prio.c **** /*
+ 156:rtos/uCOS-III/Source/os_prio.c **** ***************************************************************************************************
+ 157:rtos/uCOS-III/Source/os_prio.c **** *                                                   REMOVE PRIORITY
+ 158:rtos/uCOS-III/Source/os_prio.c **** *
+ 159:rtos/uCOS-III/Source/os_prio.c **** * Description: This function is called to remove a priority in the priority table.
+ARM GAS  /tmp/cc6UP3v4.s 			page 7
+
+
+ 160:rtos/uCOS-III/Source/os_prio.c **** *
+ 161:rtos/uCOS-III/Source/os_prio.c **** * Arguments  : prio     is the priority to remove
+ 162:rtos/uCOS-III/Source/os_prio.c **** *
+ 163:rtos/uCOS-III/Source/os_prio.c **** * Returns    : none
+ 164:rtos/uCOS-III/Source/os_prio.c **** *
+ 165:rtos/uCOS-III/Source/os_prio.c **** * Note(s)    : 1) This function is INTERNAL to uC/OS-III and your application MUST NOT call it.
+ 166:rtos/uCOS-III/Source/os_prio.c **** ***************************************************************************************************
+ 167:rtos/uCOS-III/Source/os_prio.c **** */
+ 168:rtos/uCOS-III/Source/os_prio.c **** 
+ 169:rtos/uCOS-III/Source/os_prio.c **** void  OS_PrioRemove (OS_PRIO  prio)
+ 170:rtos/uCOS-III/Source/os_prio.c **** {
+ 184              		.loc 1 170 1 is_stmt 1 view -0
+ 185              		.cfi_startproc
+ 186              		@ args = 0, pretend = 0, frame = 0
+ 187              		@ frame_needed = 0, uses_anonymous_args = 0
+ 188              		@ link register save eliminated.
+ 171:rtos/uCOS-III/Source/os_prio.c **** #if   (OS_CFG_PRIO_MAX <= (CPU_CFG_DATA_SIZE * 8u))             /* Optimize for less than word size
+ 172:rtos/uCOS-III/Source/os_prio.c ****     OSPrioTbl[0] &= ~((CPU_DATA)1u << (((CPU_CFG_DATA_SIZE * 8u) - 1u) - prio));
+ 173:rtos/uCOS-III/Source/os_prio.c **** 
+ 174:rtos/uCOS-III/Source/os_prio.c **** 
+ 175:rtos/uCOS-III/Source/os_prio.c **** #elif (OS_CFG_PRIO_MAX <= (2u * (CPU_CFG_DATA_SIZE * 8u)))      /* Optimize for    2x the word size
+ 176:rtos/uCOS-III/Source/os_prio.c ****     if (prio < (CPU_CFG_DATA_SIZE * 8u)) {
+ 189              		.loc 1 176 5 view .LVU36
+ 190              		.loc 1 176 8 is_stmt 0 view .LVU37
+ 191 0000 1F28     		cmp	r0, #31
+ 192 0002 09D8     		bhi	.L18
+ 177:rtos/uCOS-III/Source/os_prio.c ****         OSPrioTbl[0] &= ~((CPU_DATA)1u << (((CPU_CFG_DATA_SIZE * 8u) - 1u) - prio));
+ 193              		.loc 1 177 9 is_stmt 1 view .LVU38
+ 194              		.loc 1 177 40 is_stmt 0 view .LVU39
+ 195 0004 4FF00043 		mov	r3, #-2147483648
+ 196 0008 23FA00F0 		lsr	r0, r3, r0
+ 197              	.LVL10:
+ 198              		.loc 1 177 22 view .LVU40
+ 199 000c 084A     		ldr	r2, .L20
+ 200 000e 1368     		ldr	r3, [r2]
+ 201 0010 23EA0003 		bic	r3, r3, r0
+ 202 0014 1360     		str	r3, [r2]
+ 203 0016 7047     		bx	lr
+ 204              	.LVL11:
+ 205              	.L18:
+ 178:rtos/uCOS-III/Source/os_prio.c ****     } else {
+ 179:rtos/uCOS-III/Source/os_prio.c ****         OSPrioTbl[1] &= ~((CPU_DATA)1u << (((CPU_CFG_DATA_SIZE * 8u) - 1u) - (prio - (CPU_CFG_DATA_
+ 206              		.loc 1 179 9 is_stmt 1 view .LVU41
+ 207              		.loc 1 179 76 is_stmt 0 view .LVU42
+ 208 0018 C0F13F00 		rsb	r0, r0, #63
+ 209              	.LVL12:
+ 210              		.loc 1 179 40 view .LVU43
+ 211 001c 0123     		movs	r3, #1
+ 212 001e 03FA00F0 		lsl	r0, r3, r0
+ 213              		.loc 1 179 22 view .LVU44
+ 214 0022 034A     		ldr	r2, .L20
+ 215 0024 5368     		ldr	r3, [r2, #4]
+ 216 0026 23EA0003 		bic	r3, r3, r0
+ 217 002a 5360     		str	r3, [r2, #4]
+ 180:rtos/uCOS-III/Source/os_prio.c ****     }
+ 181:rtos/uCOS-III/Source/os_prio.c **** 
+ 182:rtos/uCOS-III/Source/os_prio.c **** 
+ARM GAS  /tmp/cc6UP3v4.s 			page 8
+
+
+ 183:rtos/uCOS-III/Source/os_prio.c **** #else
+ 184:rtos/uCOS-III/Source/os_prio.c ****     CPU_DATA  bit_nbr;
+ 185:rtos/uCOS-III/Source/os_prio.c ****     OS_PRIO   ix;
+ 186:rtos/uCOS-III/Source/os_prio.c **** 
+ 187:rtos/uCOS-III/Source/os_prio.c ****     ix             =   (OS_PRIO)(prio  /   (CPU_CFG_DATA_SIZE * 8u));
+ 188:rtos/uCOS-III/Source/os_prio.c ****     bit_nbr        =   (CPU_DATA)prio  &  ((CPU_CFG_DATA_SIZE * 8u) - 1u);
+ 189:rtos/uCOS-III/Source/os_prio.c ****     OSPrioTbl[ix] &= ~((CPU_DATA)  1u << (((CPU_CFG_DATA_SIZE * 8u) - 1u) - bit_nbr));
+ 190:rtos/uCOS-III/Source/os_prio.c **** #endif
+ 191:rtos/uCOS-III/Source/os_prio.c **** }
+ 218              		.loc 1 191 1 view .LVU45
+ 219 002c 7047     		bx	lr
+ 220              	.L21:
+ 221 002e 00BF     		.align	2
+ 222              	.L20:
+ 223 0030 00000000 		.word	OSPrioTbl
+ 224              		.cfi_endproc
+ 225              	.LFE3:
+ 227              		.text
+ 228              	.Letext0:
+ 229              		.file 2 "rtos/uC-CPU/ARM-Cortex-M/ARMv7-M/GNU/cpu.h"
+ 230              		.file 3 "rtos/uC-CPU/cpu_core.h"
+ 231              		.file 4 "rtos/uCOS-III/Source/os_type.h"
+ 232              		.file 5 "rtos/uCOS-III/Source/os.h"
+ 233              		.file 6 "rtos/uCOS-III/Ports/ARM-Cortex-M/ARMv7-M/GNU/os_cpu.h"
+ARM GAS  /tmp/cc6UP3v4.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 os_prio.c
+     /tmp/cc6UP3v4.s:18     .text.OS_PrioInit:0000000000000000 $t
+     /tmp/cc6UP3v4.s:26     .text.OS_PrioInit:0000000000000000 OS_PrioInit
+     /tmp/cc6UP3v4.s:62     .text.OS_PrioInit:0000000000000014 $d
+     /tmp/cc6UP3v4.s:67     .text.OS_PrioGetHighest:0000000000000000 $t
+     /tmp/cc6UP3v4.s:74     .text.OS_PrioGetHighest:0000000000000000 OS_PrioGetHighest
+     /tmp/cc6UP3v4.s:115    .text.OS_PrioGetHighest:0000000000000020 $d
+     /tmp/cc6UP3v4.s:120    .text.OS_PrioInsert:0000000000000000 $t
+     /tmp/cc6UP3v4.s:127    .text.OS_PrioInsert:0000000000000000 OS_PrioInsert
+     /tmp/cc6UP3v4.s:169    .text.OS_PrioInsert:000000000000002c $d
+     /tmp/cc6UP3v4.s:174    .text.OS_PrioRemove:0000000000000000 $t
+     /tmp/cc6UP3v4.s:181    .text.OS_PrioRemove:0000000000000000 OS_PrioRemove
+     /tmp/cc6UP3v4.s:223    .text.OS_PrioRemove:0000000000000030 $d
+                           .group:0000000000000000 wm4.0.0f5aa60db9403f389c005f20ecce4286
+                           .group:0000000000000000 wm4.os.h.38.05c7a360e844508f9424830362f7eef3
+                           .group:0000000000000000 wm4.os_cfg.h.36.1682609214807c39119743015cd1b75b
+                           .group:0000000000000000 wm4.os_cfg_app.h.36.9d01bed009cfc3a5184d9a87250e45bf
+                           .group:0000000000000000 wm4.cpu_core.h.51.7b35a59c319673f88ae4a256248776ec
+                           .group:0000000000000000 wm4.cpu_def.h.46.baa122a2898bdc40bb50d1f21ead1515
+                           .group:0000000000000000 wm4.cpu_cfg.h.45.38a6a562da8b04490c382a226238c57e
+                           .group:0000000000000000 wm4.cpu.h.171.3cb15ee3ccb812cbfdf76d1fbfb9eda0
+                           .group:0000000000000000 wm4.lib_def.h.66.6ab2a012067a8e1f4289db5765835062
+                           .group:0000000000000000 wm4.cpu_core.h.143.d3b700e12b3a14ed3bee14c822b49a7d
+                           .group:0000000000000000 wm4.os_cpu.h.45.281d793567585e56a091270c28fc7efc
+                           .group:0000000000000000 wm4.os_trace.h.37.a6badbf6e748c370e142a9584653748e
+                           .group:0000000000000000 wm4.os.h.95.7b45e7e080367d299efd03f7510809bc
+
+UNDEFINED SYMBOLS
+OSPrioTbl
+CPU_CntLeadZeros

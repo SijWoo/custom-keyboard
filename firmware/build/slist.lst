@@ -1,0 +1,721 @@
+ARM GAS  /tmp/ccpOYKPr.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"slist.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.SList_Init,"ax",%progbits
+  18              		.align	1
+  19              		.global	SList_Init
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	SList_Init:
+  27              	.LVL0:
+  28              	.LFB0:
+  29              		.file 1 "rtos/uC-Common/Collections/slist.c"
+   1:rtos/uC-Common/Collections/slist.c **** /*
+   2:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+   3:rtos/uC-Common/Collections/slist.c **** *                                              uC/Common
+   4:rtos/uC-Common/Collections/slist.c **** *                                 Common Features for Micrium Stacks
+   5:rtos/uC-Common/Collections/slist.c **** *
+   6:rtos/uC-Common/Collections/slist.c **** *                         (c) Copyright 2013-2019; Silicon Laboratories Inc.,
+   7:rtos/uC-Common/Collections/slist.c **** *                                400 W. Cesar Chavez, Austin, TX 78701
+   8:rtos/uC-Common/Collections/slist.c **** *
+   9:rtos/uC-Common/Collections/slist.c **** *                   All rights reserved. Protected by international copyright laws.
+  10:rtos/uC-Common/Collections/slist.c **** *
+  11:rtos/uC-Common/Collections/slist.c **** *                  Your use of this software is subject to your acceptance of the terms
+  12:rtos/uC-Common/Collections/slist.c **** *                  of a Silicon Labs Micrium software license, which can be obtained by
+  13:rtos/uC-Common/Collections/slist.c **** *                  contacting info@micrium.com. If you do not agree to the terms of this
+  14:rtos/uC-Common/Collections/slist.c **** *                  license, you may not use this software.
+  15:rtos/uC-Common/Collections/slist.c **** *
+  16:rtos/uC-Common/Collections/slist.c **** *                  Please help us continue to provide the Embedded community with the finest
+  17:rtos/uC-Common/Collections/slist.c **** *                  software available. Your honesty is greatly appreciated.
+  18:rtos/uC-Common/Collections/slist.c **** *
+  19:rtos/uC-Common/Collections/slist.c **** *                    You can find our product's documentation at: doc.micrium.com
+  20:rtos/uC-Common/Collections/slist.c **** *
+  21:rtos/uC-Common/Collections/slist.c **** *                          For more information visit us at: www.micrium.com
+  22:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+  23:rtos/uC-Common/Collections/slist.c **** */
+  24:rtos/uC-Common/Collections/slist.c **** 
+  25:rtos/uC-Common/Collections/slist.c **** /*
+  26:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+  27:rtos/uC-Common/Collections/slist.c **** *
+  28:rtos/uC-Common/Collections/slist.c **** *                               uC/Common - Singly-linked Lists (SList)
+  29:rtos/uC-Common/Collections/slist.c **** *
+ARM GAS  /tmp/ccpOYKPr.s 			page 2
+
+
+  30:rtos/uC-Common/Collections/slist.c **** * Filename : slist.c
+  31:rtos/uC-Common/Collections/slist.c **** * Version  : V1.01.02
+  32:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+  33:rtos/uC-Common/Collections/slist.c **** */
+  34:rtos/uC-Common/Collections/slist.c **** 
+  35:rtos/uC-Common/Collections/slist.c **** /*
+  36:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+  37:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+  38:rtos/uC-Common/Collections/slist.c **** *                                            INCLUDE FILES
+  39:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+  40:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+  41:rtos/uC-Common/Collections/slist.c **** */
+  42:rtos/uC-Common/Collections/slist.c **** 
+  43:rtos/uC-Common/Collections/slist.c **** #define  MICRIUM_SOURCE
+  44:rtos/uC-Common/Collections/slist.c **** #define  COLL_SLIST_MODULE
+  45:rtos/uC-Common/Collections/slist.c **** 
+  46:rtos/uC-Common/Collections/slist.c **** #include  "slist.h"
+  47:rtos/uC-Common/Collections/slist.c **** #include  <lib_def.h>
+  48:rtos/uC-Common/Collections/slist.c **** #include  <cpu_core.h>
+  49:rtos/uC-Common/Collections/slist.c **** 
+  50:rtos/uC-Common/Collections/slist.c **** 
+  51:rtos/uC-Common/Collections/slist.c **** /*
+  52:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+  53:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+  54:rtos/uC-Common/Collections/slist.c **** *                                           GLOBAL FUNCTIONS
+  55:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+  56:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+  57:rtos/uC-Common/Collections/slist.c **** */
+  58:rtos/uC-Common/Collections/slist.c **** 
+  59:rtos/uC-Common/Collections/slist.c **** /*
+  60:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+  61:rtos/uC-Common/Collections/slist.c **** *                                             SList_Init()
+  62:rtos/uC-Common/Collections/slist.c **** *
+  63:rtos/uC-Common/Collections/slist.c **** * Description : Initializes a singly-linked list.
+  64:rtos/uC-Common/Collections/slist.c **** *
+  65:rtos/uC-Common/Collections/slist.c **** * Argument(s) : p_head_ptr      Pointer to pointer of head element of list.
+  66:rtos/uC-Common/Collections/slist.c **** *
+  67:rtos/uC-Common/Collections/slist.c **** * Return(s)   : none.
+  68:rtos/uC-Common/Collections/slist.c **** *
+  69:rtos/uC-Common/Collections/slist.c **** * Note(s)     : none.
+  70:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+  71:rtos/uC-Common/Collections/slist.c **** */
+  72:rtos/uC-Common/Collections/slist.c **** 
+  73:rtos/uC-Common/Collections/slist.c **** void  SList_Init (SLIST_MEMBER  **p_head_ptr)
+  74:rtos/uC-Common/Collections/slist.c **** {
+  30              		.loc 1 74 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  75:rtos/uC-Common/Collections/slist.c ****    *p_head_ptr = DEF_NULL;
+  35              		.loc 1 75 4 view .LVU1
+  36              		.loc 1 75 16 is_stmt 0 view .LVU2
+  37 0000 0023     		movs	r3, #0
+  38 0002 0360     		str	r3, [r0]
+  76:rtos/uC-Common/Collections/slist.c **** }
+  39              		.loc 1 76 1 view .LVU3
+ARM GAS  /tmp/ccpOYKPr.s 			page 3
+
+
+  40 0004 7047     		bx	lr
+  41              		.cfi_endproc
+  42              	.LFE0:
+  44              		.section	.text.SList_Push,"ax",%progbits
+  45              		.align	1
+  46              		.global	SList_Push
+  47              		.syntax unified
+  48              		.thumb
+  49              		.thumb_func
+  50              		.fpu fpv4-sp-d16
+  52              	SList_Push:
+  53              	.LVL1:
+  54              	.LFB1:
+  77:rtos/uC-Common/Collections/slist.c **** 
+  78:rtos/uC-Common/Collections/slist.c **** 
+  79:rtos/uC-Common/Collections/slist.c **** /*
+  80:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+  81:rtos/uC-Common/Collections/slist.c **** *                                             SList_Push()
+  82:rtos/uC-Common/Collections/slist.c **** *
+  83:rtos/uC-Common/Collections/slist.c **** * Description : Add given item at beginning of list.
+  84:rtos/uC-Common/Collections/slist.c **** *
+  85:rtos/uC-Common/Collections/slist.c **** * Argument(s) : p_head_ptr      Pointer to pointer of head element of list.
+  86:rtos/uC-Common/Collections/slist.c **** *
+  87:rtos/uC-Common/Collections/slist.c **** *               p_item          Pointer to item to add.
+  88:rtos/uC-Common/Collections/slist.c **** *
+  89:rtos/uC-Common/Collections/slist.c **** * Return(s)   : none.
+  90:rtos/uC-Common/Collections/slist.c **** *
+  91:rtos/uC-Common/Collections/slist.c **** * Note(s)     : none.
+  92:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+  93:rtos/uC-Common/Collections/slist.c **** */
+  94:rtos/uC-Common/Collections/slist.c **** 
+  95:rtos/uC-Common/Collections/slist.c **** void  SList_Push (SLIST_MEMBER  **p_head_ptr,
+  96:rtos/uC-Common/Collections/slist.c ****                   SLIST_MEMBER   *p_item)
+  97:rtos/uC-Common/Collections/slist.c **** {
+  55              		.loc 1 97 1 is_stmt 1 view -0
+  56              		.cfi_startproc
+  57              		@ args = 0, pretend = 0, frame = 0
+  58              		@ frame_needed = 0, uses_anonymous_args = 0
+  59              		@ link register save eliminated.
+  98:rtos/uC-Common/Collections/slist.c ****     p_item->p_next = *p_head_ptr;
+  60              		.loc 1 98 5 view .LVU5
+  61              		.loc 1 98 22 is_stmt 0 view .LVU6
+  62 0000 0368     		ldr	r3, [r0]
+  63              		.loc 1 98 20 view .LVU7
+  64 0002 0B60     		str	r3, [r1]
+  99:rtos/uC-Common/Collections/slist.c ****    *p_head_ptr     =  p_item;
+  65              		.loc 1 99 4 is_stmt 1 view .LVU8
+  66              		.loc 1 99 20 is_stmt 0 view .LVU9
+  67 0004 0160     		str	r1, [r0]
+ 100:rtos/uC-Common/Collections/slist.c **** }
+  68              		.loc 1 100 1 view .LVU10
+  69 0006 7047     		bx	lr
+  70              		.cfi_endproc
+  71              	.LFE1:
+  73              		.section	.text.SList_PushBack,"ax",%progbits
+  74              		.align	1
+  75              		.global	SList_PushBack
+ARM GAS  /tmp/ccpOYKPr.s 			page 4
+
+
+  76              		.syntax unified
+  77              		.thumb
+  78              		.thumb_func
+  79              		.fpu fpv4-sp-d16
+  81              	SList_PushBack:
+  82              	.LVL2:
+  83              	.LFB2:
+ 101:rtos/uC-Common/Collections/slist.c **** 
+ 102:rtos/uC-Common/Collections/slist.c **** 
+ 103:rtos/uC-Common/Collections/slist.c **** /*
+ 104:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+ 105:rtos/uC-Common/Collections/slist.c **** *                                           SList_PushBack()
+ 106:rtos/uC-Common/Collections/slist.c **** *
+ 107:rtos/uC-Common/Collections/slist.c **** * Description : Add item at end of list.
+ 108:rtos/uC-Common/Collections/slist.c **** *
+ 109:rtos/uC-Common/Collections/slist.c **** * Argument(s) : p_head_ptr      Pointer to pointer of head element of list.
+ 110:rtos/uC-Common/Collections/slist.c **** *
+ 111:rtos/uC-Common/Collections/slist.c **** *               p_item          Pointer to item to add.
+ 112:rtos/uC-Common/Collections/slist.c **** *
+ 113:rtos/uC-Common/Collections/slist.c **** * Return(s)   : none.
+ 114:rtos/uC-Common/Collections/slist.c **** *
+ 115:rtos/uC-Common/Collections/slist.c **** * Note(s)     : none.
+ 116:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+ 117:rtos/uC-Common/Collections/slist.c **** */
+ 118:rtos/uC-Common/Collections/slist.c **** 
+ 119:rtos/uC-Common/Collections/slist.c **** void  SList_PushBack (SLIST_MEMBER  **p_head_ptr,
+ 120:rtos/uC-Common/Collections/slist.c ****                       SLIST_MEMBER   *p_item)
+ 121:rtos/uC-Common/Collections/slist.c **** {
+  84              		.loc 1 121 1 is_stmt 1 view -0
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 0
+  87              		@ frame_needed = 0, uses_anonymous_args = 0
+  88              		@ link register save eliminated.
+ 122:rtos/uC-Common/Collections/slist.c ****     SLIST_MEMBER  **p_next_ptr = p_head_ptr;
+  89              		.loc 1 122 5 view .LVU12
+ 123:rtos/uC-Common/Collections/slist.c **** 
+ 124:rtos/uC-Common/Collections/slist.c **** 
+ 125:rtos/uC-Common/Collections/slist.c ****     while (*p_next_ptr != DEF_NULL) {
+  90              		.loc 1 125 5 view .LVU13
+  91              	.L4:
+  92              		.loc 1 125 11 view .LVU14
+  93              		.loc 1 125 12 is_stmt 0 view .LVU15
+  94 0000 0368     		ldr	r3, [r0]
+  95              		.loc 1 125 11 view .LVU16
+  96 0002 0BB1     		cbz	r3, .L6
+ 126:rtos/uC-Common/Collections/slist.c ****         p_next_ptr = &((*p_next_ptr)->p_next);
+  97              		.loc 1 126 9 is_stmt 1 view .LVU17
+  98              		.loc 1 126 20 is_stmt 0 view .LVU18
+  99 0004 1846     		mov	r0, r3
+ 100              	.LVL3:
+ 101              		.loc 1 126 20 view .LVU19
+ 102 0006 FBE7     		b	.L4
+ 103              	.L6:
+ 127:rtos/uC-Common/Collections/slist.c ****     }
+ 128:rtos/uC-Common/Collections/slist.c **** 
+ 129:rtos/uC-Common/Collections/slist.c ****     p_item->p_next = DEF_NULL;
+ 104              		.loc 1 129 5 is_stmt 1 view .LVU20
+ARM GAS  /tmp/ccpOYKPr.s 			page 5
+
+
+ 105              		.loc 1 129 20 is_stmt 0 view .LVU21
+ 106 0008 0B60     		str	r3, [r1]
+ 130:rtos/uC-Common/Collections/slist.c ****    *p_next_ptr     = p_item;
+ 107              		.loc 1 130 4 is_stmt 1 view .LVU22
+ 108              		.loc 1 130 20 is_stmt 0 view .LVU23
+ 109 000a 0160     		str	r1, [r0]
+ 131:rtos/uC-Common/Collections/slist.c **** }
+ 110              		.loc 1 131 1 view .LVU24
+ 111 000c 7047     		bx	lr
+ 112              		.cfi_endproc
+ 113              	.LFE2:
+ 115              		.section	.text.SList_Pop,"ax",%progbits
+ 116              		.align	1
+ 117              		.global	SList_Pop
+ 118              		.syntax unified
+ 119              		.thumb
+ 120              		.thumb_func
+ 121              		.fpu fpv4-sp-d16
+ 123              	SList_Pop:
+ 124              	.LVL4:
+ 125              	.LFB3:
+ 132:rtos/uC-Common/Collections/slist.c **** 
+ 133:rtos/uC-Common/Collections/slist.c **** 
+ 134:rtos/uC-Common/Collections/slist.c **** /*
+ 135:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+ 136:rtos/uC-Common/Collections/slist.c **** *                                              SList_Pop()
+ 137:rtos/uC-Common/Collections/slist.c **** *
+ 138:rtos/uC-Common/Collections/slist.c **** * Description : Removes and returns first element of list.
+ 139:rtos/uC-Common/Collections/slist.c **** *
+ 140:rtos/uC-Common/Collections/slist.c **** * Argument(s) : p_head_ptr      Pointer to pointer of head element of list.
+ 141:rtos/uC-Common/Collections/slist.c **** *
+ 142:rtos/uC-Common/Collections/slist.c **** * Return(s)   : Pointer to item that was at top of the list.
+ 143:rtos/uC-Common/Collections/slist.c **** *
+ 144:rtos/uC-Common/Collections/slist.c **** * Note(s)     : none.
+ 145:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+ 146:rtos/uC-Common/Collections/slist.c **** */
+ 147:rtos/uC-Common/Collections/slist.c **** 
+ 148:rtos/uC-Common/Collections/slist.c **** SLIST_MEMBER  *SList_Pop (SLIST_MEMBER  **p_head_ptr)
+ 149:rtos/uC-Common/Collections/slist.c **** {
+ 126              		.loc 1 149 1 is_stmt 1 view -0
+ 127              		.cfi_startproc
+ 128              		@ args = 0, pretend = 0, frame = 0
+ 129              		@ frame_needed = 0, uses_anonymous_args = 0
+ 130              		@ link register save eliminated.
+ 131              		.loc 1 149 1 is_stmt 0 view .LVU26
+ 132 0000 0346     		mov	r3, r0
+ 150:rtos/uC-Common/Collections/slist.c ****     SLIST_MEMBER  *p_item;
+ 133              		.loc 1 150 5 is_stmt 1 view .LVU27
+ 151:rtos/uC-Common/Collections/slist.c **** 
+ 152:rtos/uC-Common/Collections/slist.c ****     p_item = *p_head_ptr;
+ 134              		.loc 1 152 5 view .LVU28
+ 135              		.loc 1 152 12 is_stmt 0 view .LVU29
+ 136 0002 0068     		ldr	r0, [r0]
+ 137              	.LVL5:
+ 153:rtos/uC-Common/Collections/slist.c ****     if (p_item == DEF_NULL) {
+ 138              		.loc 1 153 5 is_stmt 1 view .LVU30
+ 139              		.loc 1 153 8 is_stmt 0 view .LVU31
+ARM GAS  /tmp/ccpOYKPr.s 			page 6
+
+
+ 140 0004 18B1     		cbz	r0, .L7
+ 154:rtos/uC-Common/Collections/slist.c ****         return (DEF_NULL);
+ 155:rtos/uC-Common/Collections/slist.c ****     }
+ 156:rtos/uC-Common/Collections/slist.c **** 
+ 157:rtos/uC-Common/Collections/slist.c ****    *p_head_ptr = p_item->p_next;
+ 141              		.loc 1 157 4 is_stmt 1 view .LVU32
+ 142              		.loc 1 157 24 is_stmt 0 view .LVU33
+ 143 0006 0268     		ldr	r2, [r0]
+ 144              		.loc 1 157 16 view .LVU34
+ 145 0008 1A60     		str	r2, [r3]
+ 158:rtos/uC-Common/Collections/slist.c **** 
+ 159:rtos/uC-Common/Collections/slist.c ****     p_item->p_next = DEF_NULL;
+ 146              		.loc 1 159 5 is_stmt 1 view .LVU35
+ 147              		.loc 1 159 20 is_stmt 0 view .LVU36
+ 148 000a 0023     		movs	r3, #0
+ 149              	.LVL6:
+ 150              		.loc 1 159 20 view .LVU37
+ 151 000c 0360     		str	r3, [r0]
+ 160:rtos/uC-Common/Collections/slist.c **** 
+ 161:rtos/uC-Common/Collections/slist.c ****     return (p_item);
+ 152              		.loc 1 161 5 is_stmt 1 view .LVU38
+ 153              	.L7:
+ 162:rtos/uC-Common/Collections/slist.c **** }
+ 154              		.loc 1 162 1 is_stmt 0 view .LVU39
+ 155 000e 7047     		bx	lr
+ 156              		.cfi_endproc
+ 157              	.LFE3:
+ 159              		.section	.text.SList_Add,"ax",%progbits
+ 160              		.align	1
+ 161              		.global	SList_Add
+ 162              		.syntax unified
+ 163              		.thumb
+ 164              		.thumb_func
+ 165              		.fpu fpv4-sp-d16
+ 167              	SList_Add:
+ 168              	.LVL7:
+ 169              	.LFB4:
+ 163:rtos/uC-Common/Collections/slist.c **** 
+ 164:rtos/uC-Common/Collections/slist.c **** 
+ 165:rtos/uC-Common/Collections/slist.c **** /*
+ 166:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+ 167:rtos/uC-Common/Collections/slist.c **** *                                              SList_Add()
+ 168:rtos/uC-Common/Collections/slist.c **** *
+ 169:rtos/uC-Common/Collections/slist.c **** * Description : Add item after given item.
+ 170:rtos/uC-Common/Collections/slist.c **** *
+ 171:rtos/uC-Common/Collections/slist.c **** * Argument(s) : p_item      Pointer to item to add.
+ 172:rtos/uC-Common/Collections/slist.c **** *
+ 173:rtos/uC-Common/Collections/slist.c **** *               p_pos       Pointer to item after which the item to add will be inserted.
+ 174:rtos/uC-Common/Collections/slist.c **** *
+ 175:rtos/uC-Common/Collections/slist.c **** * Return(s)   : none.
+ 176:rtos/uC-Common/Collections/slist.c **** *
+ 177:rtos/uC-Common/Collections/slist.c **** * Note(s)     : none.
+ 178:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+ 179:rtos/uC-Common/Collections/slist.c **** */
+ 180:rtos/uC-Common/Collections/slist.c **** 
+ 181:rtos/uC-Common/Collections/slist.c **** void  SList_Add (SLIST_MEMBER  *p_item,
+ 182:rtos/uC-Common/Collections/slist.c ****                  SLIST_MEMBER  *p_pos)
+ARM GAS  /tmp/ccpOYKPr.s 			page 7
+
+
+ 183:rtos/uC-Common/Collections/slist.c **** {
+ 170              		.loc 1 183 1 is_stmt 1 view -0
+ 171              		.cfi_startproc
+ 172              		@ args = 0, pretend = 0, frame = 0
+ 173              		@ frame_needed = 0, uses_anonymous_args = 0
+ 174              		@ link register save eliminated.
+ 184:rtos/uC-Common/Collections/slist.c ****     p_item->p_next = p_pos->p_next;
+ 175              		.loc 1 184 5 view .LVU41
+ 176              		.loc 1 184 27 is_stmt 0 view .LVU42
+ 177 0000 0B68     		ldr	r3, [r1]
+ 178              		.loc 1 184 20 view .LVU43
+ 179 0002 0360     		str	r3, [r0]
+ 185:rtos/uC-Common/Collections/slist.c ****     p_pos->p_next  = p_item;
+ 180              		.loc 1 185 5 is_stmt 1 view .LVU44
+ 181              		.loc 1 185 20 is_stmt 0 view .LVU45
+ 182 0004 0860     		str	r0, [r1]
+ 186:rtos/uC-Common/Collections/slist.c **** }
+ 183              		.loc 1 186 1 view .LVU46
+ 184 0006 7047     		bx	lr
+ 185              		.cfi_endproc
+ 186              	.LFE4:
+ 188              		.section	.text.SList_Rem,"ax",%progbits
+ 189              		.align	1
+ 190              		.global	SList_Rem
+ 191              		.syntax unified
+ 192              		.thumb
+ 193              		.thumb_func
+ 194              		.fpu fpv4-sp-d16
+ 196              	SList_Rem:
+ 197              	.LVL8:
+ 198              	.LFB5:
+ 187:rtos/uC-Common/Collections/slist.c **** 
+ 188:rtos/uC-Common/Collections/slist.c **** 
+ 189:rtos/uC-Common/Collections/slist.c **** /*
+ 190:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+ 191:rtos/uC-Common/Collections/slist.c **** *                                              SList_Rem()
+ 192:rtos/uC-Common/Collections/slist.c **** *
+ 193:rtos/uC-Common/Collections/slist.c **** * Description : Remove item from list.
+ 194:rtos/uC-Common/Collections/slist.c **** *
+ 195:rtos/uC-Common/Collections/slist.c **** * Argument(s) : p_head_ptr      Pointer to pointer of head element of list.
+ 196:rtos/uC-Common/Collections/slist.c **** *
+ 197:rtos/uC-Common/Collections/slist.c **** *               p_item          Pointer to item to remove.
+ 198:rtos/uC-Common/Collections/slist.c **** *
+ 199:rtos/uC-Common/Collections/slist.c **** * Return(s)   : none.
+ 200:rtos/uC-Common/Collections/slist.c **** *
+ 201:rtos/uC-Common/Collections/slist.c **** * Note(s)     : (1) A CPU_SW_EXCEPTION() is thrown if the item is not found within the list.
+ 202:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+ 203:rtos/uC-Common/Collections/slist.c **** */
+ 204:rtos/uC-Common/Collections/slist.c **** 
+ 205:rtos/uC-Common/Collections/slist.c **** void  SList_Rem (SLIST_MEMBER  **p_head_ptr,
+ 206:rtos/uC-Common/Collections/slist.c ****                  SLIST_MEMBER   *p_item)
+ 207:rtos/uC-Common/Collections/slist.c **** {
+ 199              		.loc 1 207 1 is_stmt 1 view -0
+ 200              		.cfi_startproc
+ 201              		@ args = 0, pretend = 0, frame = 0
+ 202              		@ frame_needed = 0, uses_anonymous_args = 0
+ 203              		.loc 1 207 1 is_stmt 0 view .LVU48
+ARM GAS  /tmp/ccpOYKPr.s 			page 8
+
+
+ 204 0000 08B5     		push	{r3, lr}
+ 205              	.LCFI0:
+ 206              		.cfi_def_cfa_offset 8
+ 207              		.cfi_offset 3, -8
+ 208              		.cfi_offset 14, -4
+ 208:rtos/uC-Common/Collections/slist.c ****     SLIST_MEMBER  **p_next_ptr;
+ 209              		.loc 1 208 5 is_stmt 1 view .LVU49
+ 209:rtos/uC-Common/Collections/slist.c **** 
+ 210:rtos/uC-Common/Collections/slist.c **** 
+ 211:rtos/uC-Common/Collections/slist.c ****     for (p_next_ptr = p_head_ptr; *p_next_ptr != DEF_NULL; p_next_ptr = &((*p_next_ptr)->p_next)) {
+ 210              		.loc 1 211 5 view .LVU50
+ 211              	.LVL9:
+ 212              	.L11:
+ 213              		.loc 1 211 35 discriminator 1 view .LVU51
+ 214 0002 0368     		ldr	r3, [r0]
+ 215              		.loc 1 211 5 is_stmt 0 discriminator 1 view .LVU52
+ 216 0004 33B1     		cbz	r3, .L16
+ 212:rtos/uC-Common/Collections/slist.c ****         if (*p_next_ptr == p_item) {
+ 217              		.loc 1 212 9 is_stmt 1 view .LVU53
+ 218              		.loc 1 212 12 is_stmt 0 view .LVU54
+ 219 0006 8B42     		cmp	r3, r1
+ 220 0008 01D0     		beq	.L17
+ 211:rtos/uC-Common/Collections/slist.c ****         if (*p_next_ptr == p_item) {
+ 221              		.loc 1 211 60 is_stmt 1 discriminator 2 view .LVU55
+ 211:rtos/uC-Common/Collections/slist.c ****         if (*p_next_ptr == p_item) {
+ 222              		.loc 1 211 71 is_stmt 0 discriminator 2 view .LVU56
+ 223 000a 1846     		mov	r0, r3
+ 224              	.LVL10:
+ 211:rtos/uC-Common/Collections/slist.c ****         if (*p_next_ptr == p_item) {
+ 225              		.loc 1 211 71 discriminator 2 view .LVU57
+ 226 000c F9E7     		b	.L11
+ 227              	.L17:
+ 213:rtos/uC-Common/Collections/slist.c ****            *p_next_ptr = p_item->p_next;
+ 228              		.loc 1 213 12 is_stmt 1 view .LVU58
+ 229              		.loc 1 213 32 is_stmt 0 view .LVU59
+ 230 000e 0B68     		ldr	r3, [r1]
+ 231              		.loc 1 213 24 view .LVU60
+ 232 0010 0360     		str	r3, [r0]
+ 214:rtos/uC-Common/Collections/slist.c ****             return;
+ 233              		.loc 1 214 13 is_stmt 1 view .LVU61
+ 234 0012 01E0     		b	.L10
+ 235              	.L16:
+ 215:rtos/uC-Common/Collections/slist.c ****         }
+ 216:rtos/uC-Common/Collections/slist.c ****     }
+ 217:rtos/uC-Common/Collections/slist.c **** 
+ 218:rtos/uC-Common/Collections/slist.c ****     CPU_SW_EXCEPTION(;);                                        /* See Note #1.                    
+ 236              		.loc 1 218 5 view .LVU62
+ 237              		.loc 1 218 5 view .LVU63
+ 238 0014 FFF7FEFF 		bl	CPU_SW_Exception
+ 239              	.LVL11:
+ 240              		.loc 1 218 5 view .LVU64
+ 241              	.L10:
+ 219:rtos/uC-Common/Collections/slist.c **** }
+ 242              		.loc 1 219 1 is_stmt 0 view .LVU65
+ 243 0018 08BD     		pop	{r3, pc}
+ 244              		.cfi_endproc
+ 245              	.LFE5:
+ARM GAS  /tmp/ccpOYKPr.s 			page 9
+
+
+ 247              		.section	.text.SList_Sort,"ax",%progbits
+ 248              		.align	1
+ 249              		.global	SList_Sort
+ 250              		.syntax unified
+ 251              		.thumb
+ 252              		.thumb_func
+ 253              		.fpu fpv4-sp-d16
+ 255              	SList_Sort:
+ 256              	.LVL12:
+ 257              	.LFB6:
+ 220:rtos/uC-Common/Collections/slist.c **** 
+ 221:rtos/uC-Common/Collections/slist.c **** 
+ 222:rtos/uC-Common/Collections/slist.c **** /*
+ 223:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+ 224:rtos/uC-Common/Collections/slist.c **** *                                             SList_Sort()
+ 225:rtos/uC-Common/Collections/slist.c **** *
+ 226:rtos/uC-Common/Collections/slist.c **** * Description : Sorts list items.
+ 227:rtos/uC-Common/Collections/slist.c **** *
+ 228:rtos/uC-Common/Collections/slist.c **** * Argument(s) : p_head_ptr      Pointer to pointer of head element of list.
+ 229:rtos/uC-Common/Collections/slist.c **** *
+ 230:rtos/uC-Common/Collections/slist.c **** *               cmp_fnct        Pointer to function to use for sorting the list.
+ 231:rtos/uC-Common/Collections/slist.c **** *                                   p_item_l    Pointer to left  item.
+ 232:rtos/uC-Common/Collections/slist.c **** *                                   p_item_r    Pointer to right item.
+ 233:rtos/uC-Common/Collections/slist.c **** *                                   Returns whether the two items are ordered (DEF_YES) or not (DEF
+ 234:rtos/uC-Common/Collections/slist.c **** *
+ 235:rtos/uC-Common/Collections/slist.c **** * Return(s)   : none.
+ 236:rtos/uC-Common/Collections/slist.c **** *
+ 237:rtos/uC-Common/Collections/slist.c **** * Note(s)     : none.
+ 238:rtos/uC-Common/Collections/slist.c **** ***************************************************************************************************
+ 239:rtos/uC-Common/Collections/slist.c **** */
+ 240:rtos/uC-Common/Collections/slist.c **** 
+ 241:rtos/uC-Common/Collections/slist.c **** void  SList_Sort (SLIST_MEMBER  **p_head_ptr,
+ 242:rtos/uC-Common/Collections/slist.c ****                   CPU_BOOLEAN   (*cmp_fnct)(SLIST_MEMBER  *p_item_l,
+ 243:rtos/uC-Common/Collections/slist.c ****                                             SLIST_MEMBER  *p_item_r))
+ 244:rtos/uC-Common/Collections/slist.c **** {
+ 258              		.loc 1 244 1 is_stmt 1 view -0
+ 259              		.cfi_startproc
+ 260              		@ args = 0, pretend = 0, frame = 0
+ 261              		@ frame_needed = 0, uses_anonymous_args = 0
+ 262              		.loc 1 244 1 is_stmt 0 view .LVU67
+ 263 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 264              	.LCFI1:
+ 265              		.cfi_def_cfa_offset 24
+ 266              		.cfi_offset 4, -24
+ 267              		.cfi_offset 5, -20
+ 268              		.cfi_offset 6, -16
+ 269              		.cfi_offset 7, -12
+ 270              		.cfi_offset 8, -8
+ 271              		.cfi_offset 14, -4
+ 272 0004 8046     		mov	r8, r0
+ 273 0006 0E46     		mov	r6, r1
+ 274              	.LVL13:
+ 275              	.L24:
+ 245:rtos/uC-Common/Collections/slist.c ****     CPU_BOOLEAN     swapped;
+ 276              		.loc 1 245 5 is_stmt 1 view .LVU68
+ 246:rtos/uC-Common/Collections/slist.c ****     SLIST_MEMBER  **pp_item_l;
+ 277              		.loc 1 246 5 view .LVU69
+ARM GAS  /tmp/ccpOYKPr.s 			page 10
+
+
+ 247:rtos/uC-Common/Collections/slist.c **** 
+ 248:rtos/uC-Common/Collections/slist.c **** 
+ 249:rtos/uC-Common/Collections/slist.c ****     do {
+ 278              		.loc 1 249 5 view .LVU70
+ 250:rtos/uC-Common/Collections/slist.c ****         swapped = DEF_NO;
+ 279              		.loc 1 250 9 view .LVU71
+ 251:rtos/uC-Common/Collections/slist.c **** 
+ 252:rtos/uC-Common/Collections/slist.c ****         pp_item_l = p_head_ptr;
+ 280              		.loc 1 252 9 view .LVU72
+ 253:rtos/uC-Common/Collections/slist.c ****                                                                 /* Loop until end of list is found.
+ 254:rtos/uC-Common/Collections/slist.c ****         while ((*pp_item_l != DEF_NULL) && ((*pp_item_l)->p_next != DEF_NULL)) {
+ 281              		.loc 1 254 9 view .LVU73
+ 252:rtos/uC-Common/Collections/slist.c ****                                                                 /* Loop until end of list is found.
+ 282              		.loc 1 252 19 is_stmt 0 view .LVU74
+ 283 0008 4546     		mov	r5, r8
+ 250:rtos/uC-Common/Collections/slist.c **** 
+ 284              		.loc 1 250 17 view .LVU75
+ 285 000a 0027     		movs	r7, #0
+ 286              		.loc 1 254 15 view .LVU76
+ 287 000c 00E0     		b	.L19
+ 288              	.LVL14:
+ 289              	.L20:
+ 290              	.LBB2:
+ 255:rtos/uC-Common/Collections/slist.c ****             SLIST_MEMBER  *p_item_r = (*pp_item_l)->p_next;
+ 256:rtos/uC-Common/Collections/slist.c ****             CPU_BOOLEAN    ordered;
+ 257:rtos/uC-Common/Collections/slist.c **** 
+ 258:rtos/uC-Common/Collections/slist.c **** 
+ 259:rtos/uC-Common/Collections/slist.c ****             ordered = cmp_fnct(*pp_item_l, p_item_r);           /* Call provided compare fnct.     
+ 260:rtos/uC-Common/Collections/slist.c ****             if (ordered == DEF_NO) {                            /* If order is not correct, swap it
+ 261:rtos/uC-Common/Collections/slist.c ****                 SLIST_MEMBER  *p_tmp = p_item_r->p_next;
+ 262:rtos/uC-Common/Collections/slist.c **** 
+ 263:rtos/uC-Common/Collections/slist.c **** 
+ 264:rtos/uC-Common/Collections/slist.c ****                 p_item_r->p_next   =  *pp_item_l;               /* Swap the two items.             
+ 265:rtos/uC-Common/Collections/slist.c ****               (*pp_item_l)->p_next =   p_tmp;
+ 266:rtos/uC-Common/Collections/slist.c ****                *pp_item_l          =   p_item_r;
+ 267:rtos/uC-Common/Collections/slist.c ****                 pp_item_l          = &(p_item_r->p_next);
+ 268:rtos/uC-Common/Collections/slist.c ****                 swapped            =   DEF_YES;                 /* Indicate a swap has been done.  
+ 269:rtos/uC-Common/Collections/slist.c ****             } else {
+ 270:rtos/uC-Common/Collections/slist.c ****                 pp_item_l = &((*pp_item_l)->p_next);
+ 291              		.loc 1 270 17 is_stmt 1 view .LVU77
+ 292              		.loc 1 270 32 is_stmt 0 view .LVU78
+ 293 000e 2D68     		ldr	r5, [r5]
+ 294              	.LVL15:
+ 295              	.L19:
+ 296              		.loc 1 270 32 view .LVU79
+ 297              	.LBE2:
+ 254:rtos/uC-Common/Collections/slist.c ****             SLIST_MEMBER  *p_item_r = (*pp_item_l)->p_next;
+ 298              		.loc 1 254 15 is_stmt 1 view .LVU80
+ 254:rtos/uC-Common/Collections/slist.c ****             SLIST_MEMBER  *p_item_r = (*pp_item_l)->p_next;
+ 299              		.loc 1 254 17 is_stmt 0 view .LVU81
+ 300 0010 2868     		ldr	r0, [r5]
+ 254:rtos/uC-Common/Collections/slist.c ****             SLIST_MEMBER  *p_item_r = (*pp_item_l)->p_next;
+ 301              		.loc 1 254 15 view .LVU82
+ 302 0012 70B1     		cbz	r0, .L22
+ 254:rtos/uC-Common/Collections/slist.c ****             SLIST_MEMBER  *p_item_r = (*pp_item_l)->p_next;
+ 303              		.loc 1 254 57 discriminator 1 view .LVU83
+ 304 0014 0468     		ldr	r4, [r0]
+ARM GAS  /tmp/ccpOYKPr.s 			page 11
+
+
+ 254:rtos/uC-Common/Collections/slist.c ****             SLIST_MEMBER  *p_item_r = (*pp_item_l)->p_next;
+ 305              		.loc 1 254 41 discriminator 1 view .LVU84
+ 306 0016 64B1     		cbz	r4, .L22
+ 307              	.LBB4:
+ 255:rtos/uC-Common/Collections/slist.c ****             SLIST_MEMBER  *p_item_r = (*pp_item_l)->p_next;
+ 308              		.loc 1 255 13 is_stmt 1 view .LVU85
+ 309              	.LVL16:
+ 256:rtos/uC-Common/Collections/slist.c **** 
+ 310              		.loc 1 256 13 view .LVU86
+ 259:rtos/uC-Common/Collections/slist.c ****             if (ordered == DEF_NO) {                            /* If order is not correct, swap it
+ 311              		.loc 1 259 13 view .LVU87
+ 259:rtos/uC-Common/Collections/slist.c ****             if (ordered == DEF_NO) {                            /* If order is not correct, swap it
+ 312              		.loc 1 259 23 is_stmt 0 view .LVU88
+ 313 0018 2146     		mov	r1, r4
+ 314 001a B047     		blx	r6
+ 315              	.LVL17:
+ 260:rtos/uC-Common/Collections/slist.c ****                 SLIST_MEMBER  *p_tmp = p_item_r->p_next;
+ 316              		.loc 1 260 13 is_stmt 1 view .LVU89
+ 260:rtos/uC-Common/Collections/slist.c ****                 SLIST_MEMBER  *p_tmp = p_item_r->p_next;
+ 317              		.loc 1 260 16 is_stmt 0 view .LVU90
+ 318 001c 0028     		cmp	r0, #0
+ 319 001e F6D1     		bne	.L20
+ 320              	.LBB3:
+ 261:rtos/uC-Common/Collections/slist.c **** 
+ 321              		.loc 1 261 17 is_stmt 1 view .LVU91
+ 261:rtos/uC-Common/Collections/slist.c **** 
+ 322              		.loc 1 261 32 is_stmt 0 view .LVU92
+ 323 0020 2268     		ldr	r2, [r4]
+ 324              	.LVL18:
+ 264:rtos/uC-Common/Collections/slist.c ****               (*pp_item_l)->p_next =   p_tmp;
+ 325              		.loc 1 264 17 is_stmt 1 view .LVU93
+ 264:rtos/uC-Common/Collections/slist.c ****               (*pp_item_l)->p_next =   p_tmp;
+ 326              		.loc 1 264 39 is_stmt 0 view .LVU94
+ 327 0022 2B68     		ldr	r3, [r5]
+ 264:rtos/uC-Common/Collections/slist.c ****               (*pp_item_l)->p_next =   p_tmp;
+ 328              		.loc 1 264 36 view .LVU95
+ 329 0024 2360     		str	r3, [r4]
+ 265:rtos/uC-Common/Collections/slist.c ****                *pp_item_l          =   p_item_r;
+ 330              		.loc 1 265 15 is_stmt 1 view .LVU96
+ 265:rtos/uC-Common/Collections/slist.c ****                *pp_item_l          =   p_item_r;
+ 331              		.loc 1 265 16 is_stmt 0 view .LVU97
+ 332 0026 2B68     		ldr	r3, [r5]
+ 265:rtos/uC-Common/Collections/slist.c ****                *pp_item_l          =   p_item_r;
+ 333              		.loc 1 265 36 view .LVU98
+ 334 0028 1A60     		str	r2, [r3]
+ 266:rtos/uC-Common/Collections/slist.c ****                 pp_item_l          = &(p_item_r->p_next);
+ 335              		.loc 1 266 16 is_stmt 1 view .LVU99
+ 266:rtos/uC-Common/Collections/slist.c ****                 pp_item_l          = &(p_item_r->p_next);
+ 336              		.loc 1 266 36 is_stmt 0 view .LVU100
+ 337 002a 2C60     		str	r4, [r5]
+ 267:rtos/uC-Common/Collections/slist.c ****                 swapped            =   DEF_YES;                 /* Indicate a swap has been done.  
+ 338              		.loc 1 267 17 is_stmt 1 view .LVU101
+ 267:rtos/uC-Common/Collections/slist.c ****                 swapped            =   DEF_YES;                 /* Indicate a swap has been done.  
+ 339              		.loc 1 267 36 is_stmt 0 view .LVU102
+ 340 002c 2546     		mov	r5, r4
+ 341              	.LVL19:
+ 268:rtos/uC-Common/Collections/slist.c ****             } else {
+ARM GAS  /tmp/ccpOYKPr.s 			page 12
+
+
+ 342              		.loc 1 268 17 is_stmt 1 view .LVU103
+ 268:rtos/uC-Common/Collections/slist.c ****             } else {
+ 343              		.loc 1 268 36 is_stmt 0 view .LVU104
+ 344 002e 0127     		movs	r7, #1
+ 345              	.LBE3:
+ 346 0030 EEE7     		b	.L19
+ 347              	.LVL20:
+ 348              	.L22:
+ 268:rtos/uC-Common/Collections/slist.c ****             } else {
+ 349              		.loc 1 268 36 view .LVU105
+ 350              	.LBE4:
+ 271:rtos/uC-Common/Collections/slist.c ****             }
+ 272:rtos/uC-Common/Collections/slist.c ****         }
+ 273:rtos/uC-Common/Collections/slist.c ****     } while (swapped == DEF_YES);                               /* Re-loop until no items have been
+ 351              		.loc 1 273 13 is_stmt 1 view .LVU106
+ 352              		.loc 1 273 5 is_stmt 0 view .LVU107
+ 353 0032 002F     		cmp	r7, #0
+ 354 0034 E8D1     		bne	.L24
+ 274:rtos/uC-Common/Collections/slist.c **** }
+ 355              		.loc 1 274 1 view .LVU108
+ 356 0036 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 357              		.loc 1 274 1 view .LVU109
+ 358              		.cfi_endproc
+ 359              	.LFE6:
+ 361              		.text
+ 362              	.Letext0:
+ 363              		.file 2 "rtos/uC-CPU/ARM-Cortex-M/ARMv7-M/GNU/cpu.h"
+ 364              		.file 3 "rtos/uC-Common/Collections/slist.h"
+ 365              		.file 4 "rtos/uC-CPU/cpu_core.h"
+ARM GAS  /tmp/ccpOYKPr.s 			page 13
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 slist.c
+     /tmp/ccpOYKPr.s:18     .text.SList_Init:0000000000000000 $t
+     /tmp/ccpOYKPr.s:26     .text.SList_Init:0000000000000000 SList_Init
+     /tmp/ccpOYKPr.s:45     .text.SList_Push:0000000000000000 $t
+     /tmp/ccpOYKPr.s:52     .text.SList_Push:0000000000000000 SList_Push
+     /tmp/ccpOYKPr.s:74     .text.SList_PushBack:0000000000000000 $t
+     /tmp/ccpOYKPr.s:81     .text.SList_PushBack:0000000000000000 SList_PushBack
+     /tmp/ccpOYKPr.s:116    .text.SList_Pop:0000000000000000 $t
+     /tmp/ccpOYKPr.s:123    .text.SList_Pop:0000000000000000 SList_Pop
+     /tmp/ccpOYKPr.s:160    .text.SList_Add:0000000000000000 $t
+     /tmp/ccpOYKPr.s:167    .text.SList_Add:0000000000000000 SList_Add
+     /tmp/ccpOYKPr.s:189    .text.SList_Rem:0000000000000000 $t
+     /tmp/ccpOYKPr.s:196    .text.SList_Rem:0000000000000000 SList_Rem
+     /tmp/ccpOYKPr.s:248    .text.SList_Sort:0000000000000000 $t
+     /tmp/ccpOYKPr.s:255    .text.SList_Sort:0000000000000000 SList_Sort
+                           .group:0000000000000000 wm4.0.0f5aa60db9403f389c005f20ecce4286
+                           .group:0000000000000000 wm4.cpu_def.h.46.baa122a2898bdc40bb50d1f21ead1515
+                           .group:0000000000000000 wm4.cpu_cfg.h.45.38a6a562da8b04490c382a226238c57e
+                           .group:0000000000000000 wm4.cpu.h.171.3cb15ee3ccb812cbfdf76d1fbfb9eda0
+                           .group:0000000000000000 wm4.slist.h.85.d65404161510bbe7fe1e415c7e4f27d8
+                           .group:0000000000000000 wm4.lib_def.h.66.6ab2a012067a8e1f4289db5765835062
+                           .group:0000000000000000 wm4.cpu_core.h.51.bda0b8f45c33e87ce41267758624493c
+
+UNDEFINED SYMBOLS
+CPU_SW_Exception

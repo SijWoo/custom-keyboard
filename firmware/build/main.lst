@@ -1,0 +1,65 @@
+ARM GAS  /tmp/ccjRPThs.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"main.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.main,"ax",%progbits
+  18              		.align	1
+  19              		.global	main
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	main:
+  27              	.LFB0:
+  28              		.file 1 "apps/core/src/main.c"
+   1:apps/core/src/main.c **** #include <stdint.h>
+   2:apps/core/src/main.c **** 
+   3:apps/core/src/main.c **** 
+   4:apps/core/src/main.c **** 
+   5:apps/core/src/main.c **** int main(void) {
+  29              		.loc 1 5 16 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   6:apps/core/src/main.c ****     
+   7:apps/core/src/main.c **** }...
+  34              		.loc 1 7 1 view .LVU1
+  35 0000 0020     		movs	r0, #0
+  36 0002 7047     		bx	lr
+  37              		.cfi_endproc
+  38              	.LFE0:
+  40              		.text
+  41              	.Letext0:
+ARM GAS  /tmp/ccjRPThs.s 			page 2
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+     /tmp/ccjRPThs.s:18     .text.main:0000000000000000 $t
+     /tmp/ccjRPThs.s:26     .text.main:0000000000000000 main
+                           .group:0000000000000000 wm4.0.0f5aa60db9403f389c005f20ecce4286
+                           .group:0000000000000000 wm4._newlib_version.h.4.9ba035841e762c3308916a0ce96032e7
+                           .group:0000000000000000 wm4.features.h.33.318b64d71e0957639cfb30f1db1f7ec8
+                           .group:0000000000000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:0000000000000000 wm4._intsup.h.10.cce27fed8484c08a33f522034c30d2b5
+                           .group:0000000000000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:0000000000000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+
+NO UNDEFINED SYMBOLS

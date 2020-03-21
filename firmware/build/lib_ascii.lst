@@ -1,0 +1,1569 @@
+ARM GAS  /tmp/ccj40Jm6.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"lib_ascii.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.ASCII_IsAlpha,"ax",%progbits
+  18              		.align	1
+  19              		.global	ASCII_IsAlpha
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	ASCII_IsAlpha:
+  27              	.LVL0:
+  28              	.LFB0:
+  29              		.file 1 "rtos/uC-LIB/lib_ascii.c"
+   1:rtos/uC-LIB/lib_ascii.c **** /*
+   2:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+   3:rtos/uC-LIB/lib_ascii.c **** *                                               uC/LIB
+   4:rtos/uC-LIB/lib_ascii.c **** *                                       Custom Library Modules
+   5:rtos/uC-LIB/lib_ascii.c **** *
+   6:rtos/uC-LIB/lib_ascii.c **** *                         (c) Copyright 2004-2019; Silicon Laboratories Inc.,
+   7:rtos/uC-LIB/lib_ascii.c **** *                                400 W. Cesar Chavez, Austin, TX 78701
+   8:rtos/uC-LIB/lib_ascii.c **** *
+   9:rtos/uC-LIB/lib_ascii.c **** *                   All rights reserved. Protected by international copyright laws.
+  10:rtos/uC-LIB/lib_ascii.c **** *
+  11:rtos/uC-LIB/lib_ascii.c **** *                  Your use of this software is subject to your acceptance of the terms
+  12:rtos/uC-LIB/lib_ascii.c **** *                  of a Silicon Labs Micrium software license, which can be obtained by
+  13:rtos/uC-LIB/lib_ascii.c **** *                  contacting info@micrium.com. If you do not agree to the terms of this
+  14:rtos/uC-LIB/lib_ascii.c **** *                  license, you may not use this software.
+  15:rtos/uC-LIB/lib_ascii.c **** *
+  16:rtos/uC-LIB/lib_ascii.c **** *                  Please help us continue to provide the Embedded community with the finest
+  17:rtos/uC-LIB/lib_ascii.c **** *                  software available. Your honesty is greatly appreciated.
+  18:rtos/uC-LIB/lib_ascii.c **** *
+  19:rtos/uC-LIB/lib_ascii.c **** *                    You can find our product's documentation at: doc.micrium.com
+  20:rtos/uC-LIB/lib_ascii.c **** *
+  21:rtos/uC-LIB/lib_ascii.c **** *                          For more information visit us at: www.micrium.com
+  22:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+  23:rtos/uC-LIB/lib_ascii.c **** */
+  24:rtos/uC-LIB/lib_ascii.c **** 
+  25:rtos/uC-LIB/lib_ascii.c **** /*
+  26:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+  27:rtos/uC-LIB/lib_ascii.c **** *
+  28:rtos/uC-LIB/lib_ascii.c **** *                                     ASCII CHARACTER OPERATIONS
+  29:rtos/uC-LIB/lib_ascii.c **** *
+ARM GAS  /tmp/ccj40Jm6.s 			page 2
+
+
+  30:rtos/uC-LIB/lib_ascii.c **** * Filename : lib_ascii.c
+  31:rtos/uC-LIB/lib_ascii.c **** * Version  : V1.38.04
+  32:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+  33:rtos/uC-LIB/lib_ascii.c **** * Note(s)  : (1) NO compiler-supplied standard library functions are used in library or product sof
+  34:rtos/uC-LIB/lib_ascii.c **** *
+  35:rtos/uC-LIB/lib_ascii.c **** *                (a) ALL standard library functions are implemented in the custom library modules :
+  36:rtos/uC-LIB/lib_ascii.c **** *
+  37:rtos/uC-LIB/lib_ascii.c **** *                    (1) \<Custom Library Directory>\lib_*.*
+  38:rtos/uC-LIB/lib_ascii.c **** *
+  39:rtos/uC-LIB/lib_ascii.c **** *                    (2) \<Custom Library Directory>\Ports\<cpu>\<compiler>\lib*_a.*
+  40:rtos/uC-LIB/lib_ascii.c **** *
+  41:rtos/uC-LIB/lib_ascii.c **** *                          where
+  42:rtos/uC-LIB/lib_ascii.c **** *                                  <Custom Library Directory>      directory path for custom librar
+  43:rtos/uC-LIB/lib_ascii.c **** *                                  <cpu>                           directory name for specific proc
+  44:rtos/uC-LIB/lib_ascii.c **** *                                  <compiler>                      directory name for specific comp
+  45:rtos/uC-LIB/lib_ascii.c **** *
+  46:rtos/uC-LIB/lib_ascii.c **** *                (b) Product-specific library functions are implemented in individual products.
+  47:rtos/uC-LIB/lib_ascii.c **** *
+  48:rtos/uC-LIB/lib_ascii.c **** *
+  49:rtos/uC-LIB/lib_ascii.c **** *            (2) (a) ECMA-6 '7-Bit coded Character Set' (6th edition), which corresponds to the
+  50:rtos/uC-LIB/lib_ascii.c **** *                    3rd edition of ISO 646, specifies several versions of a 7-bit character set :
+  51:rtos/uC-LIB/lib_ascii.c **** *
+  52:rtos/uC-LIB/lib_ascii.c **** *                    (1) THE GENERAL VERSION, which allows characters at 0x23 and 0x24 to be given 
+  53:rtos/uC-LIB/lib_ascii.c **** *                        set alternate form and allows the characters 0x40, 0x5B, 0x5D, 0x60, 0x7B 
+  54:rtos/uC-LIB/lib_ascii.c **** *                        0x7D to be assigned a "unique graphic character" or to be declared as unus
+  55:rtos/uC-LIB/lib_ascii.c **** *                        All other characters are explicitly specified.
+  56:rtos/uC-LIB/lib_ascii.c **** *
+  57:rtos/uC-LIB/lib_ascii.c **** *                    (2) THE INTERNATIONAL REFERENCE VERSION, which explicitly specifies all charac
+  58:rtos/uC-LIB/lib_ascii.c **** *                        in the 7-bit character set.
+  59:rtos/uC-LIB/lib_ascii.c **** *
+  60:rtos/uC-LIB/lib_ascii.c **** *                    (3) NATIONAL & APPLICATION-ORIENTED VERSIONS, which may be derived from the
+  61:rtos/uC-LIB/lib_ascii.c **** *                        standard in specified ways.
+  62:rtos/uC-LIB/lib_ascii.c **** *
+  63:rtos/uC-LIB/lib_ascii.c **** *                (b) The character set represented in this file reproduces the Internation Referenc
+  64:rtos/uC-LIB/lib_ascii.c **** *                    Version.  This is identical to the 7-bit character set which occupies Unicode
+  65:rtos/uC-LIB/lib_ascii.c **** *                    characters 0x0000 through 0x007F.  The character names are taken from v5.0 of 
+  66:rtos/uC-LIB/lib_ascii.c **** *                    Unicode specification, with certain abbreviations so that the resulting #defin
+  67:rtos/uC-LIB/lib_ascii.c **** *                    names will not violate ANSI C naming restriction :
+  68:rtos/uC-LIB/lib_ascii.c **** *
+  69:rtos/uC-LIB/lib_ascii.c **** *                    (1) For the Latin capital & lowercase letters, the name components 'LETTER_CAP
+  70:rtos/uC-LIB/lib_ascii.c **** *                        & 'LETTER_SMALL' are replaced by 'UPPER' & 'LOWER', respectively.
+  71:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+  72:rtos/uC-LIB/lib_ascii.c **** */
+  73:rtos/uC-LIB/lib_ascii.c **** 
+  74:rtos/uC-LIB/lib_ascii.c **** /*
+  75:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+  76:rtos/uC-LIB/lib_ascii.c **** *                                            INCLUDE FILES
+  77:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+  78:rtos/uC-LIB/lib_ascii.c **** */
+  79:rtos/uC-LIB/lib_ascii.c **** 
+  80:rtos/uC-LIB/lib_ascii.c **** #define    MICRIUM_SOURCE
+  81:rtos/uC-LIB/lib_ascii.c **** #define    LIB_ASCII_MODULE
+  82:rtos/uC-LIB/lib_ascii.c **** #include  <lib_ascii.h>
+  83:rtos/uC-LIB/lib_ascii.c **** 
+  84:rtos/uC-LIB/lib_ascii.c **** 
+  85:rtos/uC-LIB/lib_ascii.c **** /*
+  86:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ARM GAS  /tmp/ccj40Jm6.s 			page 3
+
+
+  87:rtos/uC-LIB/lib_ascii.c **** *                                            LOCAL DEFINES
+  88:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+  89:rtos/uC-LIB/lib_ascii.c **** */
+  90:rtos/uC-LIB/lib_ascii.c **** 
+  91:rtos/uC-LIB/lib_ascii.c **** 
+  92:rtos/uC-LIB/lib_ascii.c **** /*
+  93:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+  94:rtos/uC-LIB/lib_ascii.c **** *                                           LOCAL CONSTANTS
+  95:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+  96:rtos/uC-LIB/lib_ascii.c **** */
+  97:rtos/uC-LIB/lib_ascii.c **** 
+  98:rtos/uC-LIB/lib_ascii.c **** 
+  99:rtos/uC-LIB/lib_ascii.c **** /*
+ 100:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 101:rtos/uC-LIB/lib_ascii.c **** *                                          LOCAL DATA TYPES
+ 102:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 103:rtos/uC-LIB/lib_ascii.c **** */
+ 104:rtos/uC-LIB/lib_ascii.c **** 
+ 105:rtos/uC-LIB/lib_ascii.c **** 
+ 106:rtos/uC-LIB/lib_ascii.c **** /*
+ 107:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 108:rtos/uC-LIB/lib_ascii.c **** *                                            LOCAL TABLES
+ 109:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 110:rtos/uC-LIB/lib_ascii.c **** */
+ 111:rtos/uC-LIB/lib_ascii.c **** 
+ 112:rtos/uC-LIB/lib_ascii.c **** 
+ 113:rtos/uC-LIB/lib_ascii.c **** /*
+ 114:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 115:rtos/uC-LIB/lib_ascii.c **** *                                       LOCAL GLOBAL VARIABLES
+ 116:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 117:rtos/uC-LIB/lib_ascii.c **** */
+ 118:rtos/uC-LIB/lib_ascii.c **** 
+ 119:rtos/uC-LIB/lib_ascii.c **** 
+ 120:rtos/uC-LIB/lib_ascii.c **** /*
+ 121:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 122:rtos/uC-LIB/lib_ascii.c **** *                                      LOCAL FUNCTION PROTOTYPES
+ 123:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 124:rtos/uC-LIB/lib_ascii.c **** */
+ 125:rtos/uC-LIB/lib_ascii.c **** 
+ 126:rtos/uC-LIB/lib_ascii.c **** 
+ 127:rtos/uC-LIB/lib_ascii.c **** /*
+ 128:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 129:rtos/uC-LIB/lib_ascii.c **** *                                     LOCAL CONFIGURATION ERRORS
+ 130:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 131:rtos/uC-LIB/lib_ascii.c **** */
+ 132:rtos/uC-LIB/lib_ascii.c **** 
+ 133:rtos/uC-LIB/lib_ascii.c **** 
+ 134:rtos/uC-LIB/lib_ascii.c **** /*
+ 135:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 136:rtos/uC-LIB/lib_ascii.c **** *                                           ASCII_IsAlpha()
+ 137:rtos/uC-LIB/lib_ascii.c **** *
+ 138:rtos/uC-LIB/lib_ascii.c **** * Description : Determine whether a character is an alphabetic character.
+ 139:rtos/uC-LIB/lib_ascii.c **** *
+ 140:rtos/uC-LIB/lib_ascii.c **** * Argument(s) : c           Character to examine.
+ 141:rtos/uC-LIB/lib_ascii.c **** *
+ 142:rtos/uC-LIB/lib_ascii.c **** * Return(s)   : DEF_YES, if character is     an alphabetic character.
+ 143:rtos/uC-LIB/lib_ascii.c **** *
+ARM GAS  /tmp/ccj40Jm6.s 			page 4
+
+
+ 144:rtos/uC-LIB/lib_ascii.c **** *               DEF_NO,     if character is NOT an alphabetic character.
+ 145:rtos/uC-LIB/lib_ascii.c **** *
+ 146:rtos/uC-LIB/lib_ascii.c **** * Caller(s)   : Application.
+ 147:rtos/uC-LIB/lib_ascii.c **** *
+ 148:rtos/uC-LIB/lib_ascii.c **** * Note(s)     : (1) ISO/IEC 9899:TC2, Section 7.4.1.2.(2) states that "isalpha() returns true only 
+ 149:rtos/uC-LIB/lib_ascii.c **** *                   characters for which isupper() or islower() is true".
+ 150:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 151:rtos/uC-LIB/lib_ascii.c **** */
+ 152:rtos/uC-LIB/lib_ascii.c **** 
+ 153:rtos/uC-LIB/lib_ascii.c **** CPU_BOOLEAN  ASCII_IsAlpha (CPU_CHAR  c)
+ 154:rtos/uC-LIB/lib_ascii.c **** {
+  30              		.loc 1 154 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+ 155:rtos/uC-LIB/lib_ascii.c ****     CPU_BOOLEAN  alpha;
+  35              		.loc 1 155 5 view .LVU1
+ 156:rtos/uC-LIB/lib_ascii.c **** 
+ 157:rtos/uC-LIB/lib_ascii.c **** 
+ 158:rtos/uC-LIB/lib_ascii.c ****     alpha = ASCII_IS_ALPHA(c);
+  36              		.loc 1 158 5 view .LVU2
+  37              		.loc 1 158 13 is_stmt 0 view .LVU3
+  38 0000 A0F14103 		sub	r3, r0, #65
+  39 0004 DBB2     		uxtb	r3, r3
+  40              		.loc 1 158 11 view .LVU4
+  41 0006 192B     		cmp	r3, #25
+  42 0008 05D9     		bls	.L3
+  43              		.loc 1 158 13 discriminator 2 view .LVU5
+  44 000a 6138     		subs	r0, r0, #97
+  45              	.LVL1:
+  46              		.loc 1 158 13 discriminator 2 view .LVU6
+  47 000c C0B2     		uxtb	r0, r0
+  48 000e 1928     		cmp	r0, #25
+  49 0010 03D8     		bhi	.L4
+  50              		.loc 1 158 11 view .LVU7
+  51 0012 0120     		movs	r0, #1
+  52 0014 7047     		bx	lr
+  53              	.LVL2:
+  54              	.L3:
+  55              		.loc 1 158 11 view .LVU8
+  56 0016 0120     		movs	r0, #1
+  57              	.LVL3:
+  58              		.loc 1 158 11 view .LVU9
+  59 0018 7047     		bx	lr
+  60              	.L4:
+  61 001a 0020     		movs	r0, #0
+  62              	.LVL4:
+ 159:rtos/uC-LIB/lib_ascii.c **** 
+ 160:rtos/uC-LIB/lib_ascii.c ****     return (alpha);
+  63              		.loc 1 160 5 is_stmt 1 view .LVU10
+ 161:rtos/uC-LIB/lib_ascii.c **** }
+  64              		.loc 1 161 1 is_stmt 0 view .LVU11
+  65 001c 7047     		bx	lr
+  66              		.cfi_endproc
+  67              	.LFE0:
+  69              		.section	.text.ASCII_IsAlphaNum,"ax",%progbits
+ARM GAS  /tmp/ccj40Jm6.s 			page 5
+
+
+  70              		.align	1
+  71              		.global	ASCII_IsAlphaNum
+  72              		.syntax unified
+  73              		.thumb
+  74              		.thumb_func
+  75              		.fpu fpv4-sp-d16
+  77              	ASCII_IsAlphaNum:
+  78              	.LVL5:
+  79              	.LFB1:
+ 162:rtos/uC-LIB/lib_ascii.c **** 
+ 163:rtos/uC-LIB/lib_ascii.c **** 
+ 164:rtos/uC-LIB/lib_ascii.c **** /*
+ 165:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 166:rtos/uC-LIB/lib_ascii.c **** *                                         ASCII_IsAlphaNum()
+ 167:rtos/uC-LIB/lib_ascii.c **** *
+ 168:rtos/uC-LIB/lib_ascii.c **** * Description : Determine whether a character is an alphanumeric character.
+ 169:rtos/uC-LIB/lib_ascii.c **** *
+ 170:rtos/uC-LIB/lib_ascii.c **** * Argument(s) : c           Character to examine.
+ 171:rtos/uC-LIB/lib_ascii.c **** *
+ 172:rtos/uC-LIB/lib_ascii.c **** * Return(s)   : DEF_YES, if character is     an alphanumeric character.
+ 173:rtos/uC-LIB/lib_ascii.c **** *
+ 174:rtos/uC-LIB/lib_ascii.c **** *               DEF_NO,     if character is NOT an alphanumeric character.
+ 175:rtos/uC-LIB/lib_ascii.c **** *
+ 176:rtos/uC-LIB/lib_ascii.c **** * Caller(s)   : Application.
+ 177:rtos/uC-LIB/lib_ascii.c **** *
+ 178:rtos/uC-LIB/lib_ascii.c **** * Note(s)     : (1) ISO/IEC 9899:TC2, Section 7.4.1.1.(2) states that "isalnum() ... tests for any 
+ 179:rtos/uC-LIB/lib_ascii.c **** *                   for which isalpha() or isdigit() is true".
+ 180:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 181:rtos/uC-LIB/lib_ascii.c **** */
+ 182:rtos/uC-LIB/lib_ascii.c **** 
+ 183:rtos/uC-LIB/lib_ascii.c **** CPU_BOOLEAN  ASCII_IsAlphaNum (CPU_CHAR  c)
+ 184:rtos/uC-LIB/lib_ascii.c **** {
+  80              		.loc 1 184 1 is_stmt 1 view -0
+  81              		.cfi_startproc
+  82              		@ args = 0, pretend = 0, frame = 0
+  83              		@ frame_needed = 0, uses_anonymous_args = 0
+  84              		@ link register save eliminated.
+ 185:rtos/uC-LIB/lib_ascii.c ****     CPU_BOOLEAN  alpha_num;
+  85              		.loc 1 185 5 view .LVU13
+ 186:rtos/uC-LIB/lib_ascii.c **** 
+ 187:rtos/uC-LIB/lib_ascii.c **** 
+ 188:rtos/uC-LIB/lib_ascii.c ****     alpha_num = ASCII_IS_ALPHA_NUM(c);
+  86              		.loc 1 188 5 view .LVU14
+  87              		.loc 1 188 17 is_stmt 0 view .LVU15
+  88 0000 A0F14103 		sub	r3, r0, #65
+  89 0004 DBB2     		uxtb	r3, r3
+  90              		.loc 1 188 15 view .LVU16
+  91 0006 192B     		cmp	r3, #25
+  92 0008 0AD9     		bls	.L7
+  93              		.loc 1 188 17 discriminator 2 view .LVU17
+  94 000a A0F16103 		sub	r3, r0, #97
+  95 000e DBB2     		uxtb	r3, r3
+  96 0010 192B     		cmp	r3, #25
+  97 0012 07D9     		bls	.L8
+  98              		.loc 1 188 17 discriminator 4 view .LVU18
+  99 0014 3038     		subs	r0, r0, #48
+ 100              	.LVL6:
+ARM GAS  /tmp/ccj40Jm6.s 			page 6
+
+
+ 101              		.loc 1 188 17 discriminator 4 view .LVU19
+ 102 0016 C0B2     		uxtb	r0, r0
+ 103 0018 0928     		cmp	r0, #9
+ 104 001a 05D8     		bhi	.L9
+ 105              		.loc 1 188 15 view .LVU20
+ 106 001c 0120     		movs	r0, #1
+ 107 001e 7047     		bx	lr
+ 108              	.LVL7:
+ 109              	.L7:
+ 110              		.loc 1 188 15 view .LVU21
+ 111 0020 0120     		movs	r0, #1
+ 112              	.LVL8:
+ 113              		.loc 1 188 15 view .LVU22
+ 114 0022 7047     		bx	lr
+ 115              	.LVL9:
+ 116              	.L8:
+ 117              		.loc 1 188 15 view .LVU23
+ 118 0024 0120     		movs	r0, #1
+ 119              	.LVL10:
+ 120              		.loc 1 188 15 view .LVU24
+ 121 0026 7047     		bx	lr
+ 122              	.L9:
+ 123 0028 0020     		movs	r0, #0
+ 124              	.LVL11:
+ 189:rtos/uC-LIB/lib_ascii.c **** 
+ 190:rtos/uC-LIB/lib_ascii.c ****     return (alpha_num);
+ 125              		.loc 1 190 5 is_stmt 1 view .LVU25
+ 191:rtos/uC-LIB/lib_ascii.c **** }
+ 126              		.loc 1 191 1 is_stmt 0 view .LVU26
+ 127 002a 7047     		bx	lr
+ 128              		.cfi_endproc
+ 129              	.LFE1:
+ 131              		.section	.text.ASCII_IsLower,"ax",%progbits
+ 132              		.align	1
+ 133              		.global	ASCII_IsLower
+ 134              		.syntax unified
+ 135              		.thumb
+ 136              		.thumb_func
+ 137              		.fpu fpv4-sp-d16
+ 139              	ASCII_IsLower:
+ 140              	.LVL12:
+ 141              	.LFB2:
+ 192:rtos/uC-LIB/lib_ascii.c **** 
+ 193:rtos/uC-LIB/lib_ascii.c **** 
+ 194:rtos/uC-LIB/lib_ascii.c **** /*
+ 195:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 196:rtos/uC-LIB/lib_ascii.c **** *                                           ASCII_IsLower()
+ 197:rtos/uC-LIB/lib_ascii.c **** *
+ 198:rtos/uC-LIB/lib_ascii.c **** * Description : Determine whether a character is a lowercase alphabetic character.
+ 199:rtos/uC-LIB/lib_ascii.c **** *
+ 200:rtos/uC-LIB/lib_ascii.c **** * Argument(s) : c           Character to examine.
+ 201:rtos/uC-LIB/lib_ascii.c **** *
+ 202:rtos/uC-LIB/lib_ascii.c **** * Return(s)   : DEF_YES, if character is     a lowercase alphabetic character.
+ 203:rtos/uC-LIB/lib_ascii.c **** *
+ 204:rtos/uC-LIB/lib_ascii.c **** *               DEF_NO,     if character is NOT a lowercase alphabetic character.
+ 205:rtos/uC-LIB/lib_ascii.c **** *
+ 206:rtos/uC-LIB/lib_ascii.c **** * Caller(s)   : Application.
+ARM GAS  /tmp/ccj40Jm6.s 			page 7
+
+
+ 207:rtos/uC-LIB/lib_ascii.c **** *
+ 208:rtos/uC-LIB/lib_ascii.c **** * Note(s)     : (1) ISO/IEC 9899:TC2, Section 7.4.1.7.(2)  states that "islower() returns true only
+ 209:rtos/uC-LIB/lib_ascii.c **** *                   the lowercase letters".
+ 210:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 211:rtos/uC-LIB/lib_ascii.c **** */
+ 212:rtos/uC-LIB/lib_ascii.c **** 
+ 213:rtos/uC-LIB/lib_ascii.c **** CPU_BOOLEAN  ASCII_IsLower (CPU_CHAR  c)
+ 214:rtos/uC-LIB/lib_ascii.c **** {
+ 142              		.loc 1 214 1 is_stmt 1 view -0
+ 143              		.cfi_startproc
+ 144              		@ args = 0, pretend = 0, frame = 0
+ 145              		@ frame_needed = 0, uses_anonymous_args = 0
+ 146              		@ link register save eliminated.
+ 215:rtos/uC-LIB/lib_ascii.c ****     CPU_BOOLEAN  lower;
+ 147              		.loc 1 215 5 view .LVU28
+ 216:rtos/uC-LIB/lib_ascii.c **** 
+ 217:rtos/uC-LIB/lib_ascii.c **** 
+ 218:rtos/uC-LIB/lib_ascii.c ****     lower = ASCII_IS_LOWER(c);
+ 148              		.loc 1 218 5 view .LVU29
+ 149              		.loc 1 218 13 is_stmt 0 view .LVU30
+ 150 0000 6138     		subs	r0, r0, #97
+ 151              	.LVL13:
+ 152              		.loc 1 218 13 view .LVU31
+ 153 0002 C0B2     		uxtb	r0, r0
+ 154              		.loc 1 218 11 view .LVU32
+ 155 0004 1928     		cmp	r0, #25
+ 156 0006 01D8     		bhi	.L12
+ 157 0008 0120     		movs	r0, #1
+ 158 000a 7047     		bx	lr
+ 159              	.L12:
+ 160 000c 0020     		movs	r0, #0
+ 161              	.LVL14:
+ 219:rtos/uC-LIB/lib_ascii.c **** 
+ 220:rtos/uC-LIB/lib_ascii.c ****     return (lower);
+ 162              		.loc 1 220 5 is_stmt 1 view .LVU33
+ 221:rtos/uC-LIB/lib_ascii.c **** }
+ 163              		.loc 1 221 1 is_stmt 0 view .LVU34
+ 164 000e 7047     		bx	lr
+ 165              		.cfi_endproc
+ 166              	.LFE2:
+ 168              		.section	.text.ASCII_IsUpper,"ax",%progbits
+ 169              		.align	1
+ 170              		.global	ASCII_IsUpper
+ 171              		.syntax unified
+ 172              		.thumb
+ 173              		.thumb_func
+ 174              		.fpu fpv4-sp-d16
+ 176              	ASCII_IsUpper:
+ 177              	.LVL15:
+ 178              	.LFB3:
+ 222:rtos/uC-LIB/lib_ascii.c **** 
+ 223:rtos/uC-LIB/lib_ascii.c **** 
+ 224:rtos/uC-LIB/lib_ascii.c **** /*
+ 225:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 226:rtos/uC-LIB/lib_ascii.c **** *                                           ASCII_IsUpper()
+ 227:rtos/uC-LIB/lib_ascii.c **** *
+ 228:rtos/uC-LIB/lib_ascii.c **** * Description : Determine whether a character is an uppercase alphabetic character.
+ARM GAS  /tmp/ccj40Jm6.s 			page 8
+
+
+ 229:rtos/uC-LIB/lib_ascii.c **** *
+ 230:rtos/uC-LIB/lib_ascii.c **** * Argument(s) : c           Character to examine.
+ 231:rtos/uC-LIB/lib_ascii.c **** *
+ 232:rtos/uC-LIB/lib_ascii.c **** * Return(s)   : DEF_YES, if character is     an uppercase alphabetic character.
+ 233:rtos/uC-LIB/lib_ascii.c **** *
+ 234:rtos/uC-LIB/lib_ascii.c **** *               DEF_NO,     if character is NOT an uppercase alphabetic character.
+ 235:rtos/uC-LIB/lib_ascii.c **** *
+ 236:rtos/uC-LIB/lib_ascii.c **** * Caller(s)   : Application.
+ 237:rtos/uC-LIB/lib_ascii.c **** *
+ 238:rtos/uC-LIB/lib_ascii.c **** * Note(s)     : (1) ISO/IEC 9899:TC2, Section 7.4.1.11.(2) states that "isupper() returns true only
+ 239:rtos/uC-LIB/lib_ascii.c **** *                   the uppercase letters".
+ 240:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 241:rtos/uC-LIB/lib_ascii.c **** */
+ 242:rtos/uC-LIB/lib_ascii.c **** 
+ 243:rtos/uC-LIB/lib_ascii.c **** CPU_BOOLEAN  ASCII_IsUpper (CPU_CHAR  c)
+ 244:rtos/uC-LIB/lib_ascii.c **** {
+ 179              		.loc 1 244 1 is_stmt 1 view -0
+ 180              		.cfi_startproc
+ 181              		@ args = 0, pretend = 0, frame = 0
+ 182              		@ frame_needed = 0, uses_anonymous_args = 0
+ 183              		@ link register save eliminated.
+ 245:rtos/uC-LIB/lib_ascii.c ****     CPU_BOOLEAN  upper;
+ 184              		.loc 1 245 5 view .LVU36
+ 246:rtos/uC-LIB/lib_ascii.c **** 
+ 247:rtos/uC-LIB/lib_ascii.c **** 
+ 248:rtos/uC-LIB/lib_ascii.c ****     upper = ASCII_IS_UPPER(c);
+ 185              		.loc 1 248 5 view .LVU37
+ 186              		.loc 1 248 13 is_stmt 0 view .LVU38
+ 187 0000 4138     		subs	r0, r0, #65
+ 188              	.LVL16:
+ 189              		.loc 1 248 13 view .LVU39
+ 190 0002 C0B2     		uxtb	r0, r0
+ 191              		.loc 1 248 11 view .LVU40
+ 192 0004 1928     		cmp	r0, #25
+ 193 0006 01D8     		bhi	.L15
+ 194 0008 0120     		movs	r0, #1
+ 195 000a 7047     		bx	lr
+ 196              	.L15:
+ 197 000c 0020     		movs	r0, #0
+ 198              	.LVL17:
+ 249:rtos/uC-LIB/lib_ascii.c **** 
+ 250:rtos/uC-LIB/lib_ascii.c ****     return (upper);
+ 199              		.loc 1 250 5 is_stmt 1 view .LVU41
+ 251:rtos/uC-LIB/lib_ascii.c **** }
+ 200              		.loc 1 251 1 is_stmt 0 view .LVU42
+ 201 000e 7047     		bx	lr
+ 202              		.cfi_endproc
+ 203              	.LFE3:
+ 205              		.section	.text.ASCII_IsDig,"ax",%progbits
+ 206              		.align	1
+ 207              		.global	ASCII_IsDig
+ 208              		.syntax unified
+ 209              		.thumb
+ 210              		.thumb_func
+ 211              		.fpu fpv4-sp-d16
+ 213              	ASCII_IsDig:
+ 214              	.LVL18:
+ARM GAS  /tmp/ccj40Jm6.s 			page 9
+
+
+ 215              	.LFB4:
+ 252:rtos/uC-LIB/lib_ascii.c **** 
+ 253:rtos/uC-LIB/lib_ascii.c **** 
+ 254:rtos/uC-LIB/lib_ascii.c **** /*
+ 255:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 256:rtos/uC-LIB/lib_ascii.c **** *                                            ASCII_IsDig()
+ 257:rtos/uC-LIB/lib_ascii.c **** *
+ 258:rtos/uC-LIB/lib_ascii.c **** * Description : Determine whether a character is a decimal-digit character.
+ 259:rtos/uC-LIB/lib_ascii.c **** *
+ 260:rtos/uC-LIB/lib_ascii.c **** * Argument(s) : c           Character to examine.
+ 261:rtos/uC-LIB/lib_ascii.c **** *
+ 262:rtos/uC-LIB/lib_ascii.c **** * Return(s)   : DEF_YES, if character is     a decimal-digit character.
+ 263:rtos/uC-LIB/lib_ascii.c **** *
+ 264:rtos/uC-LIB/lib_ascii.c **** *               DEF_NO,     if character is NOT a decimal-digit character.
+ 265:rtos/uC-LIB/lib_ascii.c **** *
+ 266:rtos/uC-LIB/lib_ascii.c **** * Caller(s)   : Application.
+ 267:rtos/uC-LIB/lib_ascii.c **** *
+ 268:rtos/uC-LIB/lib_ascii.c **** * Note(s)     : (1) ISO/IEC 9899:TC2, Section 7.4.1.5.(2)  states that "isdigit()  ... tests for an
+ 269:rtos/uC-LIB/lib_ascii.c **** *                   decimal-digit character".
+ 270:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 271:rtos/uC-LIB/lib_ascii.c **** */
+ 272:rtos/uC-LIB/lib_ascii.c **** 
+ 273:rtos/uC-LIB/lib_ascii.c **** CPU_BOOLEAN  ASCII_IsDig (CPU_CHAR  c)
+ 274:rtos/uC-LIB/lib_ascii.c **** {
+ 216              		.loc 1 274 1 is_stmt 1 view -0
+ 217              		.cfi_startproc
+ 218              		@ args = 0, pretend = 0, frame = 0
+ 219              		@ frame_needed = 0, uses_anonymous_args = 0
+ 220              		@ link register save eliminated.
+ 275:rtos/uC-LIB/lib_ascii.c ****     CPU_BOOLEAN  dig;
+ 221              		.loc 1 275 5 view .LVU44
+ 276:rtos/uC-LIB/lib_ascii.c **** 
+ 277:rtos/uC-LIB/lib_ascii.c **** 
+ 278:rtos/uC-LIB/lib_ascii.c ****     dig = ASCII_IS_DIG(c);
+ 222              		.loc 1 278 5 view .LVU45
+ 223              		.loc 1 278 11 is_stmt 0 view .LVU46
+ 224 0000 3038     		subs	r0, r0, #48
+ 225              	.LVL19:
+ 226              		.loc 1 278 11 view .LVU47
+ 227 0002 C0B2     		uxtb	r0, r0
+ 228              		.loc 1 278 9 view .LVU48
+ 229 0004 0928     		cmp	r0, #9
+ 230 0006 01D8     		bhi	.L18
+ 231 0008 0120     		movs	r0, #1
+ 232 000a 7047     		bx	lr
+ 233              	.L18:
+ 234 000c 0020     		movs	r0, #0
+ 235              	.LVL20:
+ 279:rtos/uC-LIB/lib_ascii.c **** 
+ 280:rtos/uC-LIB/lib_ascii.c ****     return (dig);
+ 236              		.loc 1 280 5 is_stmt 1 view .LVU49
+ 281:rtos/uC-LIB/lib_ascii.c **** }
+ 237              		.loc 1 281 1 is_stmt 0 view .LVU50
+ 238 000e 7047     		bx	lr
+ 239              		.cfi_endproc
+ 240              	.LFE4:
+ 242              		.section	.text.ASCII_IsDigOct,"ax",%progbits
+ARM GAS  /tmp/ccj40Jm6.s 			page 10
+
+
+ 243              		.align	1
+ 244              		.global	ASCII_IsDigOct
+ 245              		.syntax unified
+ 246              		.thumb
+ 247              		.thumb_func
+ 248              		.fpu fpv4-sp-d16
+ 250              	ASCII_IsDigOct:
+ 251              	.LVL21:
+ 252              	.LFB5:
+ 282:rtos/uC-LIB/lib_ascii.c **** 
+ 283:rtos/uC-LIB/lib_ascii.c **** 
+ 284:rtos/uC-LIB/lib_ascii.c **** /*
+ 285:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 286:rtos/uC-LIB/lib_ascii.c **** *                                          ASCII_IsDigOct()
+ 287:rtos/uC-LIB/lib_ascii.c **** *
+ 288:rtos/uC-LIB/lib_ascii.c **** * Description : Determine whether a character is an octal-digit character.
+ 289:rtos/uC-LIB/lib_ascii.c **** *
+ 290:rtos/uC-LIB/lib_ascii.c **** * Argument(s) : c           Character to examine.
+ 291:rtos/uC-LIB/lib_ascii.c **** *
+ 292:rtos/uC-LIB/lib_ascii.c **** * Return(s)   : DEF_YES, if character is     an octal-digit character.
+ 293:rtos/uC-LIB/lib_ascii.c **** *
+ 294:rtos/uC-LIB/lib_ascii.c **** *               DEF_NO,     if character is NOT an octal-digit character.
+ 295:rtos/uC-LIB/lib_ascii.c **** *
+ 296:rtos/uC-LIB/lib_ascii.c **** * Caller(s)   : Application.
+ 297:rtos/uC-LIB/lib_ascii.c **** *
+ 298:rtos/uC-LIB/lib_ascii.c **** * Note(s)     : none.
+ 299:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 300:rtos/uC-LIB/lib_ascii.c **** */
+ 301:rtos/uC-LIB/lib_ascii.c **** 
+ 302:rtos/uC-LIB/lib_ascii.c **** CPU_BOOLEAN  ASCII_IsDigOct (CPU_CHAR  c)
+ 303:rtos/uC-LIB/lib_ascii.c **** {
+ 253              		.loc 1 303 1 is_stmt 1 view -0
+ 254              		.cfi_startproc
+ 255              		@ args = 0, pretend = 0, frame = 0
+ 256              		@ frame_needed = 0, uses_anonymous_args = 0
+ 257              		@ link register save eliminated.
+ 304:rtos/uC-LIB/lib_ascii.c ****     CPU_BOOLEAN  dig_oct;
+ 258              		.loc 1 304 5 view .LVU52
+ 305:rtos/uC-LIB/lib_ascii.c **** 
+ 306:rtos/uC-LIB/lib_ascii.c **** 
+ 307:rtos/uC-LIB/lib_ascii.c ****     dig_oct = ASCII_IS_DIG_OCT(c);
+ 259              		.loc 1 307 5 view .LVU53
+ 260              		.loc 1 307 15 is_stmt 0 view .LVU54
+ 261 0000 3038     		subs	r0, r0, #48
+ 262              	.LVL22:
+ 263              		.loc 1 307 15 view .LVU55
+ 264 0002 C0B2     		uxtb	r0, r0
+ 265              		.loc 1 307 13 view .LVU56
+ 266 0004 0728     		cmp	r0, #7
+ 267 0006 01D8     		bhi	.L21
+ 268 0008 0120     		movs	r0, #1
+ 269 000a 7047     		bx	lr
+ 270              	.L21:
+ 271 000c 0020     		movs	r0, #0
+ 272              	.LVL23:
+ 308:rtos/uC-LIB/lib_ascii.c **** 
+ 309:rtos/uC-LIB/lib_ascii.c ****     return (dig_oct);
+ARM GAS  /tmp/ccj40Jm6.s 			page 11
+
+
+ 273              		.loc 1 309 5 is_stmt 1 view .LVU57
+ 310:rtos/uC-LIB/lib_ascii.c **** }
+ 274              		.loc 1 310 1 is_stmt 0 view .LVU58
+ 275 000e 7047     		bx	lr
+ 276              		.cfi_endproc
+ 277              	.LFE5:
+ 279              		.section	.text.ASCII_IsDigHex,"ax",%progbits
+ 280              		.align	1
+ 281              		.global	ASCII_IsDigHex
+ 282              		.syntax unified
+ 283              		.thumb
+ 284              		.thumb_func
+ 285              		.fpu fpv4-sp-d16
+ 287              	ASCII_IsDigHex:
+ 288              	.LVL24:
+ 289              	.LFB6:
+ 311:rtos/uC-LIB/lib_ascii.c **** 
+ 312:rtos/uC-LIB/lib_ascii.c **** 
+ 313:rtos/uC-LIB/lib_ascii.c **** /*
+ 314:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 315:rtos/uC-LIB/lib_ascii.c **** *                                          ASCII_IsDigHex()
+ 316:rtos/uC-LIB/lib_ascii.c **** *
+ 317:rtos/uC-LIB/lib_ascii.c **** * Description : Determine whether a character is a hexadecimal-digit character.
+ 318:rtos/uC-LIB/lib_ascii.c **** *
+ 319:rtos/uC-LIB/lib_ascii.c **** * Argument(s) : c           Character to examine.
+ 320:rtos/uC-LIB/lib_ascii.c **** *
+ 321:rtos/uC-LIB/lib_ascii.c **** * Return(s)   : DEF_YES, if character is     a hexadecimal-digit character.
+ 322:rtos/uC-LIB/lib_ascii.c **** *
+ 323:rtos/uC-LIB/lib_ascii.c **** *               DEF_NO,     if character is NOT a hexadecimal-digit character.
+ 324:rtos/uC-LIB/lib_ascii.c **** *
+ 325:rtos/uC-LIB/lib_ascii.c **** * Caller(s)   : Application.
+ 326:rtos/uC-LIB/lib_ascii.c **** *
+ 327:rtos/uC-LIB/lib_ascii.c **** * Note(s)     : (1) ISO/IEC 9899:TC2, Section 7.4.1.12.(2) states that "isxdigit() ... tests for an
+ 328:rtos/uC-LIB/lib_ascii.c **** *                   hexadecimal-digit character".
+ 329:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 330:rtos/uC-LIB/lib_ascii.c **** */
+ 331:rtos/uC-LIB/lib_ascii.c **** 
+ 332:rtos/uC-LIB/lib_ascii.c **** CPU_BOOLEAN  ASCII_IsDigHex (CPU_CHAR  c)
+ 333:rtos/uC-LIB/lib_ascii.c **** {
+ 290              		.loc 1 333 1 is_stmt 1 view -0
+ 291              		.cfi_startproc
+ 292              		@ args = 0, pretend = 0, frame = 0
+ 293              		@ frame_needed = 0, uses_anonymous_args = 0
+ 294              		@ link register save eliminated.
+ 334:rtos/uC-LIB/lib_ascii.c ****     CPU_BOOLEAN  dig_hex;
+ 295              		.loc 1 334 5 view .LVU60
+ 335:rtos/uC-LIB/lib_ascii.c **** 
+ 336:rtos/uC-LIB/lib_ascii.c **** 
+ 337:rtos/uC-LIB/lib_ascii.c ****     dig_hex = ASCII_IS_DIG_HEX(c);
+ 296              		.loc 1 337 5 view .LVU61
+ 297              		.loc 1 337 15 is_stmt 0 view .LVU62
+ 298 0000 A0F13003 		sub	r3, r0, #48
+ 299 0004 DBB2     		uxtb	r3, r3
+ 300              		.loc 1 337 13 view .LVU63
+ 301 0006 092B     		cmp	r3, #9
+ 302 0008 0AD9     		bls	.L24
+ 303              		.loc 1 337 15 discriminator 2 view .LVU64
+ARM GAS  /tmp/ccj40Jm6.s 			page 12
+
+
+ 304 000a A0F14103 		sub	r3, r0, #65
+ 305 000e DBB2     		uxtb	r3, r3
+ 306 0010 052B     		cmp	r3, #5
+ 307 0012 07D9     		bls	.L25
+ 308              		.loc 1 337 15 discriminator 4 view .LVU65
+ 309 0014 6138     		subs	r0, r0, #97
+ 310              	.LVL25:
+ 311              		.loc 1 337 15 discriminator 4 view .LVU66
+ 312 0016 C0B2     		uxtb	r0, r0
+ 313 0018 0528     		cmp	r0, #5
+ 314 001a 05D8     		bhi	.L26
+ 315              		.loc 1 337 13 view .LVU67
+ 316 001c 0120     		movs	r0, #1
+ 317 001e 7047     		bx	lr
+ 318              	.LVL26:
+ 319              	.L24:
+ 320              		.loc 1 337 13 view .LVU68
+ 321 0020 0120     		movs	r0, #1
+ 322              	.LVL27:
+ 323              		.loc 1 337 13 view .LVU69
+ 324 0022 7047     		bx	lr
+ 325              	.LVL28:
+ 326              	.L25:
+ 327              		.loc 1 337 13 view .LVU70
+ 328 0024 0120     		movs	r0, #1
+ 329              	.LVL29:
+ 330              		.loc 1 337 13 view .LVU71
+ 331 0026 7047     		bx	lr
+ 332              	.L26:
+ 333 0028 0020     		movs	r0, #0
+ 334              	.LVL30:
+ 338:rtos/uC-LIB/lib_ascii.c **** 
+ 339:rtos/uC-LIB/lib_ascii.c ****     return (dig_hex);
+ 335              		.loc 1 339 5 is_stmt 1 view .LVU72
+ 340:rtos/uC-LIB/lib_ascii.c **** }
+ 336              		.loc 1 340 1 is_stmt 0 view .LVU73
+ 337 002a 7047     		bx	lr
+ 338              		.cfi_endproc
+ 339              	.LFE6:
+ 341              		.section	.text.ASCII_IsBlank,"ax",%progbits
+ 342              		.align	1
+ 343              		.global	ASCII_IsBlank
+ 344              		.syntax unified
+ 345              		.thumb
+ 346              		.thumb_func
+ 347              		.fpu fpv4-sp-d16
+ 349              	ASCII_IsBlank:
+ 350              	.LVL31:
+ 351              	.LFB7:
+ 341:rtos/uC-LIB/lib_ascii.c **** 
+ 342:rtos/uC-LIB/lib_ascii.c **** 
+ 343:rtos/uC-LIB/lib_ascii.c **** /*
+ 344:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 345:rtos/uC-LIB/lib_ascii.c **** *                                           ASCII_IsBlank()
+ 346:rtos/uC-LIB/lib_ascii.c **** *
+ 347:rtos/uC-LIB/lib_ascii.c **** * Description : Determine whether a character is a standard blank character.
+ 348:rtos/uC-LIB/lib_ascii.c **** *
+ARM GAS  /tmp/ccj40Jm6.s 			page 13
+
+
+ 349:rtos/uC-LIB/lib_ascii.c **** * Argument(s) : c           Character to examine.
+ 350:rtos/uC-LIB/lib_ascii.c **** *
+ 351:rtos/uC-LIB/lib_ascii.c **** * Return(s)   : DEF_YES, if character is     a standard blank character.
+ 352:rtos/uC-LIB/lib_ascii.c **** *
+ 353:rtos/uC-LIB/lib_ascii.c **** *               DEF_NO,     if character is NOT a standard blank character.
+ 354:rtos/uC-LIB/lib_ascii.c **** *
+ 355:rtos/uC-LIB/lib_ascii.c **** * Caller(s)   : Application.
+ 356:rtos/uC-LIB/lib_ascii.c **** *
+ 357:rtos/uC-LIB/lib_ascii.c **** * Note(s)     : (1) (a) ISO/IEC 9899:TC2, Section 7.4.1.3.(2) states that "isblank() returns true o
+ 358:rtos/uC-LIB/lib_ascii.c **** *                       the standard blank characters".
+ 359:rtos/uC-LIB/lib_ascii.c **** *
+ 360:rtos/uC-LIB/lib_ascii.c **** *                   (b) ISO/IEC 9899:TC2, Section 7.4.1.3.(2) defines "the standard blank character
+ 361:rtos/uC-LIB/lib_ascii.c **** *                       the "space (' '), and horizontal tab ('\t')".
+ 362:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 363:rtos/uC-LIB/lib_ascii.c **** */
+ 364:rtos/uC-LIB/lib_ascii.c **** 
+ 365:rtos/uC-LIB/lib_ascii.c **** CPU_BOOLEAN  ASCII_IsBlank (CPU_CHAR  c)
+ 366:rtos/uC-LIB/lib_ascii.c **** {
+ 352              		.loc 1 366 1 is_stmt 1 view -0
+ 353              		.cfi_startproc
+ 354              		@ args = 0, pretend = 0, frame = 0
+ 355              		@ frame_needed = 0, uses_anonymous_args = 0
+ 356              		@ link register save eliminated.
+ 367:rtos/uC-LIB/lib_ascii.c ****     CPU_BOOLEAN  blank;
+ 357              		.loc 1 367 5 view .LVU75
+ 368:rtos/uC-LIB/lib_ascii.c **** 
+ 369:rtos/uC-LIB/lib_ascii.c **** 
+ 370:rtos/uC-LIB/lib_ascii.c ****     blank = ASCII_IS_BLANK(c);
+ 358              		.loc 1 370 5 view .LVU76
+ 359              		.loc 1 370 11 is_stmt 0 view .LVU77
+ 360 0000 2028     		cmp	r0, #32
+ 361 0002 05D0     		beq	.L29
+ 362              		.loc 1 370 13 discriminator 2 view .LVU78
+ 363 0004 0928     		cmp	r0, #9
+ 364 0006 01D0     		beq	.L31
+ 365              		.loc 1 370 11 view .LVU79
+ 366 0008 0020     		movs	r0, #0
+ 367              	.LVL32:
+ 371:rtos/uC-LIB/lib_ascii.c **** 
+ 372:rtos/uC-LIB/lib_ascii.c ****     return (blank);
+ 368              		.loc 1 372 5 is_stmt 1 view .LVU80
+ 373:rtos/uC-LIB/lib_ascii.c **** }
+ 369              		.loc 1 373 1 is_stmt 0 view .LVU81
+ 370 000a 7047     		bx	lr
+ 371              	.LVL33:
+ 372              	.L31:
+ 370:rtos/uC-LIB/lib_ascii.c **** 
+ 373              		.loc 1 370 11 view .LVU82
+ 374 000c 0120     		movs	r0, #1
+ 375              	.LVL34:
+ 370:rtos/uC-LIB/lib_ascii.c **** 
+ 376              		.loc 1 370 11 view .LVU83
+ 377 000e 7047     		bx	lr
+ 378              	.LVL35:
+ 379              	.L29:
+ 370:rtos/uC-LIB/lib_ascii.c **** 
+ 380              		.loc 1 370 11 view .LVU84
+ARM GAS  /tmp/ccj40Jm6.s 			page 14
+
+
+ 381 0010 0120     		movs	r0, #1
+ 382              	.LVL36:
+ 370:rtos/uC-LIB/lib_ascii.c **** 
+ 383              		.loc 1 370 11 view .LVU85
+ 384 0012 7047     		bx	lr
+ 385              		.cfi_endproc
+ 386              	.LFE7:
+ 388              		.section	.text.ASCII_IsSpace,"ax",%progbits
+ 389              		.align	1
+ 390              		.global	ASCII_IsSpace
+ 391              		.syntax unified
+ 392              		.thumb
+ 393              		.thumb_func
+ 394              		.fpu fpv4-sp-d16
+ 396              	ASCII_IsSpace:
+ 397              	.LVL37:
+ 398              	.LFB8:
+ 374:rtos/uC-LIB/lib_ascii.c **** 
+ 375:rtos/uC-LIB/lib_ascii.c **** 
+ 376:rtos/uC-LIB/lib_ascii.c **** /*
+ 377:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 378:rtos/uC-LIB/lib_ascii.c **** *                                           ASCII_IsSpace()
+ 379:rtos/uC-LIB/lib_ascii.c **** *
+ 380:rtos/uC-LIB/lib_ascii.c **** * Description : Determine whether a character is a white-space character.
+ 381:rtos/uC-LIB/lib_ascii.c **** *
+ 382:rtos/uC-LIB/lib_ascii.c **** * Argument(s) : c           Character to examine.
+ 383:rtos/uC-LIB/lib_ascii.c **** *
+ 384:rtos/uC-LIB/lib_ascii.c **** * Return(s)   : DEF_YES, if character is     a white-space character.
+ 385:rtos/uC-LIB/lib_ascii.c **** *
+ 386:rtos/uC-LIB/lib_ascii.c **** *               DEF_NO,     if character is NOT a white-space character.
+ 387:rtos/uC-LIB/lib_ascii.c **** *
+ 388:rtos/uC-LIB/lib_ascii.c **** * Caller(s)   : Application.
+ 389:rtos/uC-LIB/lib_ascii.c **** *
+ 390:rtos/uC-LIB/lib_ascii.c **** * Note(s)     : (1) (a) ISO/IEC 9899:TC2, Section 7.4.1.10.(2) states that "isspace() returns true 
+ 391:rtos/uC-LIB/lib_ascii.c **** *                       for the standard white-space characters".
+ 392:rtos/uC-LIB/lib_ascii.c **** *
+ 393:rtos/uC-LIB/lib_ascii.c **** *                   (b) ISO/IEC 9899:TC2, Section 7.4.1.10.(2) defines "the standard white-space ch
+ 394:rtos/uC-LIB/lib_ascii.c **** *                       as the "space (' '), form feed ('\f'), new-line ('\n'), carriage return ('\
+ 395:rtos/uC-LIB/lib_ascii.c **** *                       horizontal tab ('\t'), and vertical tab ('\v')".
+ 396:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 397:rtos/uC-LIB/lib_ascii.c **** */
+ 398:rtos/uC-LIB/lib_ascii.c **** 
+ 399:rtos/uC-LIB/lib_ascii.c **** CPU_BOOLEAN  ASCII_IsSpace (CPU_CHAR  c)
+ 400:rtos/uC-LIB/lib_ascii.c **** {
+ 399              		.loc 1 400 1 is_stmt 1 view -0
+ 400              		.cfi_startproc
+ 401              		@ args = 0, pretend = 0, frame = 0
+ 402              		@ frame_needed = 0, uses_anonymous_args = 0
+ 403              		@ link register save eliminated.
+ 401:rtos/uC-LIB/lib_ascii.c ****     CPU_BOOLEAN  space;
+ 404              		.loc 1 401 5 view .LVU87
+ 402:rtos/uC-LIB/lib_ascii.c **** 
+ 403:rtos/uC-LIB/lib_ascii.c **** 
+ 404:rtos/uC-LIB/lib_ascii.c ****     space = ASCII_IS_SPACE(c);
+ 405              		.loc 1 404 5 view .LVU88
+ 406              		.loc 1 404 11 is_stmt 0 view .LVU89
+ 407 0000 2028     		cmp	r0, #32
+ARM GAS  /tmp/ccj40Jm6.s 			page 15
+
+
+ 408 0002 0DD0     		beq	.L34
+ 409              		.loc 1 404 13 discriminator 2 view .LVU90
+ 410 0004 0D28     		cmp	r0, #13
+ 411 0006 0DD0     		beq	.L35
+ 412              		.loc 1 404 13 discriminator 4 view .LVU91
+ 413 0008 0A28     		cmp	r0, #10
+ 414 000a 0DD0     		beq	.L36
+ 415              		.loc 1 404 13 discriminator 6 view .LVU92
+ 416 000c 0C28     		cmp	r0, #12
+ 417 000e 0DD0     		beq	.L37
+ 418              		.loc 1 404 13 discriminator 8 view .LVU93
+ 419 0010 0928     		cmp	r0, #9
+ 420 0012 0DD0     		beq	.L38
+ 421              		.loc 1 404 13 discriminator 10 view .LVU94
+ 422 0014 0B28     		cmp	r0, #11
+ 423 0016 01D0     		beq	.L40
+ 424              		.loc 1 404 11 view .LVU95
+ 425 0018 0020     		movs	r0, #0
+ 426              	.LVL38:
+ 405:rtos/uC-LIB/lib_ascii.c **** 
+ 406:rtos/uC-LIB/lib_ascii.c ****     return (space);
+ 427              		.loc 1 406 5 is_stmt 1 view .LVU96
+ 407:rtos/uC-LIB/lib_ascii.c **** }
+ 428              		.loc 1 407 1 is_stmt 0 view .LVU97
+ 429 001a 7047     		bx	lr
+ 430              	.LVL39:
+ 431              	.L40:
+ 404:rtos/uC-LIB/lib_ascii.c **** 
+ 432              		.loc 1 404 11 view .LVU98
+ 433 001c 0120     		movs	r0, #1
+ 434              	.LVL40:
+ 404:rtos/uC-LIB/lib_ascii.c **** 
+ 435              		.loc 1 404 11 view .LVU99
+ 436 001e 7047     		bx	lr
+ 437              	.LVL41:
+ 438              	.L34:
+ 404:rtos/uC-LIB/lib_ascii.c **** 
+ 439              		.loc 1 404 11 view .LVU100
+ 440 0020 0120     		movs	r0, #1
+ 441              	.LVL42:
+ 404:rtos/uC-LIB/lib_ascii.c **** 
+ 442              		.loc 1 404 11 view .LVU101
+ 443 0022 7047     		bx	lr
+ 444              	.LVL43:
+ 445              	.L35:
+ 404:rtos/uC-LIB/lib_ascii.c **** 
+ 446              		.loc 1 404 11 view .LVU102
+ 447 0024 0120     		movs	r0, #1
+ 448              	.LVL44:
+ 404:rtos/uC-LIB/lib_ascii.c **** 
+ 449              		.loc 1 404 11 view .LVU103
+ 450 0026 7047     		bx	lr
+ 451              	.LVL45:
+ 452              	.L36:
+ 404:rtos/uC-LIB/lib_ascii.c **** 
+ 453              		.loc 1 404 11 view .LVU104
+ 454 0028 0120     		movs	r0, #1
+ARM GAS  /tmp/ccj40Jm6.s 			page 16
+
+
+ 455              	.LVL46:
+ 404:rtos/uC-LIB/lib_ascii.c **** 
+ 456              		.loc 1 404 11 view .LVU105
+ 457 002a 7047     		bx	lr
+ 458              	.LVL47:
+ 459              	.L37:
+ 404:rtos/uC-LIB/lib_ascii.c **** 
+ 460              		.loc 1 404 11 view .LVU106
+ 461 002c 0120     		movs	r0, #1
+ 462              	.LVL48:
+ 404:rtos/uC-LIB/lib_ascii.c **** 
+ 463              		.loc 1 404 11 view .LVU107
+ 464 002e 7047     		bx	lr
+ 465              	.LVL49:
+ 466              	.L38:
+ 404:rtos/uC-LIB/lib_ascii.c **** 
+ 467              		.loc 1 404 11 view .LVU108
+ 468 0030 0120     		movs	r0, #1
+ 469              	.LVL50:
+ 404:rtos/uC-LIB/lib_ascii.c **** 
+ 470              		.loc 1 404 11 view .LVU109
+ 471 0032 7047     		bx	lr
+ 472              		.cfi_endproc
+ 473              	.LFE8:
+ 475              		.section	.text.ASCII_IsPrint,"ax",%progbits
+ 476              		.align	1
+ 477              		.global	ASCII_IsPrint
+ 478              		.syntax unified
+ 479              		.thumb
+ 480              		.thumb_func
+ 481              		.fpu fpv4-sp-d16
+ 483              	ASCII_IsPrint:
+ 484              	.LVL51:
+ 485              	.LFB9:
+ 408:rtos/uC-LIB/lib_ascii.c **** 
+ 409:rtos/uC-LIB/lib_ascii.c **** 
+ 410:rtos/uC-LIB/lib_ascii.c **** /*
+ 411:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 412:rtos/uC-LIB/lib_ascii.c **** *                                           ASCII_IsPrint()
+ 413:rtos/uC-LIB/lib_ascii.c **** *
+ 414:rtos/uC-LIB/lib_ascii.c **** * Description : Determine whether a character is a printing character.
+ 415:rtos/uC-LIB/lib_ascii.c **** *
+ 416:rtos/uC-LIB/lib_ascii.c **** * Argument(s) : c           Character to examine.
+ 417:rtos/uC-LIB/lib_ascii.c **** *
+ 418:rtos/uC-LIB/lib_ascii.c **** * Return(s)   : DEF_YES, if character is     a printing character.
+ 419:rtos/uC-LIB/lib_ascii.c **** *
+ 420:rtos/uC-LIB/lib_ascii.c **** *               DEF_NO,     if character is NOT a printing character.
+ 421:rtos/uC-LIB/lib_ascii.c **** *
+ 422:rtos/uC-LIB/lib_ascii.c **** * Caller(s)   : Application.
+ 423:rtos/uC-LIB/lib_ascii.c **** *
+ 424:rtos/uC-LIB/lib_ascii.c **** * Note(s)     : (1) (a) ISO/IEC 9899:TC2, Section 7.4.1.8.(2) states that "isprint() ... tests for 
+ 425:rtos/uC-LIB/lib_ascii.c **** *                       printing character including space (' ')".
+ 426:rtos/uC-LIB/lib_ascii.c **** *
+ 427:rtos/uC-LIB/lib_ascii.c **** *                   (b) ISO/IEC 9899:TC2, Section 7.4.(3), Note 169, states that in "the seven-bit 
+ 428:rtos/uC-LIB/lib_ascii.c **** *                       ASCII character set, the printing characters are those whose values lie fro
+ 429:rtos/uC-LIB/lib_ascii.c **** *                       0x20 (space) through 0x7E (tilde)".
+ 430:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ARM GAS  /tmp/ccj40Jm6.s 			page 17
+
+
+ 431:rtos/uC-LIB/lib_ascii.c **** */
+ 432:rtos/uC-LIB/lib_ascii.c **** 
+ 433:rtos/uC-LIB/lib_ascii.c **** CPU_BOOLEAN  ASCII_IsPrint (CPU_CHAR  c)
+ 434:rtos/uC-LIB/lib_ascii.c **** {
+ 486              		.loc 1 434 1 is_stmt 1 view -0
+ 487              		.cfi_startproc
+ 488              		@ args = 0, pretend = 0, frame = 0
+ 489              		@ frame_needed = 0, uses_anonymous_args = 0
+ 490              		@ link register save eliminated.
+ 435:rtos/uC-LIB/lib_ascii.c ****     CPU_BOOLEAN  print;
+ 491              		.loc 1 435 5 view .LVU111
+ 436:rtos/uC-LIB/lib_ascii.c **** 
+ 437:rtos/uC-LIB/lib_ascii.c **** 
+ 438:rtos/uC-LIB/lib_ascii.c ****     print = ASCII_IS_PRINT(c);
+ 492              		.loc 1 438 5 view .LVU112
+ 493              		.loc 1 438 13 is_stmt 0 view .LVU113
+ 494 0000 2038     		subs	r0, r0, #32
+ 495              	.LVL52:
+ 496              		.loc 1 438 13 view .LVU114
+ 497 0002 C0B2     		uxtb	r0, r0
+ 498              		.loc 1 438 11 view .LVU115
+ 499 0004 5E28     		cmp	r0, #94
+ 500 0006 01D8     		bhi	.L43
+ 501 0008 0120     		movs	r0, #1
+ 502 000a 7047     		bx	lr
+ 503              	.L43:
+ 504 000c 0020     		movs	r0, #0
+ 505              	.LVL53:
+ 439:rtos/uC-LIB/lib_ascii.c **** 
+ 440:rtos/uC-LIB/lib_ascii.c ****     return (print);
+ 506              		.loc 1 440 5 is_stmt 1 view .LVU116
+ 441:rtos/uC-LIB/lib_ascii.c **** }
+ 507              		.loc 1 441 1 is_stmt 0 view .LVU117
+ 508 000e 7047     		bx	lr
+ 509              		.cfi_endproc
+ 510              	.LFE9:
+ 512              		.section	.text.ASCII_IsGraph,"ax",%progbits
+ 513              		.align	1
+ 514              		.global	ASCII_IsGraph
+ 515              		.syntax unified
+ 516              		.thumb
+ 517              		.thumb_func
+ 518              		.fpu fpv4-sp-d16
+ 520              	ASCII_IsGraph:
+ 521              	.LVL54:
+ 522              	.LFB10:
+ 442:rtos/uC-LIB/lib_ascii.c **** 
+ 443:rtos/uC-LIB/lib_ascii.c **** 
+ 444:rtos/uC-LIB/lib_ascii.c **** /*
+ 445:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 446:rtos/uC-LIB/lib_ascii.c **** *                                           ASCII_IsGraph()
+ 447:rtos/uC-LIB/lib_ascii.c **** *
+ 448:rtos/uC-LIB/lib_ascii.c **** * Description : Determine whether a character is any printing character except a space character.
+ 449:rtos/uC-LIB/lib_ascii.c **** *
+ 450:rtos/uC-LIB/lib_ascii.c **** * Argument(s) : c           Character to examine.
+ 451:rtos/uC-LIB/lib_ascii.c **** *
+ 452:rtos/uC-LIB/lib_ascii.c **** * Return(s)   : DEF_YES, if character is     a graphic character.
+ARM GAS  /tmp/ccj40Jm6.s 			page 18
+
+
+ 453:rtos/uC-LIB/lib_ascii.c **** *
+ 454:rtos/uC-LIB/lib_ascii.c **** *               DEF_NO,     if character is NOT a graphic character.
+ 455:rtos/uC-LIB/lib_ascii.c **** *
+ 456:rtos/uC-LIB/lib_ascii.c **** * Caller(s)   : Application.
+ 457:rtos/uC-LIB/lib_ascii.c **** *
+ 458:rtos/uC-LIB/lib_ascii.c **** * Note(s)     : (1) (a) ISO/IEC 9899:TC2, Section 7.4.1.6.(2) states that "isgraph() ... tests for 
+ 459:rtos/uC-LIB/lib_ascii.c **** *                       printing character except space (' ')".
+ 460:rtos/uC-LIB/lib_ascii.c **** *
+ 461:rtos/uC-LIB/lib_ascii.c **** *                   (b) ISO/IEC 9899:TC2, Section 7.4.(3), Note 169, states that in "the seven-bit 
+ 462:rtos/uC-LIB/lib_ascii.c **** *                       ASCII character set, the printing characters are those whose values lie fro
+ 463:rtos/uC-LIB/lib_ascii.c **** *                       0x20 (space) through 0x7E (tilde)".
+ 464:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 465:rtos/uC-LIB/lib_ascii.c **** */
+ 466:rtos/uC-LIB/lib_ascii.c **** 
+ 467:rtos/uC-LIB/lib_ascii.c **** CPU_BOOLEAN  ASCII_IsGraph (CPU_CHAR  c)
+ 468:rtos/uC-LIB/lib_ascii.c **** {
+ 523              		.loc 1 468 1 is_stmt 1 view -0
+ 524              		.cfi_startproc
+ 525              		@ args = 0, pretend = 0, frame = 0
+ 526              		@ frame_needed = 0, uses_anonymous_args = 0
+ 527              		@ link register save eliminated.
+ 469:rtos/uC-LIB/lib_ascii.c ****     CPU_BOOLEAN  graph;
+ 528              		.loc 1 469 5 view .LVU119
+ 470:rtos/uC-LIB/lib_ascii.c **** 
+ 471:rtos/uC-LIB/lib_ascii.c **** 
+ 472:rtos/uC-LIB/lib_ascii.c ****     graph = ASCII_IS_GRAPH(c);
+ 529              		.loc 1 472 5 view .LVU120
+ 530              		.loc 1 472 13 is_stmt 0 view .LVU121
+ 531 0000 2138     		subs	r0, r0, #33
+ 532              	.LVL55:
+ 533              		.loc 1 472 13 view .LVU122
+ 534 0002 C0B2     		uxtb	r0, r0
+ 535              		.loc 1 472 11 view .LVU123
+ 536 0004 5D28     		cmp	r0, #93
+ 537 0006 01D8     		bhi	.L46
+ 538 0008 0120     		movs	r0, #1
+ 539 000a 7047     		bx	lr
+ 540              	.L46:
+ 541 000c 0020     		movs	r0, #0
+ 542              	.LVL56:
+ 473:rtos/uC-LIB/lib_ascii.c **** 
+ 474:rtos/uC-LIB/lib_ascii.c ****     return (graph);
+ 543              		.loc 1 474 5 is_stmt 1 view .LVU124
+ 475:rtos/uC-LIB/lib_ascii.c **** }
+ 544              		.loc 1 475 1 is_stmt 0 view .LVU125
+ 545 000e 7047     		bx	lr
+ 546              		.cfi_endproc
+ 547              	.LFE10:
+ 549              		.section	.text.ASCII_IsPunct,"ax",%progbits
+ 550              		.align	1
+ 551              		.global	ASCII_IsPunct
+ 552              		.syntax unified
+ 553              		.thumb
+ 554              		.thumb_func
+ 555              		.fpu fpv4-sp-d16
+ 557              	ASCII_IsPunct:
+ 558              	.LVL57:
+ARM GAS  /tmp/ccj40Jm6.s 			page 19
+
+
+ 559              	.LFB11:
+ 476:rtos/uC-LIB/lib_ascii.c **** 
+ 477:rtos/uC-LIB/lib_ascii.c **** 
+ 478:rtos/uC-LIB/lib_ascii.c **** /*
+ 479:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 480:rtos/uC-LIB/lib_ascii.c **** *                                           ASCII_IsPunct()
+ 481:rtos/uC-LIB/lib_ascii.c **** *
+ 482:rtos/uC-LIB/lib_ascii.c **** * Description : Determine whether a character is a punctuation character.
+ 483:rtos/uC-LIB/lib_ascii.c **** *
+ 484:rtos/uC-LIB/lib_ascii.c **** * Argument(s) : c           Character to examine.
+ 485:rtos/uC-LIB/lib_ascii.c **** *
+ 486:rtos/uC-LIB/lib_ascii.c **** * Return(s)   : DEF_YES, if character is     a punctuation character.
+ 487:rtos/uC-LIB/lib_ascii.c **** *
+ 488:rtos/uC-LIB/lib_ascii.c **** *               DEF_NO,     if character is NOT a punctuation character.
+ 489:rtos/uC-LIB/lib_ascii.c **** *
+ 490:rtos/uC-LIB/lib_ascii.c **** * Caller(s)   : Application.
+ 491:rtos/uC-LIB/lib_ascii.c **** *
+ 492:rtos/uC-LIB/lib_ascii.c **** * Note(s)     : (1) ISO/IEC 9899:TC2, Section 7.4.1.9.(2) states that "ispunct() returns true for e
+ 493:rtos/uC-LIB/lib_ascii.c **** *                   printing character for which neither isspace() nor isalnum() is true".
+ 494:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 495:rtos/uC-LIB/lib_ascii.c **** */
+ 496:rtos/uC-LIB/lib_ascii.c **** 
+ 497:rtos/uC-LIB/lib_ascii.c **** CPU_BOOLEAN  ASCII_IsPunct (CPU_CHAR  c)
+ 498:rtos/uC-LIB/lib_ascii.c **** {
+ 560              		.loc 1 498 1 is_stmt 1 view -0
+ 561              		.cfi_startproc
+ 562              		@ args = 0, pretend = 0, frame = 0
+ 563              		@ frame_needed = 0, uses_anonymous_args = 0
+ 564              		@ link register save eliminated.
+ 499:rtos/uC-LIB/lib_ascii.c ****     CPU_BOOLEAN  punct;
+ 565              		.loc 1 499 5 view .LVU127
+ 500:rtos/uC-LIB/lib_ascii.c **** 
+ 501:rtos/uC-LIB/lib_ascii.c **** 
+ 502:rtos/uC-LIB/lib_ascii.c ****     punct = ASCII_IS_PUNCT(c);
+ 566              		.loc 1 502 5 view .LVU128
+ 567              		.loc 1 502 13 is_stmt 0 view .LVU129
+ 568 0000 A0F12103 		sub	r3, r0, #33
+ 569 0004 DBB2     		uxtb	r3, r3
+ 570              		.loc 1 502 11 view .LVU130
+ 571 0006 0E2B     		cmp	r3, #14
+ 572 0008 0FD9     		bls	.L49
+ 573              		.loc 1 502 13 discriminator 2 view .LVU131
+ 574 000a A0F13A03 		sub	r3, r0, #58
+ 575 000e DBB2     		uxtb	r3, r3
+ 576 0010 062B     		cmp	r3, #6
+ 577 0012 0CD9     		bls	.L50
+ 578              		.loc 1 502 13 discriminator 4 view .LVU132
+ 579 0014 A0F15B03 		sub	r3, r0, #91
+ 580 0018 DBB2     		uxtb	r3, r3
+ 581 001a 052B     		cmp	r3, #5
+ 582 001c 09D9     		bls	.L51
+ 583              		.loc 1 502 13 discriminator 6 view .LVU133
+ 584 001e 7B38     		subs	r0, r0, #123
+ 585              	.LVL58:
+ 586              		.loc 1 502 13 discriminator 6 view .LVU134
+ 587 0020 C0B2     		uxtb	r0, r0
+ 588 0022 0328     		cmp	r0, #3
+ARM GAS  /tmp/ccj40Jm6.s 			page 20
+
+
+ 589 0024 07D8     		bhi	.L52
+ 590              		.loc 1 502 11 view .LVU135
+ 591 0026 0120     		movs	r0, #1
+ 592 0028 7047     		bx	lr
+ 593              	.LVL59:
+ 594              	.L49:
+ 595              		.loc 1 502 11 view .LVU136
+ 596 002a 0120     		movs	r0, #1
+ 597              	.LVL60:
+ 598              		.loc 1 502 11 view .LVU137
+ 599 002c 7047     		bx	lr
+ 600              	.LVL61:
+ 601              	.L50:
+ 602              		.loc 1 502 11 view .LVU138
+ 603 002e 0120     		movs	r0, #1
+ 604              	.LVL62:
+ 605              		.loc 1 502 11 view .LVU139
+ 606 0030 7047     		bx	lr
+ 607              	.LVL63:
+ 608              	.L51:
+ 609              		.loc 1 502 11 view .LVU140
+ 610 0032 0120     		movs	r0, #1
+ 611              	.LVL64:
+ 612              		.loc 1 502 11 view .LVU141
+ 613 0034 7047     		bx	lr
+ 614              	.L52:
+ 615 0036 0020     		movs	r0, #0
+ 616              	.LVL65:
+ 503:rtos/uC-LIB/lib_ascii.c **** 
+ 504:rtos/uC-LIB/lib_ascii.c ****     return (punct);
+ 617              		.loc 1 504 5 is_stmt 1 view .LVU142
+ 505:rtos/uC-LIB/lib_ascii.c **** }
+ 618              		.loc 1 505 1 is_stmt 0 view .LVU143
+ 619 0038 7047     		bx	lr
+ 620              		.cfi_endproc
+ 621              	.LFE11:
+ 623              		.section	.text.ASCII_IsCtrl,"ax",%progbits
+ 624              		.align	1
+ 625              		.global	ASCII_IsCtrl
+ 626              		.syntax unified
+ 627              		.thumb
+ 628              		.thumb_func
+ 629              		.fpu fpv4-sp-d16
+ 631              	ASCII_IsCtrl:
+ 632              	.LVL66:
+ 633              	.LFB12:
+ 506:rtos/uC-LIB/lib_ascii.c **** 
+ 507:rtos/uC-LIB/lib_ascii.c **** 
+ 508:rtos/uC-LIB/lib_ascii.c **** /*
+ 509:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 510:rtos/uC-LIB/lib_ascii.c **** *                                           ASCII_IsCtrl()
+ 511:rtos/uC-LIB/lib_ascii.c **** *
+ 512:rtos/uC-LIB/lib_ascii.c **** * Description : Determine whether a character is a control character.
+ 513:rtos/uC-LIB/lib_ascii.c **** *
+ 514:rtos/uC-LIB/lib_ascii.c **** * Argument(s) : c           Character to examine.
+ 515:rtos/uC-LIB/lib_ascii.c **** *
+ 516:rtos/uC-LIB/lib_ascii.c **** * Return(s)   : DEF_YES, if character is     a control character.
+ARM GAS  /tmp/ccj40Jm6.s 			page 21
+
+
+ 517:rtos/uC-LIB/lib_ascii.c **** *
+ 518:rtos/uC-LIB/lib_ascii.c **** *               DEF_NO,     if character is NOT a control character.
+ 519:rtos/uC-LIB/lib_ascii.c **** *
+ 520:rtos/uC-LIB/lib_ascii.c **** * Caller(s)   : Application.
+ 521:rtos/uC-LIB/lib_ascii.c **** *
+ 522:rtos/uC-LIB/lib_ascii.c **** * Note(s)     : (1) (a) ISO/IEC 9899:TC2, Section 7.4.1.4.(2) states that "iscntrl() ... tests for 
+ 523:rtos/uC-LIB/lib_ascii.c **** *                       control character".
+ 524:rtos/uC-LIB/lib_ascii.c **** *
+ 525:rtos/uC-LIB/lib_ascii.c **** *                   (b) ISO/IEC 9899:TC2, Section 7.4.(3), Note 169, states that in "the seven-bit 
+ 526:rtos/uC-LIB/lib_ascii.c **** *                       ASCII character set, ... the control characters are those whose values lie 
+ 527:rtos/uC-LIB/lib_ascii.c **** *                       0 (NUL) through 0x1F (US), and the character 0x7F (DEL)".
+ 528:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 529:rtos/uC-LIB/lib_ascii.c **** */
+ 530:rtos/uC-LIB/lib_ascii.c **** 
+ 531:rtos/uC-LIB/lib_ascii.c **** CPU_BOOLEAN  ASCII_IsCtrl (CPU_CHAR  c)
+ 532:rtos/uC-LIB/lib_ascii.c **** {
+ 634              		.loc 1 532 1 is_stmt 1 view -0
+ 635              		.cfi_startproc
+ 636              		@ args = 0, pretend = 0, frame = 0
+ 637              		@ frame_needed = 0, uses_anonymous_args = 0
+ 638              		@ link register save eliminated.
+ 533:rtos/uC-LIB/lib_ascii.c ****     CPU_BOOLEAN  ctrl;
+ 639              		.loc 1 533 5 view .LVU145
+ 534:rtos/uC-LIB/lib_ascii.c **** 
+ 535:rtos/uC-LIB/lib_ascii.c **** 
+ 536:rtos/uC-LIB/lib_ascii.c ****     ctrl = ASCII_IS_CTRL(c);
+ 640              		.loc 1 536 5 view .LVU146
+ 641              		.loc 1 536 10 is_stmt 0 view .LVU147
+ 642 0000 1F28     		cmp	r0, #31
+ 643 0002 05D9     		bls	.L55
+ 644              		.loc 1 536 12 discriminator 2 view .LVU148
+ 645 0004 7F28     		cmp	r0, #127
+ 646 0006 01D0     		beq	.L57
+ 647              		.loc 1 536 10 view .LVU149
+ 648 0008 0020     		movs	r0, #0
+ 649              	.LVL67:
+ 537:rtos/uC-LIB/lib_ascii.c **** 
+ 538:rtos/uC-LIB/lib_ascii.c ****     return (ctrl);
+ 650              		.loc 1 538 5 is_stmt 1 view .LVU150
+ 539:rtos/uC-LIB/lib_ascii.c **** }
+ 651              		.loc 1 539 1 is_stmt 0 view .LVU151
+ 652 000a 7047     		bx	lr
+ 653              	.LVL68:
+ 654              	.L57:
+ 536:rtos/uC-LIB/lib_ascii.c **** 
+ 655              		.loc 1 536 10 view .LVU152
+ 656 000c 0120     		movs	r0, #1
+ 657              	.LVL69:
+ 536:rtos/uC-LIB/lib_ascii.c **** 
+ 658              		.loc 1 536 10 view .LVU153
+ 659 000e 7047     		bx	lr
+ 660              	.LVL70:
+ 661              	.L55:
+ 536:rtos/uC-LIB/lib_ascii.c **** 
+ 662              		.loc 1 536 10 view .LVU154
+ 663 0010 0120     		movs	r0, #1
+ 664              	.LVL71:
+ARM GAS  /tmp/ccj40Jm6.s 			page 22
+
+
+ 536:rtos/uC-LIB/lib_ascii.c **** 
+ 665              		.loc 1 536 10 view .LVU155
+ 666 0012 7047     		bx	lr
+ 667              		.cfi_endproc
+ 668              	.LFE12:
+ 670              		.section	.text.ASCII_ToLower,"ax",%progbits
+ 671              		.align	1
+ 672              		.global	ASCII_ToLower
+ 673              		.syntax unified
+ 674              		.thumb
+ 675              		.thumb_func
+ 676              		.fpu fpv4-sp-d16
+ 678              	ASCII_ToLower:
+ 679              	.LVL72:
+ 680              	.LFB13:
+ 540:rtos/uC-LIB/lib_ascii.c **** 
+ 541:rtos/uC-LIB/lib_ascii.c **** 
+ 542:rtos/uC-LIB/lib_ascii.c **** /*
+ 543:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 544:rtos/uC-LIB/lib_ascii.c **** *                                           ASCII_ToLower()
+ 545:rtos/uC-LIB/lib_ascii.c **** *
+ 546:rtos/uC-LIB/lib_ascii.c **** * Description : Convert uppercase alphabetic character to its corresponding lowercase alphabetic ch
+ 547:rtos/uC-LIB/lib_ascii.c **** *
+ 548:rtos/uC-LIB/lib_ascii.c **** * Argument(s) : c           Character to convert.
+ 549:rtos/uC-LIB/lib_ascii.c **** *
+ 550:rtos/uC-LIB/lib_ascii.c **** * Return(s)   : Lowercase equivalent of 'c', if character 'c' is an uppercase character (see Note #
+ 551:rtos/uC-LIB/lib_ascii.c **** *
+ 552:rtos/uC-LIB/lib_ascii.c **** *               Character 'c',               otherwise                                  (see Note #
+ 553:rtos/uC-LIB/lib_ascii.c **** *
+ 554:rtos/uC-LIB/lib_ascii.c **** * Caller(s)   : Application.
+ 555:rtos/uC-LIB/lib_ascii.c **** *
+ 556:rtos/uC-LIB/lib_ascii.c **** * Note(s)     : (1) (a) ISO/IEC 9899:TC2, Section 7.4.2.1.(2) states that "tolower() ... converts a
+ 557:rtos/uC-LIB/lib_ascii.c **** *                       uppercase letter to a corresponding lowercase letter".
+ 558:rtos/uC-LIB/lib_ascii.c **** *
+ 559:rtos/uC-LIB/lib_ascii.c **** *                   (b) ISO/IEC 9899:TC2, Section 7.4.2.1.(3) states that :
+ 560:rtos/uC-LIB/lib_ascii.c **** *
+ 561:rtos/uC-LIB/lib_ascii.c **** *                       (1) (A) "if the argument is a character for which isupper() is true and the
+ 562:rtos/uC-LIB/lib_ascii.c **** *                                one or more corresponding characters ... for which islower() is tr
+ 563:rtos/uC-LIB/lib_ascii.c **** *                           (B) "tolower() ... returns one of the corresponding characters;" ...
+ 564:rtos/uC-LIB/lib_ascii.c **** *
+ 565:rtos/uC-LIB/lib_ascii.c **** *                       (2) "otherwise, the argument is returned unchanged."
+ 566:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 567:rtos/uC-LIB/lib_ascii.c **** */
+ 568:rtos/uC-LIB/lib_ascii.c **** 
+ 569:rtos/uC-LIB/lib_ascii.c **** CPU_CHAR  ASCII_ToLower (CPU_CHAR  c)
+ 570:rtos/uC-LIB/lib_ascii.c **** {
+ 681              		.loc 1 570 1 is_stmt 1 view -0
+ 682              		.cfi_startproc
+ 683              		@ args = 0, pretend = 0, frame = 0
+ 684              		@ frame_needed = 0, uses_anonymous_args = 0
+ 685              		@ link register save eliminated.
+ 571:rtos/uC-LIB/lib_ascii.c ****     CPU_CHAR  lower;
+ 686              		.loc 1 571 5 view .LVU157
+ 572:rtos/uC-LIB/lib_ascii.c **** 
+ 573:rtos/uC-LIB/lib_ascii.c **** 
+ 574:rtos/uC-LIB/lib_ascii.c ****     lower = ASCII_TO_LOWER(c);
+ 687              		.loc 1 574 5 view .LVU158
+ARM GAS  /tmp/ccj40Jm6.s 			page 23
+
+
+ 688              		.loc 1 574 13 is_stmt 0 view .LVU159
+ 689 0000 A0F14103 		sub	r3, r0, #65
+ 690 0004 DBB2     		uxtb	r3, r3
+ 691              		.loc 1 574 11 view .LVU160
+ 692 0006 192B     		cmp	r3, #25
+ 693 0008 01D8     		bhi	.L59
+ 694              		.loc 1 574 11 discriminator 1 view .LVU161
+ 695 000a 2030     		adds	r0, r0, #32
+ 696              	.LVL73:
+ 697              		.loc 1 574 11 discriminator 1 view .LVU162
+ 698 000c C0B2     		uxtb	r0, r0
+ 699              	.L59:
+ 700              	.LVL74:
+ 575:rtos/uC-LIB/lib_ascii.c **** 
+ 576:rtos/uC-LIB/lib_ascii.c ****     return (lower);
+ 701              		.loc 1 576 5 is_stmt 1 discriminator 4 view .LVU163
+ 577:rtos/uC-LIB/lib_ascii.c **** }
+ 702              		.loc 1 577 1 is_stmt 0 discriminator 4 view .LVU164
+ 703 000e 7047     		bx	lr
+ 704              		.cfi_endproc
+ 705              	.LFE13:
+ 707              		.section	.text.ASCII_ToUpper,"ax",%progbits
+ 708              		.align	1
+ 709              		.global	ASCII_ToUpper
+ 710              		.syntax unified
+ 711              		.thumb
+ 712              		.thumb_func
+ 713              		.fpu fpv4-sp-d16
+ 715              	ASCII_ToUpper:
+ 716              	.LVL75:
+ 717              	.LFB14:
+ 578:rtos/uC-LIB/lib_ascii.c **** 
+ 579:rtos/uC-LIB/lib_ascii.c **** 
+ 580:rtos/uC-LIB/lib_ascii.c **** /*
+ 581:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 582:rtos/uC-LIB/lib_ascii.c **** *                                           ASCII_ToUpper()
+ 583:rtos/uC-LIB/lib_ascii.c **** *
+ 584:rtos/uC-LIB/lib_ascii.c **** * Description : Convert lowercase alphabetic character to its corresponding uppercase alphabetic ch
+ 585:rtos/uC-LIB/lib_ascii.c **** *
+ 586:rtos/uC-LIB/lib_ascii.c **** * Argument(s) : c           Character to convert.
+ 587:rtos/uC-LIB/lib_ascii.c **** *
+ 588:rtos/uC-LIB/lib_ascii.c **** * Return(s)   : Uppercase equivalent of 'c', if character 'c' is a lowercase character (see Note #1
+ 589:rtos/uC-LIB/lib_ascii.c **** *
+ 590:rtos/uC-LIB/lib_ascii.c **** *               Character 'c',               otherwise                                 (see Note #1
+ 591:rtos/uC-LIB/lib_ascii.c **** *
+ 592:rtos/uC-LIB/lib_ascii.c **** * Caller(s)   : Application.
+ 593:rtos/uC-LIB/lib_ascii.c **** *
+ 594:rtos/uC-LIB/lib_ascii.c **** * Note(s)     : (1) (a) ISO/IEC 9899:TC2, Section 7.4.2.2.(2) states that "toupper() ... converts a
+ 595:rtos/uC-LIB/lib_ascii.c **** *                       lowercase letter to a corresponding uppercase letter".
+ 596:rtos/uC-LIB/lib_ascii.c **** *
+ 597:rtos/uC-LIB/lib_ascii.c **** *                   (b) ISO/IEC 9899:TC2, Section 7.4.2.2.(3) states that :
+ 598:rtos/uC-LIB/lib_ascii.c **** *
+ 599:rtos/uC-LIB/lib_ascii.c **** *                       (1) (A) "if the argument is a character for which islower() is true and the
+ 600:rtos/uC-LIB/lib_ascii.c **** *                                one or more corresponding characters ... for which isupper() is tr
+ 601:rtos/uC-LIB/lib_ascii.c **** *                           (B) "toupper() ... returns one of the corresponding characters;" ...
+ 602:rtos/uC-LIB/lib_ascii.c **** *
+ 603:rtos/uC-LIB/lib_ascii.c **** *                       (2) "otherwise, the argument is returned unchanged."
+ARM GAS  /tmp/ccj40Jm6.s 			page 24
+
+
+ 604:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 605:rtos/uC-LIB/lib_ascii.c **** */
+ 606:rtos/uC-LIB/lib_ascii.c **** 
+ 607:rtos/uC-LIB/lib_ascii.c **** CPU_CHAR  ASCII_ToUpper (CPU_CHAR  c)
+ 608:rtos/uC-LIB/lib_ascii.c **** {
+ 718              		.loc 1 608 1 is_stmt 1 view -0
+ 719              		.cfi_startproc
+ 720              		@ args = 0, pretend = 0, frame = 0
+ 721              		@ frame_needed = 0, uses_anonymous_args = 0
+ 722              		@ link register save eliminated.
+ 609:rtos/uC-LIB/lib_ascii.c ****     CPU_CHAR  upper;
+ 723              		.loc 1 609 5 view .LVU166
+ 610:rtos/uC-LIB/lib_ascii.c **** 
+ 611:rtos/uC-LIB/lib_ascii.c **** 
+ 612:rtos/uC-LIB/lib_ascii.c ****     upper = ASCII_TO_UPPER(c);
+ 724              		.loc 1 612 5 view .LVU167
+ 725              		.loc 1 612 13 is_stmt 0 view .LVU168
+ 726 0000 A0F16103 		sub	r3, r0, #97
+ 727 0004 DBB2     		uxtb	r3, r3
+ 728              		.loc 1 612 11 view .LVU169
+ 729 0006 192B     		cmp	r3, #25
+ 730 0008 01D8     		bhi	.L61
+ 731              		.loc 1 612 11 discriminator 1 view .LVU170
+ 732 000a 2038     		subs	r0, r0, #32
+ 733              	.LVL76:
+ 734              		.loc 1 612 11 discriminator 1 view .LVU171
+ 735 000c C0B2     		uxtb	r0, r0
+ 736              	.L61:
+ 737              	.LVL77:
+ 613:rtos/uC-LIB/lib_ascii.c **** 
+ 614:rtos/uC-LIB/lib_ascii.c ****     return (upper);
+ 738              		.loc 1 614 5 is_stmt 1 discriminator 4 view .LVU172
+ 615:rtos/uC-LIB/lib_ascii.c **** }
+ 739              		.loc 1 615 1 is_stmt 0 discriminator 4 view .LVU173
+ 740 000e 7047     		bx	lr
+ 741              		.cfi_endproc
+ 742              	.LFE14:
+ 744              		.section	.text.ASCII_Cmp,"ax",%progbits
+ 745              		.align	1
+ 746              		.global	ASCII_Cmp
+ 747              		.syntax unified
+ 748              		.thumb
+ 749              		.thumb_func
+ 750              		.fpu fpv4-sp-d16
+ 752              	ASCII_Cmp:
+ 753              	.LVL78:
+ 754              	.LFB15:
+ 616:rtos/uC-LIB/lib_ascii.c **** 
+ 617:rtos/uC-LIB/lib_ascii.c **** 
+ 618:rtos/uC-LIB/lib_ascii.c **** /*
+ 619:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 620:rtos/uC-LIB/lib_ascii.c **** *                                             ASCII_Cmp()
+ 621:rtos/uC-LIB/lib_ascii.c **** *
+ 622:rtos/uC-LIB/lib_ascii.c **** * Description : Determine if two characters are identical (case-insensitive).
+ 623:rtos/uC-LIB/lib_ascii.c **** *
+ 624:rtos/uC-LIB/lib_ascii.c **** * Argument(s) : c1          First  character.
+ 625:rtos/uC-LIB/lib_ascii.c **** *
+ARM GAS  /tmp/ccj40Jm6.s 			page 25
+
+
+ 626:rtos/uC-LIB/lib_ascii.c **** *               c2          Second character.
+ 627:rtos/uC-LIB/lib_ascii.c **** *
+ 628:rtos/uC-LIB/lib_ascii.c **** * Return(s)   : DEF_YES, if the characters are     identical.
+ 629:rtos/uC-LIB/lib_ascii.c **** *
+ 630:rtos/uC-LIB/lib_ascii.c **** *               DEF_NO,  if the characters are NOT identical.
+ 631:rtos/uC-LIB/lib_ascii.c **** *
+ 632:rtos/uC-LIB/lib_ascii.c **** * Caller(s)   : Application.
+ 633:rtos/uC-LIB/lib_ascii.c **** *
+ 634:rtos/uC-LIB/lib_ascii.c **** * Note(s)     : none.
+ 635:rtos/uC-LIB/lib_ascii.c **** ***************************************************************************************************
+ 636:rtos/uC-LIB/lib_ascii.c **** */
+ 637:rtos/uC-LIB/lib_ascii.c **** 
+ 638:rtos/uC-LIB/lib_ascii.c **** CPU_BOOLEAN  ASCII_Cmp (CPU_CHAR  c1,
+ 639:rtos/uC-LIB/lib_ascii.c ****                         CPU_CHAR  c2)
+ 640:rtos/uC-LIB/lib_ascii.c **** {
+ 755              		.loc 1 640 1 is_stmt 1 view -0
+ 756              		.cfi_startproc
+ 757              		@ args = 0, pretend = 0, frame = 0
+ 758              		@ frame_needed = 0, uses_anonymous_args = 0
+ 759              		.loc 1 640 1 is_stmt 0 view .LVU175
+ 760 0000 38B5     		push	{r3, r4, r5, lr}
+ 761              	.LCFI0:
+ 762              		.cfi_def_cfa_offset 16
+ 763              		.cfi_offset 3, -16
+ 764              		.cfi_offset 4, -12
+ 765              		.cfi_offset 5, -8
+ 766              		.cfi_offset 14, -4
+ 767 0002 0D46     		mov	r5, r1
+ 641:rtos/uC-LIB/lib_ascii.c ****     CPU_CHAR     c1_upper;
+ 768              		.loc 1 641 5 is_stmt 1 view .LVU176
+ 642:rtos/uC-LIB/lib_ascii.c ****     CPU_CHAR     c2_upper;
+ 769              		.loc 1 642 5 view .LVU177
+ 643:rtos/uC-LIB/lib_ascii.c ****     CPU_BOOLEAN  cmp;
+ 770              		.loc 1 643 5 view .LVU178
+ 644:rtos/uC-LIB/lib_ascii.c **** 
+ 645:rtos/uC-LIB/lib_ascii.c **** 
+ 646:rtos/uC-LIB/lib_ascii.c ****     c1_upper =  ASCII_ToUpper(c1);
+ 771              		.loc 1 646 5 view .LVU179
+ 772              		.loc 1 646 17 is_stmt 0 view .LVU180
+ 773 0004 FFF7FEFF 		bl	ASCII_ToUpper
+ 774              	.LVL79:
+ 775              		.loc 1 646 17 view .LVU181
+ 776 0008 0446     		mov	r4, r0
+ 777              	.LVL80:
+ 647:rtos/uC-LIB/lib_ascii.c ****     c2_upper =  ASCII_ToUpper(c2);
+ 778              		.loc 1 647 5 is_stmt 1 view .LVU182
+ 779              		.loc 1 647 17 is_stmt 0 view .LVU183
+ 780 000a 2846     		mov	r0, r5
+ 781 000c FFF7FEFF 		bl	ASCII_ToUpper
+ 782              	.LVL81:
+ 648:rtos/uC-LIB/lib_ascii.c ****     cmp      = (c1_upper == c2_upper) ? (DEF_YES) : (DEF_NO);
+ 783              		.loc 1 648 5 is_stmt 1 view .LVU184
+ 784              		.loc 1 648 14 is_stmt 0 view .LVU185
+ 785 0010 8442     		cmp	r4, r0
+ 786 0012 01D0     		beq	.L66
+ 787 0014 0020     		movs	r0, #0
+ 788              	.LVL82:
+ARM GAS  /tmp/ccj40Jm6.s 			page 26
+
+
+ 789              	.L63:
+ 649:rtos/uC-LIB/lib_ascii.c **** 
+ 650:rtos/uC-LIB/lib_ascii.c ****     return (cmp);
+ 790              		.loc 1 650 5 is_stmt 1 discriminator 4 view .LVU186
+ 651:rtos/uC-LIB/lib_ascii.c **** }
+ 791              		.loc 1 651 1 is_stmt 0 discriminator 4 view .LVU187
+ 792 0016 38BD     		pop	{r3, r4, r5, pc}
+ 793              	.LVL83:
+ 794              	.L66:
+ 648:rtos/uC-LIB/lib_ascii.c ****     cmp      = (c1_upper == c2_upper) ? (DEF_YES) : (DEF_NO);
+ 795              		.loc 1 648 14 view .LVU188
+ 796 0018 0120     		movs	r0, #1
+ 797              	.LVL84:
+ 648:rtos/uC-LIB/lib_ascii.c ****     cmp      = (c1_upper == c2_upper) ? (DEF_YES) : (DEF_NO);
+ 798              		.loc 1 648 14 view .LVU189
+ 799 001a FCE7     		b	.L63
+ 800              		.cfi_endproc
+ 801              	.LFE15:
+ 803              		.text
+ 804              	.Letext0:
+ 805              		.file 2 "rtos/uC-CPU/ARM-Cortex-M/ARMv7-M/GNU/cpu.h"
+ARM GAS  /tmp/ccj40Jm6.s 			page 27
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 lib_ascii.c
+     /tmp/ccj40Jm6.s:18     .text.ASCII_IsAlpha:0000000000000000 $t
+     /tmp/ccj40Jm6.s:26     .text.ASCII_IsAlpha:0000000000000000 ASCII_IsAlpha
+     /tmp/ccj40Jm6.s:70     .text.ASCII_IsAlphaNum:0000000000000000 $t
+     /tmp/ccj40Jm6.s:77     .text.ASCII_IsAlphaNum:0000000000000000 ASCII_IsAlphaNum
+     /tmp/ccj40Jm6.s:132    .text.ASCII_IsLower:0000000000000000 $t
+     /tmp/ccj40Jm6.s:139    .text.ASCII_IsLower:0000000000000000 ASCII_IsLower
+     /tmp/ccj40Jm6.s:169    .text.ASCII_IsUpper:0000000000000000 $t
+     /tmp/ccj40Jm6.s:176    .text.ASCII_IsUpper:0000000000000000 ASCII_IsUpper
+     /tmp/ccj40Jm6.s:206    .text.ASCII_IsDig:0000000000000000 $t
+     /tmp/ccj40Jm6.s:213    .text.ASCII_IsDig:0000000000000000 ASCII_IsDig
+     /tmp/ccj40Jm6.s:243    .text.ASCII_IsDigOct:0000000000000000 $t
+     /tmp/ccj40Jm6.s:250    .text.ASCII_IsDigOct:0000000000000000 ASCII_IsDigOct
+     /tmp/ccj40Jm6.s:280    .text.ASCII_IsDigHex:0000000000000000 $t
+     /tmp/ccj40Jm6.s:287    .text.ASCII_IsDigHex:0000000000000000 ASCII_IsDigHex
+     /tmp/ccj40Jm6.s:342    .text.ASCII_IsBlank:0000000000000000 $t
+     /tmp/ccj40Jm6.s:349    .text.ASCII_IsBlank:0000000000000000 ASCII_IsBlank
+     /tmp/ccj40Jm6.s:389    .text.ASCII_IsSpace:0000000000000000 $t
+     /tmp/ccj40Jm6.s:396    .text.ASCII_IsSpace:0000000000000000 ASCII_IsSpace
+     /tmp/ccj40Jm6.s:476    .text.ASCII_IsPrint:0000000000000000 $t
+     /tmp/ccj40Jm6.s:483    .text.ASCII_IsPrint:0000000000000000 ASCII_IsPrint
+     /tmp/ccj40Jm6.s:513    .text.ASCII_IsGraph:0000000000000000 $t
+     /tmp/ccj40Jm6.s:520    .text.ASCII_IsGraph:0000000000000000 ASCII_IsGraph
+     /tmp/ccj40Jm6.s:550    .text.ASCII_IsPunct:0000000000000000 $t
+     /tmp/ccj40Jm6.s:557    .text.ASCII_IsPunct:0000000000000000 ASCII_IsPunct
+     /tmp/ccj40Jm6.s:624    .text.ASCII_IsCtrl:0000000000000000 $t
+     /tmp/ccj40Jm6.s:631    .text.ASCII_IsCtrl:0000000000000000 ASCII_IsCtrl
+     /tmp/ccj40Jm6.s:671    .text.ASCII_ToLower:0000000000000000 $t
+     /tmp/ccj40Jm6.s:678    .text.ASCII_ToLower:0000000000000000 ASCII_ToLower
+     /tmp/ccj40Jm6.s:708    .text.ASCII_ToUpper:0000000000000000 $t
+     /tmp/ccj40Jm6.s:715    .text.ASCII_ToUpper:0000000000000000 ASCII_ToUpper
+     /tmp/ccj40Jm6.s:745    .text.ASCII_Cmp:0000000000000000 $t
+     /tmp/ccj40Jm6.s:752    .text.ASCII_Cmp:0000000000000000 ASCII_Cmp
+                           .group:0000000000000000 wm4.0.0f5aa60db9403f389c005f20ecce4286
+                           .group:0000000000000000 wm4.cpu_def.h.46.baa122a2898bdc40bb50d1f21ead1515
+                           .group:0000000000000000 wm4.cpu_cfg.h.45.38a6a562da8b04490c382a226238c57e
+                           .group:0000000000000000 wm4.cpu.h.171.3cb15ee3ccb812cbfdf76d1fbfb9eda0
+                           .group:0000000000000000 wm4.lib_def.h.66.6ab2a012067a8e1f4289db5765835062
+                           .group:0000000000000000 wm4.lib_ascii.h.130.449271dafca6f18845ca8171951a9c63
+
+NO UNDEFINED SYMBOLS

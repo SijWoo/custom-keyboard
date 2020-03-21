@@ -61,7 +61,7 @@
 
 #include  <cpu_core.h>
 #include  <app_cfg.h>
-#include  <Source/fs_util.h>
+#include  <fs_util.h>
 
 
 /*
@@ -110,7 +110,7 @@
 */
 
 #if (APP_CFG_FS_EN         == DEF_ENABLED)
-#include  <Source/fs.h>
+#include  <fs.h>
 
 #if (APP_CFG_FS_IDE_EN     == DEF_ENABLED)
 #include  <Dev/IDE/fs_dev_ide.h>
@@ -142,7 +142,7 @@
 #endif
 
 #if (APP_CFG_FS_SD_EN      == DEF_ENABLED)
-#include  <Dev/SD/SPI/fs_dev_sd_spi.h>
+#include  <fs_dev_sd_spi.h>
 #endif
 #endif
 

@@ -1,0 +1,1240 @@
+ARM GAS  /tmp/cccqlBvg.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fs.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.FS_Init,"ax",%progbits
+  18              		.align	1
+  19              		.global	FS_Init
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	FS_Init:
+  27              	.LVL0:
+  28              	.LFB0:
+  29              		.file 1 "rtos/uC-FS/Source/fs.c"
+   1:rtos/uC-FS/Source/fs.c **** /*
+   2:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+   3:rtos/uC-FS/Source/fs.c **** *                                                uC/FS
+   4:rtos/uC-FS/Source/fs.c **** *                                      The Embedded File System
+   5:rtos/uC-FS/Source/fs.c **** *
+   6:rtos/uC-FS/Source/fs.c **** *                         (c) Copyright 2008-2019; Silicon Laboratories Inc.,
+   7:rtos/uC-FS/Source/fs.c **** *                                400 W. Cesar Chavez, Austin, TX 78701
+   8:rtos/uC-FS/Source/fs.c **** *
+   9:rtos/uC-FS/Source/fs.c **** *                   All rights reserved. Protected by international copyright laws.
+  10:rtos/uC-FS/Source/fs.c **** *
+  11:rtos/uC-FS/Source/fs.c **** *                  Your use of this software is subject to your acceptance of the terms
+  12:rtos/uC-FS/Source/fs.c **** *                  of a Silicon Labs Micrium software license, which can be obtained by
+  13:rtos/uC-FS/Source/fs.c **** *                  contacting info@micrium.com. If you do not agree to the terms of this
+  14:rtos/uC-FS/Source/fs.c **** *                  license, you may not use this software.
+  15:rtos/uC-FS/Source/fs.c **** *
+  16:rtos/uC-FS/Source/fs.c **** *                  Please help us continue to provide the Embedded community with the finest
+  17:rtos/uC-FS/Source/fs.c **** *                  software available. Your honesty is greatly appreciated.
+  18:rtos/uC-FS/Source/fs.c **** *
+  19:rtos/uC-FS/Source/fs.c **** *                    You can find our product's documentation at: doc.micrium.com
+  20:rtos/uC-FS/Source/fs.c **** *
+  21:rtos/uC-FS/Source/fs.c **** *                          For more information visit us at: www.micrium.com
+  22:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+  23:rtos/uC-FS/Source/fs.c **** */
+  24:rtos/uC-FS/Source/fs.c **** 
+  25:rtos/uC-FS/Source/fs.c **** /*
+  26:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+  27:rtos/uC-FS/Source/fs.c **** *
+  28:rtos/uC-FS/Source/fs.c **** *                                       FILE SYSTEM SOURCE FILE
+  29:rtos/uC-FS/Source/fs.c **** *
+ARM GAS  /tmp/cccqlBvg.s 			page 2
+
+
+  30:rtos/uC-FS/Source/fs.c **** * Filename : fs.c
+  31:rtos/uC-FS/Source/fs.c **** * Version  : v4.07.06
+  32:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+  33:rtos/uC-FS/Source/fs.c **** */
+  34:rtos/uC-FS/Source/fs.c **** 
+  35:rtos/uC-FS/Source/fs.c **** /*
+  36:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+  37:rtos/uC-FS/Source/fs.c **** *                                               MODULE
+  38:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+  39:rtos/uC-FS/Source/fs.c **** */
+  40:rtos/uC-FS/Source/fs.c **** 
+  41:rtos/uC-FS/Source/fs.c **** #define  MICRIUM_SOURCE
+  42:rtos/uC-FS/Source/fs.c **** #define  FS_MODULE
+  43:rtos/uC-FS/Source/fs.c **** 
+  44:rtos/uC-FS/Source/fs.c **** 
+  45:rtos/uC-FS/Source/fs.c **** /*
+  46:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+  47:rtos/uC-FS/Source/fs.c **** *                                            INCLUDE FILES
+  48:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+  49:rtos/uC-FS/Source/fs.c **** */
+  50:rtos/uC-FS/Source/fs.c **** 
+  51:rtos/uC-FS/Source/fs.c **** #include  <cpu_core.h>
+  52:rtos/uC-FS/Source/fs.c **** #include  <lib_ascii.h>
+  53:rtos/uC-FS/Source/fs.c **** #include  <lib_mem.h>
+  54:rtos/uC-FS/Source/fs.c **** #include  "fs.h"
+  55:rtos/uC-FS/Source/fs.c **** #include  "fs_buf.h"
+  56:rtos/uC-FS/Source/fs.c **** #include  "fs_ctr.h"
+  57:rtos/uC-FS/Source/fs.c **** #include  "fs_dev.h"
+  58:rtos/uC-FS/Source/fs.c **** #include  "fs_dir.h"
+  59:rtos/uC-FS/Source/fs.c **** #include  "fs_entry.h"
+  60:rtos/uC-FS/Source/fs.c **** #include  "fs_file.h"
+  61:rtos/uC-FS/Source/fs.c **** #include  "fs_sys.h"
+  62:rtos/uC-FS/Source/fs.c **** #include  "fs_vol.h"
+  63:rtos/uC-FS/Source/fs.c **** 
+  64:rtos/uC-FS/Source/fs.c **** 
+  65:rtos/uC-FS/Source/fs.c **** /*
+  66:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+  67:rtos/uC-FS/Source/fs.c **** *                                            LOCAL DEFINES
+  68:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+  69:rtos/uC-FS/Source/fs.c **** */
+  70:rtos/uC-FS/Source/fs.c **** 
+  71:rtos/uC-FS/Source/fs.c **** #define  FS_MAX_FULL_PATH_LEN               FS_CFG_MAX_PATH_NAME_LEN + FS_CFG_MAX_VOL_NAME_LEN
+  72:rtos/uC-FS/Source/fs.c **** 
+  73:rtos/uC-FS/Source/fs.c **** 
+  74:rtos/uC-FS/Source/fs.c **** /*
+  75:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+  76:rtos/uC-FS/Source/fs.c **** *                                           LOCAL CONSTANTS
+  77:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+  78:rtos/uC-FS/Source/fs.c **** */
+  79:rtos/uC-FS/Source/fs.c **** 
+  80:rtos/uC-FS/Source/fs.c **** 
+  81:rtos/uC-FS/Source/fs.c **** /*
+  82:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+  83:rtos/uC-FS/Source/fs.c **** *                                          LOCAL DATA TYPES
+  84:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+  85:rtos/uC-FS/Source/fs.c **** */
+  86:rtos/uC-FS/Source/fs.c **** 
+ARM GAS  /tmp/cccqlBvg.s 			page 3
+
+
+  87:rtos/uC-FS/Source/fs.c **** #if (FS_CFG_WORKING_DIR_EN == DEF_ENABLED)
+  88:rtos/uC-FS/Source/fs.c **** typedef  struct  fs_working_dir  FS_WORKING_DIR;
+  89:rtos/uC-FS/Source/fs.c **** 
+  90:rtos/uC-FS/Source/fs.c **** struct  fs_working_dir {
+  91:rtos/uC-FS/Source/fs.c ****     CPU_CHAR        *Name;
+  92:rtos/uC-FS/Source/fs.c ****     FS_WORKING_DIR  *NextPtr;
+  93:rtos/uC-FS/Source/fs.c **** };
+  94:rtos/uC-FS/Source/fs.c **** #endif
+  95:rtos/uC-FS/Source/fs.c **** 
+  96:rtos/uC-FS/Source/fs.c **** 
+  97:rtos/uC-FS/Source/fs.c **** /*
+  98:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+  99:rtos/uC-FS/Source/fs.c **** *                                            LOCAL TABLES
+ 100:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 101:rtos/uC-FS/Source/fs.c **** */
+ 102:rtos/uC-FS/Source/fs.c **** 
+ 103:rtos/uC-FS/Source/fs.c **** 
+ 104:rtos/uC-FS/Source/fs.c **** /*
+ 105:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 106:rtos/uC-FS/Source/fs.c **** *                                       LOCAL GLOBAL VARIABLES
+ 107:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 108:rtos/uC-FS/Source/fs.c **** */
+ 109:rtos/uC-FS/Source/fs.c **** 
+ 110:rtos/uC-FS/Source/fs.c **** #if (FS_CFG_WORKING_DIR_EN == DEF_ENABLED)
+ 111:rtos/uC-FS/Source/fs.c **** static  FS_WORKING_DIR  *FS_WorkingDirListFreePtr;
+ 112:rtos/uC-FS/Source/fs.c **** static  FS_WORKING_DIR  *FS_WorkingDirListWaitPtr;
+ 113:rtos/uC-FS/Source/fs.c **** static  FS_CTR           FS_WorkingDirCtr;
+ 114:rtos/uC-FS/Source/fs.c **** static  FS_CTR           FS_WorkingDirFreeCtr;
+ 115:rtos/uC-FS/Source/fs.c **** #endif
+ 116:rtos/uC-FS/Source/fs.c **** 
+ 117:rtos/uC-FS/Source/fs.c **** static  FS_SEC_SIZE      FS_MaxSecSize;
+ 118:rtos/uC-FS/Source/fs.c **** 
+ 119:rtos/uC-FS/Source/fs.c **** 
+ 120:rtos/uC-FS/Source/fs.c **** /*
+ 121:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 122:rtos/uC-FS/Source/fs.c **** *                                      LOCAL FUNCTION PROTOTYPES
+ 123:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 124:rtos/uC-FS/Source/fs.c **** */
+ 125:rtos/uC-FS/Source/fs.c **** 
+ 126:rtos/uC-FS/Source/fs.c **** #if (FS_CFG_WORKING_DIR_EN == DEF_ENABLED)
+ 127:rtos/uC-FS/Source/fs.c **** static  void       FS_WorkingDirModuleInit     (void);
+ 128:rtos/uC-FS/Source/fs.c **** 
+ 129:rtos/uC-FS/Source/fs.c **** static  void       FS_WorkingDirPathFormHandler(CPU_CHAR  *path_work,
+ 130:rtos/uC-FS/Source/fs.c ****                                                 CPU_CHAR  *path_raw,
+ 131:rtos/uC-FS/Source/fs.c ****                                                 CPU_CHAR  *path_entry,
+ 132:rtos/uC-FS/Source/fs.c ****                                                 FS_ERR    *p_err);
+ 133:rtos/uC-FS/Source/fs.c **** 
+ 134:rtos/uC-FS/Source/fs.c **** static  CPU_CHAR  *FS_WorkingDirObjGet         (void);                  /* Get working dir obj.    
+ 135:rtos/uC-FS/Source/fs.c **** #endif
+ 136:rtos/uC-FS/Source/fs.c **** 
+ 137:rtos/uC-FS/Source/fs.c **** 
+ 138:rtos/uC-FS/Source/fs.c **** /*
+ 139:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 140:rtos/uC-FS/Source/fs.c **** *                                     LOCAL CONFIGURATION ERRORS
+ 141:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 142:rtos/uC-FS/Source/fs.c **** */
+ 143:rtos/uC-FS/Source/fs.c **** 
+ARM GAS  /tmp/cccqlBvg.s 			page 4
+
+
+ 144:rtos/uC-FS/Source/fs.c **** 
+ 145:rtos/uC-FS/Source/fs.c **** /*
+ 146:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 147:rtos/uC-FS/Source/fs.c **** *                                              FS_Init()
+ 148:rtos/uC-FS/Source/fs.c **** *
+ 149:rtos/uC-FS/Source/fs.c **** * Description : Initialize file system suite.
+ 150:rtos/uC-FS/Source/fs.c **** *
+ 151:rtos/uC-FS/Source/fs.c **** * Argument(s) : p_fs_cfg    Pointer to file system configuration.
+ 152:rtos/uC-FS/Source/fs.c **** *
+ 153:rtos/uC-FS/Source/fs.c **** * Return(s)   : FS_ERR_NONE,                        if NO errors.
+ 154:rtos/uC-FS/Source/fs.c **** 
+ 155:rtos/uC-FS/Source/fs.c **** *               Specific initialization error code, otherwise.
+ 156:rtos/uC-FS/Source/fs.c **** *
+ 157:rtos/uC-FS/Source/fs.c **** * Note(s)     : (1) FS_Init() MUST be called ...
+ 158:rtos/uC-FS/Source/fs.c **** *
+ 159:rtos/uC-FS/Source/fs.c **** *                   (a) ONLY ONCE from a product's application; ...
+ 160:rtos/uC-FS/Source/fs.c **** *                   (b) (1) AFTER  product's OS has been initialized
+ 161:rtos/uC-FS/Source/fs.c **** *                       (2) BEFORE product's application calls any file system suite function(s)
+ 162:rtos/uC-FS/Source/fs.c **** *
+ 163:rtos/uC-FS/Source/fs.c **** *               (2) FS_Init() MUST ONLY be called ONCE from product's application.
+ 164:rtos/uC-FS/Source/fs.c **** *
+ 165:rtos/uC-FS/Source/fs.c **** *               (3) (a) If any file system initialization error occurs, any remaining file system
+ 166:rtos/uC-FS/Source/fs.c **** *                       initialization is immediately aborted & the specific initialization error c
+ 167:rtos/uC-FS/Source/fs.c **** *                       returned.
+ 168:rtos/uC-FS/Source/fs.c **** *
+ 169:rtos/uC-FS/Source/fs.c **** *                   (b) File system error codes are listed in 'fs_err.h', organized by file system
+ 170:rtos/uC-FS/Source/fs.c **** *                       modules &/or layers.  A search of the specific error code number(s) provide
+ 171:rtos/uC-FS/Source/fs.c **** *                       corresponding error code label(s).  A search of the error code label(s) pro
+ 172:rtos/uC-FS/Source/fs.c **** *                       the source code location of the file system initialization error(s).
+ 173:rtos/uC-FS/Source/fs.c **** *
+ 174:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 175:rtos/uC-FS/Source/fs.c **** */
+ 176:rtos/uC-FS/Source/fs.c **** 
+ 177:rtos/uC-FS/Source/fs.c **** FS_ERR  FS_Init (FS_CFG  *p_fs_cfg)
+ 178:rtos/uC-FS/Source/fs.c **** {
+  30              		.loc 1 178 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 8
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+ 179:rtos/uC-FS/Source/fs.c ****     FS_ERR  err;
+  34              		.loc 1 179 5 view .LVU1
+ 180:rtos/uC-FS/Source/fs.c **** 
+ 181:rtos/uC-FS/Source/fs.c **** 
+ 182:rtos/uC-FS/Source/fs.c ****                                                                 /* ---------------------- CHK CFG -
+ 183:rtos/uC-FS/Source/fs.c ****     if (p_fs_cfg == (FS_CFG *)0) {                              /* Validate ptr.                   
+  35              		.loc 1 183 5 view .LVU2
+  36              		.loc 1 183 8 is_stmt 0 view .LVU3
+  37 0000 0028     		cmp	r0, #0
+  38 0002 53D0     		beq	.L4
+ 178:rtos/uC-FS/Source/fs.c ****     FS_ERR  err;
+  39              		.loc 1 178 1 view .LVU4
+  40 0004 10B5     		push	{r4, lr}
+  41              	.LCFI0:
+  42              		.cfi_def_cfa_offset 8
+  43              		.cfi_offset 4, -8
+  44              		.cfi_offset 14, -4
+  45 0006 82B0     		sub	sp, sp, #8
+ARM GAS  /tmp/cccqlBvg.s 			page 5
+
+
+  46              	.LCFI1:
+  47              		.cfi_def_cfa_offset 16
+  48 0008 0446     		mov	r4, r0
+ 184:rtos/uC-FS/Source/fs.c ****         return (FS_ERR_NULL_PTR);
+ 185:rtos/uC-FS/Source/fs.c ****     }
+ 186:rtos/uC-FS/Source/fs.c **** 
+ 187:rtos/uC-FS/Source/fs.c ****                                                                 /* Validate cfg'd cnt range.       
+ 188:rtos/uC-FS/Source/fs.c ****     if ((p_fs_cfg->DevCnt    < 1u) ||
+  49              		.loc 1 188 5 is_stmt 1 view .LVU5
+  50              		.loc 1 188 18 is_stmt 0 view .LVU6
+  51 000a 0088     		ldrh	r0, [r0]
+  52              	.LVL1:
+  53              		.loc 1 188 8 view .LVU7
+  54 000c 0028     		cmp	r0, #0
+  55 000e 4FD0     		beq	.L5
+ 189:rtos/uC-FS/Source/fs.c ****         (p_fs_cfg->VolCnt    < 1u) ||
+  56              		.loc 1 189 18 discriminator 1 view .LVU8
+  57 0010 6388     		ldrh	r3, [r4, #2]
+ 188:rtos/uC-FS/Source/fs.c ****         (p_fs_cfg->VolCnt    < 1u) ||
+  58              		.loc 1 188 36 discriminator 1 view .LVU9
+  59 0012 002B     		cmp	r3, #0
+  60 0014 4FD0     		beq	.L6
+ 190:rtos/uC-FS/Source/fs.c ****         (p_fs_cfg->FileCnt   < 1u) ||
+  61              		.loc 1 190 18 view .LVU10
+  62 0016 A288     		ldrh	r2, [r4, #4]
+ 189:rtos/uC-FS/Source/fs.c ****         (p_fs_cfg->VolCnt    < 1u) ||
+  63              		.loc 1 189 36 view .LVU11
+  64 0018 002A     		cmp	r2, #0
+  65 001a 4ED0     		beq	.L7
+ 191:rtos/uC-FS/Source/fs.c ****         (p_fs_cfg->DevDrvCnt < 1u)) {
+  66              		.loc 1 191 18 view .LVU12
+  67 001c 6189     		ldrh	r1, [r4, #10]
+ 190:rtos/uC-FS/Source/fs.c ****         (p_fs_cfg->FileCnt   < 1u) ||
+  68              		.loc 1 190 36 view .LVU13
+  69 001e 0029     		cmp	r1, #0
+  70 0020 4DD0     		beq	.L8
+ 192:rtos/uC-FS/Source/fs.c ****         return (FS_ERR_INVALID_CFG);
+ 193:rtos/uC-FS/Source/fs.c ****     }
+ 194:rtos/uC-FS/Source/fs.c **** 
+ 195:rtos/uC-FS/Source/fs.c ****     if (p_fs_cfg->BufCnt < (p_fs_cfg->VolCnt * 2u)) {
+  71              		.loc 1 195 5 is_stmt 1 view .LVU14
+  72              		.loc 1 195 17 is_stmt 0 view .LVU15
+  73 0022 2289     		ldrh	r2, [r4, #8]
+  74              		.loc 1 195 8 view .LVU16
+  75 0024 B2EB430F 		cmp	r2, r3, lsl #1
+  76 0028 4BD3     		bcc	.L9
+ 196:rtos/uC-FS/Source/fs.c ****         return (FS_ERR_INVALID_CFG);
+ 197:rtos/uC-FS/Source/fs.c ****     }
+ 198:rtos/uC-FS/Source/fs.c **** 
+ 199:rtos/uC-FS/Source/fs.c ****     if ((p_fs_cfg->MaxSecSize !=  512u) &&
+  77              		.loc 1 199 5 is_stmt 1 view .LVU17
+  78              		.loc 1 199 18 is_stmt 0 view .LVU18
+  79 002a E368     		ldr	r3, [r4, #12]
+  80              		.loc 1 199 8 view .LVU19
+  81 002c B3F5007F 		cmp	r3, #512
+  82 0030 08D0     		beq	.L3
+  83              		.loc 1 199 41 discriminator 1 view .LVU20
+ARM GAS  /tmp/cccqlBvg.s 			page 6
+
+
+  84 0032 B3F5806F 		cmp	r3, #1024
+  85 0036 05D0     		beq	.L3
+ 200:rtos/uC-FS/Source/fs.c ****         (p_fs_cfg->MaxSecSize != 1024u) &&
+  86              		.loc 1 200 41 view .LVU21
+  87 0038 B3F5006F 		cmp	r3, #2048
+  88 003c 02D0     		beq	.L3
+ 201:rtos/uC-FS/Source/fs.c ****         (p_fs_cfg->MaxSecSize != 2048u) &&
+  89              		.loc 1 201 41 view .LVU22
+  90 003e B3F5805F 		cmp	r3, #4096
+  91 0042 40D1     		bne	.L10
+  92              	.L3:
+ 202:rtos/uC-FS/Source/fs.c ****         (p_fs_cfg->MaxSecSize != 4096u)) {
+ 203:rtos/uC-FS/Source/fs.c ****         return (FS_ERR_INVALID_CFG);
+ 204:rtos/uC-FS/Source/fs.c ****     }
+ 205:rtos/uC-FS/Source/fs.c **** 
+ 206:rtos/uC-FS/Source/fs.c ****     FS_MaxSecSize = p_fs_cfg->MaxSecSize;
+  93              		.loc 1 206 5 is_stmt 1 view .LVU23
+  94              		.loc 1 206 19 is_stmt 0 view .LVU24
+  95 0044 214A     		ldr	r2, .L15
+  96 0046 1360     		str	r3, [r2]
+ 207:rtos/uC-FS/Source/fs.c **** 
+ 208:rtos/uC-FS/Source/fs.c **** 
+ 209:rtos/uC-FS/Source/fs.c ****                                                                 /* ------------------ INIT FS MODUL
+ 210:rtos/uC-FS/Source/fs.c ****     FSDev_ModuleInit(p_fs_cfg->DevCnt,
+  97              		.loc 1 210 5 is_stmt 1 view .LVU25
+  98 0048 0DF10602 		add	r2, sp, #6
+  99 004c FFF7FEFF 		bl	FSDev_ModuleInit
+ 100              	.LVL2:
+ 211:rtos/uC-FS/Source/fs.c ****                      p_fs_cfg->DevDrvCnt,  &err);
+ 212:rtos/uC-FS/Source/fs.c ****     if (err != FS_ERR_NONE) {
+ 101              		.loc 1 212 5 view .LVU26
+ 102              		.loc 1 212 13 is_stmt 0 view .LVU27
+ 103 0050 BDF80600 		ldrh	r0, [sp, #6]
+ 104              		.loc 1 212 8 view .LVU28
+ 105 0054 68BB     		cbnz	r0, .L2
+ 213:rtos/uC-FS/Source/fs.c ****         return (err);
+ 214:rtos/uC-FS/Source/fs.c ****     }
+ 215:rtos/uC-FS/Source/fs.c **** 
+ 216:rtos/uC-FS/Source/fs.c ****     FSBuf_ModuleInit(p_fs_cfg->BufCnt,
+ 106              		.loc 1 216 5 is_stmt 1 view .LVU29
+ 107 0056 0DF10602 		add	r2, sp, #6
+ 108 005a E168     		ldr	r1, [r4, #12]
+ 109 005c 2089     		ldrh	r0, [r4, #8]
+ 110 005e FFF7FEFF 		bl	FSBuf_ModuleInit
+ 111              	.LVL3:
+ 217:rtos/uC-FS/Source/fs.c ****                      p_fs_cfg->MaxSecSize, &err);
+ 218:rtos/uC-FS/Source/fs.c ****     if (err != FS_ERR_NONE) {
+ 112              		.loc 1 218 5 view .LVU30
+ 113              		.loc 1 218 13 is_stmt 0 view .LVU31
+ 114 0062 BDF80600 		ldrh	r0, [sp, #6]
+ 115              		.loc 1 218 8 view .LVU32
+ 116 0066 20BB     		cbnz	r0, .L2
+ 219:rtos/uC-FS/Source/fs.c ****         return (err);
+ 220:rtos/uC-FS/Source/fs.c ****     }
+ 221:rtos/uC-FS/Source/fs.c **** 
+ 222:rtos/uC-FS/Source/fs.c ****     FSFile_ModuleInit(p_fs_cfg->FileCnt,   &err);
+ 117              		.loc 1 222 5 is_stmt 1 view .LVU33
+ARM GAS  /tmp/cccqlBvg.s 			page 7
+
+
+ 118 0068 0DF10601 		add	r1, sp, #6
+ 119 006c A088     		ldrh	r0, [r4, #4]
+ 120 006e FFF7FEFF 		bl	FSFile_ModuleInit
+ 121              	.LVL4:
+ 223:rtos/uC-FS/Source/fs.c ****     if (err != FS_ERR_NONE) {
+ 122              		.loc 1 223 5 view .LVU34
+ 123              		.loc 1 223 13 is_stmt 0 view .LVU35
+ 124 0072 BDF80600 		ldrh	r0, [sp, #6]
+ 125              		.loc 1 223 8 view .LVU36
+ 126 0076 E0B9     		cbnz	r0, .L2
+ 224:rtos/uC-FS/Source/fs.c ****         return (err);
+ 225:rtos/uC-FS/Source/fs.c ****     }
+ 226:rtos/uC-FS/Source/fs.c **** 
+ 227:rtos/uC-FS/Source/fs.c **** #ifdef FS_DIR_MODULE_PRESENT
+ 228:rtos/uC-FS/Source/fs.c ****     FSDir_ModuleInit(p_fs_cfg->DirCnt,     &err);
+ 127              		.loc 1 228 5 is_stmt 1 view .LVU37
+ 128 0078 0DF10601 		add	r1, sp, #6
+ 129 007c E088     		ldrh	r0, [r4, #6]
+ 130 007e FFF7FEFF 		bl	FSDir_ModuleInit
+ 131              	.LVL5:
+ 229:rtos/uC-FS/Source/fs.c ****     if (err != FS_ERR_NONE) {
+ 132              		.loc 1 229 5 view .LVU38
+ 133              		.loc 1 229 13 is_stmt 0 view .LVU39
+ 134 0082 BDF80600 		ldrh	r0, [sp, #6]
+ 135              		.loc 1 229 8 view .LVU40
+ 136 0086 A0B9     		cbnz	r0, .L2
+ 230:rtos/uC-FS/Source/fs.c ****         return (err);
+ 231:rtos/uC-FS/Source/fs.c ****     }
+ 232:rtos/uC-FS/Source/fs.c **** #endif
+ 233:rtos/uC-FS/Source/fs.c **** 
+ 234:rtos/uC-FS/Source/fs.c ****     FSVol_ModuleInit(p_fs_cfg->VolCnt,     &err);
+ 137              		.loc 1 234 5 is_stmt 1 view .LVU41
+ 138 0088 0DF10601 		add	r1, sp, #6
+ 139 008c 6088     		ldrh	r0, [r4, #2]
+ 140 008e FFF7FEFF 		bl	FSVol_ModuleInit
+ 141              	.LVL6:
+ 235:rtos/uC-FS/Source/fs.c ****     if (err != FS_ERR_NONE) {
+ 142              		.loc 1 235 5 view .LVU42
+ 143              		.loc 1 235 13 is_stmt 0 view .LVU43
+ 144 0092 BDF80600 		ldrh	r0, [sp, #6]
+ 145              		.loc 1 235 8 view .LVU44
+ 146 0096 60B9     		cbnz	r0, .L2
+ 236:rtos/uC-FS/Source/fs.c ****         return (err);
+ 237:rtos/uC-FS/Source/fs.c ****     }
+ 238:rtos/uC-FS/Source/fs.c **** 
+ 239:rtos/uC-FS/Source/fs.c ****     FSSys_ModuleInit(p_fs_cfg->VolCnt,
+ 147              		.loc 1 239 5 is_stmt 1 view .LVU45
+ 148 0098 0DF10603 		add	r3, sp, #6
+ 149 009c E288     		ldrh	r2, [r4, #6]
+ 150 009e A188     		ldrh	r1, [r4, #4]
+ 151 00a0 6088     		ldrh	r0, [r4, #2]
+ 152 00a2 FFF7FEFF 		bl	FSSys_ModuleInit
+ 153              	.LVL7:
+ 240:rtos/uC-FS/Source/fs.c ****                      p_fs_cfg->FileCnt,
+ 241:rtos/uC-FS/Source/fs.c ****                      p_fs_cfg->DirCnt,     &err);
+ 242:rtos/uC-FS/Source/fs.c ****     if (err != FS_ERR_NONE) {
+ 154              		.loc 1 242 5 view .LVU46
+ARM GAS  /tmp/cccqlBvg.s 			page 8
+
+
+ 155              		.loc 1 242 13 is_stmt 0 view .LVU47
+ 156 00a6 BDF80600 		ldrh	r0, [sp, #6]
+ 157 00aa 02E0     		b	.L2
+ 158              	.LVL8:
+ 159              	.L4:
+ 160              	.LCFI2:
+ 161              		.cfi_def_cfa_offset 0
+ 162              		.cfi_restore 4
+ 163              		.cfi_restore 14
+ 184:rtos/uC-FS/Source/fs.c ****     }
+ 164              		.loc 1 184 16 view .LVU48
+ 165 00ac 1320     		movs	r0, #19
+ 166              	.LVL9:
+ 243:rtos/uC-FS/Source/fs.c ****         return (err);
+ 244:rtos/uC-FS/Source/fs.c ****     }
+ 245:rtos/uC-FS/Source/fs.c **** 
+ 246:rtos/uC-FS/Source/fs.c **** 
+ 247:rtos/uC-FS/Source/fs.c **** 
+ 248:rtos/uC-FS/Source/fs.c ****                                                                 /* ------------------ INIT WORK DIR
+ 249:rtos/uC-FS/Source/fs.c **** #if (FS_CFG_WORKING_DIR_EN == DEF_ENABLED)
+ 250:rtos/uC-FS/Source/fs.c ****     FS_WorkingDirModuleInit();
+ 251:rtos/uC-FS/Source/fs.c **** #endif
+ 252:rtos/uC-FS/Source/fs.c **** 
+ 253:rtos/uC-FS/Source/fs.c ****     return (FS_ERR_NONE);
+ 254:rtos/uC-FS/Source/fs.c **** }
+ 167              		.loc 1 254 1 view .LVU49
+ 168 00ae 7047     		bx	lr
+ 169              	.LVL10:
+ 170              	.L5:
+ 171              	.LCFI3:
+ 172              		.cfi_def_cfa_offset 16
+ 173              		.cfi_offset 4, -8
+ 174              		.cfi_offset 14, -4
+ 192:rtos/uC-FS/Source/fs.c ****     }
+ 175              		.loc 1 192 16 view .LVU50
+ 176 00b0 0B20     		movs	r0, #11
+ 177              	.L2:
+ 178              		.loc 1 254 1 view .LVU51
+ 179 00b2 02B0     		add	sp, sp, #8
+ 180              	.LCFI4:
+ 181              		.cfi_remember_state
+ 182              		.cfi_def_cfa_offset 8
+ 183              		@ sp needed
+ 184 00b4 10BD     		pop	{r4, pc}
+ 185              	.LVL11:
+ 186              	.L6:
+ 187              	.LCFI5:
+ 188              		.cfi_restore_state
+ 192:rtos/uC-FS/Source/fs.c ****     }
+ 189              		.loc 1 192 16 view .LVU52
+ 190 00b6 0B20     		movs	r0, #11
+ 191 00b8 FBE7     		b	.L2
+ 192              	.L7:
+ 193 00ba 0B20     		movs	r0, #11
+ 194 00bc F9E7     		b	.L2
+ 195              	.L8:
+ 196 00be 0B20     		movs	r0, #11
+ARM GAS  /tmp/cccqlBvg.s 			page 9
+
+
+ 197 00c0 F7E7     		b	.L2
+ 198              	.L9:
+ 196:rtos/uC-FS/Source/fs.c ****     }
+ 199              		.loc 1 196 16 view .LVU53
+ 200 00c2 0B20     		movs	r0, #11
+ 201 00c4 F5E7     		b	.L2
+ 202              	.L10:
+ 203:rtos/uC-FS/Source/fs.c ****     }
+ 203              		.loc 1 203 16 view .LVU54
+ 204 00c6 0B20     		movs	r0, #11
+ 205 00c8 F3E7     		b	.L2
+ 206              	.L16:
+ 207 00ca 00BF     		.align	2
+ 208              	.L15:
+ 209 00cc 00000000 		.word	.LANCHOR0
+ 210              		.cfi_endproc
+ 211              	.LFE0:
+ 213              		.section	.text.FS_VersionGet,"ax",%progbits
+ 214              		.align	1
+ 215              		.global	FS_VersionGet
+ 216              		.syntax unified
+ 217              		.thumb
+ 218              		.thumb_func
+ 219              		.fpu fpv4-sp-d16
+ 221              	FS_VersionGet:
+ 222              	.LFB1:
+ 255:rtos/uC-FS/Source/fs.c **** 
+ 256:rtos/uC-FS/Source/fs.c **** 
+ 257:rtos/uC-FS/Source/fs.c **** /*
+ 258:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 259:rtos/uC-FS/Source/fs.c **** *                                           FS_VersionGet()
+ 260:rtos/uC-FS/Source/fs.c **** *
+ 261:rtos/uC-FS/Source/fs.c **** * Description : Get file system suite software version.
+ 262:rtos/uC-FS/Source/fs.c **** *
+ 263:rtos/uC-FS/Source/fs.c **** * Argument(s) : none.
+ 264:rtos/uC-FS/Source/fs.c **** *
+ 265:rtos/uC-FS/Source/fs.c **** * Return(s)   : File system suite software version.
+ 266:rtos/uC-FS/Source/fs.c **** *
+ 267:rtos/uC-FS/Source/fs.c **** * Note(s)     : none.
+ 268:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 269:rtos/uC-FS/Source/fs.c **** */
+ 270:rtos/uC-FS/Source/fs.c **** 
+ 271:rtos/uC-FS/Source/fs.c **** CPU_INT16U  FS_VersionGet (void)
+ 272:rtos/uC-FS/Source/fs.c **** {
+ 223              		.loc 1 272 1 is_stmt 1 view -0
+ 224              		.cfi_startproc
+ 225              		@ args = 0, pretend = 0, frame = 0
+ 226              		@ frame_needed = 0, uses_anonymous_args = 0
+ 227              		@ link register save eliminated.
+ 273:rtos/uC-FS/Source/fs.c ****     CPU_INT16U  ver;
+ 228              		.loc 1 273 5 view .LVU56
+ 274:rtos/uC-FS/Source/fs.c **** 
+ 275:rtos/uC-FS/Source/fs.c **** 
+ 276:rtos/uC-FS/Source/fs.c ****     ver = FS_VERSION;
+ 229              		.loc 1 276 5 view .LVU57
+ 230              	.LVL12:
+ 277:rtos/uC-FS/Source/fs.c **** 
+ARM GAS  /tmp/cccqlBvg.s 			page 10
+
+
+ 278:rtos/uC-FS/Source/fs.c ****     return (ver);
+ 231              		.loc 1 278 5 view .LVU58
+ 279:rtos/uC-FS/Source/fs.c **** }
+ 232              		.loc 1 279 1 is_stmt 0 view .LVU59
+ 233 0000 49F60270 		movw	r0, #40706
+ 234 0004 7047     		bx	lr
+ 235              		.cfi_endproc
+ 236              	.LFE1:
+ 238              		.section	.text.FS_MaxSecSizeGet,"ax",%progbits
+ 239              		.align	1
+ 240              		.global	FS_MaxSecSizeGet
+ 241              		.syntax unified
+ 242              		.thumb
+ 243              		.thumb_func
+ 244              		.fpu fpv4-sp-d16
+ 246              	FS_MaxSecSizeGet:
+ 247              	.LFB2:
+ 280:rtos/uC-FS/Source/fs.c **** 
+ 281:rtos/uC-FS/Source/fs.c **** 
+ 282:rtos/uC-FS/Source/fs.c **** /*
+ 283:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 284:rtos/uC-FS/Source/fs.c **** *                                         FS_MaxSecSizeGet()
+ 285:rtos/uC-FS/Source/fs.c **** *
+ 286:rtos/uC-FS/Source/fs.c **** * Description : Get maximum sector size.
+ 287:rtos/uC-FS/Source/fs.c **** *
+ 288:rtos/uC-FS/Source/fs.c **** * Argument(s) : none.
+ 289:rtos/uC-FS/Source/fs.c **** *
+ 290:rtos/uC-FS/Source/fs.c **** * Return(s)   : Maximum sector size, in octets.
+ 291:rtos/uC-FS/Source/fs.c **** *
+ 292:rtos/uC-FS/Source/fs.c **** * Note(s)     : none.
+ 293:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 294:rtos/uC-FS/Source/fs.c **** */
+ 295:rtos/uC-FS/Source/fs.c **** 
+ 296:rtos/uC-FS/Source/fs.c **** CPU_SIZE_T  FS_MaxSecSizeGet (void)
+ 297:rtos/uC-FS/Source/fs.c **** {
+ 248              		.loc 1 297 1 is_stmt 1 view -0
+ 249              		.cfi_startproc
+ 250              		@ args = 0, pretend = 0, frame = 0
+ 251              		@ frame_needed = 0, uses_anonymous_args = 0
+ 252              		@ link register save eliminated.
+ 298:rtos/uC-FS/Source/fs.c ****     CPU_SIZE_T  sec_size;
+ 253              		.loc 1 298 5 view .LVU61
+ 299:rtos/uC-FS/Source/fs.c **** 
+ 300:rtos/uC-FS/Source/fs.c **** 
+ 301:rtos/uC-FS/Source/fs.c ****     sec_size = (CPU_SIZE_T)FS_MaxSecSize;
+ 254              		.loc 1 301 5 view .LVU62
+ 255              	.LVL13:
+ 302:rtos/uC-FS/Source/fs.c **** 
+ 303:rtos/uC-FS/Source/fs.c ****     return (sec_size);
+ 256              		.loc 1 303 5 view .LVU63
+ 304:rtos/uC-FS/Source/fs.c **** }
+ 257              		.loc 1 304 1 is_stmt 0 view .LVU64
+ 258 0000 014B     		ldr	r3, .L19
+ 259 0002 1868     		ldr	r0, [r3]
+ 260 0004 7047     		bx	lr
+ 261              	.L20:
+ 262 0006 00BF     		.align	2
+ARM GAS  /tmp/cccqlBvg.s 			page 11
+
+
+ 263              	.L19:
+ 264 0008 00000000 		.word	.LANCHOR0
+ 265              		.cfi_endproc
+ 266              	.LFE2:
+ 268              		.section	.text.FS_PathParse,"ax",%progbits
+ 269              		.align	1
+ 270              		.global	FS_PathParse
+ 271              		.syntax unified
+ 272              		.thumb
+ 273              		.thumb_func
+ 274              		.fpu fpv4-sp-d16
+ 276              	FS_PathParse:
+ 277              	.LVL14:
+ 278              	.LFB3:
+ 305:rtos/uC-FS/Source/fs.c **** 
+ 306:rtos/uC-FS/Source/fs.c **** 
+ 307:rtos/uC-FS/Source/fs.c **** /*
+ 308:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 309:rtos/uC-FS/Source/fs.c **** *                                         FS_WorkingDirGet()
+ 310:rtos/uC-FS/Source/fs.c **** *
+ 311:rtos/uC-FS/Source/fs.c **** * Description : Get the working directory for the current task.
+ 312:rtos/uC-FS/Source/fs.c **** *
+ 313:rtos/uC-FS/Source/fs.c **** * Argument(s) : path_dir    String buffer that will receive the working directory path.
+ 314:rtos/uC-FS/Source/fs.c **** *
+ 315:rtos/uC-FS/Source/fs.c **** *               size        Size of string buffer.
+ 316:rtos/uC-FS/Source/fs.c **** *
+ 317:rtos/uC-FS/Source/fs.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 318:rtos/uC-FS/Source/fs.c **** *
+ 319:rtos/uC-FS/Source/fs.c **** *                               FS_ERR_NONE                  Working directory obtained.
+ 320:rtos/uC-FS/Source/fs.c **** *                               FS_ERR_NULL_PTR              Argument 'path_dir' passed a NULL poin
+ 321:rtos/uC-FS/Source/fs.c **** *                               FS_ERR_NULL_ARG              Argument 'size' passed a NULL value.
+ 322:rtos/uC-FS/Source/fs.c **** *                               FS_ERR_NAME_BUF_TOO_SHORT    Argument 'size' less than length of pa
+ 323:rtos/uC-FS/Source/fs.c **** *                               FS_ERR_VOL_NONE_EXIST        No volumes exist.
+ 324:rtos/uC-FS/Source/fs.c **** *
+ 325:rtos/uC-FS/Source/fs.c **** * Return(s)   : none.
+ 326:rtos/uC-FS/Source/fs.c **** *
+ 327:rtos/uC-FS/Source/fs.c **** * Note(s)     : (1) If no working directory is assigned for the task, the default working directory
+ 328:rtos/uC-FS/Source/fs.c **** *                   the root directory on the default volume--will be returned in the user buffer &
+ 329:rtos/uC-FS/Source/fs.c **** *                   as the task's working directory.
+ 330:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 331:rtos/uC-FS/Source/fs.c **** */
+ 332:rtos/uC-FS/Source/fs.c **** 
+ 333:rtos/uC-FS/Source/fs.c **** #if (FS_CFG_WORKING_DIR_EN == DEF_ENABLED)
+ 334:rtos/uC-FS/Source/fs.c **** void  FS_WorkingDirGet (CPU_CHAR    *path_dir,
+ 335:rtos/uC-FS/Source/fs.c ****                         CPU_SIZE_T   size,
+ 336:rtos/uC-FS/Source/fs.c ****                         FS_ERR      *p_err)
+ 337:rtos/uC-FS/Source/fs.c **** {
+ 338:rtos/uC-FS/Source/fs.c ****     CPU_SIZE_T   len;
+ 339:rtos/uC-FS/Source/fs.c ****     CPU_CHAR    *path_buf;
+ 340:rtos/uC-FS/Source/fs.c **** 
+ 341:rtos/uC-FS/Source/fs.c **** 
+ 342:rtos/uC-FS/Source/fs.c **** #if (FS_CFG_ERR_ARG_CHK_EXT_EN == DEF_ENABLED)                  /* ------------------- VALIDATE ARG
+ 343:rtos/uC-FS/Source/fs.c ****     if (p_err == (FS_ERR *)0) {                                 /* Validate error ptr.             
+ 344:rtos/uC-FS/Source/fs.c ****         CPU_SW_EXCEPTION(;);
+ 345:rtos/uC-FS/Source/fs.c ****     }
+ 346:rtos/uC-FS/Source/fs.c ****     if (path_dir == (CPU_CHAR *)0) {                            /* Validate dir path ptr.          
+ 347:rtos/uC-FS/Source/fs.c ****        *p_err = FS_ERR_NULL_PTR;
+ARM GAS  /tmp/cccqlBvg.s 			page 12
+
+
+ 348:rtos/uC-FS/Source/fs.c ****         return;
+ 349:rtos/uC-FS/Source/fs.c ****     }
+ 350:rtos/uC-FS/Source/fs.c ****     if (size < 1u) {                                            /* Validate size.                  
+ 351:rtos/uC-FS/Source/fs.c ****        *p_err = FS_ERR_INVALID_ARG;
+ 352:rtos/uC-FS/Source/fs.c ****         return;
+ 353:rtos/uC-FS/Source/fs.c ****     }
+ 354:rtos/uC-FS/Source/fs.c **** #endif
+ 355:rtos/uC-FS/Source/fs.c **** 
+ 356:rtos/uC-FS/Source/fs.c ****     path_dir[0] = (CPU_CHAR)ASCII_CHAR_NULL;
+ 357:rtos/uC-FS/Source/fs.c **** 
+ 358:rtos/uC-FS/Source/fs.c **** 
+ 359:rtos/uC-FS/Source/fs.c **** 
+ 360:rtos/uC-FS/Source/fs.c ****                                                                 /* ------------------ GET WORKING D
+ 361:rtos/uC-FS/Source/fs.c ****     path_buf = FS_OS_WorkingDirGet();                           /* Find  working dir for task.     
+ 362:rtos/uC-FS/Source/fs.c **** 
+ 363:rtos/uC-FS/Source/fs.c ****     if (path_buf == (CPU_CHAR *)0) {                            /* If no working dir for task ...  
+ 364:rtos/uC-FS/Source/fs.c ****         path_buf =   FS_WorkingDirObjGet();                     /*                            ... a
+ 365:rtos/uC-FS/Source/fs.c ****         if (path_buf == (CPU_CHAR *)0) {
+ 366:rtos/uC-FS/Source/fs.c ****            *p_err = FS_ERR_WORKING_DIR_NONE_AVAIL;
+ 367:rtos/uC-FS/Source/fs.c ****             return;
+ 368:rtos/uC-FS/Source/fs.c ****         }
+ 369:rtos/uC-FS/Source/fs.c ****         FSVol_GetDfltVolName(path_buf, p_err);                  /*                            ... g
+ 370:rtos/uC-FS/Source/fs.c ****         if (*p_err != FS_ERR_NONE) {
+ 371:rtos/uC-FS/Source/fs.c ****             return;
+ 372:rtos/uC-FS/Source/fs.c ****         }
+ 373:rtos/uC-FS/Source/fs.c **** 
+ 374:rtos/uC-FS/Source/fs.c ****         if (path_buf[0] == (CPU_CHAR)ASCII_CHAR_NULL) {         /* If no vol exists ...            
+ 375:rtos/uC-FS/Source/fs.c ****            *p_err = FS_ERR_VOL_NONE_EXIST;                      /*                  ... rtn err.   
+ 376:rtos/uC-FS/Source/fs.c ****             FS_WorkingDirObjFree(path_buf);
+ 377:rtos/uC-FS/Source/fs.c ****             return;
+ 378:rtos/uC-FS/Source/fs.c ****         }
+ 379:rtos/uC-FS/Source/fs.c **** 
+ 380:rtos/uC-FS/Source/fs.c ****         Str_Cat(path_buf, FS_STR_PATH_SEP);
+ 381:rtos/uC-FS/Source/fs.c ****         len = Str_Len_N(path_buf, size + 1u);
+ 382:rtos/uC-FS/Source/fs.c ****         if (len >= size) {                                      /* If vol name too long ...        
+ 383:rtos/uC-FS/Source/fs.c ****            *p_err = FS_ERR_NAME_BUF_TOO_SHORT;                  /*                      ... rtn err
+ 384:rtos/uC-FS/Source/fs.c ****             FS_WorkingDirObjFree(path_buf);
+ 385:rtos/uC-FS/Source/fs.c ****             return;
+ 386:rtos/uC-FS/Source/fs.c ****         }
+ 387:rtos/uC-FS/Source/fs.c ****         Str_Copy(path_dir, path_buf);                           /* Copy dflt dir name to app buf.  
+ 388:rtos/uC-FS/Source/fs.c **** 
+ 389:rtos/uC-FS/Source/fs.c ****         FS_OS_WorkingDirSet(path_buf, p_err);                   /* Set working dir for task.       
+ 390:rtos/uC-FS/Source/fs.c ****         if(*p_err != FS_ERR_NONE) {
+ 391:rtos/uC-FS/Source/fs.c ****             FS_WorkingDirObjFree(path_buf);
+ 392:rtos/uC-FS/Source/fs.c ****             return;
+ 393:rtos/uC-FS/Source/fs.c ****         }
+ 394:rtos/uC-FS/Source/fs.c **** 
+ 395:rtos/uC-FS/Source/fs.c ****        *p_err = FS_ERR_NONE;
+ 396:rtos/uC-FS/Source/fs.c **** 
+ 397:rtos/uC-FS/Source/fs.c **** 
+ 398:rtos/uC-FS/Source/fs.c ****     } else {                                                    /* If working dir exists ...       
+ 399:rtos/uC-FS/Source/fs.c ****         len = Str_Len_N(path_buf, size + 1u);
+ 400:rtos/uC-FS/Source/fs.c ****         if (len >= size) {
+ 401:rtos/uC-FS/Source/fs.c ****            *p_err = FS_ERR_NAME_BUF_TOO_SHORT;
+ 402:rtos/uC-FS/Source/fs.c ****             return;
+ 403:rtos/uC-FS/Source/fs.c ****         }
+ 404:rtos/uC-FS/Source/fs.c ****         Str_Copy(path_dir, path_buf);                           /*                       ... copy t
+ARM GAS  /tmp/cccqlBvg.s 			page 13
+
+
+ 405:rtos/uC-FS/Source/fs.c **** 
+ 406:rtos/uC-FS/Source/fs.c ****        *p_err = FS_ERR_NONE;
+ 407:rtos/uC-FS/Source/fs.c ****     }
+ 408:rtos/uC-FS/Source/fs.c **** }
+ 409:rtos/uC-FS/Source/fs.c **** #endif
+ 410:rtos/uC-FS/Source/fs.c **** 
+ 411:rtos/uC-FS/Source/fs.c **** 
+ 412:rtos/uC-FS/Source/fs.c **** /*
+ 413:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 414:rtos/uC-FS/Source/fs.c **** *                                         FS_WorkingDirSet()
+ 415:rtos/uC-FS/Source/fs.c **** *
+ 416:rtos/uC-FS/Source/fs.c **** * Description : Set the working directory for the current task.
+ 417:rtos/uC-FS/Source/fs.c **** *
+ 418:rtos/uC-FS/Source/fs.c **** * Argument(s) : path_dir    String that specifies EITHER...
+ 419:rtos/uC-FS/Source/fs.c **** *                               (a) the absolute working directory path to set;
+ 420:rtos/uC-FS/Source/fs.c **** *                               (b) a relative path that will be applied to the current working dir
+ 421:rtos/uC-FS/Source/fs.c **** *
+ 422:rtos/uC-FS/Source/fs.c **** *               p_err       Pointer to variable that will receive the return error code from this f
+ 423:rtos/uC-FS/Source/fs.c **** *
+ 424:rtos/uC-FS/Source/fs.c **** *                               FS_ERR_NONE                      Working directory set.
+ 425:rtos/uC-FS/Source/fs.c **** *                               FS_ERR_NAME_INVALID              Name invalid.
+ 426:rtos/uC-FS/Source/fs.c **** *                               FS_ERR_NAME_PATH_TOO_LONG        Path too long (see Note #4).
+ 427:rtos/uC-FS/Source/fs.c **** *                               FS_ERR_NAME_NULL                 Argument 'path_dir' passed a NULL 
+ 428:rtos/uC-FS/Source/fs.c **** *                               FS_ERR_VOL_NONE_EXIST            No volumes exist.
+ 429:rtos/uC-FS/Source/fs.c **** *                               FS_ERR_WORKING_DIR_NONE_AVAIL    No working directories available.
+ 430:rtos/uC-FS/Source/fs.c **** *                               FS_ERR_WORKING_DIR_INVALID       Argument 'path_dir' passed an inva
+ 431:rtos/uC-FS/Source/fs.c **** *                                                                    directory.
+ 432:rtos/uC-FS/Source/fs.c **** *
+ 433:rtos/uC-FS/Source/fs.c **** * Return(s)   : none.
+ 434:rtos/uC-FS/Source/fs.c **** *
+ 435:rtos/uC-FS/Source/fs.c **** * Note(s)     : (1) The new working directory is formed in several steps :
+ 436:rtos/uC-FS/Source/fs.c **** *
+ 437:rtos/uC-FS/Source/fs.c **** *                   (a) (1) If 'path_dir' begins with the path separator character (slash, '\'), it
+ 438:rtos/uC-FS/Source/fs.c **** *                           be interpreted as an absolute directory path on the current volume.  Th
+ 439:rtos/uC-FS/Source/fs.c **** *                           preliminary working directory path is formed by the concatenation of th
+ 440:rtos/uC-FS/Source/fs.c **** *                           current volume name & 'path_dir'. See also Note #2b.
+ 441:rtos/uC-FS/Source/fs.c **** *                       (2) Otherwise, if 'path_dir' begins with a volume name, it will be interpre
+ 442:rtos/uC-FS/Source/fs.c **** *                           as an absolute directory path & will become the preliminary working dir
+ 443:rtos/uC-FS/Source/fs.c **** *                       (3) Otherwise, the preliminary working directory path is formed by the conc
+ 444:rtos/uC-FS/Source/fs.c **** *                           of the current working directory, a path separator character & 'path_di
+ 445:rtos/uC-FS/Source/fs.c **** *
+ 446:rtos/uC-FS/Source/fs.c **** *                   (b) The preliminary working directory path is then resolved, from the first to 
+ 447:rtos/uC-FS/Source/fs.c **** *                       path component :
+ 448:rtos/uC-FS/Source/fs.c **** *                       (1) If the component is a "dot" component, it is removed.
+ 449:rtos/uC-FS/Source/fs.c **** *                       (2) If the component is a "dot dot" component & the preliminary working dir
+ 450:rtos/uC-FS/Source/fs.c **** *                           path is not a root directory, the previous path component is removed.  
+ 451:rtos/uC-FS/Source/fs.c **** *                           case, the "dot dot" component is removed.  See also Note #3.
+ 452:rtos/uC-FS/Source/fs.c **** *                       (3) Trailing path separator characters are removed, & multiple consecutive 
+ 453:rtos/uC-FS/Source/fs.c **** *                           separator characters are replaced by a single path separator character.
+ 454:rtos/uC-FS/Source/fs.c **** *
+ 455:rtos/uC-FS/Source/fs.c **** *                   (c) The volume is examined to determine whether the preliminary working directo
+ 456:rtos/uC-FS/Source/fs.c **** *                       exists.  If it does, it becomes the new working directory.  Otherwise, an e
+ 457:rtos/uC-FS/Source/fs.c **** *                       is output, & the working directory is unchanged.
+ 458:rtos/uC-FS/Source/fs.c **** *
+ 459:rtos/uC-FS/Source/fs.c **** *               (2) (a) If 'path_dir' does not begin with a volume name or a path separator charact
+ 460:rtos/uC-FS/Source/fs.c **** *                       no working directory is assigned for the task, the path will be interpreted
+ 461:rtos/uC-FS/Source/fs.c **** *                       relative the default working directory--the root directory on the default
+ARM GAS  /tmp/cccqlBvg.s 			page 14
+
+
+ 462:rtos/uC-FS/Source/fs.c **** *                       volume.
+ 463:rtos/uC-FS/Source/fs.c **** *
+ 464:rtos/uC-FS/Source/fs.c **** *                   (b) If 'path_dir' begins with a path separator character :
+ 465:rtos/uC-FS/Source/fs.c **** *                       (a) ... & no working directory is assigned for the task, the default volume
+ 466:rtos/uC-FS/Source/fs.c **** *                               be taken as the 'current' volume.
+ 467:rtos/uC-FS/Source/fs.c **** *                       (b) ... otherwise, the volume of the working directory assigned for the tas
+ 468:rtos/uC-FS/Source/fs.c **** *                               be taken as the 'current' volume.
+ 469:rtos/uC-FS/Source/fs.c **** *
+ 470:rtos/uC-FS/Source/fs.c **** *               (3) The logical resolution of "dot dot" path components implies that some intermedi
+ 471:rtos/uC-FS/Source/fs.c **** *                   directories in the resolution process may not be required to exist.  For exampl
+ 472:rtos/uC-FS/Source/fs.c **** *
+ 473:rtos/uC-FS/Source/fs.c **** *                       path_dir                  = "..\dir3\.."
+ 474:rtos/uC-FS/Source/fs.c **** *                       Current Working Directory = "sdcard:0:\dir1\dir2"
+ 475:rtos/uC-FS/Source/fs.c **** *
+ 476:rtos/uC-FS/Source/fs.c **** *                   the intermediate directory
+ 477:rtos/uC-FS/Source/fs.c **** *
+ 478:rtos/uC-FS/Source/fs.c **** *                       "sdcard:0:\dir1\dir3"
+ 479:rtos/uC-FS/Source/fs.c **** *
+ 480:rtos/uC-FS/Source/fs.c **** *                   arrived at after the first two components of 'path_dir' are handled, would not 
+ 481:rtos/uC-FS/Source/fs.c **** *                   to exist, since the leaf directory "dir3" will be removed when the third compon
+ 482:rtos/uC-FS/Source/fs.c **** *                   'path_dir' is handled.
+ 483:rtos/uC-FS/Source/fs.c **** *
+ 484:rtos/uC-FS/Source/fs.c **** *               (4) The final working directory path & EACH intermediate directory path must be no 
+ 485:rtos/uC-FS/Source/fs.c **** *                   than 'FS_CFG_MAX_FULL_NAME_LEN'.  For example, if
+ 486:rtos/uC-FS/Source/fs.c **** *
+ 487:rtos/uC-FS/Source/fs.c **** *                       path_dir                  = "dir3\long_dir4\..\..\dir5"
+ 488:rtos/uC-FS/Source/fs.c **** *                       Current Working Directory = "sdcard:0:\dir1\dir2"
+ 489:rtos/uC-FS/Source/fs.c **** *                       FS_CFG_MAX_FULL_NAME_LEN  =  30;
+ 490:rtos/uC-FS/Source/fs.c **** *
+ 491:rtos/uC-FS/Source/fs.c **** *                   then the final current working directory would be
+ 492:rtos/uC-FS/Source/fs.c **** *
+ 493:rtos/uC-FS/Source/fs.c **** *                       "sdcard:0:\dir1\dir2\dir5"
+ 494:rtos/uC-FS/Source/fs.c **** *
+ 495:rtos/uC-FS/Source/fs.c **** *                   which has length 24.  However, the intermediate directory
+ 496:rtos/uC-FS/Source/fs.c **** *
+ 497:rtos/uC-FS/Source/fs.c **** *                       "sdcard:0:\dir1\dir2\dir3\long_dir4"
+ 498:rtos/uC-FS/Source/fs.c **** *
+ 499:rtos/uC-FS/Source/fs.c **** *                   arrived at after the first two components of 'path_dir' are handled has length 
+ 500:rtos/uC-FS/Source/fs.c **** *                   Processing would stop before this intermediate path is formed since it exceeds
+ 501:rtos/uC-FS/Source/fs.c **** *                  'FS_CFG_MAX_FULL_NAME_LEN' & a 'FS_ERR_NAME_PATH_TOO_LONG' error would be return
+ 502:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 503:rtos/uC-FS/Source/fs.c **** */
+ 504:rtos/uC-FS/Source/fs.c **** 
+ 505:rtos/uC-FS/Source/fs.c **** #if (FS_CFG_WORKING_DIR_EN == DEF_ENABLED)
+ 506:rtos/uC-FS/Source/fs.c **** void  FS_WorkingDirSet (CPU_CHAR  *path_dir,
+ 507:rtos/uC-FS/Source/fs.c ****                         FS_ERR    *p_err)
+ 508:rtos/uC-FS/Source/fs.c **** {
+ 509:rtos/uC-FS/Source/fs.c ****     CPU_BOOLEAN     alloc;
+ 510:rtos/uC-FS/Source/fs.c ****     FS_ENTRY_INFO   info;
+ 511:rtos/uC-FS/Source/fs.c ****     CPU_CHAR        path_dir_temp[FS_CFG_MAX_FULL_NAME_LEN + 1u];
+ 512:rtos/uC-FS/Source/fs.c ****     CPU_CHAR       *path_buf;
+ 513:rtos/uC-FS/Source/fs.c **** 
+ 514:rtos/uC-FS/Source/fs.c **** 
+ 515:rtos/uC-FS/Source/fs.c **** #if (FS_CFG_ERR_ARG_CHK_EXT_EN == DEF_ENABLED)                  /* ------------------- VALIDATE ARG
+ 516:rtos/uC-FS/Source/fs.c ****     if (p_err == (FS_ERR *)0) {                                 /* Validate error ptr.             
+ 517:rtos/uC-FS/Source/fs.c ****         CPU_SW_EXCEPTION(;);
+ 518:rtos/uC-FS/Source/fs.c ****     }
+ARM GAS  /tmp/cccqlBvg.s 			page 15
+
+
+ 519:rtos/uC-FS/Source/fs.c ****     if (path_dir == (CPU_CHAR *)0) {                            /* Validate dir path ptr.          
+ 520:rtos/uC-FS/Source/fs.c ****        *p_err = FS_ERR_NAME_NULL;
+ 521:rtos/uC-FS/Source/fs.c ****         return;
+ 522:rtos/uC-FS/Source/fs.c ****     }
+ 523:rtos/uC-FS/Source/fs.c **** #endif
+ 524:rtos/uC-FS/Source/fs.c **** 
+ 525:rtos/uC-FS/Source/fs.c **** 
+ 526:rtos/uC-FS/Source/fs.c **** 
+ 527:rtos/uC-FS/Source/fs.c ****                                                                 /* ----------------- FORM WORKING D
+ 528:rtos/uC-FS/Source/fs.c ****     path_buf = FS_OS_WorkingDirGet();                           /* Find working dir for task.      
+ 529:rtos/uC-FS/Source/fs.c **** 
+ 530:rtos/uC-FS/Source/fs.c ****     if (path_buf == (CPU_CHAR *)0) {                            /* If no working dir for task ...  
+ 531:rtos/uC-FS/Source/fs.c ****         alloc = DEF_YES;                                        /*                            ... a
+ 532:rtos/uC-FS/Source/fs.c ****         FSVol_GetDfltVolName(path_dir_temp, p_err);             /*                            ... g
+ 533:rtos/uC-FS/Source/fs.c ****         if (*p_err != FS_ERR_NONE) {
+ 534:rtos/uC-FS/Source/fs.c ****             return;
+ 535:rtos/uC-FS/Source/fs.c ****         }
+ 536:rtos/uC-FS/Source/fs.c **** 
+ 537:rtos/uC-FS/Source/fs.c ****         if (path_dir_temp[0] == (CPU_CHAR)ASCII_CHAR_NULL) {    /* If no vol exists ...            
+ 538:rtos/uC-FS/Source/fs.c ****            *p_err = FS_ERR_VOL_NONE_EXIST;                      /*                  ... rtn err.   
+ 539:rtos/uC-FS/Source/fs.c ****             return;
+ 540:rtos/uC-FS/Source/fs.c ****         }
+ 541:rtos/uC-FS/Source/fs.c **** 
+ 542:rtos/uC-FS/Source/fs.c ****         Str_Cat(path_dir_temp, FS_STR_PATH_SEP);
+ 543:rtos/uC-FS/Source/fs.c ****         FS_WorkingDirPathFormHandler(path_dir_temp,             /* Form working dir path.          
+ 544:rtos/uC-FS/Source/fs.c ****                                      path_dir,
+ 545:rtos/uC-FS/Source/fs.c ****                                      path_dir_temp,
+ 546:rtos/uC-FS/Source/fs.c ****                                      p_err);
+ 547:rtos/uC-FS/Source/fs.c ****         if (*p_err != FS_ERR_NONE) {
+ 548:rtos/uC-FS/Source/fs.c ****              return;
+ 549:rtos/uC-FS/Source/fs.c ****         }
+ 550:rtos/uC-FS/Source/fs.c **** 
+ 551:rtos/uC-FS/Source/fs.c **** 
+ 552:rtos/uC-FS/Source/fs.c ****     } else {                                                    /* If work dir exists ...          
+ 553:rtos/uC-FS/Source/fs.c ****         alloc = DEF_NO;                                         /*                    ... update.  
+ 554:rtos/uC-FS/Source/fs.c **** 
+ 555:rtos/uC-FS/Source/fs.c ****         FS_WorkingDirPathFormHandler(path_buf,                  /* Form working dir path.          
+ 556:rtos/uC-FS/Source/fs.c ****                                      path_dir,
+ 557:rtos/uC-FS/Source/fs.c ****                                      path_dir_temp,
+ 558:rtos/uC-FS/Source/fs.c ****                                      p_err);
+ 559:rtos/uC-FS/Source/fs.c ****         if (*p_err != FS_ERR_NONE) {
+ 560:rtos/uC-FS/Source/fs.c ****             return;
+ 561:rtos/uC-FS/Source/fs.c ****         }
+ 562:rtos/uC-FS/Source/fs.c ****     }
+ 563:rtos/uC-FS/Source/fs.c **** 
+ 564:rtos/uC-FS/Source/fs.c **** 
+ 565:rtos/uC-FS/Source/fs.c **** 
+ 566:rtos/uC-FS/Source/fs.c ****                                                                 /* ------------------ CHK WORKING D
+ 567:rtos/uC-FS/Source/fs.c ****     FSEntry_Query( path_dir_temp,                               /* Get info about dir.             
+ 568:rtos/uC-FS/Source/fs.c ****                   &info,
+ 569:rtos/uC-FS/Source/fs.c ****                    p_err);
+ 570:rtos/uC-FS/Source/fs.c ****     if (*p_err != FS_ERR_NONE) {                                /* Rtn err if dir does not exist.  
+ 571:rtos/uC-FS/Source/fs.c ****         *p_err  = FS_ERR_WORKING_DIR_INVALID;
+ 572:rtos/uC-FS/Source/fs.c ****          return;
+ 573:rtos/uC-FS/Source/fs.c ****     }
+ 574:rtos/uC-FS/Source/fs.c ****                                                                 /* Rtn err if not dir.             
+ 575:rtos/uC-FS/Source/fs.c ****     if (DEF_BIT_IS_CLR(info.Attrib, FS_ENTRY_ATTRIB_DIR) == DEF_YES) {
+ARM GAS  /tmp/cccqlBvg.s 			page 16
+
+
+ 576:rtos/uC-FS/Source/fs.c ****         *p_err  = FS_ERR_WORKING_DIR_INVALID;
+ 577:rtos/uC-FS/Source/fs.c ****          return;
+ 578:rtos/uC-FS/Source/fs.c ****     }
+ 579:rtos/uC-FS/Source/fs.c **** 
+ 580:rtos/uC-FS/Source/fs.c **** 
+ 581:rtos/uC-FS/Source/fs.c **** 
+ 582:rtos/uC-FS/Source/fs.c ****                                                                 /* ---------------- UPDATE WORKING 
+ 583:rtos/uC-FS/Source/fs.c ****     if (alloc == DEF_YES) {                                     /* If no working dir for task ...  
+ 584:rtos/uC-FS/Source/fs.c ****         path_buf = FS_WorkingDirObjGet();                       /*                            ... a
+ 585:rtos/uC-FS/Source/fs.c ****         if (path_buf == (CPU_CHAR *)0) {
+ 586:rtos/uC-FS/Source/fs.c ****            *p_err = FS_ERR_WORKING_DIR_NONE_AVAIL;
+ 587:rtos/uC-FS/Source/fs.c ****             return;
+ 588:rtos/uC-FS/Source/fs.c ****         }
+ 589:rtos/uC-FS/Source/fs.c **** 
+ 590:rtos/uC-FS/Source/fs.c ****         FS_OS_WorkingDirSet(path_buf, p_err);                   /*                            ... s
+ 591:rtos/uC-FS/Source/fs.c ****         if(*p_err != FS_ERR_NONE) {
+ 592:rtos/uC-FS/Source/fs.c ****             return;
+ 593:rtos/uC-FS/Source/fs.c ****         }
+ 594:rtos/uC-FS/Source/fs.c ****     }
+ 595:rtos/uC-FS/Source/fs.c **** 
+ 596:rtos/uC-FS/Source/fs.c ****     Str_Copy(path_buf, path_dir_temp);
+ 597:rtos/uC-FS/Source/fs.c **** 
+ 598:rtos/uC-FS/Source/fs.c ****     *p_err = FS_ERR_NONE;
+ 599:rtos/uC-FS/Source/fs.c **** }
+ 600:rtos/uC-FS/Source/fs.c **** #endif
+ 601:rtos/uC-FS/Source/fs.c **** 
+ 602:rtos/uC-FS/Source/fs.c **** 
+ 603:rtos/uC-FS/Source/fs.c **** /*
+ 604:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 605:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 606:rtos/uC-FS/Source/fs.c **** *                                         INTERNAL FUNCTIONS
+ 607:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 608:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 609:rtos/uC-FS/Source/fs.c **** */
+ 610:rtos/uC-FS/Source/fs.c **** 
+ 611:rtos/uC-FS/Source/fs.c **** /*
+ 612:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 613:rtos/uC-FS/Source/fs.c **** *                                           FS_PathParse()
+ 614:rtos/uC-FS/Source/fs.c **** *
+ 615:rtos/uC-FS/Source/fs.c **** * Description : Extract name of volume & get pointer to beginning of file name.
+ 616:rtos/uC-FS/Source/fs.c **** *
+ 617:rtos/uC-FS/Source/fs.c **** * Argument(s) : name_full       Full file name.
+ 618:rtos/uC-FS/Source/fs.c **** *               ----------      Argument validated by caller.
+ 619:rtos/uC-FS/Source/fs.c **** *
+ 620:rtos/uC-FS/Source/fs.c **** *               name_vol        String buffer that will receive...
+ 621:rtos/uC-FS/Source/fs.c **** *               ----------      Argument validated by caller.
+ 622:rtos/uC-FS/Source/fs.c **** *                                   (a) the volume name; OR
+ 623:rtos/uC-FS/Source/fs.c **** *                                   (b) an empty string, if volume name is not specified.
+ 624:rtos/uC-FS/Source/fs.c **** *
+ 625:rtos/uC-FS/Source/fs.c **** *               p_err           Pointer to variable that will receive the return error code from th
+ 626:rtos/uC-FS/Source/fs.c **** *               ----------      Argument validated by caller.
+ 627:rtos/uC-FS/Source/fs.c **** *
+ 628:rtos/uC-FS/Source/fs.c **** *                                   FS_ERR_NONE                   No error.
+ 629:rtos/uC-FS/Source/fs.c **** *                                   FS_ERR_NAME_INVALID           Invalid file name or path.
+ 630:rtos/uC-FS/Source/fs.c **** *                                   FS_ERR_VOL_LABEL_TOO_LONG     Volume label is too long.
+ 631:rtos/uC-FS/Source/fs.c **** *
+ 632:rtos/uC-FS/Source/fs.c **** *
+ARM GAS  /tmp/cccqlBvg.s 			page 17
+
+
+ 633:rtos/uC-FS/Source/fs.c **** * Return(s)   : Pointer to start of file name.
+ 634:rtos/uC-FS/Source/fs.c **** *
+ 635:rtos/uC-FS/Source/fs.c **** * Note(s)     : (1) See 'FSVol_Open() Notes #1a'.
+ 636:rtos/uC-FS/Source/fs.c **** *
+ 637:rtos/uC-FS/Source/fs.c **** *               (2) 'name_vol' MUST point to a character array of 'FS_CFG_MAX_VOL_NAME_LEN + 1' cha
+ 638:rtos/uC-FS/Source/fs.c **** ***************************************************************************************************
+ 639:rtos/uC-FS/Source/fs.c **** */
+ 640:rtos/uC-FS/Source/fs.c **** 
+ 641:rtos/uC-FS/Source/fs.c **** CPU_CHAR  *FS_PathParse (CPU_CHAR  *name_full,
+ 642:rtos/uC-FS/Source/fs.c ****                          CPU_CHAR  *name_vol,
+ 643:rtos/uC-FS/Source/fs.c ****                          FS_ERR    *p_err)
+ 644:rtos/uC-FS/Source/fs.c **** {
+ 279              		.loc 1 644 1 is_stmt 1 view -0
+ 280              		.cfi_startproc
+ 281              		@ args = 0, pretend = 0, frame = 0
+ 282              		@ frame_needed = 0, uses_anonymous_args = 0
+ 283              		.loc 1 644 1 is_stmt 0 view .LVU66
+ 284 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 285              	.LCFI6:
+ 286              		.cfi_def_cfa_offset 24
+ 287              		.cfi_offset 4, -24
+ 288              		.cfi_offset 5, -20
+ 289              		.cfi_offset 6, -16
+ 290              		.cfi_offset 7, -12
+ 291              		.cfi_offset 8, -8
+ 292              		.cfi_offset 14, -4
+ 293 0004 0446     		mov	r4, r0
+ 294 0006 0D46     		mov	r5, r1
+ 295 0008 9046     		mov	r8, r2
+ 645:rtos/uC-FS/Source/fs.c ****     CPU_SIZE_T   vol_name_len;
+ 296              		.loc 1 645 5 is_stmt 1 view .LVU67
+ 646:rtos/uC-FS/Source/fs.c ****     CPU_CHAR    *p_colon;
+ 297              		.loc 1 646 5 view .LVU68
+ 647:rtos/uC-FS/Source/fs.c **** 
+ 648:rtos/uC-FS/Source/fs.c **** 
+ 649:rtos/uC-FS/Source/fs.c **** #if (FS_CFG_DBG_MEM_CLR_EN == DEF_ENABLED)
+ 650:rtos/uC-FS/Source/fs.c ****     Mem_Clr((void *)name_vol, FS_CFG_MAX_VOL_NAME_LEN + 1u);
+ 298              		.loc 1 650 5 view .LVU69
+ 299 000a 0B21     		movs	r1, #11
+ 300              	.LVL15:
+ 301              		.loc 1 650 5 is_stmt 0 view .LVU70
+ 302 000c 2846     		mov	r0, r5
+ 303              	.LVL16:
+ 304              		.loc 1 650 5 view .LVU71
+ 305 000e FFF7FEFF 		bl	Mem_Clr
+ 306              	.LVL17:
+ 651:rtos/uC-FS/Source/fs.c **** #endif
+ 652:rtos/uC-FS/Source/fs.c **** 
+ 653:rtos/uC-FS/Source/fs.c ****                                                                 /* ----------------- FIND FINAL COL
+ 654:rtos/uC-FS/Source/fs.c ****                                                                 /* Find final colon.               
+ 655:rtos/uC-FS/Source/fs.c ****     p_colon = Str_Char_Last_N(name_full, FS_MAX_FULL_PATH_LEN, FS_CHAR_DEV_SEP);
+ 307              		.loc 1 655 5 is_stmt 1 view .LVU72
+ 308              		.loc 1 655 15 is_stmt 0 view .LVU73
+ 309 0012 3A22     		movs	r2, #58
+ 310 0014 4FF48771 		mov	r1, #270
+ 311 0018 2046     		mov	r0, r4
+ 312 001a FFF7FEFF 		bl	Str_Char_Last_N
+ARM GAS  /tmp/cccqlBvg.s 			page 18
+
+
+ 313              	.LVL18:
+ 656:rtos/uC-FS/Source/fs.c **** 
+ 657:rtos/uC-FS/Source/fs.c ****     if (p_colon == (CPU_CHAR *)0) {                             /* If not found               ...  
+ 314              		.loc 1 657 5 is_stmt 1 view .LVU74
+ 315              		.loc 1 657 8 is_stmt 0 view .LVU75
+ 316 001e 90B1     		cbz	r0, .L27
+ 317 0020 0746     		mov	r7, r0
+ 658:rtos/uC-FS/Source/fs.c ****         name_vol[0] = (CPU_CHAR)ASCII_CHAR_NULL;                /* ... vol name not specified ...  
+ 659:rtos/uC-FS/Source/fs.c ****        *p_err       =  FS_ERR_NONE;
+ 660:rtos/uC-FS/Source/fs.c ****         return (name_full);                                     /* ... file name starts at name sta
+ 661:rtos/uC-FS/Source/fs.c ****     }
+ 662:rtos/uC-FS/Source/fs.c **** 
+ 663:rtos/uC-FS/Source/fs.c ****     if (p_colon == name_full) {                                 /* Rtn err if first char is colon. 
+ 318              		.loc 1 663 5 is_stmt 1 view .LVU76
+ 319              		.loc 1 663 8 is_stmt 0 view .LVU77
+ 320 0022 8442     		cmp	r4, r0
+ 321 0024 15D0     		beq	.L28
+ 664:rtos/uC-FS/Source/fs.c ****        *p_err = FS_ERR_NAME_INVALID;
+ 665:rtos/uC-FS/Source/fs.c ****         return ((CPU_CHAR *)0);
+ 666:rtos/uC-FS/Source/fs.c ****     }
+ 667:rtos/uC-FS/Source/fs.c **** 
+ 668:rtos/uC-FS/Source/fs.c ****     vol_name_len = (CPU_SIZE_T)(p_colon - name_full) + 1u;      /*lint !e946 !e947 Both ptrs are in
+ 322              		.loc 1 668 5 is_stmt 1 view .LVU78
+ 323              		.loc 1 668 41 is_stmt 0 view .LVU79
+ 324 0026 061B     		subs	r6, r0, r4
+ 325              		.loc 1 668 18 view .LVU80
+ 326 0028 0136     		adds	r6, r6, #1
+ 327              	.LVL19:
+ 669:rtos/uC-FS/Source/fs.c **** 
+ 670:rtos/uC-FS/Source/fs.c ****     if (vol_name_len > FS_CFG_MAX_VOL_NAME_LEN) {               /* Rtn err if vol name too long.   
+ 328              		.loc 1 670 5 is_stmt 1 view .LVU81
+ 329              		.loc 1 670 8 is_stmt 0 view .LVU82
+ 330 002a 0A2E     		cmp	r6, #10
+ 331 002c 17D8     		bhi	.L29
+ 671:rtos/uC-FS/Source/fs.c ****        *p_err = FS_ERR_VOL_LABEL_TOO_LONG;
+ 672:rtos/uC-FS/Source/fs.c ****         return ((CPU_CHAR *)0);
+ 673:rtos/uC-FS/Source/fs.c ****     }
+ 674:rtos/uC-FS/Source/fs.c **** 
+ 675:rtos/uC-FS/Source/fs.c ****                                                                 /* ------------------- COPY VOL NAM
+ 676:rtos/uC-FS/Source/fs.c ****     (void)Str_Copy_N(name_vol,
+ 332              		.loc 1 676 5 is_stmt 1 view .LVU83
+ 333              		.loc 1 676 11 is_stmt 0 view .LVU84
+ 334 002e 3246     		mov	r2, r6
+ 335 0030 2146     		mov	r1, r4
+ 336 0032 2846     		mov	r0, r5
+ 337              	.LVL20:
+ 338              		.loc 1 676 11 view .LVU85
+ 339 0034 FFF7FEFF 		bl	Str_Copy_N
+ 340              	.LVL21:
+ 677:rtos/uC-FS/Source/fs.c ****                      name_full,
+ 678:rtos/uC-FS/Source/fs.c ****                      vol_name_len);
+ 679:rtos/uC-FS/Source/fs.c ****                                                                 /* Set last char to end string.    
+ 680:rtos/uC-FS/Source/fs.c ****     name_vol[vol_name_len] = ASCII_CHAR_NULL;
+ 341              		.loc 1 680 5 is_stmt 1 view .LVU86
+ 342              		.loc 1 680 28 is_stmt 0 view .LVU87
+ 343 0038 0023     		movs	r3, #0
+ 344 003a AB55     		strb	r3, [r5, r6]
+ARM GAS  /tmp/cccqlBvg.s 			page 19
+
+
+ 681:rtos/uC-FS/Source/fs.c **** 
+ 682:rtos/uC-FS/Source/fs.c **** 
+ 683:rtos/uC-FS/Source/fs.c **** 
+ 684:rtos/uC-FS/Source/fs.c ****                                                                 /* ----------------- RTN FILE NAME 
+ 685:rtos/uC-FS/Source/fs.c ****     name_full = p_colon + 1;
+ 345              		.loc 1 685 5 is_stmt 1 view .LVU88
+ 346              		.loc 1 685 15 is_stmt 0 view .LVU89
+ 347 003c 781C     		adds	r0, r7, #1
+ 348              	.LVL22:
+ 686:rtos/uC-FS/Source/fs.c ****    *p_err     = FS_ERR_NONE;
+ 349              		.loc 1 686 4 is_stmt 1 view .LVU90
+ 350              		.loc 1 686 15 is_stmt 0 view .LVU91
+ 351 003e A8F80030 		strh	r3, [r8]	@ movhi
+ 687:rtos/uC-FS/Source/fs.c ****     return (name_full);
+ 352              		.loc 1 687 5 is_stmt 1 view .LVU92
+ 353              	.LVL23:
+ 354              	.L21:
+ 688:rtos/uC-FS/Source/fs.c **** }
+ 355              		.loc 1 688 1 is_stmt 0 view .LVU93
+ 356 0042 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 357              	.LVL24:
+ 358              	.L27:
+ 658:rtos/uC-FS/Source/fs.c ****        *p_err       =  FS_ERR_NONE;
+ 359              		.loc 1 658 9 is_stmt 1 view .LVU94
+ 658:rtos/uC-FS/Source/fs.c ****        *p_err       =  FS_ERR_NONE;
+ 360              		.loc 1 658 21 is_stmt 0 view .LVU95
+ 361 0046 0023     		movs	r3, #0
+ 362 0048 2B70     		strb	r3, [r5]
+ 659:rtos/uC-FS/Source/fs.c ****         return (name_full);                                     /* ... file name starts at name sta
+ 363              		.loc 1 659 8 is_stmt 1 view .LVU96
+ 659:rtos/uC-FS/Source/fs.c ****         return (name_full);                                     /* ... file name starts at name sta
+ 364              		.loc 1 659 21 is_stmt 0 view .LVU97
+ 365 004a A8F80030 		strh	r3, [r8]	@ movhi
+ 660:rtos/uC-FS/Source/fs.c ****     }
+ 366              		.loc 1 660 9 is_stmt 1 view .LVU98
+ 660:rtos/uC-FS/Source/fs.c ****     }
+ 367              		.loc 1 660 16 is_stmt 0 view .LVU99
+ 368 004e 2046     		mov	r0, r4
+ 369              	.LVL25:
+ 660:rtos/uC-FS/Source/fs.c ****     }
+ 370              		.loc 1 660 16 view .LVU100
+ 371 0050 F7E7     		b	.L21
+ 372              	.LVL26:
+ 373              	.L28:
+ 664:rtos/uC-FS/Source/fs.c ****         return ((CPU_CHAR *)0);
+ 374              		.loc 1 664 8 is_stmt 1 view .LVU101
+ 664:rtos/uC-FS/Source/fs.c ****         return ((CPU_CHAR *)0);
+ 375              		.loc 1 664 15 is_stmt 0 view .LVU102
+ 376 0052 40F28733 		movw	r3, #903
+ 377 0056 A8F80030 		strh	r3, [r8]	@ movhi
+ 665:rtos/uC-FS/Source/fs.c ****     }
+ 378              		.loc 1 665 9 is_stmt 1 view .LVU103
+ 665:rtos/uC-FS/Source/fs.c ****     }
+ 379              		.loc 1 665 16 is_stmt 0 view .LVU104
+ 380 005a 0020     		movs	r0, #0
+ 381              	.LVL27:
+ 665:rtos/uC-FS/Source/fs.c ****     }
+ARM GAS  /tmp/cccqlBvg.s 			page 20
+
+
+ 382              		.loc 1 665 16 view .LVU105
+ 383 005c F1E7     		b	.L21
+ 384              	.LVL28:
+ 385              	.L29:
+ 671:rtos/uC-FS/Source/fs.c ****         return ((CPU_CHAR *)0);
+ 386              		.loc 1 671 8 is_stmt 1 view .LVU106
+ 671:rtos/uC-FS/Source/fs.c ****         return ((CPU_CHAR *)0);
+ 387              		.loc 1 671 15 is_stmt 0 view .LVU107
+ 388 005e 40F2A253 		movw	r3, #1442
+ 389 0062 A8F80030 		strh	r3, [r8]	@ movhi
+ 672:rtos/uC-FS/Source/fs.c ****     }
+ 390              		.loc 1 672 9 is_stmt 1 view .LVU108
+ 672:rtos/uC-FS/Source/fs.c ****     }
+ 391              		.loc 1 672 16 is_stmt 0 view .LVU109
+ 392 0066 0020     		movs	r0, #0
+ 393              	.LVL29:
+ 672:rtos/uC-FS/Source/fs.c ****     }
+ 394              		.loc 1 672 16 view .LVU110
+ 395 0068 EBE7     		b	.L21
+ 396              		.cfi_endproc
+ 397              	.LFE3:
+ 399              		.section	.bss.FS_MaxSecSize,"aw",%nobits
+ 400              		.align	2
+ 401              		.set	.LANCHOR0,. + 0
+ 404              	FS_MaxSecSize:
+ 405 0000 00000000 		.space	4
+ 406              		.text
+ 407              	.Letext0:
+ 408              		.file 2 "rtos/uC-CPU/ARM-Cortex-M/ARMv7-M/GNU/cpu.h"
+ 409              		.file 3 "rtos/uC-FS/Source/fs_type.h"
+ 410              		.file 4 "rtos/uC-FS/Source/fs_err.h"
+ 411              		.file 5 "rtos/uC-FS/Source/fs.h"
+ 412              		.file 6 "rtos/uC-LIB/lib_mem.h"
+ 413              		.file 7 "rtos/uC-LIB/lib_str.h"
+ 414              		.file 8 "rtos/uC-FS/Source/fs_dev.h"
+ 415              		.file 9 "rtos/uC-FS/Source/fs_buf.h"
+ 416              		.file 10 "rtos/uC-FS/Source/fs_file.h"
+ 417              		.file 11 "rtos/uC-FS/Source/fs_dir.h"
+ 418              		.file 12 "rtos/uC-FS/Source/fs_vol.h"
+ 419              		.file 13 "rtos/uC-FS/Source/fs_sys.h"
+ARM GAS  /tmp/cccqlBvg.s 			page 21
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 fs.c
+     /tmp/cccqlBvg.s:18     .text.FS_Init:0000000000000000 $t
+     /tmp/cccqlBvg.s:26     .text.FS_Init:0000000000000000 FS_Init
+     /tmp/cccqlBvg.s:209    .text.FS_Init:00000000000000cc $d
+     /tmp/cccqlBvg.s:214    .text.FS_VersionGet:0000000000000000 $t
+     /tmp/cccqlBvg.s:221    .text.FS_VersionGet:0000000000000000 FS_VersionGet
+     /tmp/cccqlBvg.s:239    .text.FS_MaxSecSizeGet:0000000000000000 $t
+     /tmp/cccqlBvg.s:246    .text.FS_MaxSecSizeGet:0000000000000000 FS_MaxSecSizeGet
+     /tmp/cccqlBvg.s:264    .text.FS_MaxSecSizeGet:0000000000000008 $d
+     /tmp/cccqlBvg.s:269    .text.FS_PathParse:0000000000000000 $t
+     /tmp/cccqlBvg.s:276    .text.FS_PathParse:0000000000000000 FS_PathParse
+     /tmp/cccqlBvg.s:400    .bss.FS_MaxSecSize:0000000000000000 $d
+     /tmp/cccqlBvg.s:404    .bss.FS_MaxSecSize:0000000000000000 FS_MaxSecSize
+                           .group:0000000000000000 wm4.0.0f5aa60db9403f389c005f20ecce4286
+                           .group:0000000000000000 wm4.cpu_core.h.51.7b35a59c319673f88ae4a256248776ec
+                           .group:0000000000000000 wm4.cpu_def.h.46.baa122a2898bdc40bb50d1f21ead1515
+                           .group:0000000000000000 wm4.cpu_cfg.h.45.38a6a562da8b04490c382a226238c57e
+                           .group:0000000000000000 wm4.cpu.h.171.3cb15ee3ccb812cbfdf76d1fbfb9eda0
+                           .group:0000000000000000 wm4.lib_def.h.66.6ab2a012067a8e1f4289db5765835062
+                           .group:0000000000000000 wm4.cpu_core.h.143.d3b700e12b3a14ed3bee14c822b49a7d
+                           .group:0000000000000000 wm4.lib_ascii.h.84.da234f9d4d202bba866fb26067887eec
+                           .group:0000000000000000 wm4.lib_cfg.h.40.b2958733f73e73af70f675ca0f89303e
+                           .group:0000000000000000 wm4.lib_mem.h.121.89b942a057fb20091baad8bf6b28b1e6
+                           .group:0000000000000000 wm4.fs.h.42.4f6311a594ee5619f1ee7a9392eb7faa
+                           .group:0000000000000000 wm4.fs_def.h.42.653ad677c23ef93c522ec84af681385d
+                           .group:0000000000000000 wm4.fs_cfg.h.116.da4f8e9d0b9040a97ef3bf26c61e90fd
+                           .group:0000000000000000 wm4.clk.h.99.39403db6a27321e53b261bbe20b56e1d
+                           .group:0000000000000000 wm4.lib_str.h.60.d6fb3a1336db17c586ed26be94929677
+                           .group:0000000000000000 wm4.clk_cfg.h.45.428f260ed0fbcfa16fc822c67c85dade
+                           .group:0000000000000000 wm4.clk.h.219.c24c7347fcc7691d3157fe73514cb366
+                           .group:0000000000000000 wm4.fs_cfg_fs.h.176.c85074fbe881bfa594608376a65f4dc2
+                           .group:0000000000000000 wm4.fs_type.h.42.3e681b291920189044ba1da24ae0f22a
+                           .group:0000000000000000 wm4.fs_err.h.42.d52bfed31dff3d1419c5cf09952dee67
+                           .group:0000000000000000 wm4.fs.h.95.7c5941b2b8feea65fc47a86b89fed441
+                           .group:0000000000000000 wm4.fs_buf.h.42.0c8ba10968f085926266a27b71b3972d
+                           .group:0000000000000000 wm4.fs_ctr.h.42.9d1398cac157503ac8af114819f7782b
+                           .group:0000000000000000 wm4.fs_dev.h.42.010e15055e38efd3492ae3a9a504ffd0
+                           .group:0000000000000000 wm4.fs_entry.h.42.9d70c930b2952a9ef63a0a4e9d586c20
+                           .group:0000000000000000 wm4.fs_dir.h.83.d0300b5b24eed020443871730cac76e3
+                           .group:0000000000000000 wm4.fs_file.h.42.74c26597bc17b842069a1de9e164f613
+                           .group:0000000000000000 wm4.fs_sys.h.42.da0b5c58e9e16ea2196969200cbb6990
+                           .group:0000000000000000 wm4.fs_vol.h.42.b307128eec61fcaf68a96ce7f965d41e
+
+UNDEFINED SYMBOLS
+FSDev_ModuleInit
+FSBuf_ModuleInit
+FSFile_ModuleInit
+FSDir_ModuleInit
+FSVol_ModuleInit
+FSSys_ModuleInit
+Mem_Clr
+Str_Char_Last_N
+Str_Copy_N

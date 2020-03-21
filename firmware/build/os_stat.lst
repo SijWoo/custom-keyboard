@@ -1,0 +1,1605 @@
+ARM GAS  /tmp/ccvfip2p.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"os_stat.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.OSStatReset,"ax",%progbits
+  18              		.align	1
+  19              		.global	OSStatReset
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	OSStatReset:
+  27              	.LVL0:
+  28              	.LFB0:
+  29              		.file 1 "rtos/uCOS-III/Source/os_stat.c"
+   1:rtos/uCOS-III/Source/os_stat.c **** /*
+   2:rtos/uCOS-III/Source/os_stat.c **** ***************************************************************************************************
+   3:rtos/uCOS-III/Source/os_stat.c **** *                                                uC/OS-III
+   4:rtos/uCOS-III/Source/os_stat.c **** *                                          The Real-Time Kernel
+   5:rtos/uCOS-III/Source/os_stat.c **** *
+   6:rtos/uCOS-III/Source/os_stat.c **** *                         (c) Copyright 2009-2019; Silicon Laboratories Inc.,
+   7:rtos/uCOS-III/Source/os_stat.c **** *                                400 W. Cesar Chavez, Austin, TX 78701
+   8:rtos/uCOS-III/Source/os_stat.c **** *
+   9:rtos/uCOS-III/Source/os_stat.c **** *                   All rights reserved. Protected by international copyright laws.
+  10:rtos/uCOS-III/Source/os_stat.c **** *
+  11:rtos/uCOS-III/Source/os_stat.c **** *                  Your use of this software is subject to your acceptance of the terms
+  12:rtos/uCOS-III/Source/os_stat.c **** *                  of a Silicon Labs Micrium software license, which can be obtained by
+  13:rtos/uCOS-III/Source/os_stat.c **** *                  contacting info@micrium.com. If you do not agree to the terms of this
+  14:rtos/uCOS-III/Source/os_stat.c **** *                  license, you may not use this software.
+  15:rtos/uCOS-III/Source/os_stat.c **** *
+  16:rtos/uCOS-III/Source/os_stat.c **** *                  Please help us continue to provide the Embedded community with the finest
+  17:rtos/uCOS-III/Source/os_stat.c **** *                  software available. Your honesty is greatly appreciated.
+  18:rtos/uCOS-III/Source/os_stat.c **** *
+  19:rtos/uCOS-III/Source/os_stat.c **** *                    You can find our product's documentation at: doc.micrium.com
+  20:rtos/uCOS-III/Source/os_stat.c **** *
+  21:rtos/uCOS-III/Source/os_stat.c **** *                          For more information visit us at: www.micrium.com
+  22:rtos/uCOS-III/Source/os_stat.c **** ***************************************************************************************************
+  23:rtos/uCOS-III/Source/os_stat.c **** */
+  24:rtos/uCOS-III/Source/os_stat.c **** 
+  25:rtos/uCOS-III/Source/os_stat.c **** /*
+  26:rtos/uCOS-III/Source/os_stat.c **** ***************************************************************************************************
+  27:rtos/uCOS-III/Source/os_stat.c **** *                                           STATISTICS MODULE
+  28:rtos/uCOS-III/Source/os_stat.c **** *
+  29:rtos/uCOS-III/Source/os_stat.c **** * File    : os_stat.c
+ARM GAS  /tmp/ccvfip2p.s 			page 2
+
+
+  30:rtos/uCOS-III/Source/os_stat.c **** * Version : V3.07.04
+  31:rtos/uCOS-III/Source/os_stat.c **** ***************************************************************************************************
+  32:rtos/uCOS-III/Source/os_stat.c **** */
+  33:rtos/uCOS-III/Source/os_stat.c **** 
+  34:rtos/uCOS-III/Source/os_stat.c **** #define  MICRIUM_SOURCE
+  35:rtos/uCOS-III/Source/os_stat.c **** #include "os.h"
+  36:rtos/uCOS-III/Source/os_stat.c **** 
+  37:rtos/uCOS-III/Source/os_stat.c **** #ifdef VSC_INCLUDE_SOURCE_FILE_NAMES
+  38:rtos/uCOS-III/Source/os_stat.c **** const  CPU_CHAR  *os_stat__c = "$Id: $";
+  39:rtos/uCOS-III/Source/os_stat.c **** #endif
+  40:rtos/uCOS-III/Source/os_stat.c **** 
+  41:rtos/uCOS-III/Source/os_stat.c **** 
+  42:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_STAT_TASK_EN > 0u)
+  43:rtos/uCOS-III/Source/os_stat.c **** 
+  44:rtos/uCOS-III/Source/os_stat.c **** /*
+  45:rtos/uCOS-III/Source/os_stat.c **** ***************************************************************************************************
+  46:rtos/uCOS-III/Source/os_stat.c **** *                                                   RESET STATISTICS
+  47:rtos/uCOS-III/Source/os_stat.c **** *
+  48:rtos/uCOS-III/Source/os_stat.c **** * Description: This function is called by your application to reset the statistics.
+  49:rtos/uCOS-III/Source/os_stat.c **** *
+  50:rtos/uCOS-III/Source/os_stat.c **** * Argument(s): p_err      is a pointer to a variable that will contain an error code returned by th
+  51:rtos/uCOS-III/Source/os_stat.c **** *
+  52:rtos/uCOS-III/Source/os_stat.c **** *                             OS_ERR_NONE            The call succeeded
+  53:rtos/uCOS-III/Source/os_stat.c **** *
+  54:rtos/uCOS-III/Source/os_stat.c **** * Returns    : none
+  55:rtos/uCOS-III/Source/os_stat.c **** *
+  56:rtos/uCOS-III/Source/os_stat.c **** * Note(s)    : none
+  57:rtos/uCOS-III/Source/os_stat.c **** ***************************************************************************************************
+  58:rtos/uCOS-III/Source/os_stat.c **** */
+  59:rtos/uCOS-III/Source/os_stat.c **** 
+  60:rtos/uCOS-III/Source/os_stat.c **** void  OSStatReset (OS_ERR  *p_err)
+  61:rtos/uCOS-III/Source/os_stat.c **** {
+  30              		.loc 1 61 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 61 1 is_stmt 0 view .LVU1
+  35 0000 38B5     		push	{r3, r4, r5, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 16
+  38              		.cfi_offset 3, -16
+  39              		.cfi_offset 4, -12
+  40              		.cfi_offset 5, -8
+  41              		.cfi_offset 14, -4
+  42 0002 0446     		mov	r4, r0
+  62:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_DBG_EN > 0u)
+  63:rtos/uCOS-III/Source/os_stat.c ****     OS_TCB      *p_tcb;
+  64:rtos/uCOS-III/Source/os_stat.c **** #if (OS_MSG_EN > 0u)
+  65:rtos/uCOS-III/Source/os_stat.c ****     OS_MSG_Q    *p_msg_q;
+  66:rtos/uCOS-III/Source/os_stat.c **** #endif
+  67:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_Q_EN > 0u)
+  68:rtos/uCOS-III/Source/os_stat.c ****     OS_Q        *p_q;
+  69:rtos/uCOS-III/Source/os_stat.c **** #endif
+  70:rtos/uCOS-III/Source/os_stat.c **** #endif
+  71:rtos/uCOS-III/Source/os_stat.c ****     CPU_SR_ALLOC();
+  43              		.loc 1 71 5 is_stmt 1 view .LVU2
+  44              	.LVL1:
+ARM GAS  /tmp/ccvfip2p.s 			page 3
+
+
+  72:rtos/uCOS-III/Source/os_stat.c **** 
+  73:rtos/uCOS-III/Source/os_stat.c **** 
+  74:rtos/uCOS-III/Source/os_stat.c **** 
+  75:rtos/uCOS-III/Source/os_stat.c **** #ifdef OS_SAFETY_CRITICAL
+  76:rtos/uCOS-III/Source/os_stat.c ****     if (p_err == (OS_ERR *)0) {
+  77:rtos/uCOS-III/Source/os_stat.c ****         OS_SAFETY_CRITICAL_EXCEPTION();
+  78:rtos/uCOS-III/Source/os_stat.c ****         return;
+  79:rtos/uCOS-III/Source/os_stat.c ****     }
+  80:rtos/uCOS-III/Source/os_stat.c **** #endif
+  81:rtos/uCOS-III/Source/os_stat.c **** 
+  82:rtos/uCOS-III/Source/os_stat.c ****     CPU_CRITICAL_ENTER();
+  45              		.loc 1 82 5 view .LVU3
+  46              		.loc 1 82 5 view .LVU4
+  47              		.loc 1 82 5 view .LVU5
+  48 0004 4020     		movs	r0, #64
+  49              	.LVL2:
+  50              		.loc 1 82 5 is_stmt 0 view .LVU6
+  51 0006 FFF7FEFF 		bl	CPU_SR_Save
+  52              	.LVL3:
+  53              		.loc 1 82 5 is_stmt 1 view .LVU7
+  54              		.loc 1 82 5 view .LVU8
+  83:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_STAT_TASK_EN > 0u)
+  84:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskCPUUsageMax = 0u;
+  55              		.loc 1 84 5 view .LVU9
+  56              		.loc 1 84 27 is_stmt 0 view .LVU10
+  57 000a 0025     		movs	r5, #0
+  58 000c 024B     		ldr	r3, .L3
+  59 000e 1D80     		strh	r5, [r3]	@ movhi
+  85:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TS_EN > 0u)
+  86:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskTimeMax     = 0u;
+  87:rtos/uCOS-III/Source/os_stat.c **** #endif
+  88:rtos/uCOS-III/Source/os_stat.c **** #endif
+  89:rtos/uCOS-III/Source/os_stat.c **** 
+  90:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TS_EN > 0u) && (OS_CFG_TICK_EN > 0u)
+  91:rtos/uCOS-III/Source/os_stat.c ****     OSTickTime            = 0u;
+  92:rtos/uCOS-III/Source/os_stat.c ****     OSTickTimeMax         = 0u;
+  93:rtos/uCOS-III/Source/os_stat.c **** #endif
+  94:rtos/uCOS-III/Source/os_stat.c **** 
+  95:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TMR_EN > 0u)
+  96:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TS_EN > 0u)
+  97:rtos/uCOS-III/Source/os_stat.c ****     OSTmrTaskTime         = 0u;
+  98:rtos/uCOS-III/Source/os_stat.c ****     OSTmrTaskTimeMax      = 0u;
+  99:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 100:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 101:rtos/uCOS-III/Source/os_stat.c **** 
+ 102:rtos/uCOS-III/Source/os_stat.c **** #ifdef CPU_CFG_INT_DIS_MEAS_EN
+ 103:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TS_EN > 0u)
+ 104:rtos/uCOS-III/Source/os_stat.c ****     OSIntDisTimeMax       = 0u;                                 /* Reset the maximum interrupt disa
+ 105:rtos/uCOS-III/Source/os_stat.c ****     CPU_StatReset();                                            /* Reset CPU-specific performance m
+ 106:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 107:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 108:rtos/uCOS-III/Source/os_stat.c **** 
+ 109:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_SCHED_LOCK_TIME_MEAS_EN > 0u)
+ 110:rtos/uCOS-III/Source/os_stat.c ****     OSSchedLockTimeMax    = 0u;                                 /* Reset the maximum scheduler lock
+ 111:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 112:rtos/uCOS-III/Source/os_stat.c **** 
+ 113:rtos/uCOS-III/Source/os_stat.c **** #if ((OS_MSG_EN > 0u) && (OS_CFG_DBG_EN > 0u))
+ARM GAS  /tmp/ccvfip2p.s 			page 4
+
+
+ 114:rtos/uCOS-III/Source/os_stat.c ****     OSMsgPool.NbrUsedMax  = 0u;
+ 115:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 116:rtos/uCOS-III/Source/os_stat.c ****     CPU_CRITICAL_EXIT();
+  60              		.loc 1 116 5 is_stmt 1 view .LVU11
+  61              		.loc 1 116 5 view .LVU12
+  62              		.loc 1 116 5 view .LVU13
+  63 0010 FFF7FEFF 		bl	CPU_SR_Restore
+  64              	.LVL4:
+  65              		.loc 1 116 5 view .LVU14
+  66              		.loc 1 116 5 view .LVU15
+ 117:rtos/uCOS-III/Source/os_stat.c **** 
+ 118:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_DBG_EN > 0u)
+ 119:rtos/uCOS-III/Source/os_stat.c ****     CPU_CRITICAL_ENTER();
+ 120:rtos/uCOS-III/Source/os_stat.c ****     p_tcb = OSTaskDbgListPtr;
+ 121:rtos/uCOS-III/Source/os_stat.c ****     CPU_CRITICAL_EXIT();
+ 122:rtos/uCOS-III/Source/os_stat.c ****     while (p_tcb != (OS_TCB *)0) {                              /* Reset per-Task statistics       
+ 123:rtos/uCOS-III/Source/os_stat.c ****         CPU_CRITICAL_ENTER();
+ 124:rtos/uCOS-III/Source/os_stat.c **** 
+ 125:rtos/uCOS-III/Source/os_stat.c **** #ifdef CPU_CFG_INT_DIS_MEAS_EN
+ 126:rtos/uCOS-III/Source/os_stat.c ****         p_tcb->IntDisTimeMax    = 0u;
+ 127:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 128:rtos/uCOS-III/Source/os_stat.c **** 
+ 129:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_SCHED_LOCK_TIME_MEAS_EN > 0u)
+ 130:rtos/uCOS-III/Source/os_stat.c ****         p_tcb->SchedLockTimeMax = 0u;
+ 131:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 132:rtos/uCOS-III/Source/os_stat.c **** 
+ 133:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TASK_PROFILE_EN > 0u)
+ 134:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TASK_Q_EN > 0u)
+ 135:rtos/uCOS-III/Source/os_stat.c ****         p_tcb->MsgQPendTimeMax  = 0u;
+ 136:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 137:rtos/uCOS-III/Source/os_stat.c ****         p_tcb->SemPendTimeMax   = 0u;
+ 138:rtos/uCOS-III/Source/os_stat.c ****         p_tcb->CtxSwCtr         = 0u;
+ 139:rtos/uCOS-III/Source/os_stat.c ****         p_tcb->CPUUsage         = 0u;
+ 140:rtos/uCOS-III/Source/os_stat.c ****         p_tcb->CPUUsageMax      = 0u;
+ 141:rtos/uCOS-III/Source/os_stat.c ****         p_tcb->CyclesTotal      = 0u;
+ 142:rtos/uCOS-III/Source/os_stat.c ****         p_tcb->CyclesTotalPrev  = 0u;
+ 143:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TS_EN > 0u)
+ 144:rtos/uCOS-III/Source/os_stat.c ****         p_tcb->CyclesStart      = OS_TS_GET();
+ 145:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 146:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 147:rtos/uCOS-III/Source/os_stat.c **** 
+ 148:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TASK_Q_EN > 0u)
+ 149:rtos/uCOS-III/Source/os_stat.c ****         p_msg_q                 = &p_tcb->MsgQ;
+ 150:rtos/uCOS-III/Source/os_stat.c ****         p_msg_q->NbrEntriesMax  = 0u;
+ 151:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 152:rtos/uCOS-III/Source/os_stat.c ****         p_tcb                   = p_tcb->DbgNextPtr;
+ 153:rtos/uCOS-III/Source/os_stat.c ****         CPU_CRITICAL_EXIT();
+ 154:rtos/uCOS-III/Source/os_stat.c ****     }
+ 155:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 156:rtos/uCOS-III/Source/os_stat.c **** 
+ 157:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_Q_EN > 0u) && (OS_CFG_DBG_EN > 0u)
+ 158:rtos/uCOS-III/Source/os_stat.c ****     CPU_CRITICAL_ENTER();
+ 159:rtos/uCOS-III/Source/os_stat.c ****     p_q = OSQDbgListPtr;
+ 160:rtos/uCOS-III/Source/os_stat.c ****     CPU_CRITICAL_EXIT();
+ 161:rtos/uCOS-III/Source/os_stat.c ****     while (p_q != (OS_Q *)0) {                                  /* Reset message queues statistics 
+ 162:rtos/uCOS-III/Source/os_stat.c ****         CPU_CRITICAL_ENTER();
+ 163:rtos/uCOS-III/Source/os_stat.c ****         p_msg_q                = &p_q->MsgQ;
+ARM GAS  /tmp/ccvfip2p.s 			page 5
+
+
+ 164:rtos/uCOS-III/Source/os_stat.c ****         p_msg_q->NbrEntriesMax = 0u;
+ 165:rtos/uCOS-III/Source/os_stat.c ****         p_q                    = p_q->DbgNextPtr;
+ 166:rtos/uCOS-III/Source/os_stat.c ****         CPU_CRITICAL_EXIT();
+ 167:rtos/uCOS-III/Source/os_stat.c ****     }
+ 168:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 169:rtos/uCOS-III/Source/os_stat.c **** 
+ 170:rtos/uCOS-III/Source/os_stat.c **** 
+ 171:rtos/uCOS-III/Source/os_stat.c ****    *p_err = OS_ERR_NONE;
+  67              		.loc 1 171 4 view .LVU16
+  68              		.loc 1 171 11 is_stmt 0 view .LVU17
+  69 0014 2580     		strh	r5, [r4]	@ movhi
+ 172:rtos/uCOS-III/Source/os_stat.c **** }
+  70              		.loc 1 172 1 view .LVU18
+  71 0016 38BD     		pop	{r3, r4, r5, pc}
+  72              	.LVL5:
+  73              	.L4:
+  74              		.loc 1 172 1 view .LVU19
+  75              		.align	2
+  76              	.L3:
+  77 0018 00000000 		.word	OSStatTaskCPUUsageMax
+  78              		.cfi_endproc
+  79              	.LFE0:
+  81              		.section	.text.OS_StatTask,"ax",%progbits
+  82              		.align	1
+  83              		.global	OS_StatTask
+  84              		.syntax unified
+  85              		.thumb
+  86              		.thumb_func
+  87              		.fpu fpv4-sp-d16
+  89              	OS_StatTask:
+  90              	.LVL6:
+  91              	.LFB2:
+ 173:rtos/uCOS-III/Source/os_stat.c **** 
+ 174:rtos/uCOS-III/Source/os_stat.c **** 
+ 175:rtos/uCOS-III/Source/os_stat.c **** /*
+ 176:rtos/uCOS-III/Source/os_stat.c **** ***************************************************************************************************
+ 177:rtos/uCOS-III/Source/os_stat.c **** *                                                DETERMINE THE CPU CAPACITY
+ 178:rtos/uCOS-III/Source/os_stat.c **** *
+ 179:rtos/uCOS-III/Source/os_stat.c **** * Description: This function is called by your application to establish CPU usage by first determin
+ 180:rtos/uCOS-III/Source/os_stat.c **** *              counter would count to in 1/10 second if no other tasks were to execute during that 
+ 181:rtos/uCOS-III/Source/os_stat.c **** *              then determined by a low priority task which keeps track of this 32-bit counter ever
+ 182:rtos/uCOS-III/Source/os_stat.c **** *              time, with other tasks running.  CPU usage is determined by:
+ 183:rtos/uCOS-III/Source/os_stat.c **** *
+ 184:rtos/uCOS-III/Source/os_stat.c **** *                                             OS_Stat_IdleCtr
+ 185:rtos/uCOS-III/Source/os_stat.c **** *                 CPU Usage (%) = 100 * (1 - ------------------)
+ 186:rtos/uCOS-III/Source/os_stat.c **** *                                            OS_Stat_IdleCtrMax
+ 187:rtos/uCOS-III/Source/os_stat.c **** *
+ 188:rtos/uCOS-III/Source/os_stat.c **** * Argument(s): p_err      is a pointer to a variable that will contain an error code returned by th
+ 189:rtos/uCOS-III/Source/os_stat.c **** *
+ 190:rtos/uCOS-III/Source/os_stat.c **** *                             OS_ERR_NONE              The call was successfu
+ 191:rtos/uCOS-III/Source/os_stat.c **** *                             OS_ERR_OS_NOT_RUNNING    If uC/OS-III is not running yet
+ 192:rtos/uCOS-III/Source/os_stat.c **** *
+ 193:rtos/uCOS-III/Source/os_stat.c **** * Returns    : none
+ 194:rtos/uCOS-III/Source/os_stat.c **** *
+ 195:rtos/uCOS-III/Source/os_stat.c **** * Note(s)    : none
+ 196:rtos/uCOS-III/Source/os_stat.c **** ***************************************************************************************************
+ 197:rtos/uCOS-III/Source/os_stat.c **** */
+ARM GAS  /tmp/ccvfip2p.s 			page 6
+
+
+ 198:rtos/uCOS-III/Source/os_stat.c **** 
+ 199:rtos/uCOS-III/Source/os_stat.c **** void  OSStatTaskCPUUsageInit (OS_ERR  *p_err)
+ 200:rtos/uCOS-III/Source/os_stat.c **** {
+ 201:rtos/uCOS-III/Source/os_stat.c ****     OS_ERR   err;
+ 202:rtos/uCOS-III/Source/os_stat.c ****     OS_TICK  dly;
+ 203:rtos/uCOS-III/Source/os_stat.c ****     CPU_SR_ALLOC();
+ 204:rtos/uCOS-III/Source/os_stat.c **** 
+ 205:rtos/uCOS-III/Source/os_stat.c **** 
+ 206:rtos/uCOS-III/Source/os_stat.c ****     err = OS_ERR_NONE;                                          /* Initialize err explicitly for st
+ 207:rtos/uCOS-III/Source/os_stat.c **** 
+ 208:rtos/uCOS-III/Source/os_stat.c **** #ifdef OS_SAFETY_CRITICAL
+ 209:rtos/uCOS-III/Source/os_stat.c ****     if (p_err == (OS_ERR *)0) {
+ 210:rtos/uCOS-III/Source/os_stat.c ****         OS_SAFETY_CRITICAL_EXCEPTION();
+ 211:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 212:rtos/uCOS-III/Source/os_stat.c ****     }
+ 213:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 214:rtos/uCOS-III/Source/os_stat.c **** 
+ 215:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+ 216:rtos/uCOS-III/Source/os_stat.c ****     if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?          
+ 217:rtos/uCOS-III/Source/os_stat.c ****        *p_err = OS_ERR_OS_NOT_RUNNING;
+ 218:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 219:rtos/uCOS-III/Source/os_stat.c ****     }
+ 220:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 221:rtos/uCOS-III/Source/os_stat.c **** 
+ 222:rtos/uCOS-III/Source/os_stat.c **** #if ((OS_CFG_TMR_EN > 0u) && (OS_CFG_TASK_SUSPEND_EN > 0u))
+ 223:rtos/uCOS-III/Source/os_stat.c ****     OSTaskSuspend(&OSTmrTaskTCB, &err);
+ 224:rtos/uCOS-III/Source/os_stat.c ****     if (err != OS_ERR_NONE) {
+ 225:rtos/uCOS-III/Source/os_stat.c ****        *p_err = err;
+ 226:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 227:rtos/uCOS-III/Source/os_stat.c ****     }
+ 228:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 229:rtos/uCOS-III/Source/os_stat.c **** 
+ 230:rtos/uCOS-III/Source/os_stat.c ****     OSTimeDly(2u,                                               /* Synchronize with clock tick     
+ 231:rtos/uCOS-III/Source/os_stat.c ****               (OS_OPT  )OS_OPT_TIME_DLY,
+ 232:rtos/uCOS-III/Source/os_stat.c ****               (OS_ERR *)&err);
+ 233:rtos/uCOS-III/Source/os_stat.c ****     if (err != OS_ERR_NONE) {
+ 234:rtos/uCOS-III/Source/os_stat.c ****        *p_err = err;
+ 235:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 236:rtos/uCOS-III/Source/os_stat.c ****     }
+ 237:rtos/uCOS-III/Source/os_stat.c ****     CPU_CRITICAL_ENTER();
+ 238:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskCtr = 0u;                                         /* Clear idle counter              
+ 239:rtos/uCOS-III/Source/os_stat.c ****     CPU_CRITICAL_EXIT();
+ 240:rtos/uCOS-III/Source/os_stat.c **** 
+ 241:rtos/uCOS-III/Source/os_stat.c ****     dly = 0u;
+ 242:rtos/uCOS-III/Source/os_stat.c ****     if (OSCfg_TickRate_Hz > OSCfg_StatTaskRate_Hz) {
+ 243:rtos/uCOS-III/Source/os_stat.c ****         dly = (OS_TICK)(OSCfg_TickRate_Hz / OSCfg_StatTaskRate_Hz);
+ 244:rtos/uCOS-III/Source/os_stat.c ****     }
+ 245:rtos/uCOS-III/Source/os_stat.c ****     if (dly == 0u) {
+ 246:rtos/uCOS-III/Source/os_stat.c ****         dly =  (OSCfg_TickRate_Hz / 10u);
+ 247:rtos/uCOS-III/Source/os_stat.c ****     }
+ 248:rtos/uCOS-III/Source/os_stat.c **** 
+ 249:rtos/uCOS-III/Source/os_stat.c ****     OSTimeDly(dly,                                              /* Determine MAX. idle counter valu
+ 250:rtos/uCOS-III/Source/os_stat.c ****               OS_OPT_TIME_DLY,
+ 251:rtos/uCOS-III/Source/os_stat.c ****               &err);
+ 252:rtos/uCOS-III/Source/os_stat.c **** 
+ 253:rtos/uCOS-III/Source/os_stat.c **** #if ((OS_CFG_TMR_EN > 0u) && (OS_CFG_TASK_SUSPEND_EN > 0u))
+ 254:rtos/uCOS-III/Source/os_stat.c ****     OSTaskResume(&OSTmrTaskTCB, &err);
+ARM GAS  /tmp/ccvfip2p.s 			page 7
+
+
+ 255:rtos/uCOS-III/Source/os_stat.c ****     if (err != OS_ERR_NONE) {
+ 256:rtos/uCOS-III/Source/os_stat.c ****        *p_err = err;
+ 257:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 258:rtos/uCOS-III/Source/os_stat.c ****     }
+ 259:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 260:rtos/uCOS-III/Source/os_stat.c **** 
+ 261:rtos/uCOS-III/Source/os_stat.c ****     CPU_CRITICAL_ENTER();
+ 262:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TS_EN > 0u)
+ 263:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskTimeMax = 0u;
+ 264:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 265:rtos/uCOS-III/Source/os_stat.c **** 
+ 266:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskCtrMax  = OSStatTaskCtr;                          /* Store maximum idle counter count
+ 267:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskRdy     = OS_STATE_RDY;
+ 268:rtos/uCOS-III/Source/os_stat.c ****     CPU_CRITICAL_EXIT();
+ 269:rtos/uCOS-III/Source/os_stat.c ****    *p_err             = OS_ERR_NONE;
+ 270:rtos/uCOS-III/Source/os_stat.c **** }
+ 271:rtos/uCOS-III/Source/os_stat.c **** 
+ 272:rtos/uCOS-III/Source/os_stat.c **** 
+ 273:rtos/uCOS-III/Source/os_stat.c **** /*
+ 274:rtos/uCOS-III/Source/os_stat.c **** ***************************************************************************************************
+ 275:rtos/uCOS-III/Source/os_stat.c **** *                                                    STATISTICS TASK
+ 276:rtos/uCOS-III/Source/os_stat.c **** *
+ 277:rtos/uCOS-III/Source/os_stat.c **** * Description: This task is internal to uC/OS-III and is used to compute some statistics about the 
+ 278:rtos/uCOS-III/Source/os_stat.c **** *              environment.  Specifically, OS_StatTask() computes the CPU usage.  CPU usage is dete
+ 279:rtos/uCOS-III/Source/os_stat.c **** *
+ 280:rtos/uCOS-III/Source/os_stat.c **** *                                                   OSStatTaskCtr
+ 281:rtos/uCOS-III/Source/os_stat.c **** *                 OSStatTaskCPUUsage = 100 * (1 - ------------------)     (units are in %)
+ 282:rtos/uCOS-III/Source/os_stat.c **** *                                                  OSStatTaskCtrMax
+ 283:rtos/uCOS-III/Source/os_stat.c **** *
+ 284:rtos/uCOS-III/Source/os_stat.c **** * Arguments  : p_arg     this pointer is not used at this time.
+ 285:rtos/uCOS-III/Source/os_stat.c **** *
+ 286:rtos/uCOS-III/Source/os_stat.c **** * Returns    : none
+ 287:rtos/uCOS-III/Source/os_stat.c **** *
+ 288:rtos/uCOS-III/Source/os_stat.c **** * Note(s)    : 1) This task runs at a priority level higher than the idle task.
+ 289:rtos/uCOS-III/Source/os_stat.c **** *
+ 290:rtos/uCOS-III/Source/os_stat.c **** *              2) You can disable this task by setting the configuration #define OS_CFG_STAT_TASK_E
+ 291:rtos/uCOS-III/Source/os_stat.c **** *
+ 292:rtos/uCOS-III/Source/os_stat.c **** *              3) You MUST have at least a delay of 2/10 seconds to allow for the system to establi
+ 293:rtos/uCOS-III/Source/os_stat.c **** *                 for the idle counter.
+ 294:rtos/uCOS-III/Source/os_stat.c **** *
+ 295:rtos/uCOS-III/Source/os_stat.c **** *              4) This function is INTERNAL to uC/OS-III and your application should not call it.
+ 296:rtos/uCOS-III/Source/os_stat.c **** ***************************************************************************************************
+ 297:rtos/uCOS-III/Source/os_stat.c **** */
+ 298:rtos/uCOS-III/Source/os_stat.c **** 
+ 299:rtos/uCOS-III/Source/os_stat.c **** void  OS_StatTask (void  *p_arg)
+ 300:rtos/uCOS-III/Source/os_stat.c **** {
+  92              		.loc 1 300 1 is_stmt 1 view -0
+  93              		.cfi_startproc
+  94              		@ args = 0, pretend = 0, frame = 8
+  95              		@ frame_needed = 0, uses_anonymous_args = 0
+  96              		.loc 1 300 1 is_stmt 0 view .LVU21
+  97 0000 30B5     		push	{r4, r5, lr}
+  98              	.LCFI1:
+  99              		.cfi_def_cfa_offset 12
+ 100              		.cfi_offset 4, -12
+ 101              		.cfi_offset 5, -8
+ 102              		.cfi_offset 14, -4
+ARM GAS  /tmp/ccvfip2p.s 			page 8
+
+
+ 103 0002 83B0     		sub	sp, sp, #12
+ 104              	.LCFI2:
+ 105              		.cfi_def_cfa_offset 24
+ 301:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_DBG_EN > 0u)
+ 302:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TASK_PROFILE_EN > 0u)
+ 303:rtos/uCOS-III/Source/os_stat.c ****     OS_CPU_USAGE usage;
+ 304:rtos/uCOS-III/Source/os_stat.c ****     OS_CYCLES    cycles_total;
+ 305:rtos/uCOS-III/Source/os_stat.c ****     OS_CYCLES    cycles_div;
+ 306:rtos/uCOS-III/Source/os_stat.c ****     OS_CYCLES    cycles_mult;
+ 307:rtos/uCOS-III/Source/os_stat.c ****     OS_CYCLES    cycles_max;
+ 308:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 309:rtos/uCOS-III/Source/os_stat.c ****     OS_TCB      *p_tcb;
+ 310:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 311:rtos/uCOS-III/Source/os_stat.c ****     OS_TICK      ctr_max;
+ 106              		.loc 1 311 5 is_stmt 1 view .LVU22
+ 312:rtos/uCOS-III/Source/os_stat.c ****     OS_TICK      ctr_mult;
+ 107              		.loc 1 312 5 view .LVU23
+ 313:rtos/uCOS-III/Source/os_stat.c ****     OS_TICK      ctr_div;
+ 108              		.loc 1 313 5 view .LVU24
+ 314:rtos/uCOS-III/Source/os_stat.c ****     OS_ERR       err;
+ 109              		.loc 1 314 5 view .LVU25
+ 315:rtos/uCOS-III/Source/os_stat.c ****     OS_TICK      dly;
+ 110              		.loc 1 315 5 view .LVU26
+ 316:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TS_EN > 0u)
+ 317:rtos/uCOS-III/Source/os_stat.c ****     CPU_TS       ts_start;
+ 318:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 319:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_STAT_TASK_STK_CHK_EN > 0u) && (OS_CFG_ISR_STK_SIZE > 0u)
+ 320:rtos/uCOS-III/Source/os_stat.c ****     CPU_STK     *p_stk;
+ 111              		.loc 1 320 5 view .LVU27
+ 321:rtos/uCOS-III/Source/os_stat.c ****     CPU_INT32U   free_stk;
+ 112              		.loc 1 321 5 view .LVU28
+ 322:rtos/uCOS-III/Source/os_stat.c ****     CPU_INT32U   size_stk;
+ 113              		.loc 1 322 5 view .LVU29
+ 323:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 324:rtos/uCOS-III/Source/os_stat.c ****     CPU_SR_ALLOC();
+ 114              		.loc 1 324 5 view .LVU30
+ 115              	.LVL7:
+ 325:rtos/uCOS-III/Source/os_stat.c **** 
+ 326:rtos/uCOS-III/Source/os_stat.c **** 
+ 327:rtos/uCOS-III/Source/os_stat.c ****     (void)p_arg;                                                /* Prevent compiler warning for not
+ 116              		.loc 1 327 5 view .LVU31
+ 328:rtos/uCOS-III/Source/os_stat.c **** 
+ 329:rtos/uCOS-III/Source/os_stat.c ****     while (OSStatTaskRdy != OS_TRUE) {
+ 117              		.loc 1 329 5 view .LVU32
+ 118              		.loc 1 329 11 is_stmt 0 view .LVU33
+ 119 0004 07E0     		b	.L6
+ 120              	.LVL8:
+ 121              	.L7:
+ 330:rtos/uCOS-III/Source/os_stat.c ****         OSTimeDly(2u * OSCfg_StatTaskRate_Hz,                   /* Wait until statistic task is rea
+ 122              		.loc 1 330 9 is_stmt 1 view .LVU34
+ 123 0006 434B     		ldr	r3, .L23
+ 124 0008 1868     		ldr	r0, [r3]
+ 125 000a 0DF10602 		add	r2, sp, #6
+ 126 000e 0021     		movs	r1, #0
+ 127 0010 4000     		lsls	r0, r0, #1
+ 128 0012 FFF7FEFF 		bl	OSTimeDly
+ 129              	.LVL9:
+ARM GAS  /tmp/ccvfip2p.s 			page 9
+
+
+ 130              	.L6:
+ 329:rtos/uCOS-III/Source/os_stat.c ****         OSTimeDly(2u * OSCfg_StatTaskRate_Hz,                   /* Wait until statistic task is rea
+ 131              		.loc 1 329 11 view .LVU35
+ 329:rtos/uCOS-III/Source/os_stat.c ****         OSTimeDly(2u * OSCfg_StatTaskRate_Hz,                   /* Wait until statistic task is rea
+ 132              		.loc 1 329 26 is_stmt 0 view .LVU36
+ 133 0016 404B     		ldr	r3, .L23+4
+ 134 0018 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 329:rtos/uCOS-III/Source/os_stat.c ****         OSTimeDly(2u * OSCfg_StatTaskRate_Hz,                   /* Wait until statistic task is rea
+ 135              		.loc 1 329 11 view .LVU37
+ 136 001a 012B     		cmp	r3, #1
+ 137 001c F3D1     		bne	.L7
+ 331:rtos/uCOS-III/Source/os_stat.c ****                   OS_OPT_TIME_DLY,
+ 332:rtos/uCOS-III/Source/os_stat.c ****                   &err);
+ 333:rtos/uCOS-III/Source/os_stat.c ****     }
+ 334:rtos/uCOS-III/Source/os_stat.c ****     OSStatReset(&err);                                          /* Reset statistics                
+ 138              		.loc 1 334 5 is_stmt 1 view .LVU38
+ 139 001e 0DF10600 		add	r0, sp, #6
+ 140 0022 FFF7FEFF 		bl	OSStatReset
+ 141              	.LVL10:
+ 335:rtos/uCOS-III/Source/os_stat.c **** 
+ 336:rtos/uCOS-III/Source/os_stat.c ****     dly = (OS_TICK)0;                                           /* Compute statistic task sleep del
+ 142              		.loc 1 336 5 view .LVU39
+ 337:rtos/uCOS-III/Source/os_stat.c ****     if (OSCfg_TickRate_Hz > OSCfg_StatTaskRate_Hz) {
+ 143              		.loc 1 337 5 view .LVU40
+ 144              		.loc 1 337 27 is_stmt 0 view .LVU41
+ 145 0026 3D4B     		ldr	r3, .L23+8
+ 146 0028 1B68     		ldr	r3, [r3]
+ 147 002a 3A4A     		ldr	r2, .L23
+ 148 002c 1468     		ldr	r4, [r2]
+ 149              		.loc 1 337 8 view .LVU42
+ 150 002e A342     		cmp	r3, r4
+ 151 0030 03D9     		bls	.L8
+ 338:rtos/uCOS-III/Source/os_stat.c ****         dly = (OSCfg_TickRate_Hz / OSCfg_StatTaskRate_Hz);
+ 152              		.loc 1 338 9 is_stmt 1 view .LVU43
+ 153              		.loc 1 338 13 is_stmt 0 view .LVU44
+ 154 0032 B3FBF4F4 		udiv	r4, r3, r4
+ 155              	.LVL11:
+ 339:rtos/uCOS-III/Source/os_stat.c ****     }
+ 340:rtos/uCOS-III/Source/os_stat.c ****     if (dly == 0u) {
+ 156              		.loc 1 340 5 is_stmt 1 view .LVU45
+ 157              		.loc 1 340 8 is_stmt 0 view .LVU46
+ 158 0036 002C     		cmp	r4, #0
+ 159 0038 4CD1     		bne	.L17
+ 160              	.LVL12:
+ 161              	.L8:
+ 341:rtos/uCOS-III/Source/os_stat.c ****         dly =  (OSCfg_TickRate_Hz / 10u);
+ 162              		.loc 1 341 9 is_stmt 1 view .LVU47
+ 163              		.loc 1 341 13 is_stmt 0 view .LVU48
+ 164 003a 394C     		ldr	r4, .L23+12
+ 165 003c A4FB0323 		umull	r2, r3, r4, r3
+ 166 0040 DC08     		lsrs	r4, r3, #3
+ 167              	.LVL13:
+ 168              		.loc 1 341 13 view .LVU49
+ 169 0042 47E0     		b	.L17
+ 170              	.LVL14:
+ 171              	.L18:
+ 342:rtos/uCOS-III/Source/os_stat.c ****     }
+ARM GAS  /tmp/ccvfip2p.s 			page 10
+
+
+ 343:rtos/uCOS-III/Source/os_stat.c **** 
+ 344:rtos/uCOS-III/Source/os_stat.c ****     for (;;) {
+ 345:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TS_EN > 0u)
+ 346:rtos/uCOS-III/Source/os_stat.c ****         ts_start        = OS_TS_GET();
+ 347:rtos/uCOS-III/Source/os_stat.c **** #ifdef  CPU_CFG_INT_DIS_MEAS_EN
+ 348:rtos/uCOS-III/Source/os_stat.c ****         OSIntDisTimeMax = CPU_IntDisMeasMaxGet();
+ 349:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 350:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 351:rtos/uCOS-III/Source/os_stat.c **** 
+ 352:rtos/uCOS-III/Source/os_stat.c ****         CPU_CRITICAL_ENTER();                                   /* ---------------- OVERALL CPU USA
+ 353:rtos/uCOS-III/Source/os_stat.c ****         OSStatTaskCtrRun   = OSStatTaskCtr;                     /* Obtain the of the stat counter f
+ 354:rtos/uCOS-III/Source/os_stat.c ****         OSStatTaskCtr      = 0u;                                /* Reset the stat counter for the n
+ 355:rtos/uCOS-III/Source/os_stat.c ****         CPU_CRITICAL_EXIT();
+ 356:rtos/uCOS-III/Source/os_stat.c **** 
+ 357:rtos/uCOS-III/Source/os_stat.c ****         if (OSStatTaskCtrMax > OSStatTaskCtrRun) {              /* Compute CPU Usage with best reso
+ 358:rtos/uCOS-III/Source/os_stat.c ****             if (OSStatTaskCtrMax < 400000u) {                   /* 1 to       400,000              
+ 359:rtos/uCOS-III/Source/os_stat.c ****                 ctr_mult = 10000u;
+ 360:rtos/uCOS-III/Source/os_stat.c ****                 ctr_div  =     1u;
+ 172              		.loc 1 360 26 view .LVU50
+ 173 0044 0120     		movs	r0, #1
+ 359:rtos/uCOS-III/Source/os_stat.c ****                 ctr_div  =     1u;
+ 174              		.loc 1 359 26 view .LVU51
+ 175 0046 42F21073 		movw	r3, #10000
+ 176              	.L11:
+ 177              	.LVL15:
+ 361:rtos/uCOS-III/Source/os_stat.c ****             } else if (OSStatTaskCtrMax <   4000000u) {         /* 400,000 to     4,000,000        
+ 362:rtos/uCOS-III/Source/os_stat.c ****                 ctr_mult =  1000u;
+ 363:rtos/uCOS-III/Source/os_stat.c ****                 ctr_div  =    10u;
+ 364:rtos/uCOS-III/Source/os_stat.c ****             } else if (OSStatTaskCtrMax <  40000000u) {         /* 4,000,000 to    40,000,000      
+ 365:rtos/uCOS-III/Source/os_stat.c ****                 ctr_mult =   100u;
+ 366:rtos/uCOS-III/Source/os_stat.c ****                 ctr_div  =   100u;
+ 367:rtos/uCOS-III/Source/os_stat.c ****             } else if (OSStatTaskCtrMax < 400000000u) {         /* 40,000,000 to   400,000,000     
+ 368:rtos/uCOS-III/Source/os_stat.c ****                 ctr_mult =    10u;
+ 369:rtos/uCOS-III/Source/os_stat.c ****                 ctr_div  =  1000u;
+ 370:rtos/uCOS-III/Source/os_stat.c ****             } else {                                            /* 400,000,000 and up              
+ 371:rtos/uCOS-III/Source/os_stat.c ****                 ctr_mult =     1u;
+ 372:rtos/uCOS-III/Source/os_stat.c ****                 ctr_div  = 10000u;
+ 373:rtos/uCOS-III/Source/os_stat.c ****             }
+ 374:rtos/uCOS-III/Source/os_stat.c ****             ctr_max            = OSStatTaskCtrMax / ctr_div;
+ 178              		.loc 1 374 13 is_stmt 1 view .LVU52
+ 179              		.loc 1 374 32 is_stmt 0 view .LVU53
+ 180 004a B2FBF0F2 		udiv	r2, r2, r0
+ 181              	.LVL16:
+ 375:rtos/uCOS-III/Source/os_stat.c ****             OSStatTaskCPUUsage = (OS_CPU_USAGE)((OS_TICK)10000u - ((ctr_mult * OSStatTaskCtrRun) / 
+ 182              		.loc 1 375 13 is_stmt 1 view .LVU54
+ 183              		.loc 1 375 78 is_stmt 0 view .LVU55
+ 184 004e 03FB01F3 		mul	r3, r3, r1
+ 185              	.LVL17:
+ 186              		.loc 1 375 98 view .LVU56
+ 187 0052 B3FBF2F3 		udiv	r3, r3, r2
+ 188              		.loc 1 375 34 view .LVU57
+ 189 0056 C3F51C53 		rsb	r3, r3, #9984
+ 190 005a 1033     		adds	r3, r3, #16
+ 191 005c 9BB2     		uxth	r3, r3
+ 192              		.loc 1 375 32 view .LVU58
+ 193 005e 314A     		ldr	r2, .L23+16
+ 194              	.LVL18:
+ARM GAS  /tmp/ccvfip2p.s 			page 11
+
+
+ 195              		.loc 1 375 32 view .LVU59
+ 196 0060 1380     		strh	r3, [r2]	@ movhi
+ 376:rtos/uCOS-III/Source/os_stat.c ****             if (OSStatTaskCPUUsageMax < OSStatTaskCPUUsage) {
+ 197              		.loc 1 376 13 is_stmt 1 view .LVU60
+ 198              		.loc 1 376 39 is_stmt 0 view .LVU61
+ 199 0062 314A     		ldr	r2, .L23+20
+ 200 0064 1288     		ldrh	r2, [r2]
+ 201              		.loc 1 376 16 view .LVU62
+ 202 0066 9342     		cmp	r3, r2
+ 203 0068 10D9     		bls	.L12
+ 377:rtos/uCOS-III/Source/os_stat.c ****                 OSStatTaskCPUUsageMax = OSStatTaskCPUUsage;
+ 204              		.loc 1 377 17 is_stmt 1 view .LVU63
+ 205              		.loc 1 377 39 is_stmt 0 view .LVU64
+ 206 006a 2F4A     		ldr	r2, .L23+20
+ 207 006c 1380     		strh	r3, [r2]	@ movhi
+ 208 006e 0DE0     		b	.L12
+ 209              	.LVL19:
+ 210              	.L19:
+ 363:rtos/uCOS-III/Source/os_stat.c ****             } else if (OSStatTaskCtrMax <  40000000u) {         /* 4,000,000 to    40,000,000      
+ 211              		.loc 1 363 26 view .LVU65
+ 212 0070 0A20     		movs	r0, #10
+ 362:rtos/uCOS-III/Source/os_stat.c ****                 ctr_div  =    10u;
+ 213              		.loc 1 362 26 view .LVU66
+ 214 0072 4FF47A73 		mov	r3, #1000
+ 215 0076 E8E7     		b	.L11
+ 216              	.L20:
+ 366:rtos/uCOS-III/Source/os_stat.c ****             } else if (OSStatTaskCtrMax < 400000000u) {         /* 40,000,000 to   400,000,000     
+ 217              		.loc 1 366 26 view .LVU67
+ 218 0078 6420     		movs	r0, #100
+ 365:rtos/uCOS-III/Source/os_stat.c ****                 ctr_div  =   100u;
+ 219              		.loc 1 365 26 view .LVU68
+ 220 007a 0346     		mov	r3, r0
+ 221 007c E5E7     		b	.L11
+ 222              	.L21:
+ 372:rtos/uCOS-III/Source/os_stat.c ****             }
+ 223              		.loc 1 372 26 view .LVU69
+ 224 007e 42F21070 		movw	r0, #10000
+ 371:rtos/uCOS-III/Source/os_stat.c ****                 ctr_div  = 10000u;
+ 225              		.loc 1 371 26 view .LVU70
+ 226 0082 0123     		movs	r3, #1
+ 227 0084 E1E7     		b	.L11
+ 228              	.L10:
+ 378:rtos/uCOS-III/Source/os_stat.c ****             }
+ 379:rtos/uCOS-III/Source/os_stat.c ****         } else {
+ 380:rtos/uCOS-III/Source/os_stat.c ****             OSStatTaskCPUUsage = 0u;
+ 229              		.loc 1 380 13 is_stmt 1 view .LVU71
+ 230              		.loc 1 380 32 is_stmt 0 view .LVU72
+ 231 0086 274B     		ldr	r3, .L23+16
+ 232 0088 0022     		movs	r2, #0
+ 233 008a 1A80     		strh	r2, [r3]	@ movhi
+ 234              	.L12:
+ 381:rtos/uCOS-III/Source/os_stat.c ****         }
+ 382:rtos/uCOS-III/Source/os_stat.c **** 
+ 383:rtos/uCOS-III/Source/os_stat.c ****         OSStatTaskHook();                                       /* Invoke user definable hook      
+ 235              		.loc 1 383 9 is_stmt 1 view .LVU73
+ 236 008c FFF7FEFF 		bl	OSStatTaskHook
+ 237              	.LVL20:
+ARM GAS  /tmp/ccvfip2p.s 			page 12
+
+
+ 384:rtos/uCOS-III/Source/os_stat.c **** 
+ 385:rtos/uCOS-III/Source/os_stat.c **** 
+ 386:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_DBG_EN > 0u)
+ 387:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TASK_PROFILE_EN > 0u)
+ 388:rtos/uCOS-III/Source/os_stat.c ****         cycles_total = 0u;
+ 389:rtos/uCOS-III/Source/os_stat.c **** 
+ 390:rtos/uCOS-III/Source/os_stat.c ****         CPU_CRITICAL_ENTER();
+ 391:rtos/uCOS-III/Source/os_stat.c ****         p_tcb = OSTaskDbgListPtr;
+ 392:rtos/uCOS-III/Source/os_stat.c ****         CPU_CRITICAL_EXIT();
+ 393:rtos/uCOS-III/Source/os_stat.c ****         while (p_tcb != (OS_TCB *)0) {                          /* ---------------- TOTAL CYCLES CO
+ 394:rtos/uCOS-III/Source/os_stat.c ****             CPU_CRITICAL_ENTER();
+ 395:rtos/uCOS-III/Source/os_stat.c ****             p_tcb->CyclesTotalPrev = p_tcb->CyclesTotal;        /* Save accumulated # cycles into a
+ 396:rtos/uCOS-III/Source/os_stat.c ****             p_tcb->CyclesTotal     = 0u;                        /* Reset total cycles for task for 
+ 397:rtos/uCOS-III/Source/os_stat.c ****             CPU_CRITICAL_EXIT();
+ 398:rtos/uCOS-III/Source/os_stat.c **** 
+ 399:rtos/uCOS-III/Source/os_stat.c ****             cycles_total          += p_tcb->CyclesTotalPrev;    /* Perform sum of all task # cycles
+ 400:rtos/uCOS-III/Source/os_stat.c **** 
+ 401:rtos/uCOS-III/Source/os_stat.c ****             CPU_CRITICAL_ENTER();
+ 402:rtos/uCOS-III/Source/os_stat.c ****             p_tcb                  = p_tcb->DbgNextPtr;
+ 403:rtos/uCOS-III/Source/os_stat.c ****             CPU_CRITICAL_EXIT();
+ 404:rtos/uCOS-III/Source/os_stat.c ****         }
+ 405:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 406:rtos/uCOS-III/Source/os_stat.c **** 
+ 407:rtos/uCOS-III/Source/os_stat.c **** 
+ 408:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TASK_PROFILE_EN > 0u)
+ 409:rtos/uCOS-III/Source/os_stat.c ****                                                                 /* ------------ INDIVIDUAL TASK CPU
+ 410:rtos/uCOS-III/Source/os_stat.c ****         if (cycles_total > 0u) {                                /* 'cycles_total' scaling ...      
+ 411:rtos/uCOS-III/Source/os_stat.c ****             if (cycles_total < 400000u) {                       /* 1 to       400,000              
+ 412:rtos/uCOS-III/Source/os_stat.c ****                 cycles_mult = 10000u;
+ 413:rtos/uCOS-III/Source/os_stat.c ****                 cycles_div  =     1u;
+ 414:rtos/uCOS-III/Source/os_stat.c ****             } else if (cycles_total <   4000000u) {             /* 400,000 to     4,000,000        
+ 415:rtos/uCOS-III/Source/os_stat.c ****                 cycles_mult =  1000u;
+ 416:rtos/uCOS-III/Source/os_stat.c ****                 cycles_div  =    10u;
+ 417:rtos/uCOS-III/Source/os_stat.c ****             } else if (cycles_total <  40000000u) {             /* 4,000,000 to    40,000,000      
+ 418:rtos/uCOS-III/Source/os_stat.c ****                 cycles_mult =   100u;
+ 419:rtos/uCOS-III/Source/os_stat.c ****                 cycles_div  =   100u;
+ 420:rtos/uCOS-III/Source/os_stat.c ****             } else if (cycles_total < 400000000u) {             /* 40,000,000 to   400,000,000     
+ 421:rtos/uCOS-III/Source/os_stat.c ****                 cycles_mult =    10u;
+ 422:rtos/uCOS-III/Source/os_stat.c ****                 cycles_div  =  1000u;
+ 423:rtos/uCOS-III/Source/os_stat.c ****             } else {                                            /* 400,000,000 and up              
+ 424:rtos/uCOS-III/Source/os_stat.c ****                 cycles_mult =     1u;
+ 425:rtos/uCOS-III/Source/os_stat.c ****                 cycles_div  = 10000u;
+ 426:rtos/uCOS-III/Source/os_stat.c ****             }
+ 427:rtos/uCOS-III/Source/os_stat.c ****             cycles_max  = cycles_total / cycles_div;
+ 428:rtos/uCOS-III/Source/os_stat.c ****         } else {
+ 429:rtos/uCOS-III/Source/os_stat.c ****             cycles_mult = 0u;
+ 430:rtos/uCOS-III/Source/os_stat.c ****             cycles_max  = 1u;
+ 431:rtos/uCOS-III/Source/os_stat.c ****         }
+ 432:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 433:rtos/uCOS-III/Source/os_stat.c ****         CPU_CRITICAL_ENTER();
+ 434:rtos/uCOS-III/Source/os_stat.c ****         p_tcb = OSTaskDbgListPtr;
+ 435:rtos/uCOS-III/Source/os_stat.c ****         CPU_CRITICAL_EXIT();
+ 436:rtos/uCOS-III/Source/os_stat.c ****         while (p_tcb != (OS_TCB *)0) {
+ 437:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TASK_PROFILE_EN > 0u)                               /* Compute execution time of each t
+ 438:rtos/uCOS-III/Source/os_stat.c ****             usage = (OS_CPU_USAGE)(cycles_mult * p_tcb->CyclesTotalPrev / cycles_max);
+ 439:rtos/uCOS-III/Source/os_stat.c ****             if (usage > 10000u) {
+ 440:rtos/uCOS-III/Source/os_stat.c ****                 usage = 10000u;
+ARM GAS  /tmp/ccvfip2p.s 			page 13
+
+
+ 441:rtos/uCOS-III/Source/os_stat.c ****             }
+ 442:rtos/uCOS-III/Source/os_stat.c ****             p_tcb->CPUUsage = usage;
+ 443:rtos/uCOS-III/Source/os_stat.c ****             if (p_tcb->CPUUsageMax < usage) {                   /* Detect peak CPU usage           
+ 444:rtos/uCOS-III/Source/os_stat.c ****                 p_tcb->CPUUsageMax = usage;
+ 445:rtos/uCOS-III/Source/os_stat.c ****             }
+ 446:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 447:rtos/uCOS-III/Source/os_stat.c **** 
+ 448:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_STAT_TASK_STK_CHK_EN > 0u)
+ 449:rtos/uCOS-III/Source/os_stat.c ****             OSTaskStkChk( p_tcb,                                /* Compute stack usage of active ta
+ 450:rtos/uCOS-III/Source/os_stat.c ****                          &p_tcb->StkFree,
+ 451:rtos/uCOS-III/Source/os_stat.c ****                          &p_tcb->StkUsed,
+ 452:rtos/uCOS-III/Source/os_stat.c ****                          &err);
+ 453:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 454:rtos/uCOS-III/Source/os_stat.c **** 
+ 455:rtos/uCOS-III/Source/os_stat.c ****             CPU_CRITICAL_ENTER();
+ 456:rtos/uCOS-III/Source/os_stat.c ****             p_tcb = p_tcb->DbgNextPtr;
+ 457:rtos/uCOS-III/Source/os_stat.c ****             CPU_CRITICAL_EXIT();
+ 458:rtos/uCOS-III/Source/os_stat.c ****         }
+ 459:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 460:rtos/uCOS-III/Source/os_stat.c **** 
+ 461:rtos/uCOS-III/Source/os_stat.c ****                                                                 /*------------------ Check ISR Stac
+ 462:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_STAT_TASK_STK_CHK_EN > 0u) && (OS_CFG_ISR_STK_SIZE > 0u)
+ 463:rtos/uCOS-III/Source/os_stat.c ****         free_stk  = 0u;
+ 238              		.loc 1 463 9 view .LVU74
+ 464:rtos/uCOS-III/Source/os_stat.c **** #if (CPU_CFG_STK_GROWTH == CPU_STK_GROWTH_HI_TO_LO)
+ 465:rtos/uCOS-III/Source/os_stat.c ****         p_stk     = OSCfg_ISRStkBasePtr;                        /*   Start at the lowest memory and
+ 239              		.loc 1 465 9 view .LVU75
+ 240              		.loc 1 465 19 is_stmt 0 view .LVU76
+ 241 0090 264B     		ldr	r3, .L23+24
+ 242 0092 1A68     		ldr	r2, [r3]
+ 243              	.LVL21:
+ 466:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TASK_STK_REDZONE_EN > 0u)
+ 467:rtos/uCOS-III/Source/os_stat.c ****         p_stk    += OS_CFG_TASK_STK_REDZONE_DEPTH;
+ 468:rtos/uCOS-III/Source/os_stat.c ****         size_stk  = OSCfg_ISRStkSize - OS_CFG_TASK_STK_REDZONE_DEPTH;
+ 469:rtos/uCOS-III/Source/os_stat.c **** #else
+ 470:rtos/uCOS-III/Source/os_stat.c ****         size_stk  = OSCfg_ISRStkSize;
+ 244              		.loc 1 470 9 is_stmt 1 view .LVU77
+ 245              		.loc 1 470 19 is_stmt 0 view .LVU78
+ 246 0094 264B     		ldr	r3, .L23+28
+ 247 0096 1868     		ldr	r0, [r3]
+ 248              	.LVL22:
+ 471:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 472:rtos/uCOS-III/Source/os_stat.c ****         while ((*p_stk == 0u) && (free_stk < size_stk)) {       /*   Compute the number of zero ent
+ 249              		.loc 1 472 9 is_stmt 1 view .LVU79
+ 463:rtos/uCOS-III/Source/os_stat.c **** #if (CPU_CFG_STK_GROWTH == CPU_STK_GROWTH_HI_TO_LO)
+ 250              		.loc 1 463 19 is_stmt 0 view .LVU80
+ 251 0098 0023     		movs	r3, #0
+ 252              	.LVL23:
+ 253              	.L13:
+ 254              		.loc 1 472 15 is_stmt 1 view .LVU81
+ 255              		.loc 1 472 17 is_stmt 0 view .LVU82
+ 256 009a 1168     		ldr	r1, [r2]
+ 257              		.loc 1 472 15 view .LVU83
+ 258 009c 21B9     		cbnz	r1, .L14
+ 259              		.loc 1 472 31 discriminator 1 view .LVU84
+ 260 009e 8342     		cmp	r3, r0
+ 261 00a0 02D2     		bcs	.L14
+ARM GAS  /tmp/ccvfip2p.s 			page 14
+
+
+ 473:rtos/uCOS-III/Source/os_stat.c ****             p_stk++;
+ 262              		.loc 1 473 13 is_stmt 1 view .LVU85
+ 263              		.loc 1 473 18 is_stmt 0 view .LVU86
+ 264 00a2 0432     		adds	r2, r2, #4
+ 265              	.LVL24:
+ 474:rtos/uCOS-III/Source/os_stat.c ****             free_stk++;
+ 266              		.loc 1 474 13 is_stmt 1 view .LVU87
+ 267              		.loc 1 474 21 is_stmt 0 view .LVU88
+ 268 00a4 0133     		adds	r3, r3, #1
+ 269              	.LVL25:
+ 270              		.loc 1 474 21 view .LVU89
+ 271 00a6 F8E7     		b	.L13
+ 272              	.L14:
+ 475:rtos/uCOS-III/Source/os_stat.c ****         }
+ 476:rtos/uCOS-III/Source/os_stat.c **** #else
+ 477:rtos/uCOS-III/Source/os_stat.c ****         p_stk     = OSCfg_ISRStkBasePtr + OSCfg_ISRStkSize - 1u;/*   Start at the highest memory an
+ 478:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TASK_STK_REDZONE_EN > 0u)
+ 479:rtos/uCOS-III/Source/os_stat.c ****         p_stk    -= OS_CFG_TASK_STK_REDZONE_DEPTH;
+ 480:rtos/uCOS-III/Source/os_stat.c ****         size_stk  = OSCfg_ISRStkSize - OS_CFG_TASK_STK_REDZONE_DEPTH;
+ 481:rtos/uCOS-III/Source/os_stat.c **** #else
+ 482:rtos/uCOS-III/Source/os_stat.c ****         size_stk  = OSCfg_ISRStkSize;
+ 483:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 484:rtos/uCOS-III/Source/os_stat.c ****         while ((*p_stk == 0u) && (free_stk < size_stk)) {       /*   Compute the number of zero ent
+ 485:rtos/uCOS-III/Source/os_stat.c ****             free_stk++;
+ 486:rtos/uCOS-III/Source/os_stat.c ****             p_stk--;
+ 487:rtos/uCOS-III/Source/os_stat.c ****         }
+ 488:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 489:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TASK_STK_REDZONE_EN > 0u)
+ 490:rtos/uCOS-III/Source/os_stat.c ****         free_stk     -= OS_CFG_TASK_STK_REDZONE_DEPTH;          /*   Compensate for stack elements 
+ 491:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 492:rtos/uCOS-III/Source/os_stat.c ****         OSISRStkFree  = free_stk;
+ 273              		.loc 1 492 9 is_stmt 1 view .LVU90
+ 274              		.loc 1 492 23 is_stmt 0 view .LVU91
+ 275 00a8 224A     		ldr	r2, .L23+32
+ 276              	.LVL26:
+ 277              		.loc 1 492 23 view .LVU92
+ 278 00aa 1360     		str	r3, [r2]
+ 493:rtos/uCOS-III/Source/os_stat.c ****         OSISRStkUsed  = OSCfg_ISRStkSize - free_stk;
+ 279              		.loc 1 493 9 is_stmt 1 view .LVU93
+ 280              		.loc 1 493 42 is_stmt 0 view .LVU94
+ 281 00ac C31A     		subs	r3, r0, r3
+ 282              	.LVL27:
+ 283              		.loc 1 493 23 view .LVU95
+ 284 00ae 224A     		ldr	r2, .L23+36
+ 285              	.LVL28:
+ 286              		.loc 1 493 23 view .LVU96
+ 287 00b0 1360     		str	r3, [r2]
+ 494:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 495:rtos/uCOS-III/Source/os_stat.c **** 
+ 496:rtos/uCOS-III/Source/os_stat.c ****         if (OSStatResetFlag == OS_TRUE) {                       /* Check if need to reset statistic
+ 288              		.loc 1 496 9 is_stmt 1 view .LVU97
+ 289              		.loc 1 496 29 is_stmt 0 view .LVU98
+ 290 00b2 224B     		ldr	r3, .L23+40
+ 291 00b4 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 292              		.loc 1 496 12 view .LVU99
+ 293 00b6 012B     		cmp	r3, #1
+ 294 00b8 06D1     		bne	.L16
+ARM GAS  /tmp/ccvfip2p.s 			page 15
+
+
+ 497:rtos/uCOS-III/Source/os_stat.c ****             OSStatResetFlag  = OS_FALSE;
+ 295              		.loc 1 497 13 is_stmt 1 view .LVU100
+ 296              		.loc 1 497 30 is_stmt 0 view .LVU101
+ 297 00ba 204B     		ldr	r3, .L23+40
+ 298 00bc 0022     		movs	r2, #0
+ 299 00be 1A70     		strb	r2, [r3]
+ 498:rtos/uCOS-III/Source/os_stat.c ****             OSStatReset(&err);
+ 300              		.loc 1 498 13 is_stmt 1 view .LVU102
+ 301 00c0 0DF10600 		add	r0, sp, #6
+ 302              	.LVL29:
+ 303              		.loc 1 498 13 is_stmt 0 view .LVU103
+ 304 00c4 FFF7FEFF 		bl	OSStatReset
+ 305              	.LVL30:
+ 306              	.L16:
+ 499:rtos/uCOS-III/Source/os_stat.c ****         }
+ 500:rtos/uCOS-III/Source/os_stat.c **** 
+ 501:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TS_EN > 0u)
+ 502:rtos/uCOS-III/Source/os_stat.c ****         OSStatTaskTime = OS_TS_GET() - ts_start;                /*----- Measure execution time of s
+ 503:rtos/uCOS-III/Source/os_stat.c ****         if (OSStatTaskTimeMax < OSStatTaskTime) {
+ 504:rtos/uCOS-III/Source/os_stat.c ****             OSStatTaskTimeMax = OSStatTaskTime;
+ 505:rtos/uCOS-III/Source/os_stat.c ****         }
+ 506:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 507:rtos/uCOS-III/Source/os_stat.c **** 
+ 508:rtos/uCOS-III/Source/os_stat.c ****         OSTimeDly(dly,
+ 307              		.loc 1 508 9 is_stmt 1 view .LVU104
+ 308 00c8 0DF10602 		add	r2, sp, #6
+ 309 00cc 0021     		movs	r1, #0
+ 310 00ce 2046     		mov	r0, r4
+ 311 00d0 FFF7FEFF 		bl	OSTimeDly
+ 312              	.LVL31:
+ 344:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TS_EN > 0u)
+ 313              		.loc 1 344 11 view .LVU105
+ 314              	.L17:
+ 344:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TS_EN > 0u)
+ 315              		.loc 1 344 5 view .LVU106
+ 352:rtos/uCOS-III/Source/os_stat.c ****         OSStatTaskCtrRun   = OSStatTaskCtr;                     /* Obtain the of the stat counter f
+ 316              		.loc 1 352 9 view .LVU107
+ 352:rtos/uCOS-III/Source/os_stat.c ****         OSStatTaskCtrRun   = OSStatTaskCtr;                     /* Obtain the of the stat counter f
+ 317              		.loc 1 352 9 view .LVU108
+ 352:rtos/uCOS-III/Source/os_stat.c ****         OSStatTaskCtrRun   = OSStatTaskCtr;                     /* Obtain the of the stat counter f
+ 318              		.loc 1 352 9 view .LVU109
+ 319 00d4 4020     		movs	r0, #64
+ 320 00d6 FFF7FEFF 		bl	CPU_SR_Save
+ 321              	.LVL32:
+ 352:rtos/uCOS-III/Source/os_stat.c ****         OSStatTaskCtrRun   = OSStatTaskCtr;                     /* Obtain the of the stat counter f
+ 322              		.loc 1 352 9 view .LVU110
+ 352:rtos/uCOS-III/Source/os_stat.c ****         OSStatTaskCtrRun   = OSStatTaskCtr;                     /* Obtain the of the stat counter f
+ 323              		.loc 1 352 9 view .LVU111
+ 353:rtos/uCOS-III/Source/os_stat.c ****         OSStatTaskCtr      = 0u;                                /* Reset the stat counter for the n
+ 324              		.loc 1 353 9 view .LVU112
+ 353:rtos/uCOS-III/Source/os_stat.c ****         OSStatTaskCtr      = 0u;                                /* Reset the stat counter for the n
+ 325              		.loc 1 353 28 is_stmt 0 view .LVU113
+ 326 00da 194D     		ldr	r5, .L23+44
+ 327 00dc 194B     		ldr	r3, .L23+48
+ 328 00de 1A68     		ldr	r2, [r3]
+ 329 00e0 2A60     		str	r2, [r5]
+ 354:rtos/uCOS-III/Source/os_stat.c ****         CPU_CRITICAL_EXIT();
+ARM GAS  /tmp/ccvfip2p.s 			page 16
+
+
+ 330              		.loc 1 354 9 is_stmt 1 view .LVU114
+ 354:rtos/uCOS-III/Source/os_stat.c ****         CPU_CRITICAL_EXIT();
+ 331              		.loc 1 354 28 is_stmt 0 view .LVU115
+ 332 00e2 0022     		movs	r2, #0
+ 333 00e4 1A60     		str	r2, [r3]
+ 355:rtos/uCOS-III/Source/os_stat.c **** 
+ 334              		.loc 1 355 9 is_stmt 1 view .LVU116
+ 355:rtos/uCOS-III/Source/os_stat.c **** 
+ 335              		.loc 1 355 9 view .LVU117
+ 355:rtos/uCOS-III/Source/os_stat.c **** 
+ 336              		.loc 1 355 9 view .LVU118
+ 337 00e6 FFF7FEFF 		bl	CPU_SR_Restore
+ 338              	.LVL33:
+ 355:rtos/uCOS-III/Source/os_stat.c **** 
+ 339              		.loc 1 355 9 view .LVU119
+ 355:rtos/uCOS-III/Source/os_stat.c **** 
+ 340              		.loc 1 355 9 view .LVU120
+ 357:rtos/uCOS-III/Source/os_stat.c ****             if (OSStatTaskCtrMax < 400000u) {                   /* 1 to       400,000              
+ 341              		.loc 1 357 9 view .LVU121
+ 357:rtos/uCOS-III/Source/os_stat.c ****             if (OSStatTaskCtrMax < 400000u) {                   /* 1 to       400,000              
+ 342              		.loc 1 357 30 is_stmt 0 view .LVU122
+ 343 00ea 174B     		ldr	r3, .L23+52
+ 344 00ec 1A68     		ldr	r2, [r3]
+ 345 00ee 2968     		ldr	r1, [r5]
+ 357:rtos/uCOS-III/Source/os_stat.c ****             if (OSStatTaskCtrMax < 400000u) {                   /* 1 to       400,000              
+ 346              		.loc 1 357 12 view .LVU123
+ 347 00f0 8A42     		cmp	r2, r1
+ 348 00f2 C8D9     		bls	.L10
+ 358:rtos/uCOS-III/Source/os_stat.c ****                 ctr_mult = 10000u;
+ 349              		.loc 1 358 13 is_stmt 1 view .LVU124
+ 358:rtos/uCOS-III/Source/os_stat.c ****                 ctr_mult = 10000u;
+ 350              		.loc 1 358 16 is_stmt 0 view .LVU125
+ 351 00f4 154B     		ldr	r3, .L23+56
+ 352 00f6 9A42     		cmp	r2, r3
+ 353 00f8 A4D9     		bls	.L18
+ 361:rtos/uCOS-III/Source/os_stat.c ****                 ctr_mult =  1000u;
+ 354              		.loc 1 361 20 is_stmt 1 view .LVU126
+ 361:rtos/uCOS-III/Source/os_stat.c ****                 ctr_mult =  1000u;
+ 355              		.loc 1 361 23 is_stmt 0 view .LVU127
+ 356 00fa 154B     		ldr	r3, .L23+60
+ 357 00fc 9A42     		cmp	r2, r3
+ 358 00fe B7D9     		bls	.L19
+ 364:rtos/uCOS-III/Source/os_stat.c ****                 ctr_mult =   100u;
+ 359              		.loc 1 364 20 is_stmt 1 view .LVU128
+ 364:rtos/uCOS-III/Source/os_stat.c ****                 ctr_mult =   100u;
+ 360              		.loc 1 364 23 is_stmt 0 view .LVU129
+ 361 0100 144B     		ldr	r3, .L23+64
+ 362 0102 9A42     		cmp	r2, r3
+ 363 0104 B8D3     		bcc	.L20
+ 367:rtos/uCOS-III/Source/os_stat.c ****                 ctr_mult =    10u;
+ 364              		.loc 1 367 20 is_stmt 1 view .LVU130
+ 367:rtos/uCOS-III/Source/os_stat.c ****                 ctr_mult =    10u;
+ 365              		.loc 1 367 23 is_stmt 0 view .LVU131
+ 366 0106 144B     		ldr	r3, .L23+68
+ 367 0108 9A42     		cmp	r2, r3
+ 368 010a B8D8     		bhi	.L21
+ 369:rtos/uCOS-III/Source/os_stat.c ****             } else {                                            /* 400,000,000 and up              
+ARM GAS  /tmp/ccvfip2p.s 			page 17
+
+
+ 369              		.loc 1 369 26 view .LVU132
+ 370 010c 4FF47A70 		mov	r0, #1000
+ 368:rtos/uCOS-III/Source/os_stat.c ****                 ctr_div  =  1000u;
+ 371              		.loc 1 368 26 view .LVU133
+ 372 0110 0A23     		movs	r3, #10
+ 373 0112 9AE7     		b	.L11
+ 374              	.L24:
+ 375              		.align	2
+ 376              	.L23:
+ 377 0114 00000000 		.word	OSCfg_StatTaskRate_Hz
+ 378 0118 00000000 		.word	OSStatTaskRdy
+ 379 011c 00000000 		.word	OSCfg_TickRate_Hz
+ 380 0120 CDCCCCCC 		.word	-858993459
+ 381 0124 00000000 		.word	OSStatTaskCPUUsage
+ 382 0128 00000000 		.word	OSStatTaskCPUUsageMax
+ 383 012c 00000000 		.word	OSCfg_ISRStkBasePtr
+ 384 0130 00000000 		.word	OSCfg_ISRStkSize
+ 385 0134 00000000 		.word	OSISRStkFree
+ 386 0138 00000000 		.word	OSISRStkUsed
+ 387 013c 00000000 		.word	OSStatResetFlag
+ 388 0140 00000000 		.word	OSStatTaskCtrRun
+ 389 0144 00000000 		.word	OSStatTaskCtr
+ 390 0148 00000000 		.word	OSStatTaskCtrMax
+ 391 014c 7F1A0600 		.word	399999
+ 392 0150 FF083D00 		.word	3999999
+ 393 0154 005A6202 		.word	40000000
+ 394 0158 FF83D717 		.word	399999999
+ 395              		.cfi_endproc
+ 396              	.LFE2:
+ 398              		.section	.text.OSStatTaskCPUUsageInit,"ax",%progbits
+ 399              		.align	1
+ 400              		.global	OSStatTaskCPUUsageInit
+ 401              		.syntax unified
+ 402              		.thumb
+ 403              		.thumb_func
+ 404              		.fpu fpv4-sp-d16
+ 406              	OSStatTaskCPUUsageInit:
+ 407              	.LVL34:
+ 408              	.LFB1:
+ 200:rtos/uCOS-III/Source/os_stat.c ****     OS_ERR   err;
+ 409              		.loc 1 200 1 is_stmt 1 view -0
+ 410              		.cfi_startproc
+ 411              		@ args = 0, pretend = 0, frame = 8
+ 412              		@ frame_needed = 0, uses_anonymous_args = 0
+ 200:rtos/uCOS-III/Source/os_stat.c ****     OS_ERR   err;
+ 413              		.loc 1 200 1 is_stmt 0 view .LVU135
+ 414 0000 10B5     		push	{r4, lr}
+ 415              	.LCFI3:
+ 416              		.cfi_def_cfa_offset 8
+ 417              		.cfi_offset 4, -8
+ 418              		.cfi_offset 14, -4
+ 419 0002 82B0     		sub	sp, sp, #8
+ 420              	.LCFI4:
+ 421              		.cfi_def_cfa_offset 16
+ 422 0004 0446     		mov	r4, r0
+ 201:rtos/uCOS-III/Source/os_stat.c ****     OS_TICK  dly;
+ 423              		.loc 1 201 5 is_stmt 1 view .LVU136
+ARM GAS  /tmp/ccvfip2p.s 			page 18
+
+
+ 202:rtos/uCOS-III/Source/os_stat.c ****     CPU_SR_ALLOC();
+ 424              		.loc 1 202 5 view .LVU137
+ 203:rtos/uCOS-III/Source/os_stat.c **** 
+ 425              		.loc 1 203 5 view .LVU138
+ 426              	.LVL35:
+ 206:rtos/uCOS-III/Source/os_stat.c **** 
+ 427              		.loc 1 206 5 view .LVU139
+ 206:rtos/uCOS-III/Source/os_stat.c **** 
+ 428              		.loc 1 206 9 is_stmt 0 view .LVU140
+ 429 0006 0023     		movs	r3, #0
+ 430 0008 ADF80630 		strh	r3, [sp, #6]	@ movhi
+ 216:rtos/uCOS-III/Source/os_stat.c ****        *p_err = OS_ERR_OS_NOT_RUNNING;
+ 431              		.loc 1 216 5 is_stmt 1 view .LVU141
+ 216:rtos/uCOS-III/Source/os_stat.c ****        *p_err = OS_ERR_OS_NOT_RUNNING;
+ 432              		.loc 1 216 19 is_stmt 0 view .LVU142
+ 433 000c 284B     		ldr	r3, .L35
+ 434 000e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 216:rtos/uCOS-III/Source/os_stat.c ****        *p_err = OS_ERR_OS_NOT_RUNNING;
+ 435              		.loc 1 216 8 view .LVU143
+ 436 0010 012B     		cmp	r3, #1
+ 437 0012 04D0     		beq	.L26
+ 217:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 438              		.loc 1 217 8 is_stmt 1 view .LVU144
+ 217:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 439              		.loc 1 217 15 is_stmt 0 view .LVU145
+ 440 0014 45F68963 		movw	r3, #24201
+ 441 0018 0380     		strh	r3, [r0]	@ movhi
+ 218:rtos/uCOS-III/Source/os_stat.c ****     }
+ 442              		.loc 1 218 9 is_stmt 1 view .LVU146
+ 443              	.LVL36:
+ 444              	.L25:
+ 270:rtos/uCOS-III/Source/os_stat.c **** 
+ 445              		.loc 1 270 1 is_stmt 0 view .LVU147
+ 446 001a 02B0     		add	sp, sp, #8
+ 447              	.LCFI5:
+ 448              		.cfi_remember_state
+ 449              		.cfi_def_cfa_offset 8
+ 450              		@ sp needed
+ 451 001c 10BD     		pop	{r4, pc}
+ 452              	.LVL37:
+ 453              	.L26:
+ 454              	.LCFI6:
+ 455              		.cfi_restore_state
+ 223:rtos/uCOS-III/Source/os_stat.c ****     if (err != OS_ERR_NONE) {
+ 456              		.loc 1 223 5 is_stmt 1 view .LVU148
+ 457 001e 0DF10601 		add	r1, sp, #6
+ 458 0022 2448     		ldr	r0, .L35+4
+ 459              	.LVL38:
+ 223:rtos/uCOS-III/Source/os_stat.c ****     if (err != OS_ERR_NONE) {
+ 460              		.loc 1 223 5 is_stmt 0 view .LVU149
+ 461 0024 FFF7FEFF 		bl	OSTaskSuspend
+ 462              	.LVL39:
+ 224:rtos/uCOS-III/Source/os_stat.c ****        *p_err = err;
+ 463              		.loc 1 224 5 is_stmt 1 view .LVU150
+ 224:rtos/uCOS-III/Source/os_stat.c ****        *p_err = err;
+ 464              		.loc 1 224 13 is_stmt 0 view .LVU151
+ 465 0028 BDF80630 		ldrh	r3, [sp, #6]
+ARM GAS  /tmp/ccvfip2p.s 			page 19
+
+
+ 224:rtos/uCOS-III/Source/os_stat.c ****        *p_err = err;
+ 466              		.loc 1 224 8 view .LVU152
+ 467 002c 0BB1     		cbz	r3, .L28
+ 225:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 468              		.loc 1 225 8 is_stmt 1 view .LVU153
+ 225:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 469              		.loc 1 225 15 is_stmt 0 view .LVU154
+ 470 002e 2380     		strh	r3, [r4]	@ movhi
+ 226:rtos/uCOS-III/Source/os_stat.c ****     }
+ 471              		.loc 1 226 9 is_stmt 1 view .LVU155
+ 472 0030 F3E7     		b	.L25
+ 473              	.L28:
+ 230:rtos/uCOS-III/Source/os_stat.c ****               (OS_OPT  )OS_OPT_TIME_DLY,
+ 474              		.loc 1 230 5 view .LVU156
+ 475 0032 0DF10602 		add	r2, sp, #6
+ 476 0036 0021     		movs	r1, #0
+ 477 0038 0220     		movs	r0, #2
+ 478 003a FFF7FEFF 		bl	OSTimeDly
+ 479              	.LVL40:
+ 233:rtos/uCOS-III/Source/os_stat.c ****        *p_err = err;
+ 480              		.loc 1 233 5 view .LVU157
+ 233:rtos/uCOS-III/Source/os_stat.c ****        *p_err = err;
+ 481              		.loc 1 233 13 is_stmt 0 view .LVU158
+ 482 003e BDF80630 		ldrh	r3, [sp, #6]
+ 233:rtos/uCOS-III/Source/os_stat.c ****        *p_err = err;
+ 483              		.loc 1 233 8 view .LVU159
+ 484 0042 0BB1     		cbz	r3, .L29
+ 234:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 485              		.loc 1 234 8 is_stmt 1 view .LVU160
+ 234:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 486              		.loc 1 234 15 is_stmt 0 view .LVU161
+ 487 0044 2380     		strh	r3, [r4]	@ movhi
+ 235:rtos/uCOS-III/Source/os_stat.c ****     }
+ 488              		.loc 1 235 9 is_stmt 1 view .LVU162
+ 489 0046 E8E7     		b	.L25
+ 490              	.L29:
+ 237:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskCtr = 0u;                                         /* Clear idle counter              
+ 491              		.loc 1 237 5 view .LVU163
+ 237:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskCtr = 0u;                                         /* Clear idle counter              
+ 492              		.loc 1 237 5 view .LVU164
+ 237:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskCtr = 0u;                                         /* Clear idle counter              
+ 493              		.loc 1 237 5 view .LVU165
+ 494 0048 4020     		movs	r0, #64
+ 495 004a FFF7FEFF 		bl	CPU_SR_Save
+ 496              	.LVL41:
+ 237:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskCtr = 0u;                                         /* Clear idle counter              
+ 497              		.loc 1 237 5 view .LVU166
+ 237:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskCtr = 0u;                                         /* Clear idle counter              
+ 498              		.loc 1 237 5 view .LVU167
+ 238:rtos/uCOS-III/Source/os_stat.c ****     CPU_CRITICAL_EXIT();
+ 499              		.loc 1 238 5 view .LVU168
+ 238:rtos/uCOS-III/Source/os_stat.c ****     CPU_CRITICAL_EXIT();
+ 500              		.loc 1 238 19 is_stmt 0 view .LVU169
+ 501 004e 1A4B     		ldr	r3, .L35+8
+ 502 0050 0022     		movs	r2, #0
+ 503 0052 1A60     		str	r2, [r3]
+ 239:rtos/uCOS-III/Source/os_stat.c **** 
+ARM GAS  /tmp/ccvfip2p.s 			page 20
+
+
+ 504              		.loc 1 239 5 is_stmt 1 view .LVU170
+ 239:rtos/uCOS-III/Source/os_stat.c **** 
+ 505              		.loc 1 239 5 view .LVU171
+ 239:rtos/uCOS-III/Source/os_stat.c **** 
+ 506              		.loc 1 239 5 view .LVU172
+ 507 0054 FFF7FEFF 		bl	CPU_SR_Restore
+ 508              	.LVL42:
+ 239:rtos/uCOS-III/Source/os_stat.c **** 
+ 509              		.loc 1 239 5 view .LVU173
+ 239:rtos/uCOS-III/Source/os_stat.c **** 
+ 510              		.loc 1 239 5 view .LVU174
+ 241:rtos/uCOS-III/Source/os_stat.c ****     if (OSCfg_TickRate_Hz > OSCfg_StatTaskRate_Hz) {
+ 511              		.loc 1 241 5 view .LVU175
+ 242:rtos/uCOS-III/Source/os_stat.c ****         dly = (OS_TICK)(OSCfg_TickRate_Hz / OSCfg_StatTaskRate_Hz);
+ 512              		.loc 1 242 5 view .LVU176
+ 242:rtos/uCOS-III/Source/os_stat.c ****         dly = (OS_TICK)(OSCfg_TickRate_Hz / OSCfg_StatTaskRate_Hz);
+ 513              		.loc 1 242 27 is_stmt 0 view .LVU177
+ 514 0058 184B     		ldr	r3, .L35+12
+ 515 005a 1B68     		ldr	r3, [r3]
+ 516 005c 184A     		ldr	r2, .L35+16
+ 517 005e 1068     		ldr	r0, [r2]
+ 242:rtos/uCOS-III/Source/os_stat.c ****         dly = (OS_TICK)(OSCfg_TickRate_Hz / OSCfg_StatTaskRate_Hz);
+ 518              		.loc 1 242 8 view .LVU178
+ 519 0060 8342     		cmp	r3, r0
+ 520 0062 02D9     		bls	.L30
+ 243:rtos/uCOS-III/Source/os_stat.c ****     }
+ 521              		.loc 1 243 9 is_stmt 1 view .LVU179
+ 243:rtos/uCOS-III/Source/os_stat.c ****     }
+ 522              		.loc 1 243 13 is_stmt 0 view .LVU180
+ 523 0064 B3FBF0F0 		udiv	r0, r3, r0
+ 524              	.LVL43:
+ 245:rtos/uCOS-III/Source/os_stat.c ****         dly =  (OSCfg_TickRate_Hz / 10u);
+ 525              		.loc 1 245 5 is_stmt 1 view .LVU181
+ 245:rtos/uCOS-III/Source/os_stat.c ****         dly =  (OSCfg_TickRate_Hz / 10u);
+ 526              		.loc 1 245 8 is_stmt 0 view .LVU182
+ 527 0068 18B9     		cbnz	r0, .L31
+ 528              	.LVL44:
+ 529              	.L30:
+ 246:rtos/uCOS-III/Source/os_stat.c ****     }
+ 530              		.loc 1 246 9 is_stmt 1 view .LVU183
+ 246:rtos/uCOS-III/Source/os_stat.c ****     }
+ 531              		.loc 1 246 13 is_stmt 0 view .LVU184
+ 532 006a 1648     		ldr	r0, .L35+20
+ 533 006c A0FB0330 		umull	r3, r0, r0, r3
+ 534 0070 C008     		lsrs	r0, r0, #3
+ 535              	.LVL45:
+ 536              	.L31:
+ 249:rtos/uCOS-III/Source/os_stat.c ****               OS_OPT_TIME_DLY,
+ 537              		.loc 1 249 5 is_stmt 1 view .LVU185
+ 538 0072 0DF10602 		add	r2, sp, #6
+ 539 0076 0021     		movs	r1, #0
+ 540 0078 FFF7FEFF 		bl	OSTimeDly
+ 541              	.LVL46:
+ 254:rtos/uCOS-III/Source/os_stat.c ****     if (err != OS_ERR_NONE) {
+ 542              		.loc 1 254 5 view .LVU186
+ 543 007c 0DF10601 		add	r1, sp, #6
+ 544 0080 0C48     		ldr	r0, .L35+4
+ARM GAS  /tmp/ccvfip2p.s 			page 21
+
+
+ 545 0082 FFF7FEFF 		bl	OSTaskResume
+ 546              	.LVL47:
+ 255:rtos/uCOS-III/Source/os_stat.c ****        *p_err = err;
+ 547              		.loc 1 255 5 view .LVU187
+ 255:rtos/uCOS-III/Source/os_stat.c ****        *p_err = err;
+ 548              		.loc 1 255 13 is_stmt 0 view .LVU188
+ 549 0086 BDF80630 		ldrh	r3, [sp, #6]
+ 255:rtos/uCOS-III/Source/os_stat.c ****        *p_err = err;
+ 550              		.loc 1 255 8 view .LVU189
+ 551 008a 0BB1     		cbz	r3, .L32
+ 256:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 552              		.loc 1 256 8 is_stmt 1 view .LVU190
+ 256:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 553              		.loc 1 256 15 is_stmt 0 view .LVU191
+ 554 008c 2380     		strh	r3, [r4]	@ movhi
+ 257:rtos/uCOS-III/Source/os_stat.c ****     }
+ 555              		.loc 1 257 9 is_stmt 1 view .LVU192
+ 556 008e C4E7     		b	.L25
+ 557              	.L32:
+ 261:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TS_EN > 0u)
+ 558              		.loc 1 261 5 view .LVU193
+ 261:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TS_EN > 0u)
+ 559              		.loc 1 261 5 view .LVU194
+ 261:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TS_EN > 0u)
+ 560              		.loc 1 261 5 view .LVU195
+ 561 0090 4020     		movs	r0, #64
+ 562 0092 FFF7FEFF 		bl	CPU_SR_Save
+ 563              	.LVL48:
+ 261:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TS_EN > 0u)
+ 564              		.loc 1 261 5 view .LVU196
+ 261:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_TS_EN > 0u)
+ 565              		.loc 1 261 5 view .LVU197
+ 266:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskRdy     = OS_STATE_RDY;
+ 566              		.loc 1 266 5 view .LVU198
+ 266:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskRdy     = OS_STATE_RDY;
+ 567              		.loc 1 266 23 is_stmt 0 view .LVU199
+ 568 0096 084B     		ldr	r3, .L35+8
+ 569 0098 1A68     		ldr	r2, [r3]
+ 570 009a 0B4B     		ldr	r3, .L35+24
+ 571 009c 1A60     		str	r2, [r3]
+ 267:rtos/uCOS-III/Source/os_stat.c ****     CPU_CRITICAL_EXIT();
+ 572              		.loc 1 267 5 is_stmt 1 view .LVU200
+ 267:rtos/uCOS-III/Source/os_stat.c ****     CPU_CRITICAL_EXIT();
+ 573              		.loc 1 267 23 is_stmt 0 view .LVU201
+ 574 009e 0B4B     		ldr	r3, .L35+28
+ 575 00a0 0122     		movs	r2, #1
+ 576 00a2 1A70     		strb	r2, [r3]
+ 268:rtos/uCOS-III/Source/os_stat.c ****    *p_err             = OS_ERR_NONE;
+ 577              		.loc 1 268 5 is_stmt 1 view .LVU202
+ 268:rtos/uCOS-III/Source/os_stat.c ****    *p_err             = OS_ERR_NONE;
+ 578              		.loc 1 268 5 view .LVU203
+ 268:rtos/uCOS-III/Source/os_stat.c ****    *p_err             = OS_ERR_NONE;
+ 579              		.loc 1 268 5 view .LVU204
+ 580 00a4 FFF7FEFF 		bl	CPU_SR_Restore
+ 581              	.LVL49:
+ 268:rtos/uCOS-III/Source/os_stat.c ****    *p_err             = OS_ERR_NONE;
+ 582              		.loc 1 268 5 view .LVU205
+ARM GAS  /tmp/ccvfip2p.s 			page 22
+
+
+ 268:rtos/uCOS-III/Source/os_stat.c ****    *p_err             = OS_ERR_NONE;
+ 583              		.loc 1 268 5 view .LVU206
+ 269:rtos/uCOS-III/Source/os_stat.c **** }
+ 584              		.loc 1 269 4 view .LVU207
+ 269:rtos/uCOS-III/Source/os_stat.c **** }
+ 585              		.loc 1 269 23 is_stmt 0 view .LVU208
+ 586 00a8 0023     		movs	r3, #0
+ 587 00aa 2380     		strh	r3, [r4]	@ movhi
+ 588 00ac B5E7     		b	.L25
+ 589              	.L36:
+ 590 00ae 00BF     		.align	2
+ 591              	.L35:
+ 592 00b0 00000000 		.word	OSRunning
+ 593 00b4 00000000 		.word	OSTmrTaskTCB
+ 594 00b8 00000000 		.word	OSStatTaskCtr
+ 595 00bc 00000000 		.word	OSCfg_TickRate_Hz
+ 596 00c0 00000000 		.word	OSCfg_StatTaskRate_Hz
+ 597 00c4 CDCCCCCC 		.word	-858993459
+ 598 00c8 00000000 		.word	OSStatTaskCtrMax
+ 599 00cc 00000000 		.word	OSStatTaskRdy
+ 600              		.cfi_endproc
+ 601              	.LFE1:
+ 603              		.section	.text.OS_StatTaskInit,"ax",%progbits
+ 604              		.align	1
+ 605              		.global	OS_StatTaskInit
+ 606              		.syntax unified
+ 607              		.thumb
+ 608              		.thumb_func
+ 609              		.fpu fpv4-sp-d16
+ 611              	OS_StatTaskInit:
+ 612              	.LVL50:
+ 613              	.LFB3:
+ 509:rtos/uCOS-III/Source/os_stat.c ****                   OS_OPT_TIME_DLY,
+ 510:rtos/uCOS-III/Source/os_stat.c ****                   &err);
+ 511:rtos/uCOS-III/Source/os_stat.c ****     }
+ 512:rtos/uCOS-III/Source/os_stat.c **** }
+ 513:rtos/uCOS-III/Source/os_stat.c **** 
+ 514:rtos/uCOS-III/Source/os_stat.c **** 
+ 515:rtos/uCOS-III/Source/os_stat.c **** /*
+ 516:rtos/uCOS-III/Source/os_stat.c **** ***************************************************************************************************
+ 517:rtos/uCOS-III/Source/os_stat.c **** *                                              INITIALIZE THE STATISTICS
+ 518:rtos/uCOS-III/Source/os_stat.c **** *
+ 519:rtos/uCOS-III/Source/os_stat.c **** * Description: This function is called by OSInit() to initialize the statistic task.
+ 520:rtos/uCOS-III/Source/os_stat.c **** *
+ 521:rtos/uCOS-III/Source/os_stat.c **** * Argument(s): p_err     is a pointer to a variable that will contain an error code returned by thi
+ 522:rtos/uCOS-III/Source/os_stat.c **** *
+ 523:rtos/uCOS-III/Source/os_stat.c **** *                            OS_ERR_STAT_STK_INVALID       If you specified a NULL stack pointer du
+ 524:rtos/uCOS-III/Source/os_stat.c **** *                            OS_ERR_STAT_STK_SIZE_INVALID  If you didn't specify a large enough sta
+ 525:rtos/uCOS-III/Source/os_stat.c **** *                            OS_ERR_STAT_PRIO_INVALID      If you specified a priority for the stat
+ 526:rtos/uCOS-III/Source/os_stat.c **** *                                                          lower (i.e. higher number) than the idle
+ 527:rtos/uCOS-III/Source/os_stat.c **** *                            OS_ERR_xxx                    An error code returned by OSTaskCreate()
+ 528:rtos/uCOS-III/Source/os_stat.c **** *
+ 529:rtos/uCOS-III/Source/os_stat.c **** * Returns    : none
+ 530:rtos/uCOS-III/Source/os_stat.c **** *
+ 531:rtos/uCOS-III/Source/os_stat.c **** * Note(s)    : This function is INTERNAL to uC/OS-III and your application should not call it.
+ 532:rtos/uCOS-III/Source/os_stat.c **** ***************************************************************************************************
+ 533:rtos/uCOS-III/Source/os_stat.c **** */
+ARM GAS  /tmp/ccvfip2p.s 			page 23
+
+
+ 534:rtos/uCOS-III/Source/os_stat.c **** 
+ 535:rtos/uCOS-III/Source/os_stat.c **** void  OS_StatTaskInit (OS_ERR  *p_err)
+ 536:rtos/uCOS-III/Source/os_stat.c **** {
+ 614              		.loc 1 536 1 is_stmt 1 view -0
+ 615              		.cfi_startproc
+ 616              		@ args = 0, pretend = 0, frame = 0
+ 617              		@ frame_needed = 0, uses_anonymous_args = 0
+ 537:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskCtr    = 0u;
+ 618              		.loc 1 537 5 view .LVU210
+ 619              		.loc 1 537 22 is_stmt 0 view .LVU211
+ 620 0000 0023     		movs	r3, #0
+ 621 0002 1E4A     		ldr	r2, .L47
+ 622 0004 1360     		str	r3, [r2]
+ 538:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskCtrRun = 0u;
+ 623              		.loc 1 538 5 is_stmt 1 view .LVU212
+ 624              		.loc 1 538 22 is_stmt 0 view .LVU213
+ 625 0006 1E4A     		ldr	r2, .L47+4
+ 626 0008 1360     		str	r3, [r2]
+ 539:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskCtrMax = 0u;
+ 627              		.loc 1 539 5 is_stmt 1 view .LVU214
+ 628              		.loc 1 539 22 is_stmt 0 view .LVU215
+ 629 000a 1E4A     		ldr	r2, .L47+8
+ 630 000c 1360     		str	r3, [r2]
+ 540:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskRdy    = OS_STATE_NOT_RDY;                        /* Statistic task is not ready     
+ 631              		.loc 1 540 5 is_stmt 1 view .LVU216
+ 632              		.loc 1 540 22 is_stmt 0 view .LVU217
+ 633 000e 1E4A     		ldr	r2, .L47+12
+ 634 0010 1370     		strb	r3, [r2]
+ 541:rtos/uCOS-III/Source/os_stat.c ****     OSStatResetFlag  = OS_FALSE;
+ 635              		.loc 1 541 5 is_stmt 1 view .LVU218
+ 636              		.loc 1 541 22 is_stmt 0 view .LVU219
+ 637 0012 1E4A     		ldr	r2, .L47+16
+ 638 0014 1370     		strb	r3, [r2]
+ 542:rtos/uCOS-III/Source/os_stat.c **** 
+ 543:rtos/uCOS-III/Source/os_stat.c **** #if (OS_CFG_STAT_TASK_STK_CHK_EN > 0u) && (OS_CFG_ISR_STK_SIZE > 0u)
+ 544:rtos/uCOS-III/Source/os_stat.c ****     OSISRStkFree     = 0u;
+ 639              		.loc 1 544 5 is_stmt 1 view .LVU220
+ 640              		.loc 1 544 22 is_stmt 0 view .LVU221
+ 641 0016 1E4A     		ldr	r2, .L47+20
+ 642 0018 1360     		str	r3, [r2]
+ 545:rtos/uCOS-III/Source/os_stat.c ****     OSISRStkUsed     = 0u;
+ 643              		.loc 1 545 5 is_stmt 1 view .LVU222
+ 644              		.loc 1 545 22 is_stmt 0 view .LVU223
+ 645 001a 1E4A     		ldr	r2, .L47+24
+ 646 001c 1360     		str	r3, [r2]
+ 546:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 547:rtos/uCOS-III/Source/os_stat.c ****                                                                 /* --------------- CREATE THE STAT 
+ 548:rtos/uCOS-III/Source/os_stat.c ****     if (OSCfg_StatTaskStkBasePtr == (CPU_STK *)0) {
+ 647              		.loc 1 548 5 is_stmt 1 view .LVU224
+ 648              		.loc 1 548 34 is_stmt 0 view .LVU225
+ 649 001e 1E4B     		ldr	r3, .L47+28
+ 650 0020 1A68     		ldr	r2, [r3]
+ 651              		.loc 1 548 8 view .LVU226
+ 652 0022 7AB1     		cbz	r2, .L45
+ 536:rtos/uCOS-III/Source/os_stat.c ****     OSStatTaskCtr    = 0u;
+ 653              		.loc 1 536 1 view .LVU227
+ 654 0024 10B5     		push	{r4, lr}
+ARM GAS  /tmp/ccvfip2p.s 			page 24
+
+
+ 655              	.LCFI7:
+ 656              		.cfi_def_cfa_offset 8
+ 657              		.cfi_offset 4, -8
+ 658              		.cfi_offset 14, -4
+ 659 0026 8AB0     		sub	sp, sp, #40
+ 660              	.LCFI8:
+ 661              		.cfi_def_cfa_offset 48
+ 549:rtos/uCOS-III/Source/os_stat.c ****        *p_err = OS_ERR_STAT_STK_INVALID;
+ 550:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 551:rtos/uCOS-III/Source/os_stat.c ****     }
+ 552:rtos/uCOS-III/Source/os_stat.c **** 
+ 553:rtos/uCOS-III/Source/os_stat.c ****     if (OSCfg_StatTaskStkSize < OSCfg_StkSizeMin) {
+ 662              		.loc 1 553 5 is_stmt 1 view .LVU228
+ 663              		.loc 1 553 31 is_stmt 0 view .LVU229
+ 664 0028 1C4B     		ldr	r3, .L47+32
+ 665 002a 1C68     		ldr	r4, [r3]
+ 666 002c 1C4B     		ldr	r3, .L47+36
+ 667 002e 1B68     		ldr	r3, [r3]
+ 668              		.loc 1 553 8 view .LVU230
+ 669 0030 9C42     		cmp	r4, r3
+ 670 0032 0BD3     		bcc	.L46
+ 554:rtos/uCOS-III/Source/os_stat.c ****        *p_err = OS_ERR_STAT_STK_SIZE_INVALID;
+ 555:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 556:rtos/uCOS-III/Source/os_stat.c ****     }
+ 557:rtos/uCOS-III/Source/os_stat.c **** 
+ 558:rtos/uCOS-III/Source/os_stat.c ****     if (OSCfg_StatTaskPrio >= (OS_CFG_PRIO_MAX - 1u)) {
+ 671              		.loc 1 558 5 is_stmt 1 view .LVU231
+ 672              		.loc 1 558 28 is_stmt 0 view .LVU232
+ 673 0034 1B4B     		ldr	r3, .L47+40
+ 674 0036 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 675              		.loc 1 558 8 view .LVU233
+ 676 0038 3E2B     		cmp	r3, #62
+ 677 003a 0CD9     		bls	.L41
+ 559:rtos/uCOS-III/Source/os_stat.c ****        *p_err = OS_ERR_STAT_PRIO_INVALID;
+ 678              		.loc 1 559 8 is_stmt 1 view .LVU234
+ 679              		.loc 1 559 15 is_stmt 0 view .LVU235
+ 680 003c 46F62A63 		movw	r3, #28202
+ 681 0040 0380     		strh	r3, [r0]	@ movhi
+ 560:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 682              		.loc 1 560 9 is_stmt 1 view .LVU236
+ 683 0042 06E0     		b	.L37
+ 684              	.L45:
+ 685              	.LCFI9:
+ 686              		.cfi_def_cfa_offset 0
+ 687              		.cfi_restore 4
+ 688              		.cfi_restore 14
+ 549:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 689              		.loc 1 549 8 view .LVU237
+ 549:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 690              		.loc 1 549 15 is_stmt 0 view .LVU238
+ 691 0044 46F62B63 		movw	r3, #28203
+ 692 0048 0380     		strh	r3, [r0]	@ movhi
+ 550:rtos/uCOS-III/Source/os_stat.c ****     }
+ 693              		.loc 1 550 9 is_stmt 1 view .LVU239
+ 694 004a 7047     		bx	lr
+ 695              	.L46:
+ 696              	.LCFI10:
+ARM GAS  /tmp/ccvfip2p.s 			page 25
+
+
+ 697              		.cfi_def_cfa_offset 48
+ 698              		.cfi_offset 4, -8
+ 699              		.cfi_offset 14, -4
+ 554:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 700              		.loc 1 554 8 view .LVU240
+ 554:rtos/uCOS-III/Source/os_stat.c ****         return;
+ 701              		.loc 1 554 15 is_stmt 0 view .LVU241
+ 702 004c 46F62C63 		movw	r3, #28204
+ 703 0050 0380     		strh	r3, [r0]	@ movhi
+ 555:rtos/uCOS-III/Source/os_stat.c ****     }
+ 704              		.loc 1 555 9 is_stmt 1 view .LVU242
+ 705              	.LVL51:
+ 706              	.L37:
+ 561:rtos/uCOS-III/Source/os_stat.c ****     }
+ 562:rtos/uCOS-III/Source/os_stat.c **** 
+ 563:rtos/uCOS-III/Source/os_stat.c ****     OSTaskCreate(&OSStatTaskTCB,
+ 564:rtos/uCOS-III/Source/os_stat.c **** #if  (OS_CFG_DBG_EN == 0u)
+ 565:rtos/uCOS-III/Source/os_stat.c ****                  (CPU_CHAR   *)0,
+ 566:rtos/uCOS-III/Source/os_stat.c **** #else
+ 567:rtos/uCOS-III/Source/os_stat.c ****                  (CPU_CHAR   *)"uC/OS-III Stat Task",
+ 568:rtos/uCOS-III/Source/os_stat.c **** #endif
+ 569:rtos/uCOS-III/Source/os_stat.c ****                   OS_StatTask,
+ 570:rtos/uCOS-III/Source/os_stat.c ****                  (void       *)0,
+ 571:rtos/uCOS-III/Source/os_stat.c ****                   OSCfg_StatTaskPrio,
+ 572:rtos/uCOS-III/Source/os_stat.c ****                   OSCfg_StatTaskStkBasePtr,
+ 573:rtos/uCOS-III/Source/os_stat.c ****                   OSCfg_StatTaskStkLimit,
+ 574:rtos/uCOS-III/Source/os_stat.c ****                   OSCfg_StatTaskStkSize,
+ 575:rtos/uCOS-III/Source/os_stat.c ****                   0u,
+ 576:rtos/uCOS-III/Source/os_stat.c ****                   0u,
+ 577:rtos/uCOS-III/Source/os_stat.c ****                  (void       *)0,
+ 578:rtos/uCOS-III/Source/os_stat.c ****                  (OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+ 579:rtos/uCOS-III/Source/os_stat.c ****                   p_err);
+ 580:rtos/uCOS-III/Source/os_stat.c **** }
+ 707              		.loc 1 580 1 is_stmt 0 view .LVU243
+ 708 0052 0AB0     		add	sp, sp, #40
+ 709              	.LCFI11:
+ 710              		.cfi_remember_state
+ 711              		.cfi_def_cfa_offset 8
+ 712              		@ sp needed
+ 713 0054 10BD     		pop	{r4, pc}
+ 714              	.LVL52:
+ 715              	.L41:
+ 716              	.LCFI12:
+ 717              		.cfi_restore_state
+ 563:rtos/uCOS-III/Source/os_stat.c **** #if  (OS_CFG_DBG_EN == 0u)
+ 718              		.loc 1 563 5 is_stmt 1 view .LVU244
+ 719 0056 0890     		str	r0, [sp, #32]
+ 720 0058 0321     		movs	r1, #3
+ 721 005a 0791     		str	r1, [sp, #28]
+ 722 005c 0021     		movs	r1, #0
+ 723 005e 0691     		str	r1, [sp, #24]
+ 724 0060 0591     		str	r1, [sp, #20]
+ 725 0062 0491     		str	r1, [sp, #16]
+ 726 0064 0394     		str	r4, [sp, #12]
+ 727 0066 1048     		ldr	r0, .L47+44
+ 728              	.LVL53:
+ 563:rtos/uCOS-III/Source/os_stat.c **** #if  (OS_CFG_DBG_EN == 0u)
+ARM GAS  /tmp/ccvfip2p.s 			page 26
+
+
+ 729              		.loc 1 563 5 is_stmt 0 view .LVU245
+ 730 0068 0068     		ldr	r0, [r0]
+ 731 006a 0290     		str	r0, [sp, #8]
+ 732 006c 0192     		str	r2, [sp, #4]
+ 733 006e 0093     		str	r3, [sp]
+ 734 0070 0B46     		mov	r3, r1
+ 735 0072 0E4A     		ldr	r2, .L47+48
+ 736 0074 0E48     		ldr	r0, .L47+52
+ 737 0076 FFF7FEFF 		bl	OSTaskCreate
+ 738              	.LVL54:
+ 563:rtos/uCOS-III/Source/os_stat.c **** #if  (OS_CFG_DBG_EN == 0u)
+ 739              		.loc 1 563 5 view .LVU246
+ 740 007a EAE7     		b	.L37
+ 741              	.L48:
+ 742              		.align	2
+ 743              	.L47:
+ 744 007c 00000000 		.word	OSStatTaskCtr
+ 745 0080 00000000 		.word	OSStatTaskCtrRun
+ 746 0084 00000000 		.word	OSStatTaskCtrMax
+ 747 0088 00000000 		.word	OSStatTaskRdy
+ 748 008c 00000000 		.word	OSStatResetFlag
+ 749 0090 00000000 		.word	OSISRStkFree
+ 750 0094 00000000 		.word	OSISRStkUsed
+ 751 0098 00000000 		.word	OSCfg_StatTaskStkBasePtr
+ 752 009c 00000000 		.word	OSCfg_StatTaskStkSize
+ 753 00a0 00000000 		.word	OSCfg_StkSizeMin
+ 754 00a4 00000000 		.word	OSCfg_StatTaskPrio
+ 755 00a8 00000000 		.word	OSCfg_StatTaskStkLimit
+ 756 00ac 00000000 		.word	OS_StatTask
+ 757 00b0 00000000 		.word	OSStatTaskTCB
+ 758              		.cfi_endproc
+ 759              	.LFE3:
+ 761              		.text
+ 762              	.Letext0:
+ 763              		.file 2 "rtos/uC-CPU/ARM-Cortex-M/ARMv7-M/GNU/cpu.h"
+ 764              		.file 3 "rtos/uC-CPU/cpu_core.h"
+ 765              		.file 4 "rtos/uCOS-III/Source/os_type.h"
+ 766              		.file 5 "rtos/uCOS-III/Source/os.h"
+ 767              		.file 6 "rtos/uCOS-III/Ports/ARM-Cortex-M/ARMv7-M/GNU/os_cpu.h"
+ARM GAS  /tmp/ccvfip2p.s 			page 27
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 os_stat.c
+     /tmp/ccvfip2p.s:18     .text.OSStatReset:0000000000000000 $t
+     /tmp/ccvfip2p.s:26     .text.OSStatReset:0000000000000000 OSStatReset
+     /tmp/ccvfip2p.s:77     .text.OSStatReset:0000000000000018 $d
+     /tmp/ccvfip2p.s:82     .text.OS_StatTask:0000000000000000 $t
+     /tmp/ccvfip2p.s:89     .text.OS_StatTask:0000000000000000 OS_StatTask
+     /tmp/ccvfip2p.s:377    .text.OS_StatTask:0000000000000114 $d
+     /tmp/ccvfip2p.s:399    .text.OSStatTaskCPUUsageInit:0000000000000000 $t
+     /tmp/ccvfip2p.s:406    .text.OSStatTaskCPUUsageInit:0000000000000000 OSStatTaskCPUUsageInit
+     /tmp/ccvfip2p.s:592    .text.OSStatTaskCPUUsageInit:00000000000000b0 $d
+     /tmp/ccvfip2p.s:604    .text.OS_StatTaskInit:0000000000000000 $t
+     /tmp/ccvfip2p.s:611    .text.OS_StatTaskInit:0000000000000000 OS_StatTaskInit
+     /tmp/ccvfip2p.s:744    .text.OS_StatTaskInit:000000000000007c $d
+                           .group:0000000000000000 wm4.0.0f5aa60db9403f389c005f20ecce4286
+                           .group:0000000000000000 wm4.os.h.38.05c7a360e844508f9424830362f7eef3
+                           .group:0000000000000000 wm4.os_cfg.h.36.1682609214807c39119743015cd1b75b
+                           .group:0000000000000000 wm4.os_cfg_app.h.36.9d01bed009cfc3a5184d9a87250e45bf
+                           .group:0000000000000000 wm4.cpu_core.h.51.7b35a59c319673f88ae4a256248776ec
+                           .group:0000000000000000 wm4.cpu_def.h.46.baa122a2898bdc40bb50d1f21ead1515
+                           .group:0000000000000000 wm4.cpu_cfg.h.45.38a6a562da8b04490c382a226238c57e
+                           .group:0000000000000000 wm4.cpu.h.171.3cb15ee3ccb812cbfdf76d1fbfb9eda0
+                           .group:0000000000000000 wm4.lib_def.h.66.6ab2a012067a8e1f4289db5765835062
+                           .group:0000000000000000 wm4.cpu_core.h.143.d3b700e12b3a14ed3bee14c822b49a7d
+                           .group:0000000000000000 wm4.os_cpu.h.45.281d793567585e56a091270c28fc7efc
+                           .group:0000000000000000 wm4.os_trace.h.37.a6badbf6e748c370e142a9584653748e
+                           .group:0000000000000000 wm4.os.h.95.7b45e7e080367d299efd03f7510809bc
+
+UNDEFINED SYMBOLS
+CPU_SR_Save
+CPU_SR_Restore
+OSStatTaskCPUUsageMax
+OSTimeDly
+OSStatTaskHook
+OSCfg_StatTaskRate_Hz
+OSStatTaskRdy
+OSCfg_TickRate_Hz
+OSStatTaskCPUUsage
+OSCfg_ISRStkBasePtr
+OSCfg_ISRStkSize
+OSISRStkFree
+OSISRStkUsed
+OSStatResetFlag
+OSStatTaskCtrRun
+OSStatTaskCtr
+OSStatTaskCtrMax
+OSTaskSuspend
+OSTaskResume
+OSRunning
+OSTmrTaskTCB
+OSTaskCreate
+OSCfg_StatTaskStkBasePtr
+OSCfg_StatTaskStkSize
+OSCfg_StkSizeMin
+OSCfg_StatTaskPrio
+OSCfg_StatTaskStkLimit
+OSStatTaskTCB
+ARM GAS  /tmp/ccvfip2p.s 			page 28
+
+

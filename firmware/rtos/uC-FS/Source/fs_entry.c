@@ -50,7 +50,7 @@
 
 #include  <cpu.h>
 #include  <cpu_core.h>
-#include  <Source/clk.h>
+#include  <clk.h>
 #include  "fs.h"
 #include  "fs_entry.h"
 #include  "fs_err.h"
