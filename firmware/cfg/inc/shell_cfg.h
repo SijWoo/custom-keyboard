@@ -1,21 +1,16 @@
 /*
 *********************************************************************************************************
 *                                              uC/Shell
-*                                            Shell Utility
+*                                            Shell utility
 *
-*                          (c) Copyright 2007-2013; Micrium, Inc.; Weston, FL
+*                    Copyright 2007-2020 Silicon Laboratories Inc. www.silabs.com
 *
-*               All rights reserved.  Protected by international copyright laws.
+*                                 SPDX-License-Identifier: APACHE-2.0
 *
-*               uC/Shell is provided in source form to registered licensees ONLY.  It is
-*               illegal to distribute this source code to any third party unless you receive
-*               written permission by an authorized Micrium representative.  Knowledge of
-*               the source code may NOT be used to develop a similar product.
+*               This software is subject to an open source license and is distributed by
+*                Silicon Laboratories Inc. pursuant to the terms of the Apache License,
+*                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
 *
-*               Please help us continue to provide the Embedded community with the finest
-*               software available.  Your honesty is greatly appreciated.
-*
-*               You can contact us at www.micrium.com.
 *********************************************************************************************************
 */
 
@@ -26,10 +21,8 @@
 *
 *                                              TEMPLATE
 *
-* Filename      : shell_cfg.h
-* Version       : V1.03.01
-* Programmer(s) : SR
-*                 FBJ
+* Filename : shell_cfg.h
+* Version  : V1.04.00
 *********************************************************************************************************
 */
 
