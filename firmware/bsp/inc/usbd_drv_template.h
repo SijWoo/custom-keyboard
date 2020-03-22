@@ -9,12 +9,6 @@
 *               part, or may be used as a reference only. This file can be modified as
 *               required to meet the end-product requirements.
 *
-*               Please help us continue to provide the Embedded community with the finest
-*               software available.  Your honesty is greatly appreciated.
-*
-*                    You can find our product's documentation at: doc.micrium.com
-*
-*                          For more information visit us at: www.micrium.com
 *********************************************************************************************************
 */
 
@@ -26,7 +20,7 @@
 *                                              TEMPLATE
 *
 * Filename : usbd_drv_template.h
-* Version  : V4.05.06
+* Version  : V4.06.00
 *********************************************************************************************************
 */
 
