@@ -66,7 +66,8 @@ P 9250 2550
 F 0 "Y1" H 9250 2775 50  0000 C CNN
 F 1 "8MHz" H 9250 2684 50  0000 C CNN
 F 2 "Crystal:Crystal_SMD_TXC_7A-2Pin_5x3.2mm" H 9250 2550 50  0001 C CNN
-F 3 "~" H 9250 2550 50  0001 C CNN
+F 3 "https://www.mouser.com/datasheet/2/417/7a-13881.pdf" H 9250 2550 50  0001 C CNN
+F 4 "7A-8.000MAAE-T" H 9250 2550 50  0001 C CNN "P/N"
 	1    9250 2550
 	1    0    0    -1  
 $EndComp
