@@ -1,9 +1,9 @@
 /*
 *********************************************************************************************************
-*                                                uC/FS
-*                                      The Embedded File System
+*                                              uC/Shell
+*                                            Shell utility
 *
-*                    Copyright 2008-2020 Silicon Laboratories Inc. www.silabs.com
+*                    Copyright 2007-2020 Silicon Laboratories Inc. www.silabs.com
 *
 *                                 SPDX-License-Identifier: APACHE-2.0
 *
@@ -17,31 +17,14 @@
 /*
 *********************************************************************************************************
 *
-*                                     FILE SYSTEM FAT MANAGEMENT
+*                                              TERMINAL
 *
-*                                            FAT16 SUPPORT
+*                                    TEMPLATE COMMUNICATIONS PORT
 *
-* Filename : fs_fat_fat16.h
-* Version  : V4.08.00
+* Filename : terminal_serial.c
+* Version  : V1.04.00
 *********************************************************************************************************
 */
-
-/*
-*********************************************************************************************************
-*                                               MODULE
-*
-* Note(s) : (1) The following FAT-module-present configuration value MUST be pre-#define'd in
-*               'fs_cfg_fs.h' PRIOR to all other file system modules that require FAT FAT16 Layer
-*               Configuration (see 'fs_cfg_fs.h  FAT LAYER CONFIGURATION  Note #2b') :
-*
-*                   FS_FAT_FAT16_MODULE_PRESENT
-*********************************************************************************************************
-*/
-
-#ifndef  FS_FAT_FAT16_H
-#define  FS_FAT_FAT16_H
-
-#ifdef   FS_FAT_FAT16_MODULE_PRESENT                            /* See Note #1.                                         */
 
 
 /*
@@ -50,76 +33,146 @@
 *********************************************************************************************************
 */
 
-#include  <cpu.h>
-#include  "../Source/fs_cfg_fs.h"
-#include  "../Source/fs_err.h"
-#include  "fs_fat_type.h"
-
+#include  <terminal.h>
+#include "bsp_serial.h"
 
 /*
 *********************************************************************************************************
-*                                               EXTERNS
-*********************************************************************************************************
-*/
-
-#ifdef   FS_FAT_FAT16_MODULE
-#define  FS_FAT_FAT16_EXT
-#else
-#define  FS_FAT_FAT16_EXT  extern
-#endif
-
-
-/*
-*********************************************************************************************************
-*                                               DEFINES
+*                                            LOCAL DEFINES
 *********************************************************************************************************
 */
 
 
 /*
 *********************************************************************************************************
-*                                             DATA TYPES
+*                                       LOCAL GLOBAL VARIABLES
 *********************************************************************************************************
 */
 
 
 /*
 *********************************************************************************************************
-*                                          GLOBAL VARIABLES
-*********************************************************************************************************
-*/
-
-extern  const  FS_FAT_TYPE_API  FS_FAT_FAT16_API;               /* FAT16 access API.                                    */
-
-
-/*
-*********************************************************************************************************
-*                                               MACRO'S
+*                                      LOCAL FUNCTION PROTOTYPES
 *********************************************************************************************************
 */
 
 
 /*
 *********************************************************************************************************
-*                                         FUNCTION PROTOTYPES
+*                                     LOCAL CONFIGURATION ERRORS
 *********************************************************************************************************
 */
 
 
 /*
 *********************************************************************************************************
-*                                        CONFIGURATION ERRORS
-*********************************************************************************************************
-*/
-
-
-/*
-*********************************************************************************************************
-*                                             MODULE END
+*                                        TerminalSerial_Init()
 *
-* Note(s) : (1) See 'MODULE  Note #1'.
+* Description : Initialize serial communications.
+*
+* Argument(s) : none.
+*
+* Return(s)   : DEF_OK,   if interface was opened.
+*               DEF_FAIL, otherwise.
+*
+* Caller(s)   : Terminal_Init().
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
-#endif                                                          /* End of FAT FAT16 module include (see Note #1).       */
-#endif
+CPU_BOOLEAN  TerminalSerial_Init (void)
+{
+    return (DEF_FAIL);
+}
+
+
+/*
+*********************************************************************************************************
+*                                        TerminalSerial_Exit()
+*
+* Description : Uninitialize serial communications.
+*
+* Argument(s) : none.
+*
+* Return(s)   : none.
+*
+* Caller(s)   : Terminal_Init().
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
+
+void  TerminalSerial_Exit (void)
+{
+
+}
+
+
+/*
+*********************************************************************************************************
+*                                         TerminalSerial_Wr()
+*
+* Description : Serial output.
+*
+* Argument(s) : pbuf        Pointer to the buffer to transmit.
+*
+*               buf_len     Number of bytes in the buffer.
+*
+* Return(s)   : none.
+*
+* Caller(s)   : Terminal_Out().
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
+
+CPU_INT16S  TerminalSerial_Wr (void        *pbuf,
+                               CPU_SIZE_T   buf_len)
+{
+    return (-1);
+}
+
+
+/*
+*********************************************************************************************************
+*                                       TerminalSerial_RdByte()
+*
+* Description : Serial byte input.
+*
+* Argument(s) : none.
+*
+* Return(s)   : Byte read from port.
+*
+* Caller(s)   : various.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
+
+CPU_INT08U  TerminalSerial_RdByte (void)
+{
+    return (0u);
+}
+
+
+/*
+*********************************************************************************************************
+*                                       TerminalSerial_WrByte()
+*
+* Description : Serial byte output.
+*
+* Argument(s) : c           Byte to write.
+*
+* Return(s)   : none.
+*
+* Caller(s)   : various.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
+
+void  TerminalSerial_WrByte (CPU_INT08U  c)
+{
+
+}
