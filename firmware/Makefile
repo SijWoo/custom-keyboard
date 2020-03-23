@@ -41,7 +41,7 @@ $(wildcard bsp/STMicroelectronics/stm32f413/src/*.c)	\
 $(wildcard bsp/STMicroelectronics/stm32f413/stm32f4xx_hal_driver/Src/*.c)
 
 BSP_ASM_SOURCES = \
-$(wildcard bsp/STMicroelectronics\stm32f413/startup_stm32f413xx.s)
+$(wildcard bsp/STMicroelectronics/stm32f413/src/startup_stm32f413xx.s)
 
 # C sources
 C_SOURCES =  \
