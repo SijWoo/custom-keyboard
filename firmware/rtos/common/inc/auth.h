@@ -48,7 +48,7 @@
 */
 
 #include  <lib_mem.h>
-#include  "../common_err.h"
+#include  "common_err.h"
 
 
 /*

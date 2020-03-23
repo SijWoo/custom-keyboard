@@ -38,7 +38,7 @@
 */
 
 #include  <lib_str.h>
-#include  <KAL/kal.h>
+#include  <kal.h>
 #include  "auth.h"
 
 

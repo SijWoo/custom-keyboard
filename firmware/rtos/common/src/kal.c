@@ -18,120 +18,184 @@
 *********************************************************************************************************
 *
 *                             uC/Common - Kernel Abstraction Layer (KAL)
-*                                            POSIX Threads
+*                                              uCOS-III
 *
 * Filename : kal.c
 * Version  : V1.02.00
 *********************************************************************************************************
-* Notes    : (1) Requires a Single UNIX Specification, Version 3 compliant operating environment.
-*                On Linux _XOPEN_SOURCE must be defined to at least 600, generally by passing the
-*                -D_XOPEN_SOURCE=600 command line option to GCC.
+* Note(s)  : (1) 'goto' statements were used in this software module. Their usage
+*                is restricted to cleanup purposes in exceptional program flow (e.g.
+*                error handling), in compliance with CERT MEM12-C and MISRA C:2012
+*                rules 15.2, 15.3 and 15.4.
 *********************************************************************************************************
 */
 
 /*
+*********************************************************************************************************
 *********************************************************************************************************
 *                                             INCLUDE FILES
 *********************************************************************************************************
+*********************************************************************************************************
 */
 
-#define   MICRIUM_SOURCE
-#define   KAL_MODULE
+#define  MICRIUM_SOURCE
+#define  KAL_MODULE
 
-#include  "../kal.h"
-
-#include  <lib_def.h>
-
-#include  <pthread.h>
-#include  <semaphore.h>
+#include  "kal.h"
+#include  <lib_math.h>
+#include  <lib_mem.h>
+#include  <os.h>
+#include  <os_cfg.h>
+#include  <os_cfg_app.h>
 
 
 /*
+*********************************************************************************************************
 *********************************************************************************************************
 *                                             LOCAL DEFINES
 *********************************************************************************************************
+*********************************************************************************************************
 */
 
-#define KAL_CFG_ARG_CHK_EXT_EN  DEF_ENABLED
+#define  KAL_CFG_ARG_CHK_EXT_EN                 OS_CFG_ARG_CHK_EN
+
+#define  KAL_CFG_TASK_STK_SIZE_PCT_FULL       90u
+
+#define  KAL_INIT_STATUS_NONE                   0u
+#define  KAL_INIT_STATUS_OK                     1u
+#define  KAL_INIT_STATUS_FAIL                   2u
+
 
 /*
 *********************************************************************************************************
+*********************************************************************************************************
 *                                            LOCAL CONSTANTS
 *********************************************************************************************************
+*********************************************************************************************************
 */
+
+KAL_CPP_EXT  const  CPU_INT32U           KAL_Version           =  10000u;
+KAL_CPP_EXT  const  KAL_TICK_RATE_HZ     KAL_TickRate          =  OS_CFG_TICK_RATE_HZ;
 
 KAL_CPP_EXT  const  KAL_TASK_HANDLE      KAL_TaskHandleNull    = {DEF_NULL};
 KAL_CPP_EXT  const  KAL_LOCK_HANDLE      KAL_LockHandleNull    = {DEF_NULL};
 KAL_CPP_EXT  const  KAL_SEM_HANDLE       KAL_SemHandleNull     = {DEF_NULL};
-KAL_CPP_EXT  const  KAL_Q_HANDLE         KAL_QHandleNull       = {DEF_NULL};
 KAL_CPP_EXT  const  KAL_TMR_HANDLE       KAL_TmrHandleNull     = {DEF_NULL};
+KAL_CPP_EXT  const  KAL_Q_HANDLE         KAL_QHandleNull       = {DEF_NULL};
 KAL_CPP_EXT  const  KAL_TASK_REG_HANDLE  KAL_TaskRegHandleNull = {DEF_NULL};
 
 
 /*
 *********************************************************************************************************
-*                                            LOCAL DATA TYPES
+*********************************************************************************************************
+*                                           LOCAL DATA TYPES
+*********************************************************************************************************
 *********************************************************************************************************
 */
 
-typedef  struct  kal_data {
-    MEM_SEG       *MemSegPtr;
-
-    MEM_DYN_POOL   TaskPool;
-    MEM_DYN_POOL   LockPool;
-    MEM_DYN_POOL   SemPool;
-} KAL_DATA;
-
-typedef  struct  kal_lock {
-    pthread_mutex_t      Mutex;
-    pthread_mutexattr_t  MutexAttr;
-} KAL_LOCK;
-
-
-typedef  struct  kal_sem {
-    sem_t      Sem;
-} KAL_SEM;
-
+                                                                /* ------------------ KAL TASK TYPE ------------------- */
 typedef  struct  kal_task {
-    pthread_t       Thread;
-    pthread_attr_t  ThreadAttr;
+           OS_TCB       TCB;                                    /* TCB for OS-III.                                      */
+
+           CPU_STK     *StkBasePtr;                             /* Task stack base ptr.                                 */
+           CPU_INT32U   StkSizeBytes;                           /* Task stack size (in bytes).                          */
+
+    const  CPU_CHAR    *NamePtr;                                /* Task name string.                                    */
 } KAL_TASK;
 
-typedef  struct  kal_task_fnct_info {
-    void  (*Fnct)(void  *p_arg);
-    void   *ArgPtr;
-    sem_t   SemInit;
-} KAL_TASK_FNCT_INFO;
+                                                                /* ------------------- KAL LOCK TYPE ------------------ */
+#if (OS_CFG_MUTEX_EN == DEF_ENABLED)
+typedef  struct  kal_lock {
+    OS_MUTEX    Mutex;                                          /* OS-III mutex obj.                                    */
+    CPU_INT08U  OptFlags;                                       /* Opt flags associated with this lock.                 */
+} KAL_LOCK;
+#endif
+
+                                                                /* ------------------- KAL TMR TYPE ------------------- */
+#if (OS_CFG_TMR_EN == DEF_ENABLED)
+typedef  struct  kal_tmr {
+    OS_TMR    Tmr;                                              /* OS-III tmr obj.                                      */
+
+    void    (*CallbackFnct)(void  *p_arg);                      /* Tmr registered callback fnct.                        */
+    void     *CallbackArg;                                      /* Arg to pass to callback fnct.                        */
+} KAL_TMR;
+#endif
+
+                                                                /* ---------------- KAL TASK REG TYPE ----------------- */
+#if (OS_CFG_TASK_REG_TBL_SIZE > 0u)
+typedef  struct  kal_task_reg {
+    OS_REG_ID  Id;                                              /* Id of the task reg.                                  */
+} KAL_TASK_REG;
+#endif
+
+                                                                /* -------------- KAL INTERNAL DATA TYPE -------------- */
+typedef  struct  kal_data {
+    MEM_SEG       *MemSegPtr;                                   /* Mem Seg to alloc from.                               */
+
+#if (OS_CFG_MUTEX_EN == DEF_ENABLED)
+    MEM_DYN_POOL   MutexPool;                                   /* Dyn mem pool used to alloc mutex.                    */
+#endif
+
+#if (OS_CFG_SEM_EN == DEF_ENABLED)
+    MEM_DYN_POOL   SemPool;                                     /* Dyn mem pool used to alloc sems.                     */
+#endif
+
+#if (OS_CFG_TMR_EN == DEF_ENABLED)
+    MEM_DYN_POOL   TmrPool;                                     /* Dyn mem pool used to alloc tmrs.                     */
+#endif
+
+#if (OS_CFG_TASK_REG_TBL_SIZE > 0u)
+    MEM_DYN_POOL   TaskRegPool;                                 /* Dyn mem pool used to alloc task regs.                */
+#endif
+} KAL_DATA;
 
 
 /*
+*********************************************************************************************************
 *********************************************************************************************************
 *                                              LOCAL TABLES
 *********************************************************************************************************
+*********************************************************************************************************
 */
 
 
 /*
+*********************************************************************************************************
 *********************************************************************************************************
 *                                         LOCAL GLOBAL VARIABLES
 *********************************************************************************************************
+*********************************************************************************************************
 */
 
-static  KAL_DATA  *KAL_DataPtr = DEF_NULL;
+static            KAL_DATA     *KAL_DataPtr    = DEF_NULL;
+
+static            CPU_BOOLEAN   KAL_IsInit     = DEF_NO;
+static  volatile  CPU_INT08U    KAL_InitStatus = KAL_INIT_STATUS_NONE;
 
 
 /*
+*********************************************************************************************************
 *********************************************************************************************************
 *                                       LOCAL FUNCTION PROTOTYPES
 *********************************************************************************************************
+*********************************************************************************************************
 */
 
-void  *KAL_TaskFnctWrapper(void  *p_arg);
+#if (OS_CFG_TMR_EN == DEF_ENABLED)
+static  void      KAL_TmrFnctWrapper(void        *p_tmr_os,
+                                     void        *p_arg);
+#endif
+
+static  KAL_TICK  KAL_msToTicks     (CPU_INT32U   ms);
+
+static  RTOS_ERR  KAL_ErrConvert    (OS_ERR       err_os);
 
 
 /*
 *********************************************************************************************************
+*********************************************************************************************************
 *                                       LOCAL CONFIGURATION ERRORS
+*********************************************************************************************************
 *********************************************************************************************************
 */
 
@@ -150,40 +214,78 @@ void  *KAL_TaskFnctWrapper(void  *p_arg);
 *********************************************************************************************************
 */
 
-
 /*
 *********************************************************************************************************
-*                                             KAL_Init()
+*                                              KAL_Init()
 *
 * Description : Initialize the Kernel Abstraction Layer.
 *
+* Argument(s) : p_cfg       Pointer to KAL configuration structure.
+*
+*               p_err       Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_OS                 Concurrent initialization failed.
+*                                   RTOS_ERR_ALREADY_INIT       Already initialized and p_cfg is not NULL.
+*                                   RTOS_ERR_ALLOC              Memory segment allocation failed.
+*                                   RTOS_ERR_INIT               Memory pool initialization failed.
+*
+* Return(s)   : none.
+*
 * Note(s)     : (1) This function must be called prior to any product initialization function if the
-*                   application needs to specify a memory segment
+*                   application needs to specify a memory segment.
 *********************************************************************************************************
 */
 
-void  KAL_Init (KAL_CFG  *p_cfg,
-                KAL_ERR  *p_err)
+void  KAL_Init (KAL_CFG   *p_cfg,
+                RTOS_ERR  *p_err)
 {
+    MEM_SEG  *p_seg;
+    OS_ERR    err_os;
     LIB_ERR   err_lib;
-    MEM_SEG  *p_seg ;
+    CPU_SR_ALLOC();
 
 
-#if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                     /* ---------------- VALIDATE ARGUMENTS ---------------- */
-    if (p_err == DEF_NULL) {                                    /* Validate err ptr.                                    */
-        CPU_SW_EXCEPTION(DEF_NULL);
-    }
-#endif                                                          /* ----- (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED) ------ */
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(;);
+        }
+    #endif
 
-    if (KAL_DataPtr != (KAL_DATA *)0) {                         /* Chk if KAL already init. See note (1).               */
-       *p_err = KAL_ERR_NONE;
+    CPU_CRITICAL_ENTER();
+    if (KAL_IsInit == DEF_YES) {                                /* Chk if KAL already init. See note #1.                */
+        CPU_INT08U  init_status = KAL_InitStatus;
+
+
+        CPU_CRITICAL_EXIT();
+
+        while (init_status == KAL_INIT_STATUS_NONE) {           /* Wait until init is done before returning.            */
+            OSTimeDly(100u,
+                      OS_OPT_TIME_DLY,
+                     &err_os);
+            (void)err_os;
+            CPU_CRITICAL_ENTER();
+            init_status = KAL_InitStatus;
+            CPU_CRITICAL_EXIT();
+        }
+        if (init_status == KAL_INIT_STATUS_OK) {                /* Check resulting init status.                         */
+            if (p_cfg == DEF_NULL) {
+               *p_err = RTOS_ERR_NONE;                          /* KAL_Init() can be called many times if no cfg.       */
+            } else {
+               *p_err = RTOS_ERR_ALREADY_INIT;                  /* If a cfg is given and KAL is already init, set err.  */
+            }
+        } else {
+           *p_err = RTOS_ERR_OS;                                /* Concurrent init failed.                              */
+        }
         return;
     }
 
-                                                                /* ------------------ ALLOC KAL DATA ------------------ */
+    KAL_IsInit = DEF_YES;                                       /* Prevent another init, even in case of err.           */
+    CPU_CRITICAL_EXIT();
+
     p_seg = DEF_NULL;
     if (p_cfg != DEF_NULL) {                                    /* Load cfg if given.                                   */
-        KAL_DataPtr->MemSegPtr = p_cfg->MemSegPtr;
+        p_seg = p_cfg->MemSegPtr;
     }
 
     KAL_DataPtr = (KAL_DATA *)Mem_SegAlloc("KAL internal data",
@@ -191,82 +293,214 @@ void  KAL_Init (KAL_CFG  *p_cfg,
                                             sizeof(KAL_DATA),
                                            &err_lib);
     if (err_lib != LIB_MEM_ERR_NONE) {
-       *p_err = KAL_ERR_MEM_ALLOC;
-        return;
+       *p_err = RTOS_ERR_ALLOC;
+        goto end_err;
     }
 
     KAL_DataPtr->MemSegPtr = p_seg;
 
-                                                                /* ----------------- CREATE TASK POOL ----------------- */
-    Mem_DynPoolCreate("KAL task pool",
-                     &KAL_DataPtr->TaskPool,
-                      KAL_DataPtr->MemSegPtr,
-                      sizeof(KAL_TASK),
-                      sizeof(CPU_ALIGN),
-                      0u,
-                      LIB_MEM_BLK_QTY_UNLIMITED,
-                     &err_lib);
-    if (err_lib != LIB_MEM_ERR_NONE) {
-       *p_err = KAL_ERR_POOL_INIT;
-        return;
-    }
+    #if (OS_CFG_MUTEX_EN == DEF_ENABLED)
+        Mem_DynPoolCreate("KAL mutex pool",
+                          &KAL_DataPtr->MutexPool,
+                           KAL_DataPtr->MemSegPtr,
+                           sizeof(KAL_LOCK),
+                           sizeof(CPU_ALIGN),
+                           0u,
+                           LIB_MEM_BLK_QTY_UNLIMITED,
+                          &err_lib);
+        if (err_lib != LIB_MEM_ERR_NONE) {
+           *p_err = RTOS_ERR_INIT;
+            goto end_err;
+        }
+    #endif
 
-                                                                /* ----------------- CREATE LOCK POOL ----------------- */
-    Mem_DynPoolCreate("KAL lock pool",
-                     &KAL_DataPtr->LockPool,
-                      KAL_DataPtr->MemSegPtr,
-                      sizeof(KAL_LOCK),
-                      sizeof(CPU_ALIGN),
-                      0u,
-                      LIB_MEM_BLK_QTY_UNLIMITED,
-                     &err_lib);
-    if (err_lib != LIB_MEM_ERR_NONE) {
-       *p_err = KAL_ERR_POOL_INIT;
-        return;
-    }
+    #if (OS_CFG_SEM_EN == DEF_ENABLED)
+        Mem_DynPoolCreate("KAL sem pool",
+                          &KAL_DataPtr->SemPool,
+                           KAL_DataPtr->MemSegPtr,
+                           sizeof(OS_SEM),
+                           sizeof(CPU_ALIGN),
+                           0u,
+                           LIB_MEM_BLK_QTY_UNLIMITED,
+                          &err_lib);
+        if (err_lib != LIB_MEM_ERR_NONE) {
+           *p_err = RTOS_ERR_INIT;
+            goto end_err;
+        }
+    #endif
 
-                                                                /* ----------------- CREATE LOCK POOL ----------------- */
-    Mem_DynPoolCreate("KAL sem pool",
-                     &KAL_DataPtr->SemPool,
-                      KAL_DataPtr->MemSegPtr,
-                      sizeof(KAL_SEM),
-                      sizeof(CPU_ALIGN),
-                      0u,
-                      LIB_MEM_BLK_QTY_UNLIMITED,
-                      &err_lib);
-    if (err_lib != LIB_MEM_ERR_NONE) {
-        *p_err = KAL_ERR_POOL_INIT;
-        return;
-    }
+    #if (OS_CFG_TMR_EN == DEF_ENABLED)
+        Mem_DynPoolCreate("KAL tmr pool",
+                          &KAL_DataPtr->TmrPool,
+                           KAL_DataPtr->MemSegPtr,
+                           sizeof(KAL_TMR),
+                           sizeof(CPU_ALIGN),
+                           0u,
+                           LIB_MEM_BLK_QTY_UNLIMITED,
+                          &err_lib);
+        if (err_lib != LIB_MEM_ERR_NONE) {
+           *p_err = RTOS_ERR_INIT;
+            goto end_err;
+        }
+    #endif
 
+    #if (OS_CFG_TASK_REG_TBL_SIZE > 0u)
+        Mem_DynPoolCreate("KAL task reg pool",
+                          &KAL_DataPtr->TaskRegPool,
+                           KAL_DataPtr->MemSegPtr,
+                           sizeof(KAL_TASK_REG),
+                           sizeof(CPU_ALIGN),
+                           0u,
+                           LIB_MEM_BLK_QTY_UNLIMITED,
+                          &err_lib);
+        if (err_lib != LIB_MEM_ERR_NONE) {
+           *p_err = RTOS_ERR_INIT;
+            goto end_err;
+        }
+    #endif
 
-   *p_err = KAL_ERR_NONE;
+    CPU_CRITICAL_ENTER();
+    KAL_InitStatus = KAL_INIT_STATUS_OK;
+    CPU_CRITICAL_EXIT();
+
+   *p_err = RTOS_ERR_NONE;
+
+    return;
+
+end_err:                                                        /* Init failed. Handle vars for other concurrent init.  */
+    CPU_CRITICAL_ENTER();
+    KAL_InitStatus = KAL_INIT_STATUS_FAIL;                      /* Indicate potential concurrent init that it failed.   */
+    CPU_CRITICAL_EXIT();
+
     return;
 }
 
 
 /*
 *********************************************************************************************************
-*                                         KAL_FeatureQuery()
+*                                          KAL_FeatureQuery()
 *
-* Description : Query a feature and make sure it is available.
+* Description : Check if specified feature is available.
 *
-* Note(s)     : None.
+* Argument(s) : feature     Feature to query.
+*
+*               opt         Option associated with the feature requested.
+*
+* Return(s)   : DEF_YES, if feature is available.
+*
+*               DEF_NO,  otherwise.
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
 CPU_BOOLEAN  KAL_FeatureQuery (KAL_FEATURE  feature,
                                KAL_OPT      opt)
 {
+    CPU_BOOLEAN  is_en;
+
+
+    (void)opt;
+
+    is_en = DEF_NO;
+
     switch (feature) {
+        case KAL_FEATURE_TASK_CREATE:                           /* ---------------------- TASKS ----------------------- */
+             is_en = DEF_YES;
+             break;
+
+
+        case KAL_FEATURE_TASK_DEL:
+             #if (OS_CFG_TASK_DEL_EN == DEF_ENABLED)
+                 is_en = DEF_YES;
+             #endif
+             break;
+
+
+#if (OS_CFG_MUTEX_EN == DEF_ENABLED)                            /* ----------------------- LOCKS ---------------------- */
         case KAL_FEATURE_LOCK_CREATE:
+        case KAL_FEATURE_LOCK_ACQUIRE:
+        case KAL_FEATURE_LOCK_RELEASE:
+             is_en = DEF_YES;
+             break;
+
+
         case KAL_FEATURE_LOCK_DEL:
-             return (DEF_YES);
+             #if (OS_CFG_MUTEX_DEL_EN == DEF_ENABLED)
+                 is_en = DEF_YES;
+             #endif
+             break;
+#endif /* OS_CFG_MUTEX_EN */
+
+
+#if (OS_CFG_SEM_EN == DEF_ENABLED)                              /* ----------------------- SEMS ----------------------- */
+        case KAL_FEATURE_SEM_CREATE:
+        case KAL_FEATURE_SEM_PEND:
+        case KAL_FEATURE_SEM_POST:
+             is_en = DEF_YES;
+             break;
+
+
+        case KAL_FEATURE_SEM_ABORT:
+             #if (OS_CFG_SEM_PEND_ABORT_EN == DEF_ENABLED)
+                 is_en = DEF_YES;
+             #endif
+             break;
+
+
+        case KAL_FEATURE_SEM_SET:
+             #if (OS_CFG_SEM_SET_EN == DEF_ENABLED)
+                 is_en = DEF_YES;
+             #endif
+             break;
+
+
+        case KAL_FEATURE_SEM_DEL:
+             #if (OS_CFG_SEM_DEL_EN == DEF_ENABLED)
+                 is_en = DEF_YES;
+             #endif
+             break;
+#endif /* OS_CFG_SEM_EN */
+
+
+        case KAL_FEATURE_TMR:                                   /* ----------------------- TMRS ----------------------- */
+             #if (OS_CFG_TMR_EN == DEF_ENABLED)
+                 is_en = DEF_YES;
+             #endif
+             break;
+
+
+        case KAL_FEATURE_Q_CREATE:                              /* ---------------------- QUEUES ---------------------- */
+        case KAL_FEATURE_Q_PEND:
+        case KAL_FEATURE_Q_POST:
+             #if (OS_CFG_Q_EN == DEF_ENABLED)
+                 is_en = DEF_YES;
+             #endif
+             break;
+
+
+        case KAL_FEATURE_DLY:                                   /* ----------------------- DLYS ----------------------- */
+             is_en = DEF_YES;
+             break;
+
+
+        case KAL_FEATURE_TASK_REG:                              /* ------------------- TASK STORAGE ------------------- */
+             #if (OS_CFG_TASK_REG_TBL_SIZE > 0u)
+                 is_en = DEF_YES;
+             #endif
+             break;
+
+
+        case KAL_FEATURE_TICK_GET:                              /* ------------------- TICK CTR INFO ------------------ */
+             is_en = DEF_YES;
+             break;
 
 
         default:
-             return (DEF_NO);
+             break;
     }
+
+    return (is_en);
 }
 
 
@@ -276,198 +510,255 @@ CPU_BOOLEAN  KAL_FeatureQuery (KAL_FEATURE  feature,
 *********************************************************************************************************
 */
 
-
 /*
 *********************************************************************************************************
-*                                           KAL_TaskAlloc()
+*                                            KAL_TaskAlloc()
 *
 * Description : Allocate a task object and its stack.
 *
-* Note(s)     : None.
+* Argument(s) : p_name          Pointer to name of the task.
+*
+*               p_stk_base      Pointer to start of task stack. If NULL, the stack will be allocated from
+*                               the KAL memory segment.
+*
+*               stk_size_bytes  Size (in bytes) of the task stack.
+*
+*               p_cfg           Pointer to KAL task configuration structure.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_INVALID_ARG        Specified stack size is invalid.
+*                                   RTOS_ERR_NOT_SUPPORTED      'p_cfg' parameter was not NULL.
+*                                   RTOS_ERR_ALLOC              Task stack or control block allocation failed.
+*
+* Return(s)   : Allocated task's handle.
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
 KAL_TASK_HANDLE  KAL_TaskAlloc (const  CPU_CHAR          *p_name,
                                        void              *p_stk_base,
-                                       CPU_SIZE_T         stk_size_word,
+                                       CPU_SIZE_T         stk_size_bytes,
                                        KAL_TASK_EXT_CFG  *p_cfg,
-                                       KAL_ERR           *p_err)
+                                       RTOS_ERR          *p_err)
 {
-    KAL_TASK_HANDLE   handle = {DEF_NULL};
-    KAL_TASK         *p_task_data;
-    LIB_ERR           lib_err;
-    int               pthread_err;
+    KAL_TASK_HANDLE   handle = KAL_TaskHandleNull;
+    KAL_TASK         *p_task;
+    CPU_ADDR          stk_addr;
+    CPU_ADDR          stk_addr_aligned;
+    CPU_SIZE_T        actual_stk_size_bytes;
+    LIB_ERR           err_lib;
 
-#if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                     /* ---------------- VALIDATE ARGUMENTS ---------------- */
-    if (p_err == DEF_NULL) {                                    /* Validate err ptr.                                    */
-        CPU_SW_EXCEPTION(handle);
+
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(handle);
+        }
+
+        if (stk_size_bytes < (OS_CFG_STK_SIZE_MIN * sizeof(CPU_STK))) {
+           *p_err = RTOS_ERR_INVALID_ARG;
+            return (handle);
+        }
+
+        if (p_cfg != DEF_NULL) {                                /* Make sure no unsupported cfg recv.                   */
+           *p_err = RTOS_ERR_NOT_SUPPORTED;
+            return (handle);
+        }
+    #else
+        (void)p_cfg;
+    #endif
+
+    if (p_stk_base == DEF_NULL) {                               /* Must alloc task stk on mem seg.                      */
+        stk_addr_aligned = (CPU_ADDR)Mem_SegAllocExt("KAL task stk",
+                                                      KAL_DataPtr->MemSegPtr,
+                                                      stk_size_bytes,
+                                                      CPU_CFG_STK_ALIGN_BYTES,
+                                                      DEF_NULL,
+                                                     &err_lib);
+        if (err_lib != LIB_MEM_ERR_NONE) {
+           *p_err = RTOS_ERR_ALLOC;
+            return (handle);
+        }
+        actual_stk_size_bytes = stk_size_bytes;
+    } else {
+                                                                /* Align stk ptr, if needed.                            */
+        stk_addr              = (CPU_ADDR)p_stk_base;
+        stk_addr_aligned      =  MATH_ROUND_INC_UP_PWR2(stk_addr, CPU_CFG_STK_ALIGN_BYTES);
+        actual_stk_size_bytes =  stk_size_bytes - (stk_addr_aligned - stk_addr);
     }
 
-    if (p_cfg != DEF_NULL) {                                    /* Chk for unimpl cfg specified.                        */
-       *p_err = KAL_ERR_UNIMPLEMENTED;
+    p_task = (KAL_TASK *)Mem_SegAlloc("KAL task",
+                                       KAL_DataPtr->MemSegPtr,
+                                       sizeof(KAL_TASK),
+                                      &err_lib);
+    if (err_lib != LIB_MEM_ERR_NONE) {
+       *p_err = RTOS_ERR_ALLOC;
         return (handle);
     }
 
-    if (p_stk_base != DEF_NULL) {                               /* Chk for unimpl user-specified stk base.              */
-       *p_err = KAL_ERR_UNIMPLEMENTED;
-        return (handle);
-    }
-#endif
+    p_task->StkBasePtr   = (CPU_STK *)stk_addr_aligned;
+    p_task->StkSizeBytes =  actual_stk_size_bytes;
+    p_task->NamePtr      =  p_name;
+    handle.TaskObjPtr    = (void *)p_task;
 
-    p_task_data = (KAL_TASK *)Mem_DynPoolBlkGet(&KAL_DataPtr->TaskPool,
-                                                     &lib_err);
-    if (lib_err != LIB_MEM_ERR_NONE) {
-       *p_err = KAL_ERR_MEM_ALLOC;
-        return (handle);
-    }
+   *p_err = RTOS_ERR_NONE;
 
-                                                                /* ------------------ SET MUTEX ATTR ------------------ */
-    pthread_err = pthread_attr_init(&p_task_data->ThreadAttr);
-    if (pthread_err != 0) {
-       *p_err = KAL_ERR_CREATE;
-        return (handle);
-    }
-
-
-                                                                /* Turn off sched param inheritance.                    */
-    pthread_err = pthread_attr_setinheritsched(&p_task_data->ThreadAttr, PTHREAD_EXPLICIT_SCHED);
-    if (pthread_err != 0) {
-       *p_err = KAL_ERR_CREATE;
-        return (handle);
-    }
-
-                                                                /* Sel round-robin sched policy for equal-prio tasks    */
-    pthread_err = pthread_attr_setschedpolicy(&p_task_data->ThreadAttr, SCHED_RR);
-    if (pthread_err != 0) {
-       *p_err = KAL_ERR_CREATE;
-        return (handle);
-    }
-
-                                                                /* Set stk size.                                        */
-    pthread_err = pthread_attr_setstacksize(&p_task_data->ThreadAttr, stk_size_word * sizeof(CPU_DATA));
-    if (pthread_err != 0) {
-       *p_err = KAL_ERR_CREATE;
-        return (handle);
-    }
-
-    handle.TaskObjPtr = (void *)p_task_data;
-   *p_err = KAL_ERR_NONE;
     return (handle);
 }
 
 
 /*
 *********************************************************************************************************
-*                                          KAL_TaskSizeGet()
+*                                           KAL_TaskCreate()
 *
-* Description : Get the size in memory of a task.
+* Description : Create and start a task.
 *
-* Note(s)     : None.
-*********************************************************************************************************
-*/
-
-CPU_SIZE_T  KAL_TaskSizeGet (CPU_SIZE_T         stk_size_word,
-                             KAL_TASK_EXT_CFG  *p_cfg,
-                             KAL_ERR           *p_err)
-{
-   *p_err = KAL_ERR_UNIMPLEMENTED;
-    return (0);
-}
-
-
-/*
-*********************************************************************************************************
-*                                          KAL_TaskCreate()
+* Argument(s) : task_handle     Handle of the task to create.
 *
-* Description : Create a task.
+*               p_fnct          Pointer to task function.
+*
+*               p_task_arg      Pointer to argument that will be passed to task function (can be DEF_NULL).
+*
+*               prio            Task priority.
+*
+*               p_cfg           Pointer to KAL task configuration structure.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_SUPPORTED      'p_cfg' parameter was not NULL.
+*                                   RTOS_ERR_NULL_PTR           Handle contains a NULL/invalid pointer.
+*                                   RTOS_ERR_INVALID_ARG        Invalid argument passed to function.
+*                                   RTOS_ERR_ISR                Function called from an ISR context.
+*
+* Return(s)   : none.
 *
 * Note(s)     : (1) The task must be allocated prior to this call using KAL_TaskAlloc().
 *********************************************************************************************************
 */
 
-void  KAL_TaskCreate (KAL_TASK_HANDLE    task_handle,
-                      void             (*p_fnct)(void *),
-                      void              *p_arg,
-                      CPU_INT08U         prio,
-                      KAL_TASK_EXT_CFG  *p_cfg,
-                      KAL_ERR           *p_err)
+void  KAL_TaskCreate (KAL_TASK_HANDLE     task_handle,
+                      void              (*p_fnct)(void  *p_arg),
+                      void               *p_task_arg,
+                      CPU_INT08U          prio,
+                      KAL_TASK_EXT_CFG   *p_cfg,
+                      RTOS_ERR           *p_err)
 {
-    KAL_TASK        *p_task_data;
-    KAL_TASK_FNCT_INFO    fnct_info;
-    int                   pthread_err;
-    struct  sched_param   param;
+    KAL_TASK      *p_task;
+    CPU_STK_SIZE   stk_size_words;
+    CPU_STK_SIZE   stk_limit;
+    OS_ERR         err_os;
 
 
-#if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                     /* ---------------- VALIDATE ARGUMENTS ---------------- */
-    if (p_err == DEF_NULL) {                                    /* Validate err ptr.                                    */
-        CPU_SW_EXCEPTION(DEF_NULL);
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(;);
+        }
+
+        if (KAL_TASK_HANDLE_IS_NULL(task_handle) == DEF_YES) {
+           *p_err = RTOS_ERR_NULL_PTR;
+            return;
+        }
+
+        if (p_cfg != DEF_NULL) {                                /* Make sure no unsupported cfg recv.                   */
+           *p_err = RTOS_ERR_NOT_SUPPORTED;
+            return;
+        }
+    #else
+        (void)p_cfg;
+    #endif
+
+    p_task         = (KAL_TASK *)task_handle.TaskObjPtr;
+    stk_size_words =  p_task->StkSizeBytes / sizeof(CPU_STK);
+    stk_limit      = (stk_size_words * (100u - KAL_CFG_TASK_STK_SIZE_PCT_FULL)) / 100u;
+
+    OSTaskCreate(&p_task->TCB,
+      (CPU_CHAR *)p_task->NamePtr,
+                  p_fnct,
+                  p_task_arg,
+                  prio,
+                  p_task->StkBasePtr,
+                  stk_limit,
+                  stk_size_words,
+                  0u,
+                  0u,
+                  DEF_NULL,
+                 (OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+                 &err_os);
+    if (err_os == OS_ERR_NONE) {
+       *p_err = RTOS_ERR_NONE;
+    } else {
+       *p_err = KAL_ErrConvert(err_os);
     }
 
-    if (task_handle.TaskObjPtr == DEF_NULL) {                   /* Chk for NULL obj ptr.                                */
-       *p_err = KAL_ERR_NULL_PTR;
-        return;
-    }
-
-    if (p_cfg != DEF_NULL) {                                    /* Chk for invalid opt flag.                            */
-       *p_err = KAL_ERR_UNIMPLEMENTED;
-        return;
-    }
-#endif
-
-    p_task_data = (KAL_TASK *)task_handle.TaskObjPtr;
-
-                                                                /* ----------------- SET THREAD ATTRS ----------------- */
-    param.sched_priority = 99 - prio;
-    pthread_err = pthread_attr_setschedparam(&p_task_data->ThreadAttr, &param);
-    if (pthread_err != 0) {
-       *p_err = KAL_ERR_CREATE;
-        return;
-    }
-
-
-                                                                /* ------------------ CREATE THREAD ------------------- */
-    fnct_info.Fnct  = p_fnct;
-    fnct_info.ArgPtr = p_arg;
-
-    pthread_err = sem_init(&fnct_info.SemInit, 0u, 0u);
-    if (pthread_err != 0) {
-       *p_err = KAL_ERR_CREATE;
-        return;
-    }
-
-    pthread_err = pthread_create(&p_task_data->Thread,
-                                 &p_task_data->ThreadAttr,
-                                  KAL_TaskFnctWrapper,
-                         (void *)&fnct_info);
-    if (pthread_err != 0) {
-       *p_err = KAL_ERR_CREATE;
-        return;
-    }
-
-    pthread_err = sem_wait(&fnct_info.SemInit);
-    if (pthread_err != 0) {
-       *p_err = KAL_ERR_CREATE;
-        return;
-    }
-
-   *p_err = KAL_ERR_NONE;
+    return;
 }
 
 
 /*
 *********************************************************************************************************
-*                                            KAL_TaskDel()
+*                                             KAL_TaskDel()
 *
 * Description : Delete a task.
 *
-* Note(s)     : None.
+* Argument(s) : task_handle     Handle of the task to delete.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NULL_PTR           Handle contains a NULL/invalid pointer.
+*                                   RTOS_ERR_INVALID_ARG        Invalid argument passed to function.
+*                                   RTOS_ERR_ISR                Function called from an ISR context.
+*                                   RTOS_ERR_OS                 Generic OS error.
+*
+* Return(s)   : none.
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
 void  KAL_TaskDel (KAL_TASK_HANDLE   task_handle,
-                   KAL_ERR          *p_err)
+                   RTOS_ERR         *p_err)
 {
-   *p_err = KAL_ERR_UNIMPLEMENTED;
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(;);
+        }
+
+        if (KAL_TASK_HANDLE_IS_NULL(task_handle) == DEF_YES) {
+           *p_err = RTOS_ERR_NULL_PTR;
+            return;
+        }
+    #endif
+
+    #if (OS_CFG_TASK_DEL_EN == DEF_ENABLED)
+    {
+        OS_TCB  *p_tcb;
+        OS_ERR   err_os;
+
+
+        p_tcb = &((KAL_TASK *)task_handle.TaskObjPtr)->TCB;     /* Get TCB from task handle provided.                   */
+
+        OSTaskDel(p_tcb,
+                 &err_os);
+        if (err_os == OS_ERR_NONE) {
+           *p_err = RTOS_ERR_NONE;
+        } else {
+           *p_err = KAL_ErrConvert(err_os);
+        }
+
+        return;
+    }
+    #else
+        (void)task_handle;
+
+       *p_err = RTOS_ERR_NOT_AVAIL;
+
+        return;
+    #endif
 }
 
 
@@ -477,201 +768,348 @@ void  KAL_TaskDel (KAL_TASK_HANDLE   task_handle,
 *********************************************************************************************************
 */
 
+/*
+*********************************************************************************************************
+*                                           KAL_LockCreate()
+*
+* Description : Create a lock, which is unlocked by default.
+*
+* Argument(s) : p_name          Pointer to name of the lock.
+*
+*               p_cfg           Pointer to KAL lock configuration structure.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_ALLOC              Unable to allocate memory for lock.
+*                                   RTOS_ERR_ISR                Function called from an ISR context.
+*                                   RTOS_ERR_INVALID_ARG        Invalid argument passed to function.
+*
+* Return(s)   : Created lock handle.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
+
 KAL_LOCK_HANDLE  KAL_LockCreate (const  CPU_CHAR          *p_name,
                                         KAL_LOCK_EXT_CFG  *p_cfg,
-                                        KAL_ERR           *p_err)
+                                        RTOS_ERR          *p_err)
 {
-    KAL_LOCK_HANDLE   handle = KAL_LockHandleNull;
-    KAL_LOCK    *p_lock_data;
-    LIB_ERR           lib_err;
-    int               pthread_err;
+    KAL_LOCK_HANDLE  handle = KAL_LockHandleNull;
 
 
-#if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                     /* ---------------- VALIDATE ARGUMENTS ---------------- */
-    if (p_err == DEF_NULL) {                                    /* Validate err ptr.                                    */
-        CPU_SW_EXCEPTION(handle);
-    }
-
-    if ((p_cfg != DEF_NULL) &&                                  /* Chk for invalid opt flags.                           */
-        ((p_cfg->Opt & ~(KAL_OPT_CREATE_REENTRANT)) != 0u)) {
-       *p_err = KAL_ERR_INVALID_ARG;
-        return (handle);
-    }
-#endif
-
-    p_lock_data = (KAL_LOCK *)Mem_DynPoolBlkGet(&KAL_DataPtr->LockPool,
-                                                     &lib_err);
-    if (lib_err != LIB_MEM_ERR_NONE) {
-       *p_err = KAL_ERR_MEM_ALLOC;
-        return (handle);
-    }
-
-                                                                /* ------------------ SET MUTEX ATTR ------------------ */
-    pthread_err = pthread_mutexattr_init(&p_lock_data->MutexAttr);
-    if (pthread_err != 0) {
-       *p_err = KAL_ERR_CREATE;
-        goto fail_release_blk;
-    }
-
-    if (p_cfg != DEF_NULL) {                                    /* Set attr according to cfg.                           */
-        if (DEF_BIT_IS_SET(p_cfg->Opt, KAL_OPT_CREATE_REENTRANT)) {
-            pthread_err = pthread_mutexattr_settype(&p_lock_data->MutexAttr, PTHREAD_MUTEX_RECURSIVE);
-            if (pthread_err != 0) {
-               *p_err = KAL_ERR_CREATE;
-                goto fail_release_attr;
-            }
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(handle);
         }
+    #endif
+
+    #if (OS_CFG_MUTEX_EN == DEF_ENABLED)
+    {
+        KAL_LOCK    *p_kal_lock;
+        CPU_INT08U   opt_flags;
+        LIB_ERR      err_lib;
+        OS_ERR       err_os;
+
+
+        p_kal_lock = (KAL_LOCK *)Mem_DynPoolBlkGet(&KAL_DataPtr->MutexPool,
+                                                   &err_lib);
+        if (err_lib != LIB_MEM_ERR_NONE) {
+           *p_err = RTOS_ERR_ALLOC;
+            return (handle);
+        }
+
+        OSMutexCreate(           &p_kal_lock->Mutex,
+                      (CPU_CHAR *)p_name,
+                                 &err_os);
+        if (err_os == OS_ERR_NONE) {
+            if ((p_cfg                                                != DEF_NULL) &&
+                (DEF_BIT_IS_SET(p_cfg->Opt, KAL_OPT_CREATE_REENTRANT) == DEF_YES)) {
+                opt_flags = KAL_OPT_CREATE_REENTRANT;
+            } else {
+                opt_flags = KAL_OPT_CREATE_NON_REENTRANT;
+            }
+            p_kal_lock->OptFlags =  opt_flags;
+            handle.LockObjPtr    = (void *)p_kal_lock;
+           *p_err                =  RTOS_ERR_NONE;
+        } else {
+            Mem_DynPoolBlkFree(       &KAL_DataPtr->MutexPool,
+                               (void *)p_kal_lock,
+                                      &err_lib);
+            (void)err_lib;                                     /* Err ignored.                                         */
+           *p_err = KAL_ErrConvert(err_os);
+        }
+
+        return (handle);
     }
+    #else
+        (void)p_name;
+        (void)p_cfg;
 
-                                                                /* -------------------- INIT MUTEX -------------------- */
-    pthread_err = pthread_mutex_init(&p_lock_data->Mutex, &p_lock_data->MutexAttr);
-    if (pthread_err != 0) {
-       *p_err = KAL_ERR_CREATE;
-        goto fail_release_attr;
-    }
+       *p_err = RTOS_ERR_NOT_AVAIL;
 
-    handle.LockObjPtr = p_lock_data;
-
-   *p_err = KAL_ERR_NONE;
-    return (handle);
-
-
-fail_release_attr:
-    pthread_err = pthread_mutexattr_destroy(&p_lock_data->MutexAttr);
-    if (pthread_err != 0) {
-        CPU_SW_EXCEPTION(handle);
-    }
-
-fail_release_blk:
-    Mem_DynPoolBlkFree(&KAL_DataPtr->LockPool, (void *)p_lock_data, &lib_err);
-    if (lib_err != LIB_MEM_ERR_NONE) {
-        CPU_SW_EXCEPTION(handle);
-    }
-
-    return (handle);
+        return (handle);
+    #endif
 }
 
 
-CPU_SIZE_T  KAL_LockSizeGet (KAL_LOCK_EXT_CFG  *p_cfg,
-                             KAL_ERR           *p_err)
-{
-   *p_err = KAL_ERR_NONE;
-    return (sizeof(KAL_LOCK));
-}
-
+/*
+*********************************************************************************************************
+*                                           KAL_LockAcquire()
+*
+* Description : Acquire a lock.
+*
+* Argument(s) : lock_handle     Handle of the lock to acquire.
+*
+*               opt             Options available:
+*                                   KAL_OPT_PEND_NONE:          block until timeout expires or lock is available.
+*                                   KAL_OPT_PEND_BLOCKING:      block until timeout expires or lock is available.
+*                                   KAL_OPT_PEND_NON_BLOCKING:  return immediately even if lock is not available.
+*
+*               timeout_ms      Timeout, in milliseconds. A value of 0 will never timeout.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NULL_PTR           Handle contains a NULL/invalid pointer.
+*                                   RTOS_ERR_INVALID_ARG        Handle or options specified is invalid.
+*                                   RTOS_ERR_ISR                Function called from an ISR context.
+*                                   RTOS_ERR_ABORT              Pend operation was aborted.
+*                                   RTOS_ERR_TIMEOUT            Operation timed-out.
+*                                   RTOS_ERR_OWNERSHIP          Calling task already owns the lock.
+*                                   RTOS_ERR_WOULD_BLOCK        KAL_OPT_PEND_NON_BLOCKING opt specified and
+*                                                               lock is not available.
+*                                   RTOS_ERR_OS                 Generic OS error.
+*
+* Return(s)   : none.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
 
 void  KAL_LockAcquire (KAL_LOCK_HANDLE   lock_handle,
                        KAL_OPT           opt,
-                       CPU_INT32U        timeout,
-                       KAL_ERR          *p_err)
+                       CPU_INT32U        timeout_ms,
+                       RTOS_ERR         *p_err)
 {
-    KAL_LOCK  *p_lock_data;
-    int             pthread_err;
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(;);
+        }
 
-
-#if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                     /* ---------------- VALIDATE ARGUMENTS ---------------- */
-    if (p_err == DEF_NULL) {                                    /* Validate err ptr.                                    */
-        CPU_SW_EXCEPTION(DEF_NULL);
-    }
-
-    if (lock_handle.LockObjPtr == DEF_NULL) {                   /* Chk for NULL obj ptr.                                */
-       *p_err = KAL_ERR_NULL_PTR;
-        return;
-    }
-
-    if (opt != 0u) {                                            /* Chk for invalid opt flag.                            */
-       *p_err = KAL_ERR_INVALID_ARG;
-        return;
-    }
-#endif
-
-    p_lock_data = (KAL_LOCK *)lock_handle.LockObjPtr;
-
-    if (timeout == 0u) {
-        pthread_err = pthread_mutex_lock(&p_lock_data->Mutex);
-        if (pthread_err != 0) {
-           *p_err = KAL_ERR_OS;
+        if (KAL_LOCK_HANDLE_IS_NULL(lock_handle) == DEF_YES) {
+           *p_err = RTOS_ERR_NULL_PTR;
             return;
         }
-    } else {
-        struct  timespec  ts_timeout;
 
-
-        ts_timeout.tv_sec  =  timeout / 1000u;
-        ts_timeout.tv_nsec = (timeout % 1000u) * 1000u;
-
-        pthread_err = pthread_mutex_timedlock(&p_lock_data->Mutex, &ts_timeout);
-        if (pthread_err != 0) {
-           *p_err = KAL_ERR_OS;
+        if (DEF_BIT_IS_SET_ANY(opt, ~(KAL_OPT_PEND_NONE | KAL_OPT_PEND_NON_BLOCKING)) == DEF_YES) {
+           *p_err = RTOS_ERR_INVALID_ARG;
             return;
         }
-    }
+    #endif
 
-   *p_err = KAL_ERR_NONE;
+    #if (OS_CFG_MUTEX_EN == DEF_ENABLED)
+    {
+        KAL_LOCK    *p_kal_lock;
+        CPU_INT32U   timeout_ticks;
+        OS_OPT       opt_os;
+        OS_ERR       err_os;
+
+
+        if (timeout_ms != KAL_TIMEOUT_INFINITE) {
+            timeout_ticks = KAL_msToTicks(timeout_ms);
+        } else {
+            timeout_ticks = 0u;
+        }
+
+        opt_os = OS_OPT_NONE;
+        if (DEF_BIT_IS_CLR(opt, KAL_OPT_PEND_NON_BLOCKING) == DEF_YES) {
+            opt_os |= OS_OPT_PEND_BLOCKING;
+        } else {
+            opt_os |= OS_OPT_PEND_NON_BLOCKING;
+        }
+
+        p_kal_lock = (KAL_LOCK *)lock_handle.LockObjPtr;
+        OSMutexPend(&p_kal_lock->Mutex,
+                     timeout_ticks,
+                     opt_os,
+                     DEF_NULL,
+                    &err_os);
+        if (err_os == OS_ERR_NONE) {
+           *p_err = RTOS_ERR_NONE;
+        } else if (err_os != OS_ERR_MUTEX_OWNER) {
+           *p_err = KAL_ErrConvert(err_os);
+        } else {
+            if (DEF_BIT_IS_SET(p_kal_lock->OptFlags, KAL_OPT_CREATE_REENTRANT) == DEF_YES) {
+               *p_err = RTOS_ERR_NONE;
+            } else {
+                OSMutexPost(&p_kal_lock->Mutex,                 /* Post mutex to decrement nesting ctr.                 */
+                             OS_OPT_POST_NONE,
+                            &err_os);
+                (void)err_os;
+               *p_err = RTOS_ERR_OWNERSHIP;
+            }
+        }
+
+        return;
+    }
+    #else
+        (void)lock_handle;
+        (void)opt;
+        (void)timeout_ms;
+
+       *p_err = RTOS_ERR_NOT_AVAIL;
+
+        return;
+    #endif
 }
 
+
+/*
+*********************************************************************************************************
+*                                           KAL_LockRelease()
+*
+* Description : Release a lock.
+*
+* Argument(s) : lock_handle     Handle of the lock to release.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NULL_PTR           Handle contains a NULL/invalid pointer.
+*                                   RTOS_ERR_INVALID_ARG        Task releasing lock does not own lock.
+*                                   RTOS_ERR_ISR                Function called from an ISR context.
+*
+* Return(s)   : none.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
 
 void  KAL_LockRelease (KAL_LOCK_HANDLE   lock_handle,
-                       KAL_ERR          *p_err)
+                       RTOS_ERR         *p_err)
 {
-    KAL_LOCK  *p_lock_data;
-    int             pthread_err;
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(;);
+        }
+
+        if (KAL_LOCK_HANDLE_IS_NULL(lock_handle) == DEF_YES) {
+           *p_err = RTOS_ERR_NULL_PTR;
+            return;
+        }
+    #endif
+
+    #if (OS_CFG_MUTEX_EN == DEF_ENABLED)
+    {
+        KAL_LOCK  *p_kal_lock;
+        OS_ERR     err_os;
 
 
-#if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                     /* ---------------- VALIDATE ARGUMENTS ---------------- */
-    if (p_err == DEF_NULL) {                                    /* Validate err ptr.                                    */
-        CPU_SW_EXCEPTION(DEF_NULL);
-    }
+        p_kal_lock = (KAL_LOCK *)lock_handle.LockObjPtr;
+        OSMutexPost(&p_kal_lock->Mutex,
+                     OS_OPT_POST_NONE,
+                    &err_os);
+        if (err_os == OS_ERR_NONE) {
+           *p_err = RTOS_ERR_NONE;
+        } else if (err_os != OS_ERR_MUTEX_NESTING) {
+           *p_err = KAL_ErrConvert(err_os);
+        } else {
+            if (DEF_BIT_IS_SET(p_kal_lock->OptFlags, KAL_OPT_CREATE_REENTRANT) == DEF_YES) {
+               *p_err = RTOS_ERR_NONE;
+            } else {
+               *p_err = RTOS_ERR_OS;
+            }
+        }
 
-    if (lock_handle.LockObjPtr == DEF_NULL) {                   /* Chk for NULL obj ptr.                                */
-       *p_err = KAL_ERR_NULL_PTR;
         return;
     }
-#endif
+    #else
+        (void)lock_handle;
 
-    p_lock_data = (KAL_LOCK *)lock_handle.LockObjPtr;
+       *p_err = RTOS_ERR_NOT_AVAIL;
 
-    pthread_err = pthread_mutex_unlock(&p_lock_data->Mutex);
-    if (pthread_err != 0) {
-       *p_err = KAL_ERR_OS;
         return;
-    }
-
-   *p_err = KAL_ERR_NONE;
+    #endif
 }
 
+
+/*
+*********************************************************************************************************
+*                                             KAL_LockDel()
+*
+* Description : Delete a lock.
+*
+* Argument(s) : lock_handle     Handle of the lock to delete.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NULL_PTR           Handle contains a NULL/invalid pointer.
+*                                   RTOS_ERR_INVALID_ARG        Handle or options specified is invalid.
+*                                   RTOS_ERR_ISR                Function was called from an ISR.
+*                                   RTOS_ERR_OS                 Generic OS error.
+*
+* Return(s)   : none.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
 
 void  KAL_LockDel (KAL_LOCK_HANDLE   lock_handle,
-                   KAL_ERR          *p_err)
+                   RTOS_ERR         *p_err)
 {
-    KAL_LOCK  *p_lock_data;
-    int             pthread_err;
-    LIB_ERR         lib_err;
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(;);
+        }
+
+        if (KAL_LOCK_HANDLE_IS_NULL(lock_handle) == DEF_YES) {
+           *p_err = RTOS_ERR_NULL_PTR;
+            return;
+        }
+    #endif
+
+    #if ((OS_CFG_MUTEX_EN     == DEF_ENABLED) && \
+         (OS_CFG_MUTEX_DEL_EN == DEF_ENABLED))                  /* Mutex and mutex del are avail.                       */
+    {
+        KAL_LOCK  *p_kal_lock;
+        OS_ERR     err_os;
 
 
-    p_lock_data = (KAL_LOCK *)lock_handle.LockObjPtr;
-    if (p_lock_data == DEF_NULL) {
-       *p_err = KAL_ERR_NULL_PTR;
+        p_kal_lock = (KAL_LOCK *)lock_handle.LockObjPtr;
+
+        (void)OSMutexDel(&p_kal_lock->Mutex,
+                          OS_OPT_DEL_ALWAYS,
+                         &err_os);
+        if (err_os == OS_ERR_NONE) {
+            LIB_ERR  err_lib;
+
+
+            Mem_DynPoolBlkFree(       &KAL_DataPtr->MutexPool,
+                               (void *)p_kal_lock,
+                                      &err_lib);
+            (void)err_lib;
+           *p_err = RTOS_ERR_NONE;
+        } else {
+           *p_err = KAL_ErrConvert(err_os);
+        }
+
         return;
     }
+    #else                                                       /* Mutex or mutex del is not avail.                     */
+        (void)lock_handle;
 
-    pthread_err = pthread_mutexattr_destroy(&p_lock_data->MutexAttr);
-    if (pthread_err != 0) {
-        CPU_SW_EXCEPTION(;);
-    }
+       *p_err = RTOS_ERR_NOT_AVAIL;
 
-    pthread_err = pthread_mutex_destroy(&p_lock_data->Mutex);
-    if (pthread_err != 0) {
-        CPU_SW_EXCEPTION(;);
-    }
-
-    Mem_DynPoolBlkFree(&KAL_DataPtr->LockPool, (void *)p_lock_data, &lib_err);
-    if (lib_err != LIB_MEM_ERR_NONE) {
-        CPU_SW_EXCEPTION(;);
-    }
-
-   *p_err = KAL_ERR_NONE;
+        return;
+    #endif
 }
+
 
 /*
 *********************************************************************************************************
@@ -679,254 +1117,463 @@ void  KAL_LockDel (KAL_LOCK_HANDLE   lock_handle,
 *********************************************************************************************************
 */
 
-
 /*
 *********************************************************************************************************
-*                                          KAL_SemCreate()
+*                                            KAL_SemCreate()
 *
-* Description : Create a semaphore.
+* Description : Create a semaphore, with a count of 0.
 *
-* Note(s)     : None.
+* Argument(s) : p_name          Pointer to name of the semaphore.
+*
+*               p_cfg           Pointer to KAL semaphore configuration structure.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NOT_SUPPORTED      'p_cfg' parameter was not NULL.
+*                                   RTOS_ERR_ALLOC              Unable to allocate memory for semaphore.
+*                                   RTOS_ERR_INVALID_ARG        Invalid argument passed to function.
+*                                   RTOS_ERR_ISR                Function called from an ISR context.
+*
+* Return(s)   : Created semaphore's handle.
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
 KAL_SEM_HANDLE  KAL_SemCreate (const  CPU_CHAR         *p_name,
                                       KAL_SEM_EXT_CFG  *p_cfg,
-                                      KAL_ERR          *p_err)
+                                      RTOS_ERR         *p_err)
 {
-    KAL_SEM_HANDLE   handle = KAL_SemHandleNull;
-    KAL_SEM    *p_sem_data;
-    LIB_ERR          lib_err;
-    int              sem_err;
+    KAL_SEM_HANDLE  handle = KAL_SemHandleNull;
 
 
-#if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                     /* ---------------- VALIDATE ARGUMENTS ---------------- */
-    if (p_err == DEF_NULL) {                                    /* Validate err ptr.                                    */
-        CPU_SW_EXCEPTION(handle);
-    }
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(handle);
+        }
 
-    if (p_cfg != DEF_NULL) {                                    /* Chk for invalid opt flags.                           */
-       *p_err = KAL_ERR_INVALID_ARG;
+        if (p_cfg != DEF_NULL) {                                /* Make sure no unsupported cfg recv.                   */
+           *p_err = RTOS_ERR_NOT_SUPPORTED;
+            return (handle);
+        }
+    #else
+        (void)p_cfg;
+    #endif
+
+    #if (OS_CFG_SEM_EN == DEF_ENABLED)
+    {
+        OS_SEM   *p_sem;
+        LIB_ERR   err_lib;
+        OS_ERR    err_os;
+
+
+        p_sem = (OS_SEM *)Mem_DynPoolBlkGet(&KAL_DataPtr->SemPool,
+                                            &err_lib);
+        if (err_lib != LIB_MEM_ERR_NONE) {
+           *p_err = RTOS_ERR_ALLOC;
+            return (handle);
+        }
+
+        OSSemCreate(            p_sem,
+                    (CPU_CHAR *)p_name,
+                                0u,
+                               &err_os);
+        if (err_os == OS_ERR_NONE) {
+            handle.SemObjPtr = (void *)p_sem;
+           *p_err            =  RTOS_ERR_NONE;
+        } else {
+            Mem_DynPoolBlkFree(       &KAL_DataPtr->SemPool,
+                               (void *)p_sem,
+                                      &err_lib);
+            (void)err_lib;
+           *p_err = KAL_ErrConvert(err_os);
+        }
+
         return (handle);
     }
-#endif
+    #else
+        (void)p_name;
 
-    p_sem_data = (KAL_SEM *)Mem_DynPoolBlkGet(&KAL_DataPtr->SemPool,
-                                                   &lib_err);
-    if (lib_err != LIB_MEM_ERR_NONE) {
-       *p_err = KAL_ERR_MEM_ALLOC;
+       *p_err = RTOS_ERR_NOT_AVAIL;
+
         return (handle);
-    }
-
-                                                                /* --------------------- INIT SEM --------------------- */
-    sem_err = sem_init(&p_sem_data->Sem, 0u, 0u);
-    if (sem_err != 0) {
-      *p_err = KAL_ERR_CREATE;
-       Mem_DynPoolBlkFree(&KAL_DataPtr->SemPool, (void *)p_sem_data, &lib_err);
-       if (lib_err != LIB_MEM_ERR_NONE) {
-           CPU_SW_EXCEPTION(handle);
-       }
-       return (handle);
-    }
-
-    handle.SemObjPtr = p_sem_data;
-
-   *p_err = KAL_ERR_NONE;
-    return (handle);
+    #endif
 }
 
 
 /*
 *********************************************************************************************************
-*                                          KAL_SemSizeGet()
-*
-* Description : Get the size of a semaphore.
-*
-* Note(s)     : None.
-*********************************************************************************************************
-*/
-
-CPU_SIZE_T  KAL_SemSizeGet (KAL_SEM_EXT_CFG  *p_cfg,
-                            KAL_ERR          *p_err)
-{
-    *p_err = KAL_ERR_NONE;
-     return (sizeof(KAL_SEM));
-}
-
-
-/*
-*********************************************************************************************************
-*                                            KAL_SemPend()
+*                                             KAL_SemPend()
 *
 * Description : Pend on a semaphore.
 *
-* Note(s)     : None.
+* Argument(s) : sem_handle      Handle of the semaphore to pend on.
+*
+*               opt             Options available:
+*                                   KAL_OPT_PEND_NONE:          block until timeout expires or semaphore is available.
+*                                   KAL_OPT_PEND_BLOCKING:      block until timeout expires or semaphore is available.
+*                                   KAL_OPT_PEND_NON_BLOCKING:  return immediately even if semaphore is not available.
+*
+*               timeout_ms      Timeout, in milliseconds. A value of 0 will never timeout.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NULL_PTR           Handle contains a NULL/invalid pointer.
+*                                   RTOS_ERR_INVALID_ARG        Handle or options specified is invalid.
+*                                   RTOS_ERR_ABORT              Pend operation was aborted.
+*                                   RTOS_ERR_TIMEOUT            Operation timed-out.
+*                                   RTOS_ERR_ISR                Function was called from an ISR.
+*                                   RTOS_ERR_WOULD_BLOCK        KAL_OPT_PEND_NON_BLOCKING opt specified and
+*                                                               semaphore is not available.
+*                                   RTOS_ERR_OS                 Generic OS error.
+*
+* Return(s)   : none.
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
 void  KAL_SemPend (KAL_SEM_HANDLE   sem_handle,
                    KAL_OPT          opt,
-                   CPU_INT32U       timeout,
-                   KAL_ERR         *p_err)
+                   CPU_INT32U       timeout_ms,
+                   RTOS_ERR        *p_err)
 {
-    KAL_SEM  *p_sem_data;
-    int            sem_err;
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(;);
+        }
 
-
-#if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                     /* ---------------- VALIDATE ARGUMENTS ---------------- */
-    if (p_err == DEF_NULL) {                                    /* Validate err ptr.                                    */
-        CPU_SW_EXCEPTION(DEF_NULL);
-    }
-
-    if (sem_handle.SemObjPtr == DEF_NULL) {                     /* Chk for NULL obj ptr.                                */
-       *p_err = KAL_ERR_NULL_PTR;
-        return;
-    }
-
-    if (opt != 0u) {                                            /* Chk for invalid opt flag.                            */
-       *p_err = KAL_ERR_INVALID_ARG;
-        return;
-    }
-#endif
-
-    p_sem_data = (KAL_SEM *)sem_handle.SemObjPtr;
-
-    if (timeout == 0u) {
-        sem_err = sem_wait(&p_sem_data->Sem);
-        if (sem_err != 0) {
-           *p_err = KAL_ERR_OS;
+        if (KAL_SEM_HANDLE_IS_NULL(sem_handle) == DEF_YES) {
+           *p_err = RTOS_ERR_NULL_PTR;
             return;
         }
-    } else {
-        struct  timespec  ts_timeout;
 
-
-        ts_timeout.tv_sec  =  timeout / 1000u;
-        ts_timeout.tv_nsec = (timeout % 1000u) * 1000u;
-
-        sem_err = sem_timedwait(&p_sem_data->Sem, &ts_timeout);
-        if (sem_err != 0) {
-           *p_err = KAL_ERR_OS;
+        if (DEF_BIT_IS_SET_ANY(opt, ~(KAL_OPT_PEND_NONE | KAL_OPT_PEND_NON_BLOCKING)) == DEF_YES) {
+           *p_err = RTOS_ERR_INVALID_ARG;
             return;
         }
-    }
+    #endif
 
-   *p_err = KAL_ERR_NONE;
+    #if (OS_CFG_SEM_EN == DEF_ENABLED)
+    {
+        CPU_INT32U  timeout_ticks;
+        OS_OPT      opt_os;
+        OS_ERR      err_os;
+
+
+        if (timeout_ms != KAL_TIMEOUT_INFINITE) {
+            timeout_ticks = KAL_msToTicks(timeout_ms);
+        } else {
+            timeout_ticks = 0u;
+        }
+
+        opt_os = OS_OPT_NONE;
+        if (DEF_BIT_IS_CLR(opt, KAL_OPT_PEND_NON_BLOCKING) == DEF_YES) {
+            opt_os |= OS_OPT_PEND_BLOCKING;
+        } else {
+            opt_os |= OS_OPT_PEND_NON_BLOCKING;
+        }
+
+        OSSemPend((OS_SEM *)sem_handle.SemObjPtr,
+                            timeout_ticks,
+                            opt_os,
+                            DEF_NULL,
+                           &err_os);
+        if (err_os == OS_ERR_NONE) {
+           *p_err = RTOS_ERR_NONE;
+        } else {
+           *p_err = KAL_ErrConvert(err_os);
+        }
+
+        return;
+    }
+    #else
+        (void)sem_handle;
+        (void)opt;
+        (void)timeout_ms;
+
+       *p_err = RTOS_ERR_NOT_AVAIL;
+
+        return;
+    #endif
 }
 
 
 /*
 *********************************************************************************************************
-*                                            KAL_SemPost()
+*                                             KAL_SemPost()
 *
 * Description : Post a semaphore.
 *
-* Note(s)     : None.
+* Argument(s) : sem_handle      Handle of the semaphore to post.
+*
+*               opt             Options available:
+*                                   KAL_OPT_POST_NONE:     wake only the highest priority task pending on semaphore.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NULL_PTR           Handle contains a NULL/invalid pointer.
+*                                   RTOS_ERR_INVALID_ARG        Handle or options specified is invalid.
+*                                   RTOS_ERR_WOULD_OVF          Semaphore would overflow.
+*
+* Return(s)   : none.
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
 void  KAL_SemPost (KAL_SEM_HANDLE   sem_handle,
                    KAL_OPT          opt,
-                   KAL_ERR         *p_err)
+                   RTOS_ERR        *p_err)
 {
-    KAL_SEM  *p_sem_data;
-    int            sem_err;
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(;);
+        }
+
+        if (KAL_SEM_HANDLE_IS_NULL(sem_handle) == DEF_YES) {
+           *p_err = RTOS_ERR_NULL_PTR;
+            return;
+        }
+
+        if (opt != KAL_OPT_POST_NONE) {
+           *p_err = RTOS_ERR_INVALID_ARG;
+            return;
+        }
+    #endif
+
+    #if (OS_CFG_SEM_EN == DEF_ENABLED)
+    {
+        OS_ERR  err_os;
 
 
-#if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                     /* ---------------- VALIDATE ARGUMENTS ---------------- */
-    if (p_err == DEF_NULL) {                                    /* Validate err ptr.                                    */
-        CPU_SW_EXCEPTION(DEF_NULL);
-    }
+        OSSemPost((OS_SEM *)sem_handle.SemObjPtr,
+                            OS_OPT_POST_1,
+                           &err_os);
+        if (err_os == OS_ERR_NONE) {
+           *p_err = RTOS_ERR_NONE;
+        } else {
+           *p_err = KAL_ErrConvert(err_os);
+        }
 
-    if (sem_handle.SemObjPtr == DEF_NULL) {                     /* Chk for NULL obj ptr.                                */
-       *p_err = KAL_ERR_NULL_PTR;
         return;
     }
+    #else
+        (void)sem_handle;
+        (void)opt;
 
-    if (opt != KAL_OPT_NONE) {                                  /* Chk for invalid opt flags.                           */
-       *p_err = KAL_ERR_INVALID_ARG;
+       *p_err = RTOS_ERR_NOT_AVAIL;
+
         return;
-    }
-#endif
-
-    p_sem_data = (KAL_SEM *)sem_handle.SemObjPtr;
-
-    sem_err = sem_post(&p_sem_data->Sem);
-    if (sem_err != 0) {
-       *p_err = KAL_ERR_OS;
-        return;
-    }
-
-   *p_err = KAL_ERR_NONE;
+    #endif
 }
 
 
 /*
 *********************************************************************************************************
-*                                         KAL_SemPendAbort()
+*                                          KAL_SemPendAbort()
 *
 * Description : Abort given semaphore and resume all the tasks pending on it.
 *
-* Note(s)     : None.
+* Argument(s) : sem_handle      Handle of the sempahore to abort.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NULL_PTR           Handle contains a NULL/invalid pointer.
+*                                   RTOS_ERR_INVALID_ARG        Handle specified is invalid.
+*                                   RTOS_ERR_ISR                Function called from an ISR context.
+*
+* Return(s)   : none.
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
 void  KAL_SemPendAbort (KAL_SEM_HANDLE   sem_handle,
-                        KAL_ERR         *p_err)
+                        RTOS_ERR        *p_err)
 {
-   *p_err = KAL_ERR_UNIMPLEMENTED;
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(;);
+        }
+
+        if (KAL_SEM_HANDLE_IS_NULL(sem_handle) == DEF_YES) {
+           *p_err = RTOS_ERR_NULL_PTR;
+            return;
+        }
+    #endif
+
+    #if ((OS_CFG_SEM_EN            == DEF_ENABLED) && \
+         (OS_CFG_SEM_PEND_ABORT_EN == DEF_ENABLED))
+    {
+        OS_ERR  err_os;
+
+
+        (void)OSSemPendAbort((OS_SEM *)sem_handle.SemObjPtr,
+                                       OS_OPT_PEND_ABORT_ALL,
+                                      &err_os);
+        if (err_os == OS_ERR_NONE) {
+           *p_err = RTOS_ERR_NONE;
+        } else {
+           *p_err = KAL_ErrConvert(err_os);
+        }
+
+        return;
+    }
+    #else
+        (void)sem_handle;
+
+       *p_err = RTOS_ERR_NOT_AVAIL;
+
+        return;
+    #endif
 }
 
 
 /*
 *********************************************************************************************************
-*                                            KAL_SemSet()
+*                                             KAL_SemSet()
 *
-* Description : Set count of given semaphore.
+* Description : Set value of semaphore.
 *
-* Note(s)     : None.
+* Argument(s) : sem_handle      Handle of the semaphore to set.
+*
+*               cnt             Count value to set semaphore.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NULL_PTR           Handle contains a NULL/invalid pointer.
+*                                   RTOS_ERR_INVALID_ARG        Handle specified is invalid.
+*
+* Return(s)   : none.
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
 void  KAL_SemSet (KAL_SEM_HANDLE   sem_handle,
-                  CPU_INT16U       count,
-                  KAL_ERR         *p_err)
+                  CPU_INT16U       cnt,
+                  RTOS_ERR        *p_err)
 {
-   *p_err = KAL_ERR_UNIMPLEMENTED;
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ------------------ VALIDATE ARGS ------------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(;);
+        }
+
+        if (KAL_SEM_HANDLE_IS_NULL(sem_handle) == DEF_YES) {    /* Validate handle.                                     */
+           *p_err = RTOS_ERR_NULL_PTR;
+            return;
+        }
+    #endif
+
+    #if ((OS_CFG_SEM_EN      == DEF_ENABLED) && \
+         (OS_CFG_SEM_SET_EN  == DEF_ENABLED))
+    {
+        OS_ERR  err_os;
+
+
+        OSSemSet((OS_SEM *)sem_handle.SemObjPtr,
+                           cnt,
+                          &err_os);
+        if (err_os == OS_ERR_NONE) {
+           *p_err = RTOS_ERR_NONE;
+        } else {
+           *p_err = KAL_ErrConvert(err_os);
+        }
+
+        return;
+    }
+    #else
+        (void)sem_handle;
+        (void)cnt;
+
+       *p_err = RTOS_ERR_NOT_AVAIL;
+
+        return;
+    #endif
 }
 
 
 /*
 *********************************************************************************************************
-*                                            KAL_SemDel()
+*                                             KAL_SemDel()
 *
-* Description : Delete given semaphore.
+* Description : Delete a semaphore.
 *
-* Note(s)     : None.
+* Argument(s) : sem_handle      Handle of the semaphore to delete.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NULL_PTR           Handle contains a NULL/invalid pointer.
+*                                   RTOS_ERR_INVALID_ARG        Handle specified is invalid.
+*                                   RTOS_ERR_ISR                Function was called from an ISR.
+*
+* Return(s)   : none.
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
 void  KAL_SemDel (KAL_SEM_HANDLE   sem_handle,
-                  KAL_ERR         *p_err)
+                  RTOS_ERR        *p_err)
 {
-    KAL_SEM  *p_sem_data;
-    int            sem_err;
-    LIB_ERR        err_lib;
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(;);
+        }
+
+        if (KAL_SEM_HANDLE_IS_NULL(sem_handle) == DEF_YES) {
+           *p_err = RTOS_ERR_NULL_PTR;
+            return;
+        }
+    #endif
+
+    #if ((OS_CFG_SEM_EN     == DEF_ENABLED) && \
+         (OS_CFG_SEM_DEL_EN == DEF_ENABLED))
+    {
+        OS_SEM  *p_sem;
+        OS_ERR   err_os;
 
 
-    p_sem_data = (KAL_SEM *)sem_handle.SemObjPtr;
+        p_sem = (OS_SEM *)sem_handle.SemObjPtr;
 
-    sem_err = sem_destroy(&p_sem_data->Sem);
-    if (sem_err != 0) {
-        CPU_SW_EXCEPTION(;);
+        (void)OSSemDel(p_sem,
+                       OS_OPT_DEL_ALWAYS,
+                      &err_os);
+        if (err_os == OS_ERR_NONE) {
+            LIB_ERR  err_lib;
+
+
+            Mem_DynPoolBlkFree(       &KAL_DataPtr->SemPool,
+                               (void *)p_sem,
+                                      &err_lib);
+            (void)err_lib;
+           *p_err = RTOS_ERR_NONE;
+        } else {
+           *p_err = KAL_ErrConvert(err_os);
+        }
+
+        return;
     }
+    #else
+        (void)sem_handle;
 
-    Mem_DynPoolBlkFree(&KAL_DataPtr->SemPool, (void *)p_sem_data, &err_lib);
-    if (err_lib != LIB_MEM_ERR_NONE) {
-        CPU_SW_EXCEPTION(;);
-    }
+       *p_err = RTOS_ERR_NOT_AVAIL;
 
-   *p_err = KAL_ERR_NONE;
+        return;
+    #endif
 }
 
 
@@ -936,36 +1583,215 @@ void  KAL_SemDel (KAL_SEM_HANDLE   sem_handle,
 *********************************************************************************************************
 */
 
-KAL_TMR_HANDLE  KAL_TmrCreate (const  CPU_CHAR         *p_name,
-                                      void            (*p_callback)(void *),
-                                      void             *p_callback_arg,
-                                      CPU_INT32U        period_ms,
-                                      KAL_TMR_EXT_CFG  *p_cfg,
-                                      KAL_ERR          *p_err)
+/*
+*********************************************************************************************************
+*                                            KAL_TmrCreate()
+*
+* Description : Create a single-shot timer.
+*
+* Argument(s) : p_name          Pointer to name of the timer.
+*
+*               p_callback      Pointer to the callback function that will be called on completion of timer.
+*
+*               p_callback_arg  Argument passed to callback function.
+*
+*               interval_ms     If timer is 'one-shot', delay  used by the timer, in milliseconds.
+*                               If timer is 'periodic', period used by the timer, in milliseconds.
+*
+*               p_cfg           Pointer to KAL timer configuration structure.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NULL_PTR           Null pointer passed to function.
+*                                   RTOS_ERR_ALLOC              Unable to allocate memory for semaphore.
+*                                   RTOS_ERR_INVALID_ARG        Invalid argument passed to function.
+*                                   RTOS_ERR_ISR                Function called from an ISR context.
+*                                   RTOS_ERR_OS                 Generic OS error.
+*
+* Return(s)   : Created timer handle.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
+
+KAL_TMR_HANDLE  KAL_TmrCreate (const  CPU_CHAR          *p_name,
+                                      void             (*p_callback)(void  *p_arg),
+                                      void              *p_callback_arg,
+                                      CPU_INT32U         interval_ms,
+                                      KAL_TMR_EXT_CFG   *p_cfg,
+                                      RTOS_ERR          *p_err)
 {
-    KAL_TMR_HANDLE  handle = {DEF_NULL};
+    KAL_TMR_HANDLE  handle = KAL_TmrHandleNull;
 
 
-   *p_err = KAL_ERR_UNIMPLEMENTED;
-    return (handle);
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(handle);
+        }
+
+        if (p_callback == DEF_NULL) {                           /* Validate callback fnct ptr.                          */
+           *p_err = RTOS_ERR_NULL_PTR;
+            return (handle);
+        }
+
+        if (interval_ms == 0u) {                                /* Validate time.                                       */
+           *p_err = RTOS_ERR_INVALID_ARG;
+            return (handle);
+        }
+
+        if (p_cfg != DEF_NULL) {
+            if (DEF_BIT_IS_SET_ANY(p_cfg->Opt, ~(KAL_OPT_TMR_NONE | KAL_OPT_TMR_PERIODIC)) == DEF_YES) {
+               *p_err = RTOS_ERR_INVALID_ARG;
+                return (handle);
+            }
+        }
+    #endif
+
+    #if (OS_CFG_TMR_EN == DEF_ENABLED)
+    {
+        KAL_TMR     *p_tmr;
+        CPU_INT32U   tmr_dly;
+        CPU_INT32U   tmr_period;
+        OS_OPT       opt_os;
+        KAL_TICK     ticks;
+        OS_ERR       err_os;
+        LIB_ERR      err_lib;
+        #if  ((OS_CFG_TMR_TASK_RATE_HZ         >= 1000u) && \
+              (OS_CFG_TMR_TASK_RATE_HZ % 1000u ==    0u))
+        const  CPU_INT08U   mult = OS_CFG_TMR_TASK_RATE_HZ / 1000u;
+        #endif
+
+
+        p_tmr  = (KAL_TMR *)Mem_DynPoolBlkGet(&KAL_DataPtr->TmrPool,
+                                              &err_lib);
+        if (err_lib != LIB_MEM_ERR_NONE) {
+           *p_err = RTOS_ERR_ALLOC;
+            return (handle);
+        }
+
+        p_tmr->CallbackFnct = p_callback;
+        p_tmr->CallbackArg  = p_callback_arg;
+                                                                /* Calc nbr of tmr ticks (rounded up nearest int).      */
+        #if  ((OS_CFG_TMR_TASK_RATE_HZ         >= 1000u) && \
+              (OS_CFG_TMR_TASK_RATE_HZ % 1000u ==    0u))       /* Optimize calc if possible for often used vals.       */
+            ticks =    interval_ms * mult;
+        #elif (OS_CFG_TMR_TASK_RATE_HZ ==  100u)
+            ticks =  ((interval_ms +  9u) /  10u);
+        #elif (OS_CFG_TMR_TASK_RATE_HZ ==   10u)
+            ticks =  ((interval_ms + 99u) / 100u);
+        #else                                                   /* General formula.                                     */
+            ticks = (((interval_ms * OS_CFG_TMR_TASK_RATE_HZ)  + 1000u - 1u) / 1000u);
+        #endif
+                                                                /* Tmr is 'periodic'.                                   */
+        if ((p_cfg                                            != DEF_NULL) &&
+            (DEF_BIT_IS_SET(p_cfg->Opt, KAL_OPT_TMR_PERIODIC) == DEF_YES)) {
+            opt_os     = OS_OPT_TMR_PERIODIC;
+            tmr_dly    = 0u;
+            tmr_period = ticks;
+        } else {
+            opt_os     = OS_OPT_TMR_ONE_SHOT;                   /* Tmr is 'one-shot'.                                   */
+            tmr_dly    = ticks;
+            tmr_period = 0u;
+        }
+
+        OSTmrCreate(           &p_tmr->Tmr,                     /* Create tmr obj.                                      */
+                    (CPU_CHAR *)p_name,
+                                tmr_dly,
+                                tmr_period,
+                                opt_os,
+                                KAL_TmrFnctWrapper,
+                    (void     *)p_tmr,
+                               &err_os);
+        if (err_os == OS_ERR_NONE) {
+            handle.TmrObjPtr = p_tmr;
+           *p_err            = RTOS_ERR_NONE;
+        } else {
+            Mem_DynPoolBlkFree(&KAL_DataPtr->TmrPool,
+                                p_tmr,
+                               &err_lib);
+            (void)err_lib;
+           *p_err = KAL_ErrConvert(err_os);
+        }
+
+        return (handle);
+    }
+    #else
+        (void)p_name;
+        (void)p_callback;
+        (void)p_callback_arg;
+        (void)interval_ms;
+        (void)p_cfg;
+
+       *p_err = RTOS_ERR_NOT_AVAIL;
+
+        return (handle);
+    #endif
 }
 
 
-CPU_SIZE_T  KAL_TmrSizeGet (void            (*p_callback)(void *),
-                            void             *p_callback_arg,
-                            CPU_INT32U        delay_ms,
-                            KAL_TMR_EXT_CFG  *p_cfg,
-                            KAL_ERR          *p_err)
+/*
+*********************************************************************************************************
+*                                            KAL_TmrStart()
+*
+* Description : Start timer.
+*
+* Argument(s) : tmr_handle      Handle of timer to start.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NULL_PTR           Null timer handle passed to function.
+*                                   RTOS_ERR_ISR                Function called from an ISR context.
+*                                   RTOS_ERR_OS                 Generic OS error.
+*
+* Return(s)   : none.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
+
+void  KAL_TmrStart (KAL_TMR_HANDLE   tmr_handle,
+                    RTOS_ERR        *p_err)
 {
-   *p_err = KAL_ERR_UNIMPLEMENTED;
-    return (0);
-}
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(;);
+        }
+
+        if (KAL_TMR_HANDLE_IS_NULL(tmr_handle) == DEF_YES) {
+           *p_err = RTOS_ERR_NULL_PTR;
+            return;
+        }
+    #endif
+
+    #if (OS_CFG_TMR_EN == DEF_ENABLED)
+    {
+        KAL_TMR  *p_tmr;
+        OS_ERR    err_os;
 
 
-void  KAL_TmrStart (KAL_TMR_HANDLE   tmr,
-                    KAL_ERR         *p_err)
-{
-   *p_err = KAL_ERR_UNIMPLEMENTED;
+        p_tmr = (KAL_TMR *)tmr_handle.TmrObjPtr;
+
+        OSTmrStart(&p_tmr->Tmr,
+                   &err_os);
+        if (err_os == OS_ERR_NONE) {
+           *p_err = RTOS_ERR_NONE;
+        } else {
+           *p_err = KAL_ErrConvert(err_os);
+        }
+
+        return;
+    }
+    #else
+        (void)tmr_handle;
+
+       *p_err = RTOS_ERR_NOT_AVAIL;
+
+        return;
+    #endif
 }
 
 
@@ -977,99 +1803,275 @@ void  KAL_TmrStart (KAL_TMR_HANDLE   tmr,
 
 /*
 *********************************************************************************************************
-*                                            KAL_QCreate()
+*                                             KAL_QCreate()
 *
-* Description : Create a message queue.
+* Description : Create an empty queue.
 *
-* Note(s)     : None.
+* Argument(s) : p_name          Pointer to name of the queue.
+*
+*               max_msg_qty     Maximum number of message contained in the queue.
+*
+*               p_cfg           Pointer to KAL queue configuration structure.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NOT_SUPPORTED      'p_cfg' parameter was not NULL.
+*                                   RTOS_ERR_ALLOC              Unable to allocate memory for queue.
+*                                   RTOS_ERR_ISR                Function called from an ISR context.
+*                                   RTOS_ERR_INVALID_ARG        Argument passed to function is invalid.
+*
+* Return(s)   : Created queue handle.
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
 KAL_Q_HANDLE  KAL_QCreate (const  CPU_CHAR       *p_name,
                                   KAL_MSG_QTY     max_msg_qty,
                                   KAL_Q_EXT_CFG  *p_cfg,
-                                  KAL_ERR        *p_err)
+                                  RTOS_ERR       *p_err)
 {
-    KAL_Q_HANDLE  handle = {DEF_NULL};
+    KAL_Q_HANDLE  handle = KAL_QHandleNull;
 
-   *p_err = KAL_ERR_UNIMPLEMENTED;
-    return (handle);
+
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(handle);
+        }
+
+        if (p_cfg != DEF_NULL) {                                /* Make sure no unsupported cfg recv.                   */
+           *p_err = RTOS_ERR_NOT_SUPPORTED;
+            return (handle);
+        }
+    #else
+        (void)p_cfg;
+    #endif
+
+    #if (OS_CFG_Q_EN == DEF_ENABLED)
+    {
+        OS_Q     *p_q;
+        LIB_ERR   err_lib;
+        OS_ERR    err_os;
+
+
+        p_q = (OS_Q *)Mem_SegAlloc("KAL Q",
+                                    KAL_DataPtr->MemSegPtr,
+                                    sizeof(OS_Q),
+                                   &err_lib);
+        if (err_lib != LIB_MEM_ERR_NONE) {
+           *p_err = RTOS_ERR_ALLOC;
+            return (handle);
+        }
+
+        OSQCreate(            p_q,
+                  (CPU_CHAR *)p_name,
+                              max_msg_qty,
+                             &err_os);
+        if (err_os == OS_ERR_NONE) {
+            handle.QObjPtr = (void *)p_q;
+           *p_err          =  RTOS_ERR_NONE;
+        } else {
+           *p_err = KAL_ErrConvert(err_os);
+        }
+
+        return (handle);
+    }
+    #else
+        (void)p_name;
+        (void)max_msg_qty;
+
+       *p_err = RTOS_ERR_NOT_AVAIL;
+
+        return (handle);
+    #endif
 }
 
 
 /*
 *********************************************************************************************************
-*                                           KAL_QSizeGet()
+*                                              KAL_QPend()
 *
-* Description : Get message queue size.
+* Description : Pend/get first message of queue.
 *
-* Note(s)     : None.
+* Argument(s) : q_handle        Handle of the queue to pend on.
+*
+*               opt             Options available:
+*                                   KAL_OPT_PEND_NONE:          block until timeout expires or message is available.
+*                                   KAL_OPT_PEND_BLOCKING:      block until timeout expires or message is available.
+*                                   KAL_OPT_PEND_NON_BLOCKING:  return immediately with or without message.
+*
+*               timeout_ms      Timeout, in milliseconds. A value of 0 will never timeout.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NULL_PTR           Handle contains a NULL/invalid pointer.
+*                                   RTOS_ERR_INVALID_ARG        Handle or options specified is invalid.
+*                                   RTOS_ERR_ABORT              Pend operation was aborted.
+*                                   RTOS_ERR_TIMEOUT            Operation timed-out.
+*                                   RTOS_ERR_ISR                Function was called from an ISR.
+*                                   RTOS_ERR_WOULD_BLOCK        KAL_OPT_PEND_NON_BLOCKING opt specified and no
+*                                                               message is available.
+*                                   RTOS_ERR_OS                 Generic OS error.
+*
+* Return(s)   : Pointer to message obtained, if any, if no error.
+*
+*               Null pointer,                        otherwise.
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
-CPU_SIZE_T  KAL_QSizeGet (KAL_MSG_QTY     max_msg_qty,
-                          KAL_Q_EXT_CFG  *p_cfg,
-                          KAL_ERR        *p_err)
+void  *KAL_QPend (KAL_Q_HANDLE   q_handle,
+                  KAL_OPT        opt,
+                  CPU_INT32U     timeout_ms,
+                  RTOS_ERR      *p_err)
 {
-   *p_err = KAL_ERR_UNIMPLEMENTED;
-    return (0);
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(DEF_NULL);
+        }
+
+        if (KAL_Q_HANDLE_IS_NULL(q_handle) == DEF_YES) {
+           *p_err = RTOS_ERR_NULL_PTR;
+            return (DEF_NULL);
+        }
+
+        if (DEF_BIT_IS_SET_ANY(opt, ~(KAL_OPT_PEND_NONE | KAL_OPT_PEND_NON_BLOCKING)) == DEF_YES) {
+           *p_err = RTOS_ERR_INVALID_ARG;
+            return (DEF_NULL);
+        }
+    #endif
+
+    #if (OS_CFG_Q_EN == DEF_ENABLED)
+    {
+        void         *p_msg;
+        CPU_INT32U    timeout_ticks;
+        OS_MSG_SIZE   msg_size;
+        OS_OPT        opt_os;
+        OS_ERR        err_os;
+
+
+        if (timeout_ms != KAL_TIMEOUT_INFINITE) {
+            timeout_ticks = KAL_msToTicks(timeout_ms);
+        } else {
+            timeout_ticks = 0u;
+        }
+
+        opt_os = OS_OPT_NONE;
+        if (DEF_BIT_IS_CLR(opt, KAL_OPT_PEND_NON_BLOCKING) == DEF_YES) {
+            opt_os |= OS_OPT_PEND_BLOCKING;
+        } else {
+            opt_os |= OS_OPT_PEND_NON_BLOCKING;
+        }
+
+        p_msg = OSQPend((OS_Q *)q_handle.QObjPtr,
+                                timeout_ticks,
+                                opt_os,
+                               &msg_size,
+                                DEF_NULL,
+                               &err_os);
+        (void)msg_size;
+        if (err_os == OS_ERR_NONE) {
+           *p_err = RTOS_ERR_NONE;
+        } else {
+           *p_err = KAL_ErrConvert(err_os);
+        }
+
+        return (p_msg);
+    }
+    #else
+        (void)q_handle;
+        (void)opt;
+        (void)timeout_ms;
+
+       *p_err = RTOS_ERR_NOT_AVAIL;
+
+        return (DEF_NULL);
+    #endif
 }
 
 
 /*
 *********************************************************************************************************
-*                                             KAL_QPost()
+*                                              KAL_QPost()
 *
 * Description : Post message on queue.
 *
-* Note(s)     : None.
+* Argument(s) : q_handle        Handle of the queue on which to post message.
+*
+*               p_msg           Pointer to message to post.
+*
+*               opt             Options available:
+*                                   KAL_OPT_POST_NONE:     wake only the highest priority task pending on queue.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NULL_PTR           Handle contains a NULL/invalid pointer.
+*                                   RTOS_ERR_INVALID_ARG        Handle or options specified is invalid.
+*                                   RTOS_ERR_NO_MORE_RSRC       Queue cannot contain any more message,
+*                                                               no more message available.
+*
+* Return(s)   : none.
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
 void  KAL_QPost (KAL_Q_HANDLE   q_handle,
                  void          *p_msg,
                  KAL_OPT        opt,
-                 KAL_ERR       *p_err)
+                 RTOS_ERR      *p_err)
 {
-   *p_err = KAL_ERR_UNIMPLEMENTED;
-}
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(;);
+        }
+
+        if (KAL_Q_HANDLE_IS_NULL(q_handle) == DEF_YES) {
+           *p_err = RTOS_ERR_NULL_PTR;
+            return;
+        }
+
+        if (opt != KAL_OPT_POST_NONE) {
+           *p_err = RTOS_ERR_INVALID_ARG;
+            return;
+        }
+    #else
+        (void)opt;
+    #endif
+
+    #if (OS_CFG_Q_EN == DEF_ENABLED)                            /* Qs are available.                                    */
+    {
+        OS_ERR  err_os;
 
 
-/*
-*********************************************************************************************************
-*                                             KAL_QPend()
-*
-* Description : Pend/get first message of queue.
-*
-* Note(s)     : None.
-*********************************************************************************************************
-*/
+        OSQPost((OS_Q *)q_handle.QObjPtr,
+                        p_msg,
+                        0u,
+                        OS_OPT_POST_1,
+                       &err_os);
+        if (err_os == OS_ERR_NONE) {
+           *p_err = RTOS_ERR_NONE;
+        } else {
+           *p_err = KAL_ErrConvert(err_os);
+        }
 
-void  *KAL_QPend (KAL_Q_HANDLE   q_handle,
-                  KAL_OPT        opt,
-                  CPU_INT32U     timeout,
-                  KAL_ERR       *p_err)
-{
-   *p_err = KAL_ERR_UNIMPLEMENTED;
-    return (DEF_NULL);
-}
+        return;
+    }
+    #else
+        (void)q_handle;
+        (void)p_msg;
 
+       *p_err = RTOS_ERR_NOT_AVAIL;
 
-/*
-*********************************************************************************************************
-*                                             KAL_QDel()
-*
-* Description : Delay current task.
-*
-* Note(s)     : If someone ever wants to implement this function, the KAL_QCreate() function will have
-*               to be modified in order to allocate the Qs from a dynamic memory pool.
-*********************************************************************************************************
-*/
-
-void  KAL_QDel (KAL_Q_HANDLE   q_handle,
-                KAL_ERR       *p_err)
-{
-   *p_err = KAL_ERR_UNIMPLEMENTED;
+        return;
+    #endif
 }
 
 
@@ -1083,24 +2085,101 @@ void  KAL_QDel (KAL_Q_HANDLE   q_handle,
 *********************************************************************************************************
 *                                               KAL_Dly()
 *
-* Description : Delay current task.
+* Description : Delay current task (in milliseconds).
 *
-* Notes(s)    : None.
+* Argument(s) : dly_ms          Delay value, in milliseconds.
+*
+* Return(s)   : none.
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
 void  KAL_Dly (CPU_INT32U  dly_ms)
 {
-    struct timespec time;
+    CPU_INT32U  dly_ticks;
+    OS_ERR      err_os;
 
 
-    time.tv_sec  = dly_ms/1000;
-    dly_ms      %= 1000u;
-    time.tv_nsec = dly_ms * 1000 * 1000;
+    dly_ticks = KAL_msToTicks(dly_ms);
 
-    if (nanosleep(&time, DEF_NULL) != 0) {
-        CPU_SW_EXCEPTION(;);
+    OSTimeDly(dly_ticks,
+              OS_OPT_TIME_DLY,
+             &err_os);
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)
+        switch (err_os) {
+            case OS_ERR_NONE:
+            case OS_ERR_TIME_ZERO_DLY:
+                 break;
+
+            case OS_ERR_OPT_INVALID:
+            case OS_ERR_SCHED_LOCKED:
+            case OS_ERR_TIME_DLY_ISR:
+            default:
+                 CPU_SW_EXCEPTION(;);
+                 break;
+        }
+    #else
+        (void)err_os;                                          /* Ignore err from OSTimeDly().                         */
+    #endif
+
+    return;
+}
+
+
+/*
+*********************************************************************************************************
+*                                             KAL_DlyTick()
+*
+* Description : Delay current task (in ticks).
+*
+* Argument(s) : dly_ticks       Delay value, in ticks.
+*
+*               opt             Options available:
+*                                   KAL_OPT_DLY_NONE:       apply a 'normal' delay.
+*                                   KAL_OPT_DLY:            apply a 'normal' delay.
+*                                   KAL_OPT_DLY_PERIODIC:   apply a periodic delay.
+*
+* Return(s)   : none.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
+
+void  KAL_DlyTick (KAL_TICK  dly_ticks,
+                   KAL_OPT   opt)
+{
+    OS_OPT  opt_os;
+    OS_ERR  err_os;
+
+
+    if (DEF_BIT_IS_SET(opt, KAL_OPT_DLY_PERIODIC) == DEF_YES) {
+        opt_os = OS_OPT_TIME_PERIODIC;
+    } else {
+        opt_os = OS_OPT_TIME_DLY;
     }
+
+    OSTimeDly(dly_ticks,
+              opt_os,
+             &err_os);
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)
+        switch (err_os) {
+            case OS_ERR_NONE:
+            case OS_ERR_TIME_ZERO_DLY:
+                 break;
+
+            case OS_ERR_OPT_INVALID:
+            case OS_ERR_SCHED_LOCKED:
+            case OS_ERR_TIME_DLY_ISR:
+            default:
+                 CPU_SW_EXCEPTION(;);
+                 break;
+        }
+    #else
+        (void)err_os;                                          /* Ignore err from OSTimeDly().                         */
+    #endif
+
+    return;
 }
 
 
@@ -1110,39 +2189,279 @@ void  KAL_Dly (CPU_INT32U  dly_ms)
 *********************************************************************************************************
 */
 
+/*
+*********************************************************************************************************
+*                                          KAL_TaskRegCreate()
+*
+* Description : Create a task register.
+*
+* Argument(s) : p_cfg           Pointer to KAL task register configuration structure.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NOT_SUPPORTED      'p_cfg' parameter was not NULL.
+*                                   RTOS_ERR_ALLOC              Unable to allocate memory for task register.
+*                                   RTOS_ERR_NO_MORE_RSRC       No more task register available.
+*
+* Return(s)   : Created task register's handle.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
+
 KAL_TASK_REG_HANDLE  KAL_TaskRegCreate (KAL_TASK_REG_EXT_CFG  *p_cfg,
-                                        KAL_ERR               *p_err)
+                                        RTOS_ERR              *p_err)
 {
-    KAL_TASK_REG_HANDLE  handle = {DEF_NULL};
+    KAL_TASK_REG_HANDLE  handle = KAL_TaskRegHandleNull;
 
-   *p_err = KAL_ERR_UNIMPLEMENTED;
-    return (handle);
+
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(handle);
+        }
+
+        if (p_cfg != DEF_NULL) {                                /* Make sure no unsupported cfg recv.                   */
+           *p_err = RTOS_ERR_NOT_SUPPORTED;
+            return (handle);
+        }
+    #else
+        (void)p_cfg;
+    #endif
+
+    #if (OS_CFG_TASK_REG_TBL_SIZE > 0u)
+    {
+        KAL_TASK_REG  *p_task_reg;
+        LIB_ERR        err_lib;
+        OS_ERR         err_os;
+
+
+        p_task_reg = (KAL_TASK_REG *)Mem_DynPoolBlkGet(&KAL_DataPtr->TaskRegPool,
+                                                       &err_lib);
+        if (err_lib != LIB_MEM_ERR_NONE) {
+           *p_err = RTOS_ERR_ALLOC;
+            return (handle);
+        }
+
+        p_task_reg->Id = OSTaskRegGetID(&err_os);
+        if (err_os == OS_ERR_NONE) {
+            handle.TaskRegObjPtr = (void *)p_task_reg;
+           *p_err                =  RTOS_ERR_NONE;
+        } else {
+                                                                /* Free rsrc to pool.                                   */
+            Mem_DynPoolBlkFree(       &KAL_DataPtr->TaskRegPool,
+                               (void *)p_task_reg,
+                                      &err_lib);
+            (void)err_lib;                                     /* Err ignored.                                         */
+           *p_err = KAL_ErrConvert(err_os);
+        }
+
+        return (handle);
+    }
+    #else
+       *p_err = RTOS_ERR_NOT_AVAIL;
+
+        return (handle);
+    #endif
 }
 
 
-CPU_SIZE_T  KAL_TaskRegSizeGet (KAL_TASK_REG_EXT_CFG  *p_cfg,
-                                KAL_ERR               *p_err)
-{
-   *p_err = KAL_ERR_UNIMPLEMENTED;
-    return (0);
-}
-
+/*
+*********************************************************************************************************
+*                                           KAL_TaskRegGet()
+*
+* Description : Get value from a task register.
+*
+* Argument(s) : task_handle     Handle of the task associated to the task register. Current task is used if NULL.
+*
+*               task_reg_handle Handle of the task register to read.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NULL_PTR           Task register handle is NULL.
+*                                   RTOS_ERR_INVALID_ARG        Handle specified is invalid.
+*
+* Return(s)   : Value read from the task register, if no error.
+*               0,                                 otherwise.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
 
 CPU_INT32U  KAL_TaskRegGet (KAL_TASK_HANDLE       task_handle,
-                            KAL_TASK_REG_HANDLE   task_reg,
-                            KAL_ERR              *p_err)
+                            KAL_TASK_REG_HANDLE   task_reg_handle,
+                            RTOS_ERR             *p_err)
 {
-   *p_err = KAL_ERR_UNIMPLEMENTED;
-    return ((CPU_INT32U)-1);
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(0u);
+        }
+
+        if (KAL_TASK_REG_HANDLE_IS_NULL(task_reg_handle) == DEF_YES) {
+           *p_err = RTOS_ERR_NULL_PTR;
+            return (0u);
+        }
+    #endif
+
+    #if (OS_CFG_TASK_REG_TBL_SIZE > 0u)
+    {
+        KAL_TASK_REG  *p_task_reg;
+        OS_TCB        *p_task_tcb;
+        CPU_INT32U     ret_val;
+        OS_ERR         err_os;
+
+
+        p_task_reg = (KAL_TASK_REG *)task_reg_handle.TaskRegObjPtr;
+
+        if (KAL_TASK_HANDLE_IS_NULL(task_handle) == DEF_YES) {
+            p_task_tcb = OSTCBCurPtr;                           /* Use cur task if no task handle is provided.          */
+        } else {
+                                                                /* Get TCB from task handle provided.                   */
+            p_task_tcb = &((KAL_TASK *)task_handle.TaskObjPtr)->TCB;
+        }
+
+        ret_val = OSTaskRegGet(p_task_tcb,
+                               p_task_reg->Id,
+                              &err_os);
+        if (err_os == OS_ERR_NONE) {
+           *p_err = RTOS_ERR_NONE;
+        } else {
+           *p_err = KAL_ErrConvert(err_os);
+        }
+
+        return (ret_val);
+    }
+    #else
+        (void)task_handle;
+        (void)task_reg_handle;
+
+       *p_err = RTOS_ERR_NOT_AVAIL;
+
+        return (0u);
+    #endif
 }
 
+
+/*
+*********************************************************************************************************
+*                                           KAL_TaskRegSet()
+*
+* Description : Set value of task register.
+*
+* Argument(s) : task_handle     Handle of the task associated to the task register. Current task is used if NULL.
+*
+*               task_reg_handle Handle of the task register to write to.
+*
+*               val             Value to write in the task register.
+*
+*               p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*                                   RTOS_ERR_NOT_AVAIL          Configuration does not allow operation.
+*                                   RTOS_ERR_NULL_PTR           Task register handle is NULL.
+*                                   RTOS_ERR_INVALID_ARG        Handle specified is invalid.
+*
+* Return(s)   : none.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
 
 void  KAL_TaskRegSet (KAL_TASK_HANDLE       task_handle,
                       KAL_TASK_REG_HANDLE   task_reg_handle,
-                      CPU_INT32U            value,
-                      KAL_ERR              *p_err)
+                      CPU_INT32U            val,
+                      RTOS_ERR             *p_err)
 {
-   *p_err = KAL_ERR_UNIMPLEMENTED;
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(;);
+        }
+
+        if (KAL_TASK_REG_HANDLE_IS_NULL(task_reg_handle) == DEF_YES) {
+           *p_err = RTOS_ERR_NULL_PTR;
+            return;
+        }
+    #endif
+
+    #if (OS_CFG_TASK_REG_TBL_SIZE > 0u)
+    {
+        KAL_TASK_REG  *p_task_reg;
+        OS_TCB        *p_task_tcb;
+        OS_ERR         err_os;
+
+
+        p_task_reg = (KAL_TASK_REG *)task_reg_handle.TaskRegObjPtr;
+
+        if (KAL_TASK_HANDLE_IS_NULL(task_handle) == DEF_YES) {
+            p_task_tcb = OSTCBCurPtr;                           /* Use cur task if no task handle is provided.          */
+        } else {
+                                                                /* Get TCB from task handle provided.                   */
+            p_task_tcb = &((KAL_TASK *)task_handle.TaskObjPtr)->TCB;
+        }
+
+        OSTaskRegSet(       p_task_tcb,
+                            p_task_reg->Id,
+                    (OS_REG)val,
+                           &err_os);
+        if (err_os == OS_ERR_NONE) {
+           *p_err = RTOS_ERR_NONE;
+        } else {
+           *p_err = KAL_ErrConvert(err_os);
+        }
+
+        return;
+    }
+    #else
+        (void)task_handle;
+        (void)task_reg_handle;
+        (void)val;
+
+       *p_err = RTOS_ERR_NOT_AVAIL;
+
+        return;
+    #endif
+}
+
+
+/*
+*********************************************************************************************************
+*                                             KAL_TickGet()
+*
+* Description : Get value of OS' tick counter.
+*
+* Argument(s) : p_err           Pointer to variable that will receive the return error code from this function:
+*
+*                                   RTOS_ERR_NONE               No error.
+*
+* Return(s)   : OS tick counter's value.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
+
+KAL_TICK  KAL_TickGet (RTOS_ERR  *p_err)
+{
+    KAL_TICK  tick_cnt;
+    OS_ERR    err_os;
+
+
+    #if (KAL_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)                 /* ---------------- VALIDATE ARGUMENTS ---------------- */
+        if (p_err == DEF_NULL) {                                /* Validate err ptr.                                    */
+            CPU_SW_EXCEPTION(0u);
+        }
+    #endif
+
+    tick_cnt = OSTimeGet(&err_os);
+    if (err_os == OS_ERR_NONE) {
+       *p_err = RTOS_ERR_NONE;
+    } else {
+       *p_err = KAL_ErrConvert(err_os);
+    }
+
+    return (tick_cnt);
 }
 
 
@@ -1154,22 +2473,191 @@ void  KAL_TaskRegSet (KAL_TASK_HANDLE       task_handle,
 *********************************************************************************************************
 */
 
-void  *KAL_TaskFnctWrapper(void  *p_arg)
+/*
+*********************************************************************************************************
+*                                         KAL_TmrFnctWrapper()
+*
+* Description : Wrapper function for timer callback.
+*
+* Argument(s) : p_tmr_os        Pointer to OS timer object.
+*
+*               p_arg           Pointer to KAL timer object.
+*
+* Return(s)   : none.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
+
+#if (OS_CFG_TMR_EN == DEF_ENABLED)
+static  void  KAL_TmrFnctWrapper (void  *p_tmr_os,
+                                  void  *p_arg)
 {
-    KAL_TASK_FNCT_INFO  *p_fnct_info;
-    void (*fnct)(void *);
-    void  *p_fnct_arg;
+    KAL_TMR  *p_tmr;
 
 
-    p_fnct_info = (KAL_TASK_FNCT_INFO *)p_arg;
-    fnct        = p_fnct_info->Fnct;
-    p_fnct_arg  = p_fnct_info->ArgPtr;
+    (void)p_tmr_os;
 
-    sem_post(&p_fnct_info->SemInit);
+    p_tmr = (KAL_TMR *)p_arg;
+    p_tmr->CallbackFnct(p_tmr->CallbackArg);
+}
+#endif
 
-    fnct(p_fnct_arg);
 
-    return (DEF_NULL);
+/*
+*********************************************************************************************************
+*                                            KAL_msToTicks()
+*
+* Description : Convert milliseconds value in tick value.
+*
+* Argument(s) : ms              Millisecond value to convert.
+*
+* Return(s)   : Number of ticks corresponding to the millisecond value, rounded up, if needed.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
+
+static  KAL_TICK  KAL_msToTicks (CPU_INT32U  ms)
+{
+           KAL_TICK    ticks;
+#if  ((OS_CFG_TICK_RATE_HZ         >= 1000u) && \
+      (OS_CFG_TICK_RATE_HZ % 1000u ==    0u))
+    const  CPU_INT08U  mult = OS_CFG_TICK_RATE_HZ / 1000u;
+#endif
+
+
+    #if  ((OS_CFG_TICK_RATE_HZ         >= 1000u) && \
+          (OS_CFG_TICK_RATE_HZ % 1000u ==    0u))               /* Optimize calc if possible for often used vals.       */
+        ticks =    ms * mult;
+    #elif (OS_CFG_TICK_RATE_HZ ==  100u)
+        ticks =  ((ms +  9u) /  10u);
+    #elif (OS_CFG_TICK_RATE_HZ ==   10u)
+        ticks =  ((ms + 99u) / 100u);
+    #else                                                       /* General formula.                                     */
+        ticks = (((ms * OS_CFG_TICK_RATE_HZ)  + 1000u - 1u) / 1000u);
+    #endif
+
+    return (ticks);
 }
 
 
+/*
+*********************************************************************************************************
+*                                           KAL_ErrConvert()
+*
+* Description : Convert OS errors in KAL errors.
+*
+* Argument(s) : err_os          Error value used by the OS.
+*
+* Return(s)   : KAL error.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
+
+static  RTOS_ERR  KAL_ErrConvert (OS_ERR  err_os)
+{
+    RTOS_ERR  err_rtos;
+
+
+    switch (err_os) {
+        case OS_ERR_NONE:
+        case OS_ERR_PEND_ABORT_NONE:
+        case OS_ERR_TIME_ZERO_DLY:
+             err_rtos = RTOS_ERR_NONE;
+             break;
+
+
+        case OS_ERR_MUTEX_NOT_OWNER:
+        case OS_ERR_NAME:
+        case OS_ERR_OBJ_TYPE:
+        case OS_ERR_OPT_INVALID:
+        case OS_ERR_PRIO_INVALID:
+        case OS_ERR_Q_SIZE:
+        case OS_ERR_REG_ID_INVALID:
+        case OS_ERR_STK_INVALID:
+        case OS_ERR_STK_SIZE_INVALID:
+        case OS_ERR_STK_LIMIT_INVALID:
+        case OS_ERR_TASK_DEL_IDLE:
+        case OS_ERR_TASK_INVALID:
+        case OS_ERR_TCB_INVALID:
+        case OS_ERR_TMR_INVALID_PERIOD:
+             err_rtos = RTOS_ERR_INVALID_ARG;
+             break;
+
+
+        case OS_ERR_OBJ_PTR_NULL:
+        case OS_ERR_PTR_INVALID:
+             err_rtos = RTOS_ERR_NULL_PTR;
+             break;
+
+
+        case OS_ERR_ILLEGAL_CREATE_RUN_TIME:
+        case OS_ERR_MUTEX_NESTING:
+        case OS_ERR_OBJ_DEL:
+        case OS_ERR_SCHED_LOCKED:
+        case OS_ERR_STATE_INVALID:
+        case OS_ERR_STATUS_INVALID:
+        case OS_ERR_TASK_WAITING:
+        case OS_ERR_TMR_INACTIVE:
+        case OS_ERR_TMR_INVALID_DLY:
+        case OS_ERR_TMR_INVALID_STATE:
+        case OS_ERR_TMR_INVALID:
+             err_rtos = RTOS_ERR_OS;
+             break;
+
+
+        case OS_ERR_TIMEOUT:
+             err_rtos = RTOS_ERR_TIMEOUT;
+             break;
+
+
+        case OS_ERR_PEND_ABORT:
+             err_rtos = RTOS_ERR_ABORT;
+             break;
+
+
+        case OS_ERR_PEND_WOULD_BLOCK:
+             err_rtos = RTOS_ERR_WOULD_BLOCK;
+             break;
+
+
+        case OS_ERR_CREATE_ISR:
+        case OS_ERR_DEL_ISR:
+        case OS_ERR_PEND_ISR:
+        case OS_ERR_PEND_ABORT_ISR:
+        case OS_ERR_POST_ISR:
+        case OS_ERR_SET_ISR:
+        case OS_ERR_TASK_CREATE_ISR:
+        case OS_ERR_TASK_DEL_ISR:
+        case OS_ERR_TIME_DLY_ISR:
+        case OS_ERR_TMR_ISR:
+             err_rtos = RTOS_ERR_ISR;
+             break;
+
+
+        case OS_ERR_SEM_OVF:
+             err_rtos = RTOS_ERR_WOULD_OVF;
+             break;
+
+
+        case OS_ERR_MSG_POOL_EMPTY:
+        case OS_ERR_NO_MORE_ID_AVAIL:
+        case OS_ERR_Q_MAX:
+             err_rtos = RTOS_ERR_NO_MORE_RSRC;
+             break;
+
+
+        case OS_ERR_MUTEX_OWNER:
+             err_rtos = RTOS_ERR_OWNERSHIP;
+             break;
+
+
+        default:
+             err_rtos = RTOS_ERR_OS;
+             break;
+    }
+
+    return (err_rtos);
+}
