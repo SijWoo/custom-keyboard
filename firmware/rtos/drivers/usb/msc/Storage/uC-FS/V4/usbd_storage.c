@@ -35,8 +35,8 @@
 #define    MICRIUM_SOURCE
 #include  "usbd_storage.h"
 #include  "../../../usbd_msc_os.h"
-#include  <Source/fs.h>
-#include  <Source/fs_dev.h>
+#include  <fs.h>
+#include  <fs_dev.h>
 
 
 /*

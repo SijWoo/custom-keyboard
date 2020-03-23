@@ -48,7 +48,7 @@
 #include  "app_usbd.h"
 
 #if (APP_CFG_USBD_EN == DEF_ENABLED)
-#include  <Source/usbd_core.h>
+#include  <usbd_core.h>
 #include  <bsp_usbd_template.h>
 #include  <usbd_dev_cfg.h>
 

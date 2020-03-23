@@ -54,36 +54,20 @@ $(wildcard apps/scan/src/*.c) \
 $(wildcard cfg/src/*.c)	\
 $(wildcard drivers/gesture/src/*.c)	\
 $(wildcard drivers/keyboard/src/*.c)	\
-$(wildcard rtos/uC-Clk/OS/uCOS-III/*.c)	\
-$(wildcard rtos/uC-Clk/Source/*.c)	\
-$(wildcard rtos/uC-Common/Auth/*.c)	\
-$(wildcard rtos/uC-Common/Collections/*.c)	\
-$(wildcard rtos/uC-Common/KAL/uCOS-III/*.c)	\
-$(wildcard rtos/uC-CPU/*.c)	\
-$(wildcard rtos/uC-FS/Source/*.c)	\
-$(wildcard rtos/uC-FS/Dev/SD/*.c)	\
-$(wildcard rtos/uC-FS/Dev/SD/SPI/*.c)	\
-$(wildcard rtos/uC-FS/FAT/*.c)	\
-$(wildcard rtos/uC-FS/OS/uCOS-III/*.c)	\
-$(wildcard rtos/uC-LIB/*.c)	\
-$(wildcard rtos/uC-Shell/Cmd/General/*.c)	\
-$(wildcard rtos/uC-Shell/Source/*.c)	\
-$(wildcard rtos/uC-USB-Device/Class/HID/*.c)	\
-$(wildcard rtos/uC-USB-Device/Class/HID/OS/uCOS-III/*.c)	\
-$(wildcard rtos/uC-USB-Device/Drivers/drv_lib/*.c)	\
-$(wildcard rtos/uC-USB-Device/OS/uCOS-III/*.c)	\
-$(wildcard rtos/uC-USB-Device/Source/*.c)	\
-$(wildcard rtos/uCOS-III/Ports/ARM-Cortex-M/ARMv7-M/*.c)	\
-$(wildcard rtos/uCOS-III/Source/*.c)	\
-$(wildcard rtos/uCOS-III/TLS/NewLib/*.c)
+$(wildcard rtos/common/src/*.c)	\
+$(wildcard rtos/drivers/terminal/*.c)	\
+$(wildcard rtos/drivers/usb/hid/*.c)	\
+$(wildcard rtos/drivers/usb/core/*.c)	\
+$(wildcard rtos/drivers/usb/drv_lib/*.c)	\
+$(wildcard rtos/kernel/src/*.c)	\
+$(wildcard rtos/ports/ARM-Cortex-M/ARMv7-M/*.c)	\
+$(wildcard rtos/shell/src/*.c)
 
 C_SOURCES += $(BSP_C_SOURCES)
 
 # ASM sources
 ASM_SOURCES =  \
-$(wildcard rtos/uCOS-III/Ports/ARM-Cortex-M/ARMv7-M/GNU/*.s)	\
-$(wildcard rtos/uC-CPU/ARM-Cortex-M/ARMv7-M/GNU/*.s)	\
-$(wildcard rots/uC-LIB/Ports/ARM/GNU/*.s)
+$(wildcard rtos/ports/ARM-Cortex-M/ARMv7-M/GNU/*.s)
 
 ASM_SOURCES += $(BSP_ASM_SOURCES)
 
@@ -147,26 +131,14 @@ C_INCLUDES =  \
 -Icfg/inc	\
 -Idrivers/gesture/inc	\
 -Idrivers/keyboard/inc	\
--Irtos/uC-Clk/Source	\
--Irtos/uC-Common	\
--Irtos/uC-Common/Auth	\
--Irtos/uC-Common/Collections	\
--Irtos/uC-Common/KAL	\
--Irtos/uC-CPU	\
--Irtos/uC-CPU/ARM-Cortex-M/ARMv7-M/GNU	\
--Irtos/uC-FS/Source	\
--Irtos/uC-FS/Dev/SD	\
--Irtos/uC-FS/Dev/SD/SPI	\
--Irtos/uC-FS/FAT	\
--Irtos/uC-FS/OS/uCOS-III	\
--Irtos/uC-LIB	\
--Irtos/uC-Shell/Cmd/General	\
--Irtos/uC-Shell/Source	\
--Irtos/uC-USB-Device/Class/HID	\
--Irtos/uC-USB-Device/Drivers/drv_lib	\
--Irtos/uC-USB-Device/Source	\
--Irtos/uCOS-III/Ports/ARM-Cortex-M/ARMv7-M/GNU	\
--Irtos/uCOS-III/Source	\
+-Irtos/common/inc	\
+-Irtos/drivers/terminal	\
+-Irtos/drivers/usb/hid	\
+-Irtos/drivers/usb/core	\
+-Irtos/drivers/usb/drv_lib	\
+-Irtos/kernel/inc	\
+-Irtos/ports/ARM-Cortex-M/ARMv7-M/GNU	\
+-Irtos/shell/inc	\
 -Icmsis/Device/ST/Include \
 -Icmsis/Include
 

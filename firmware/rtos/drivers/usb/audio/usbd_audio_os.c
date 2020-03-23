@@ -28,7 +28,7 @@
 #include  <app_cfg.h>
 #include  "../../usbd_audio_internal.h"
 #include  "../../usbd_audio_os.h"
-#include  <Source/os.h>
+#include  <os.h>
 #include  <os_cfg_app.h>
 
 
