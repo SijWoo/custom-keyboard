@@ -39,7 +39,7 @@ const  CPU_CHAR  *os_cpu_c__c = "$Id: $";
 *********************************************************************************************************
 */
 
-#include  "../../../Source/os.h"
+#include  "os.h"
 
 #define  _WIN32_WINNT  0x0600
 #define   WIN32_LEAN_AND_MEAN

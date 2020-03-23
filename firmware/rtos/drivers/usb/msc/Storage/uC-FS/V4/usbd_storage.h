@@ -39,8 +39,8 @@
 *********************************************************************************************************
 */
 
-#include  "../../../../../Source/usbd_core.h"
-#include  "../../../usbd_scsi.h"
+#include  "usbd_core.h"
+#include  "usbd_scsi.h"
 #include  <fs_cfg.h>
 
 

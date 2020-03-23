@@ -51,7 +51,7 @@
 
 #define    MICRIUM_SOURCE
 #include  <lib_mem.h>
-#include  "../../Source/usbd_core.h"
+#include  "usbd_core.h"
 #include  "usbd_drv_synopsys_otg_hs.h"
 #include  <cpu_cache.h>
 

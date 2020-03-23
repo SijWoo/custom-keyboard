@@ -39,7 +39,7 @@
 */
 
 #include  "usbd_drv_renesas_usbhs.h"
-#include  "../../Source/usbd_core.h"
+#include  "usbd_core.h"
 #include  "../drv_lib/usbd_drv_lib.h"
 
 

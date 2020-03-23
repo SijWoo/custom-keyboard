@@ -31,7 +31,7 @@
 */
 
 #define    MICRIUM_SOURCE
-#include  "../../Source/usbd_core.h"
+#include  "usbd_core.h"
 #include  "usbd_hid_report.h"
 #include  "usbd_hid.h"
 #include  <lib_mem.h>

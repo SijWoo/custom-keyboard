@@ -35,7 +35,7 @@
 */
 
 #define    MICRIUM_SOURCE
-#include  "../../Source/usbd_core.h"
+#include  "usbd_core.h"
 #include  "usbd_drv_rm48x.h"
 
 

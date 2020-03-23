@@ -29,7 +29,7 @@
 *********************************************************************************************************
 */
 
-#include "../../../../Source/os.h"
+#include "os.h"
                                                             /* This directive suppresses warnings for non-...         */
 #pragma  diag_suppress=Pe940                                /* ...void functions with no return values.               */
 

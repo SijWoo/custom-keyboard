@@ -42,7 +42,7 @@ const  CPU_CHAR  *os_cpu_c__c = "$Id: $";
 */
 
 #include  <app_cfg.h>
-#include  "../../../Source/os.h"
+#include  "os.h"
 #include  "os_cpu.h"
 
 

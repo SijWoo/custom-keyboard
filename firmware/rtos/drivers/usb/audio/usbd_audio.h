@@ -45,7 +45,7 @@
 */
 
 #include  <usbd_cfg.h>                                          /* Device Configuration file.                           */
-#include  "../../Source/usbd_core.h"
+#include  "usbd_core.h"
 #include  <cpu.h>
 
 

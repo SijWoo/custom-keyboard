@@ -42,7 +42,7 @@
 *********************************************************************************************************
 */
 
-#include  "../../Source/clk.h"
+#include  "clk.h"
 #include  <app_cfg.h>
 #include  <os.h>                                                /* See this 'clk_os.c  Note #1'.                        */
 

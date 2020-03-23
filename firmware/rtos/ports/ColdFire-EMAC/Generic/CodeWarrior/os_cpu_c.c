@@ -25,7 +25,7 @@
 */
 
 #define  OS_CPU_GLOBALS
-#include "../../../../Source/os.h"
+#include "../os.h"
 
 
 #ifdef __cplusplus
