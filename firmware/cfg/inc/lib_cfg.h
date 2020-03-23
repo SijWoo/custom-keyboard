@@ -143,7 +143,7 @@
 
                                                                 /* Floating point feature(s).                           */
                                                                 /* Enable/disable floating point to string functions.   */
-#define  LIB_STR_CFG_FP_EN                      DEF_DISABLED
+#define  LIB_STR_CFG_FP_EN                      DEF_ENABLED
 
 
                                                                 /* Floating point number of significant digits.         */
