@@ -49,7 +49,7 @@
 
 #if (APP_CFG_USBD_EN == DEF_ENABLED)
 #include  <usbd_core.h>
-#include  <bsp_usbd_template.h>
+#include  <bsp_usbd_stm32f4.h>
 #include  <usbd_dev_cfg.h>
 
 
@@ -140,11 +140,11 @@ CPU_BOOLEAN  App_USBD_Init (void)
 
     APP_TRACE_DBG(("    Adding controller driver ... \r\n"));
                                                                 /* Add USB device instance.                             */
-    dev_nbr = USBD_DevAdd(&USBD_DevCfg_Template,
+    dev_nbr = USBD_DevAdd(&USBD_DevCfg_STM32F4,
                           &App_USBD_BusFncts,
-                          &USBD_DrvAPI_Template,
-                          &USBD_DrvCfg_Template,
-                          &USBD_DrvBSP_Template,
+                          &USBD_DrvAPI_STM32F_FS,
+                          &USBD_DrvCfg_STM32F4,
+                          &USBD_DrvBSP_STM32F4,
                           &err);
     if (err != USBD_ERR_NONE) {
         APP_TRACE_DBG(("    ... could not add controller driver w/err =  %d\r\n\r\n", err));

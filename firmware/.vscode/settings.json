@@ -3,6 +3,12 @@
         "stm32f4xx.h": "c",
         "fs.h": "c",
         "clk.h": "c",
-        "fs_entry.h": "c"
+        "fs_entry.h": "c",
+        "bsp_usbd_stm32f4.h": "c",
+        "usbd_dev_cfg.h": "c",
+        "usbd_core.h": "c",
+        "usbd_cfg.h": "c",
+        "app_usbd.h": "c",
+        "app_cfg.h": "c"
     }
 }
