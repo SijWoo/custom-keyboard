@@ -28,7 +28,7 @@
 
 #include  <usbd_core.h>
 #include  <usbd_dev_cfg.h>
-#include  <bsp_usbd_template.h>
+#include  "bsp_usbd_stm32f4.h"
 
 
 /*
@@ -37,13 +37,13 @@
 *********************************************************************************************************
 */
 
-const USBD_DEV_CFG  USBD_DevCfg_Template = {
+const USBD_DEV_CFG  USBD_DevCfg_STM32F4 = {
     0xFFFE,                                                     /* Vendor  ID.                                          */
     0x1234,                                                     /* Product ID.                                          */
     0x0100,                                                     /* Device release number.                               */
-   "MICRIUM MANUFACTURER",                                      /* Manufacturer  string.                                */
-   "MICRIUM PRODUCT",                                           /* Product       string.                                */
-   "1234567890ABCDEF",                                          /* Serial number string.                                */
+   "Sijin Woo",                                                 /* Manufacturer  string.                                */
+   "Blossum v1.0",                                              /* Product       string.                                */
+   "BNN120",                                                    /* Serial number string.                                */
     USBD_LANG_ID_ENGLISH_US                                     /* String language ID.                                  */
 };
 
@@ -54,12 +54,12 @@ const USBD_DEV_CFG  USBD_DevCfg_Template = {
 *********************************************************************************************************
 */
 
-const USBD_DRV_CFG  USBD_DrvCfg_Template = {
+const USBD_DRV_CFG  USBD_DrvCfg_STM32F4 = {
     0x00000000,                                                 /* Base addr   of device controller hw registers.       */
     0x00000000,                                                 /* Base addr   of device controller dedicated mem.      */
              0u,                                                /* Size        of device controller dedicated mem.      */
 
     USBD_DEV_SPD_FULL,                                          /* Speed       of device controller.                    */
 
-    USBD_DrvEP_InfoTbl_Template                                 /* EP Info tbl of device controller.                    */
+    USBD_DrvEP_InfoTbl_STM32F4                                  /* EP Info tbl of device controller.                    */
 };

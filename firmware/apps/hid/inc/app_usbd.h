@@ -78,7 +78,7 @@
 */
 
 #ifndef  APP_CFG_USBD_EN
-#define  APP_CFG_USBD_EN                        DEF_DISABLED
+#define  APP_CFG_USBD_EN                        DEF_ENABLED
 #endif
 
 #ifndef  APP_CFG_USBD_CDC_ACM_EN
@@ -94,7 +94,7 @@
 #endif
 
 #ifndef  APP_CFG_USBD_HID_EN
-#define  APP_CFG_USBD_HID_EN                    DEF_DISABLED
+#define  APP_CFG_USBD_HID_EN                    DEF_ENABLED
 #endif
 
 #ifndef  APP_CFG_USBD_HID_TEST_MOUSE_EN

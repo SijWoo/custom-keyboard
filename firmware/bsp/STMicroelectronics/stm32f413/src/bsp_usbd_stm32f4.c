@@ -17,9 +17,9 @@
 *
 *                       USB DEVICE DRIVER BOARD SUPPORT PACKAGE (BSP) FUNCTIONS
 *
-*                                              TEMPLATE
+*                                              STM32F4
 *
-* Filename : bsp_usbd_template.c
+* Filename : bsp_usbd_stm32f4.c
 * Version  : V4.06.00
 *********************************************************************************************************
 */
@@ -31,7 +31,7 @@
 */
 
 #include  "usbd_core.h"
-#include  "bsp_usbd_template.h"
+#include  "bsp_usbd_stm32f4.h"
 
 
 /*
@@ -61,7 +61,7 @@
 *********************************************************************************************************
 */
 
-USBD_DRV_EP_INFO  USBD_DrvEP_InfoTbl_Template[] = {
+USBD_DRV_EP_INFO  USBD_DrvEP_InfoTbl_STM32F4[] = {
     {USBD_EP_INFO_TYPE_CTRL                                                   | USBD_EP_INFO_DIR_OUT, 0u,   64u},
     {USBD_EP_INFO_TYPE_CTRL                                                   | USBD_EP_INFO_DIR_IN,  0u,   64u},
     {USBD_EP_INFO_TYPE_ISOC | USBD_EP_INFO_TYPE_BULK | USBD_EP_INFO_TYPE_INTR | USBD_EP_INFO_DIR_OUT, 1u, 1024u},
@@ -96,9 +96,9 @@ static  USBD_DRV  *BSP_USBD_Controller_DrvPtr;
 *********************************************************************************************************
 */
 
-static  void  BSP_USBD_Template_Init        (USBD_DRV  *p_drv);
-static  void  BSP_USBD_Template_Connect     (void            );
-static  void  BSP_USBD_Template_Disconnect  (void            );
+static  void  BSP_USBD_STM32F4_Init        (USBD_DRV  *p_drv);
+static  void  BSP_USBD_STM32F4_Connect     (void            );
+static  void  BSP_USBD_STM32F4_Disconnect  (void            );
 static  void  BSP_USBD_Controller_IntHandler(void      *p_arg);
 
 
@@ -108,10 +108,10 @@ static  void  BSP_USBD_Controller_IntHandler(void      *p_arg);
 *********************************************************************************************************
 */
 
-USBD_DRV_BSP_API  USBD_DrvBSP_Template = {
-    BSP_USBD_Template_Init,
-    BSP_USBD_Template_Connect,
-    BSP_USBD_Template_Disconnect
+USBD_DRV_BSP_API  USBD_DrvBSP_STM32F4 = {
+    BSP_USBD_STM32F4_Init,
+    BSP_USBD_STM32F4_Connect,
+    BSP_USBD_STM32F4_Disconnect
 };
 
 
@@ -144,7 +144,7 @@ USBD_DRV_BSP_API  USBD_DrvBSP_Template = {
 *********************************************************************************************************
 */
 
-static  void  BSP_USBD_Template_Init (USBD_DRV  *p_drv)
+static  void  BSP_USBD_STM32F4_Init (USBD_DRV  *p_drv)
 {
     (void)p_drv;
 
@@ -162,7 +162,7 @@ static  void  BSP_USBD_Template_Init (USBD_DRV  *p_drv)
 
 /*
 *********************************************************************************************************
-*                                     BSP_USBD_Template_Connect()
+*                                     BSP_USBD_STM32F4_Connect()
 *
 * Description : Connect pull-up on DP.
 *
@@ -174,7 +174,7 @@ static  void  BSP_USBD_Template_Init (USBD_DRV  *p_drv)
 *********************************************************************************************************
 */
 
-static  void  BSP_USBD_Template_Connect (void)
+static  void  BSP_USBD_STM32F4_Connect (void)
 {
     /* $$$$ Enable device transceiver clock [optional]. */
     /* $$$$ Enable pull-up resistor (this operation may be done in the driver) [mandatory]. */
@@ -184,7 +184,7 @@ static  void  BSP_USBD_Template_Connect (void)
 
 /*
 *********************************************************************************************************
-*                                   BSP_USBD_Template_Disconnect()
+*                                   BSP_USBD_STM32F4_Disconnect()
 *
 * Description : Disconnect pull-up on DP.
 *
@@ -196,7 +196,7 @@ static  void  BSP_USBD_Template_Connect (void)
 *********************************************************************************************************
 */
 
-static  void  BSP_USBD_Template_Disconnect (void)
+static  void  BSP_USBD_STM32F4_Disconnect (void)
 {
     /* $$$$ Disable device transceiver clock [optional]. */
     /* $$$$ Disable pull-up resistor (this operation may be done in the driver) [mandatory]. */
@@ -225,9 +225,9 @@ static  void  BSP_USBD_Controller_IntHandler (void  *p_arg)
 
 
                                                                 /* Get a reference to USBD_DRV.                         */
-    /* $$$$ If ISR does not support argument passing, get USBD_DRV from a global variable initialized in BSP_USBD_Template_Init(). */
+    /* $$$$ If ISR does not support argument passing, get USBD_DRV from a global variable initialized in BSP_USBD_STM32F4_Init(). */
     p_drv = BSP_USBD_Controller_DrvPtr;
-    /* $$$$ Otherwise if ISR supports argument passing, get USBD_DRV from the argument. Do not forget to pass USBD_DRV structure when registering the BSP ISR in BSP_USBD_Template_Init(). */
+    /* $$$$ Otherwise if ISR supports argument passing, get USBD_DRV from the argument. Do not forget to pass USBD_DRV structure when registering the BSP ISR in BSP_USBD_STM32F4_Init(). */
     p_drv = (USBD_DRV *)p_arg;
 
     p_drv_api = p_drv->API_Ptr;                                 /* Get a reference to USBD_DRV_API.                     */

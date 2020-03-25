@@ -1,15 +1,13 @@
 /*
 *********************************************************************************************************
-*                                            uC/USB-Device
-*                                    The Embedded USB Device Stack
+*                                            EXAMPLE CODE
 *
-*                    Copyright 2004-2020 Silicon Laboratories Inc. www.silabs.com
+*               This file is provided as an example on how to use Micrium products.
 *
-*                                 SPDX-License-Identifier: APACHE-2.0
-*
-*               This software is subject to an open source license and is distributed by
-*                Silicon Laboratories Inc. pursuant to the terms of the Apache License,
-*                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
+*               Please feel free to use any application code labeled as 'EXAMPLE CODE' in
+*               your application products.  Example code may be used as is, in whole or in
+*               part, or may be used as a reference only. This file can be modified as
+*               required to meet the end-product requirements.
 *
 *********************************************************************************************************
 */
@@ -17,11 +15,11 @@
 /*
 *********************************************************************************************************
 *
-*                                    USB DEVICE CONFIGURATION FILE
+*                       USB DEVICE DRIVER BOARD SUPPORT PACKAGE (BSP) FUNCTIONS
 *
 *                                              TEMPLATE
 *
-* Filename : usbd_dev_cfg.h
+* Filename : bsp_usbd_template.h
 * Version  : V4.06.00
 *********************************************************************************************************
 */
@@ -30,32 +28,33 @@
 *********************************************************************************************************
 *                                               MODULE
 *
-* Note(s) : (1) This USB device configuration header file is protected from multiple pre-processor
-*               inclusion through use of the USB device configuration module present pre-processor
-*               macro definition.
+* Note(s) : (1) This USB device driver board-specific function header file is protected from multiple
+*               pre-processor inclusion through use of the USB device configuration module present pre-
+*               processor macro definition.
 *********************************************************************************************************
 */
 
-#ifndef  USBD_DEV_CFG_MODULE_PRESENT                            /* See Note #1.                                         */
-#define  USBD_DEV_CFG_MODULE_PRESENT
+#ifndef  BSP_USBD_PRESENT                                       /* See Note #1.                                         */
+#define  BSP_USBD_PRESENT
 
 
 /*
 *********************************************************************************************************
-*                                      USB DEVICE CONFIGURATION
+*                                            INCLUDE FILES
 *********************************************************************************************************
 */
 
-extern  const USBD_DEV_CFG  USBD_DevCfg_STM32F4;
+#include  "usbd_drv_stm32f4.h"
 
 
 /*
 *********************************************************************************************************
-*                                   USB DEVICE DRIVER CONFIGURATION
+*                                          GLOBAL VARIABLES
 *********************************************************************************************************
 */
 
-extern  const USBD_DRV_CFG  USBD_DrvCfg_STM32F4;
+extern  USBD_DRV_EP_INFO  USBD_DrvEP_InfoTbl_STM32F4[];
+extern  USBD_DRV_BSP_API  USBD_DrvBSP_STM32F4;
 
 
 /*
