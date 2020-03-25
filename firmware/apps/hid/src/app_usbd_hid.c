@@ -310,7 +310,7 @@ CPU_BOOLEAN  App_USBD_HID_Init (CPU_INT08U  dev_nbr,
 #if (APP_CFG_USBD_HID_TEST_MOUSE_EN == DEF_ENABLED)
                                           USBD_HID_PROTOCOL_MOUSE,
 #else
-                                          USBD_HID_PROTOCOL_NONE,
+                                          USBD_HID_PROTOCOL_KBD,
 #endif
                                           USBD_HID_COUNTRY_CODE_NOT_SUPPORTED,
                                          &App_USBD_HID_ReportDesc[0],
