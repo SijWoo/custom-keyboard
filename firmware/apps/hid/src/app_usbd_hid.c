@@ -41,7 +41,7 @@
 #if (APP_CFG_USBD_EN     == DEF_ENABLED) && \
     (APP_CFG_USBD_HID_EN == DEF_ENABLED)
 
-#include  <Class/HID/usbd_hid.h>
+#include  <usbd_hid.h>
 #include  <os.h>
 
 
