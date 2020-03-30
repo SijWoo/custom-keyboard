@@ -9,8 +9,7 @@
  *          The other functions are useful for bare metal programs and not needed. 
  */
 
-#include <stdint.h>
-#include <stdbool.h>
+#include "common.h"
 
 /**
  * @brief   Initializes keyboard's switch matrix.
