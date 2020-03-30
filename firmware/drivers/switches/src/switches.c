@@ -1,4 +1,4 @@
-#include "common.h"
+#include "common_types.h"
 #include "bsp_switches.h"
 
 /**

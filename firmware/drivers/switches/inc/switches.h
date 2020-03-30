@@ -9,7 +9,7 @@
  *          The other functions are useful for bare metal programs and not needed. 
  */
 
-#include "common.h"
+#include "common_types.h"
 
 /**
  * @brief   Initializes keyboard's switch matrix.
