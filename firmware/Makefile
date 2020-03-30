@@ -36,12 +36,11 @@ BUILD_DIR = build
 ######################################
 # BSP sources
 BSP_C_SOURCES = \
-$(wildcard bsp/STMicroelectronics/rtos/*.c)	\
-$(wildcard bsp/STMicroelectronics/stm32f413/src/*.c)	\
-$(wildcard bsp/STMicroelectronics/stm32f413/stm32f4xx_hal_driver/Src/*.c)
+$(wildcard bsp/ST/stm32f413/src/*.c)	\
+$(wildcard bsp/ST/stm32f413/stm32f4xx_hal_driver/Src/*.c)
 
 BSP_ASM_SOURCES = \
-$(wildcard bsp/STMicroelectronics/stm32f413/src/startup_stm32f413xx.s)
+$(wildcard bsp/ST/stm32f413/src/startup_stm32f413xx.s)
 
 # C sources
 C_SOURCES =  \
@@ -50,15 +49,15 @@ $(wildcard apps/cli/src/*.c) \
 $(wildcard apps/fs/src/*.c) \
 $(wildcard apps/gestures/src/*.c) \
 $(wildcard apps/hid/src/*.c) \
-$(wildcard apps/scan/src/*.c) \
+$(wildcard apps/keyboard/src/*.c) \
 $(wildcard cfg/src/*.c)	\
 $(wildcard drivers/gesture/src/*.c)	\
-$(wildcard drivers/keyboard/src/*.c)	\
+$(wildcard drivers/switches/src/*.c)	\
+$(wildcard drivers/usb/hid/*.c)	\
+$(wildcard drivers/usb/core/*.c)	\
+$(wildcard drivers/usb/drv_lib/*.c)	\
+$(wildcard drivers/terminal/src/*.c)	\
 $(wildcard rtos/common/src/*.c)	\
-$(wildcard rtos/drivers/terminal/*.c)	\
-$(wildcard rtos/drivers/usb/hid/*.c)	\
-$(wildcard rtos/drivers/usb/core/*.c)	\
-$(wildcard rtos/drivers/usb/drv_lib/*.c)	\
 $(wildcard rtos/kernel/src/*.c)	\
 $(wildcard rtos/ports/ARM-Cortex-M/ARMv7-M/*.c)	\
 $(wildcard rtos/shell/src/*.c)
@@ -131,11 +130,11 @@ C_INCLUDES =  \
 -Icfg/inc	\
 -Idrivers/gesture/inc	\
 -Idrivers/keyboard/inc	\
+-Idrivers/terminal/inc	\
+-Idrivers/usb/hid	\
+-Idrivers/usb/core	\
+-Idrivers/usb/drv_lib	\
 -Irtos/common/inc	\
--Irtos/drivers/terminal	\
--Irtos/drivers/usb/hid	\
--Irtos/drivers/usb/core	\
--Irtos/drivers/usb/drv_lib	\
 -Irtos/kernel/inc	\
 -Irtos/ports/ARM-Cortex-M/ARMv7-M/GNU	\
 -Irtos/shell/inc	\
@@ -145,9 +144,8 @@ C_INCLUDES =  \
 # BSP C includes
 C_INCLUDES += \
 -Ibsp/inc	\
--Ibsp/STMicroelectronics/stm32f413/stm32f4xx_hal_driver/Inc	\
--Ibsp/STMicroelectronics/stm32f413/inc	\
--Ibsp/STMicroelectronics/rtos
+-Ibsp/ST/stm32f413/stm32f4xx_hal_driver/Inc	\
+-Ibsp/ST/stm32f413/inc
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
