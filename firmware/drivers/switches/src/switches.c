@@ -7,7 +7,7 @@
  * @return  None
  */
 void Switches_Init(void) {
-
+    BSP_Switches_Init();
 }
 
 /**
@@ -24,7 +24,7 @@ void Switches_Init(void) {
  * @return  number of keys pressed during the scan
  */
 uint8_t Switches_Scan(void) {
-
+    
 }
 
 /**
