@@ -15,8 +15,7 @@ void Switches_Init(void) {
  *          If keys have been pressed, the ASCII value of the key is placed into a Queue.
  *          Use the Switch_PopKey function to get the ASCII value. This function returns
  *          how many keys have been pressed, not the ASCII value.
- * @note    Call this function inside a periodic task/interrupt for debouncing. Ideal
- *          periodic value is 25ms for debouncing.
+ * @note    Call this function inside a periodic task/interrupt for debouncing.
  * @note    Thread Safe. Non-blocking.
  * @note    If the internal Queue is full, then key presses will just be dropped until
  *          the Queue has space.
